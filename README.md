@@ -2,6 +2,8 @@
 
 Der MMLC ist eine Software zur Verwaltung von Modulen in deinem modified eCommerce Shop.
 
+![alt text](docs/overview.png)
+
 ## Installation und Anleitung
 
 Folge der Installationsanleitung auf [module-loader.de](https://module-loader.de).
