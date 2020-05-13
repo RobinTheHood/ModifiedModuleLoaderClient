@@ -1,0 +1,348 @@
+body {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    padding: 0px;
+    margin: 0px;
+}
+
+.content {
+    -margin-left: auto;
+    -margin-right: auto;
+    margin-top: 90px;
+    margin-bottom: 30px;
+    -max-width: 1100px;
+}
+
+.modules .module-box {
+    display: block;
+    height: 300px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+.modules .module-box:hover {
+    box-shadow: 0 5px 10px 1px #eceaea;
+}
+
+.modules .module-title {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.modules .module-version {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #bbbbbb;
+}
+
+.modules .module-shortdescription {
+    text-align: center;
+    font-size: 13px;
+    max-height: 60px;
+    overflow: hidden;
+}
+
+.modules .module-icon {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    width: 58px;
+}
+
+.modules .module-icon img {
+    width: 58px;
+}
+
+.off-modules .module-badge {
+    position: absolute;
+    background-color: #32cfff;
+    top: 11px;
+    right: 0px;
+    height: 30px;
+    width: 45px;
+    clip-path: polygon(100% 0%, 100% 100px, 0% 0%, 0% 0%);
+    -webkit-clip-path: polygon(100% 0%, 100% 100px, 0% 0%, 0% 0%);
+}
+
+.modules .module-button-wapper {
+    font-size: 16px;
+    bottom: 15px;
+    left: 0px;
+    position: absolute;
+    width: 100%;
+}
+
+.modules .module-price {
+    position: absolute;
+    bottom: 5px;
+    left: 0px;
+    width: 100%;
+    padding: 5px 13px 5px 0px;
+    margin-bottom: -5px;
+    z-index: -1;
+    color: #000000;
+    background-color: #f7f7f7;
+    border-top: 1px solid #cccccc;
+    text-align: right;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.moduleinfo-buttons {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #cccccc;
+}
+
+.modules .button {
+    display: block;
+    margin: 0px 20px 0px 20px;
+    padding: 15px;
+}
+
+.modules .module-install-info {
+    font-size: 13px;
+    bottom: 15px;
+    position: absolute;
+    color: green;
+}
+
+.navi {
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    background-color: #32cfff;
+    z-index: 1000;
+}
+
+.navi ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.navi ul li {
+    display: inline-block;
+    padding: 20px;
+    color: white;
+}
+
+.navi ul li a {
+    color: white;
+    font-weight:bolder;
+    text-decoration: none;
+}
+
+.navi ul li a:hover {
+    text-decoration: underline;
+}
+
+.navi .navi-left {
+    display: inline-block;
+}
+
+.navi .navi-right {
+    display: inline-block;
+    float: right;
+}
+
+.content h1 {
+    -font-weight: normal;
+    -border-bottom: 1px solid #cccccc;
+}
+
+.moduleinfo h1 {
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+.module-listing h1 {
+    font-weight: normal;
+    border-bottom: 1px solid #cccccc;
+    font-size: 2em;
+}
+
+.module-listing h2 {
+    font-weight: normal;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    margin-top: 30px;
+
+}
+
+.module-listing .search {
+    margin-bottom: 25px;
+}
+
+.module-listing .search input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+}
+
+.signin-frame {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 400px;
+    padding: 30px;
+    border-radius: 4px;
+    border: 1px solid #32cfff;
+}
+
+.signin-frame input[type="text"],
+.signin-frame input[type="password"] {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #32cfff;
+    font-weight: lighter;
+    outline: none;
+}
+
+.signin-frame input[type="submit"] {
+    margin-top: 10px;
+    width: 100%;
+    color: #32cfff;
+    border: 1px solid #32cfff;
+    background-color: white;
+    height: 50px;
+    font: bold 15px arial, sans-serif;
+    text-shadow: none;
+    cursor: pointer;
+}
+
+.signin-frame input[type="submit"]:hover {
+    background-color: #32cfff;
+    color: white;
+}
+
+.content .moduleinfo .moduleinfo-row {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #cccccc;
+    margin-bottom: 20px;
+}
+
+.content .moduleinfo .moduleinfo-row .info-heading {
+    display: inline-block;
+    font-weight: bold;
+    width: 300px;
+    float: left;
+}
+
+.content .moduleinfo .moduleinfo-row .info-body {
+    padding-left: 300px;
+}
+
+.content .moduleinfo .moduleinfo-images {
+    -border-bottom: 1px solid #cccccc;
+    padding-bottom: 20px;
+    -margin-bottom: 20px;
+}
+
+.content .moduleinfo .moduleinfo-images img {
+    -width: 300px;
+    width: 100%;
+    border: 1px solid #cccccc;
+}
+
+.content .moduleinfo .module-icon img {
+    float: left;
+    margin-right: 10px;
+    height: 32px;
+    margin-top: 8px
+}
+
+.moduleinfo .button {
+    margin: 0px;
+    margin-right: 10px;
+}
+
+.moduleinfo-row {
+    line-height: 22px;
+}
+
+.moduleinfo-row ul {
+    /* padding-left: 0px; */
+}
+
+.moduleinfo-row li {
+    /* margin-bottom: 10px; */
+}
+
+.moduleinfo-row code {
+    font-weight: bold;
+}
+
+.moduleinfo-row i {
+    font-weight: bold;
+}
+
+.markdown h1 {
+    border: none;
+}
+
+.markdown h2 {
+    font-weight: normal;
+    margin-top: 60px;
+}
+
+.markdown h3 {
+    font-weight: normal;
+    margin-top: 40px;
+}
+
+.markdown.changelog h3 {
+    font-weight: bold;
+    margin-top: 16px;
+    font-size: 18px;
+}
+
+.markdown h4 {
+    font-weight: normal;
+    margin-top: 30px;
+}
+
+.markdown hr {
+    margin: 40px 0px 40px;
+    border: none;
+    border-top: 1px dashed #cccccc;
+    height: 0px;
+    background-color: none;
+}
+
+.markdown table {
+  border-collapse: collapse;
+}
+
+.markdown table, .markdown th, .markdown td {
+  border: 1px solid #bbbbbb;
+  padding: 5px;
+}
+
+.tab-pane {
+    padding: 10px 0px 10px 40px;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #32cfff;
+}
+
+.infos .table-sm td {
+    border: none;
+}
+
+pre code {
+    background: #eeeeee;
+    display: block;
+    padding: 15px;
+    margin: 20px 0px;
+}

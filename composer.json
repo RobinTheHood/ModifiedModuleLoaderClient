@@ -1,0 +1,30 @@
+{
+    "name": "robinthehood/modified-module-loader-client",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Robin Wieschendorf",
+            "email": "mail@robinwieschendorf.de",
+            "homepage": "https://robinwieschendorf.de"
+        }
+    ],
+    "homepage": "https://module-loader.de",
+
+    "require": {
+        "robinthehood/exception-monitor": "^0.1.6",
+        "robinthehood/debug": "^0.1.3",
+        "erusev/parsedown": "^1.7"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "RobinTheHood\\ModifiedModuleLoaderClient\\": "src/Classes/",
+            "App\\Test\\TestCase\\": "tests/TestCase/"
+        }
+    }
+
+}
