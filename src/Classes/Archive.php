@@ -142,6 +142,8 @@ class Archive
         $httpRequest = new HttpRequest();
         $tarBall = $httpRequest->sendGetRequest($path);
 
+        // TODO - check if $tarBall is a tarball or a error response form request
+        
         if (!$tarBall) {
             return false;
         }
