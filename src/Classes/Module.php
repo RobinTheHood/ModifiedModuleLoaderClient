@@ -68,10 +68,20 @@ class Module extends ModuleInfo
         return $this->iconPath;
     }
 
+    public function setIconPath($iconPath)
+    {
+        $this->iconPath = $iconPath;
+    }
+
     // /Modules/vendor/module/images/image1.jpg
     public function getImagePaths()
     {
         return $this->imagePaths;
+    }
+
+    public function setImagePaths($imagePaths)
+    {
+        $this->imagePaths = $imagePaths;
     }
 
     // /admin/includes/...
