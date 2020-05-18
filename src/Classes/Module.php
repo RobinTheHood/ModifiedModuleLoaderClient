@@ -31,6 +31,7 @@ class Module extends ModuleInfo
     private $modulePath;
     private $iconPath;
     private $imagePaths;
+    private $docFilePaths;
     private $srcFilePaths;
     private $isRemote;
     private $isLoadable;
@@ -84,6 +85,17 @@ class Module extends ModuleInfo
         $this->imagePaths = $imagePaths;
     }
 
+    // /Modules/vendor/module/docs/install.md
+    public function getDocFilePaths()
+    {
+        return $this->docFilePaths;
+    }
+
+    public function setDocFilePaths($docFilePaths)
+    {
+        $this->docFilePaths = $docFilePaths;
+    }
+
     // /admin/includes/...
     public function getSrcFilePaths()
     {
@@ -110,15 +122,32 @@ class Module extends ModuleInfo
         );
     }
 
+    public function getDocFilePath($fileName)
+    {
+        foreach ($this->getDocFilePaths() as $docFilePath) {
+            if (\substr_count($docFilePath, $fileName)) {
+                return $docFilePath;
+            }
+        }
+    }
+
     public function getInstallationMd()
     {
-        $path = $this->getUrlOrLocalRootPath() . $this->getModulePath() . '/docs/install.md';
+        $docFilePath = $this->getDocFilePath('install.md');
+        if (!$docFilePath) {
+            return;
+        }
+        $path = $this->getUrlOrLocalRootPath() . $docFilePath;
         return FileHelper::readMarkdown($path);
     }
 
     public function getUsageMd()
     {
-        $path = $this->getUrlOrLocalRootPath() . $this->getModulePath() . '/docs/usage.md';
+        $docFilePath = $this->getDocFilePath('usage.md');
+        if (!$docFilePath) {
+            return;
+        }
+        $path = $this->getUrlOrLocalRootPath() . $docFilePath;
         return FileHelper::readMarkdown($path);
     }
 
@@ -224,6 +253,7 @@ class Module extends ModuleInfo
 
         $this->iconPath = $this->loadIconPath($path);
         $this->imagePaths = $this->loadImagePaths($path . '/images');
+        $this->docFilePaths = $this->loadDocFilePaths($path . '/docs');
         $this->srcFilePaths = $this->loadSrcFilePaths($this->getLocalRootPath() . $this->getSrcRootPath());
 
         return true;
@@ -264,6 +294,26 @@ class Module extends ModuleInfo
         $images = FileHelper::stripAllBasePaths(App::getRoot(), $images);
 
         return $images;
+    }
+
+    public function loadDocFilePaths($path)
+    {
+        if (!is_dir($path)) {
+            return [];
+        }
+
+        $docFiles = [];
+
+        $fileNames = scandir($path);
+        foreach($fileNames as $fileName) {
+            if (strpos($fileName, '.md')) {
+                $docFiles[] = $path . '/' . $fileName;
+            }
+        }
+
+        $docFiles = FileHelper::stripAllBasePaths(App::getRoot(), $docFiles);
+
+        return $docFiles;
     }
 
     public function loadSrcFilePaths($path)
@@ -343,6 +393,7 @@ class Module extends ModuleInfo
         $this->modulePath = ArrayHelper::getIfSet($array, 'modulePath');
         $this->iconPath = ArrayHelper::getIfSet($array, 'iconPath');
         $this->imagePaths = ArrayHelper::getIfSet($array, 'imagePaths', []);
+        $this->docFilePaths = ArrayHelper::getIfSet($array, 'docFilePaths', []);
         $this->srcFilePaths = ArrayHelper::getIfSet($array, 'rootPath');
         $this->isRemote = ArrayHelper::getIfSet($array, 'isRemote');
         $this->isLoadable = ArrayHelper::getIfSet($array, 'isLoadable');
@@ -360,6 +411,7 @@ class Module extends ModuleInfo
             'modulePath' => $this->getModulePath(),
             'iconPath' => $this->getIconPath(),
             'imagePaths' => $this->getImagePaths(),
+            'docFilePaths' => $this->getDocFilePaths(),
             'srcFilePaths' => $this->getSrcFilePaths(),
             'isRemote' => $this->isRemote(),
             'isLoadable' => $this->isLoadable()
