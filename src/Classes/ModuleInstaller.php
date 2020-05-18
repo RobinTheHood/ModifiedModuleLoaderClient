@@ -75,6 +75,9 @@ class ModuleInstaller
 
     public function install($module)
     {
+        $dependencyManager = new DependencyManager();
+        $dependencyManager->canBeInstalled($module);
+        
         $files = $module->getSrcFilePaths();
         foreach($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $file;
