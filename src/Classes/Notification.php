@@ -36,9 +36,11 @@ class Notification
 
     public static function pushFlashMessage($message)
     {
-        foreach ($_SESSION['mml']['flashMessages'] as $oldMessage) {
-            if ($oldMessage['text'] == $message['text']) {
-                return;
+        if (isset($_SESSION['mml']) && isset($_SESSION['mml']['flashMessages'])) {
+            foreach ($_SESSION['mml']['flashMessages'] as $oldMessage) {
+                if ($oldMessage['text'] == $message['text']) {
+                    return;
+                }
             }
         }
 
