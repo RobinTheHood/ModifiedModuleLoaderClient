@@ -32,6 +32,7 @@ class Module extends ModuleInfo
     private $iconPath;
     private $imagePaths;
     private $docFilePaths;
+    private $changelogPath;
     private $srcFilePaths;
     private $isRemote;
     private $isLoadable;
@@ -96,6 +97,17 @@ class Module extends ModuleInfo
         $this->docFilePaths = $docFilePaths;
     }
 
+    // /Modules/vendor/module/changelog.md
+    public function getChangelogPath()
+    {
+        return $this->changelogPath;
+    }
+
+    public function setChangelogPath($changelogPath)
+    {
+        $this->changelogPath = $changelogPath;
+    }
+
     // /admin/includes/...
     public function getSrcFilePaths()
     {
@@ -153,7 +165,11 @@ class Module extends ModuleInfo
 
     public function getChangeLogMd()
     {
-        $path = $this->getUrlOrLocalRootPath() . $this->getModulePath() . '/changelog.md';
+        $path = $this->getChangelogPath();
+        if (!$path) {
+            return;
+        }
+        $path = $this->getUrlOrLocalRootPath() . $path;
         return FileHelper::readMarkdown($path);
     }
 
@@ -254,6 +270,7 @@ class Module extends ModuleInfo
         $this->iconPath = $this->loadIconPath($path);
         $this->imagePaths = $this->loadImagePaths($path . '/images');
         $this->docFilePaths = $this->loadDocFilePaths($path . '/docs');
+        $this->changelogPath = $this->loadChangelogPath($path);
         $this->srcFilePaths = $this->loadSrcFilePaths($this->getLocalRootPath() . $this->getSrcRootPath());
 
         return true;
@@ -314,6 +331,17 @@ class Module extends ModuleInfo
         $docFiles = FileHelper::stripAllBasePaths(App::getRoot(), $docFiles);
 
         return $docFiles;
+    }
+
+    public function loadChangeLogPath($path)
+    {
+        $changelogPath = '';
+
+        if (file_exists($path . '/changelog.md')) {
+            $changelogPath = $this->getModulePath() . '/changelog.md';
+        }
+
+        return $changelogPath;
     }
 
     public function loadSrcFilePaths($path)
@@ -394,6 +422,7 @@ class Module extends ModuleInfo
         $this->iconPath = ArrayHelper::getIfSet($array, 'iconPath');
         $this->imagePaths = ArrayHelper::getIfSet($array, 'imagePaths', []);
         $this->docFilePaths = ArrayHelper::getIfSet($array, 'docFilePaths', []);
+        $this->changelogPath = ArrayHelper::getIfSet($array, 'changelogPath');
         $this->srcFilePaths = ArrayHelper::getIfSet($array, 'rootPath');
         $this->isRemote = ArrayHelper::getIfSet($array, 'isRemote');
         $this->isLoadable = ArrayHelper::getIfSet($array, 'isLoadable');
@@ -412,6 +441,7 @@ class Module extends ModuleInfo
             'iconPath' => $this->getIconPath(),
             'imagePaths' => $this->getImagePaths(),
             'docFilePaths' => $this->getDocFilePaths(),
+            'changelogPath' => $this->getChangelogPath(),
             'srcFilePaths' => $this->getSrcFilePaths(),
             'isRemote' => $this->isRemote(),
             'isLoadable' => $this->isLoadable()
