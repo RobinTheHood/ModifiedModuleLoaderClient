@@ -16,6 +16,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Redirect;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver;
+use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
 
 class IndexController
 {
@@ -159,6 +161,7 @@ class IndexController
 
         $checkUpdate = $selfUpdater->checkUpdate();
 
+        $semver = new Semver(new SemverParser);
         include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
 

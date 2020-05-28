@@ -13,6 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver;
+use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
 
 class ModuleFilter
 {
@@ -70,8 +71,8 @@ class ModuleFilter
                     continue;
                 }
 
-                //if ($module->getVersion() < $filteredModule->getVersion()) {
-                if (Semver::lessThan($module->getVersion(), $filteredModule->getVersion())) {
+                $semver = new Semver(new SemverParser());
+                if ($semver->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
                 }
@@ -104,8 +105,8 @@ class ModuleFilter
                     break;
                 }
 
-                //if ($module->getVersion() < $filteredModule->getVersion()) {
-                if (Semver::lessThan($module->getVersion(), $filteredModule->getVersion())) {
+                $semver = new Semver(new SemverParser());
+                if ($semver->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
                 }
@@ -134,9 +135,8 @@ class ModuleFilter
     {
         $filteredModules = [];
         foreach($modules as $module) {
-            //if ($module->getVersion() == $version) {
-            //if (Semver::equalTo($module->getVersion(), $version)) {
-            if (Semver::satisfies($module->getVersion(), $constrain)) {
+            $semver = new Semver(new SemverParser());
+            if ($semver->satisfies($module->getVersion(), $constrain)) {
                 $filteredModules[] = $module;
             }
         }
@@ -147,8 +147,8 @@ class ModuleFilter
     {
         $selectedModule = null;
         foreach($modules as $module) {
-            //if (!$selectedModule || $module->getVersion() > $selectedModule->getVersion()) {
-            if (!$selectedModule || Semver::greaterThan($module->getVersion(), $selectedModule->getVersion())) {
+            $semver = new Semver(new SemverParser());
+            if (!$selectedModule || $semver->greaterThan($module->getVersion(), $selectedModule->getVersion())) {
                 $selectedModule = $module;
             }
         }
@@ -250,8 +250,8 @@ class ModuleFilter
     public static function orderByVersion($modules)
     {
         usort($modules, function($moduleA, $moduleB) {
-            //if ($moduleA->getVersion() < $moduleB->getVersion()) {
-            if (Semver::lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
+            $semver = new Semver(new SemverParser());
+            if ($semver->lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
                 return 1;
             } else {
                 return -1;

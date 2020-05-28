@@ -21,7 +21,7 @@
                 <h2>MMLC - Modified Module Loader Client</h2>
                 <?php echo $installedVersion ?><br><br>
 
-                <?php if (RobinTheHood\ModifiedModuleLoaderClient\Semver::greaterThan($version['version'], $installedVersion)) { ?>
+                <?php if ($semver->greaterThan($version['version'], $installedVersion)) { ?>
                     Version <?php echo $version['version'] ?> verfügbar<br><br>
                     <a class="button button-success" href="?action=selfUpdate&install=<?php echo $version['version']?>">Update installieren</a>
                 <?php } else { ?>

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
@@ -13,30 +14,14 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class Semver
 {
-    public static function parse($string)
+    protected $parser;
+
+    public function __construct(SemverParser $parser)
     {
-        $version = [
-            'major' => 0,
-            'minor' => 0,
-            'patch' => 0
-        ];
-
-        $parts = explode('.', $string);
-        
-        if (count($parts) != 3) {
-            throw new ParseErrorException('Can not parse string to version array');
-        } elseif ($parts[0] == '' || $parts[1] == '' || $parts[2] == '') {
-            throw new ParseErrorException('Some part of version string is empty');
-        }
-
-        $version['major'] = (int) $parts[0];
-        $version['minor'] = (int) $parts[1];
-        $version['patch'] = (int) $parts[2];
-
-        return $version;
+        $this->parser = $parser;
     }
 
-    public static function greaterThan($versionString1, $versionString2)
+    public function greaterThan(string $versionString1, string $versionString2): bool
     {
         if ($versionString1 == 'auto' && $versionString2 != 'auto') {
             return true;
@@ -46,8 +31,8 @@ class Semver
             return false;
         }
 
-        $version1 = self::parse($versionString1);
-        $version2 = self::parse($versionString2);
+        $version1 = $this->parser->parse($versionString1);
+        $version2 = $this->parser->parse($versionString2);
 
         if ($version1['major'] > $version2['major']) {
             return true;
@@ -67,7 +52,7 @@ class Semver
         return false;
     }
 
-    public static function equalTo($versionString1, $versionString2)
+    public function equalTo(string $versionString1, string $versionString2): bool
     {
         if ($versionString1 == 'auto' && $versionString2 == 'auto') {
             return true;
@@ -77,8 +62,8 @@ class Semver
             return false;
         }
 
-        $version1 = self::parse($versionString1);
-        $version2 = self::parse($versionString2);
+        $version1 = $this->parser->parse($versionString1);
+        $version2 = $this->parser->parse($versionString2);
 
         if ($version1['major'] != $version2['major']) {
             return false;
@@ -95,7 +80,7 @@ class Semver
         return true;
     }
 
-    public static function greaterThanOrEqualTo($versionString1, $versionString2)
+    public function greaterThanOrEqualTo(string $versionString1, string $versionString2): bool
     {
         if (self::greaterThan($versionString1, $versionString2)) {
             return true;
@@ -108,7 +93,7 @@ class Semver
         return false;
     }
 
-    public static function lessThan($versionString1, $versionString2)
+    public function lessThan(string $versionString1, string $versionString2): bool
     {
         if (!self::greaterThanOrEqualTo($versionString1, $versionString2)) {
             return true;
@@ -117,7 +102,7 @@ class Semver
         return false;
     }
 
-    public static function lessThanOrEqualTo($versionString1, $versionString2)
+    public function lessThanOrEqualTo(string $versionString1, string $versionString2): bool
     {
         if (!self::greaterThan($versionString1, $versionString2)) {
             return true;
@@ -126,7 +111,7 @@ class Semver
         return false;
     }
 
-    public static function notEqualTo($versionString1, $versionString2)
+    public function notEqualTo(string $versionString1, string $versionString2): bool
     {
         if (!self::equalTo($versionString1, $versionString2)) {
             return true;
@@ -135,13 +120,13 @@ class Semver
         return false;
     }
 
-    public static function highest($versionStrings)
+    public function highest(array $versionStrings): string
     {
         $versionStrings = self::rsort($versionStrings);
         return $versionStrings[0];
     }
 
-    public static function lowest($versionStrings)
+    public function lowest(array $versionStrings): string
     {
         $versionStrings = self::sort($versionStrings);
         return $versionStrings[0];
@@ -150,14 +135,14 @@ class Semver
     // Testet ob Version1 mindestens das kann, was auch Version2 kann.
     // Version1 darf auch mehr können als das was Version2 kann,
     // aber nicht weniger.
-    public static function isCompatible($versionString1, $versionString2)
+    public function isCompatible(string $versionString1, string $versionString2): bool
     {
         if ($versionString1 == 'auto') {
             return true;
         }
 
-        $version1 = self::parse($versionString1);
-        $version2 = self::parse($versionString2);
+        $version1 = $this->parser->parse($versionString1);
+        $version2 = $this->parser->parse($versionString2);
 
         if ($version1['major'] != $version2['major']) {
             return false;
@@ -166,7 +151,7 @@ class Semver
         return self::greaterThanOrEqualTo($versionString1, $versionString2);
     }
 
-    public static function satisfies($versionString1, $constrain)
+    public function satisfies(string $versionString1, string $constrain): bool
     {
         if ($constrain[0] == '^') { // Ist Buchstabe an Index 0 = ^
             $versionString2 = str_replace('^', '', $constrain);
@@ -177,30 +162,30 @@ class Semver
         }
     }
 
-    public static function sort($versionStrings)
+    public function sort(array $versionStrings): array
     {
-        usort($versionStrings, [self, 'compareAsc']);
+        usort($versionStrings, [$this, 'compareAsc']);
         return $versionStrings;
     }
 
-    public static function rsort($versionStrings)
+    public function rsort(array $versionStrings): array
     {
-        usort($versionStrings, [self, 'compareDes']);
+        usort($versionStrings, [$this, 'compareDes']);
         return $versionStrings;
     }
 
-    private static function compareAsc($versionString1, $versionString2)
+    private function compareAsc(string $versionString1, string $versionString2): int
     {
-        if (self::greaterThan($versionString1, $versionString2)) {
+        if ($this->greaterThan($versionString1, $versionString2)) {
             return 1;
         }
 
         return -1;
     }
 
-    private static function compareDes($versionString1, $versionString2)
+    private function compareDes(string $versionString1, string $versionString2): int
     {
-        if (self::greaterThan($versionString1, $versionString2)) {
+        if ($this->greaterThan($versionString1, $versionString2)) {
             return -1;
         }
 

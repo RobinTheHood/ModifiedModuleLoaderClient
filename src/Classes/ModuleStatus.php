@@ -12,6 +12,7 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Semver;
+use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
 
 class ModuleStatus
 {
@@ -113,7 +114,8 @@ class ModuleStatus
             return false;
         }
 
-        if (!Semver::greaterThan($newestVersion->getVersion(), $installedVersion->getVersion())) {
+        $semver = new Semver(new SemverParser());
+        if (!$semver->greaterThan($newestVersion->getVersion(), $installedVersion->getVersion())) {
             return false;
         }
 

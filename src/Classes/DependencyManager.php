@@ -13,9 +13,18 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver;
+use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
 
 class DependencyManager
 {
+    protected $semver;
+
+    public function __construct()
+    {
+        $this->semver = new Semver(new SemverParser());
+    }
+
     public function getInstalledModules()
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
@@ -62,7 +71,7 @@ class DependencyManager
     {
         $usedByEntrys = $this->getUsedByEntrys($module, $modules);
         foreach($usedByEntrys as $usedByEntry) {
-            if (!Semver::satisfies($module->getVersion(), $usedByEntry['requiredVersion'])) {
+            if (!$this->semver->satisfies($module->getVersion(), $usedByEntry['requiredVersion'])) {
                 $a = $module->getArchiveName();
                 $av = $module->getVersion();
                 $b = $usedByEntry['module']->getArchiveName();
@@ -82,7 +91,7 @@ class DependencyManager
                 }
 
                 $moduleFound = true;
-                if (!Semver::satisfies($selectedModule->getVersion(), $version)) {
+                if (!$this->semver->satisfies($selectedModule->getVersion(), $version)) {
                     $a = $selectedModule->getArchiveName();
                     $av = $module->getVersion();
                     debugDie("Module $a version $av can not be installed because module $archiveName version $version is required");
@@ -209,7 +218,7 @@ class DependencyManager
             return null;
         }
 
-        if (Semver::greaterThanOrEqualTo($localModule->getVersion(), $remoteModule->getVersion())) {
+        if ($this->semver->greaterThanOrEqualTo($localModule->getVersion(), $remoteModule->getVersion())) {
             return $localModule;
         } else {
             return $remoteModule;
