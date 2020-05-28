@@ -75,7 +75,7 @@ class Module extends ModuleInfo
         $this->iconPath = $iconPath;
     }
 
-    // /Modules/vendor/module/images/image1.jpg
+    // /Modules/VENDOR-NAME/MODULE-NAME/images/image1.jpg
     public function getImagePaths()
     {
         return $this->imagePaths;
@@ -86,7 +86,7 @@ class Module extends ModuleInfo
         $this->imagePaths = $imagePaths;
     }
 
-    // /Modules/vendor/module/docs/install.md
+    // /Modules/VENDOR-NAME/MODULE-NAME/docs/install.md
     public function getDocFilePaths()
     {
         return $this->docFilePaths;
@@ -97,7 +97,7 @@ class Module extends ModuleInfo
         $this->docFilePaths = $docFilePaths;
     }
 
-    // /Modules/vendor/module/changelog.md
+    // /Modules/VENDOR-NAME/MODULE-NAME/changelog.md
     public function getChangelogPath()
     {
         return $this->changelogPath;
@@ -114,13 +114,13 @@ class Module extends ModuleInfo
         return $this->srcFilePaths;
     }
 
-    // /Modules/Vender/Module/new_files
+    // /Modules/VENDOR-NAME/MODULE-NAME/new_files
     public function getSrcRootPath()
     {
         return $this->getModulePath() . '/' . $this->getSourceDir();
     }
 
-    // ...shop.de/Modules/Vender/Module/icon.xxx
+    // ...shop.de/Modules/VENDOR-NAME/MODULE-NAME/icon.xxx
     public function getIconUri()
     {
         return $this->getUrlRootPath() . $this->getIconPath();
