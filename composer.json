@@ -22,8 +22,7 @@
 
     "autoload": {
         "psr-4": {
-            "RobinTheHood\\ModifiedModuleLoaderClient\\": "src/Classes/",
-            "App\\Test\\TestCase\\": "tests/TestCase/"
+            "RobinTheHood\\ModifiedModuleLoaderClient\\": "src/Classes/"
         }
     }
 

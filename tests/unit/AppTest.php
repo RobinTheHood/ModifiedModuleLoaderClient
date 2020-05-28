@@ -9,42 +9,59 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Test\TestCase\Classes;
-
 use PHPUnit\Framework\TestCase;
-
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 
 class AppTest extends TestCase
 {
 
-    public function testRootDirectory()
+    public function testRootDirectoryEndsWidthModifiedModuleLoaderClient()
     {
         $this->assertStringEndsWith('ModifiedModuleLoaderClient', App::getRoot());
+    }
+
+    public function testRootDirectoryEndsNotWidthSlash()
+    {
         $this->assertStringEndsNotWith('ModifiedModuleLoaderClient/', App::getRoot());
     }
 
-    public function testSrcRootDirectory()
+    public function testSrcRootDirectoryHasRightPath()
     {
         $this->assertStringEndsWith('ModifiedModuleLoaderClient/src', App::getSrcRoot());
+    }
+
+    public function testSrcRootDirectoryEndsNotWidthSlash()
+    {
         $this->assertStringEndsNotWith('ModifiedModuleLoaderClient/src/', App::getSrcRoot());
     }
 
-    public function testTemplatesRootDirectory()
+    public function testTemplatesRootDirectoryHasRightPath()
     {
         $this->assertStringEndsWith('ModifiedModuleLoaderClient/src/Templates', App::getTemplatesRoot());
+    }
+
+    public function testTemplatesRootDirectoryEndsNotWidthSlash()
+    {
         $this->assertStringEndsNotWith('ModifiedModuleLoaderClient/src/Templates/', App::getTemplatesRoot());
     }
 
-    public function testArchivesRootDirectory()
+    public function testArchivesRootDirectoryHasRightPath()
     {
         $this->assertStringEndsWith('ModifiedModuleLoaderClient/Archives', App::getArchivesRoot());
+    }
+
+    public function testArchivesRootDirectoryEndsNotWidthSlash()
+    {
         $this->assertStringEndsNotWith('ModifiedModuleLoaderClient/Archives/', App::getArchivesRoot());
     }
 
-    public function testModulesRootDirectory()
+    public function testModulesRootDirectoryHasRightPath()
     {
         $this->assertStringEndsWith('ModifiedModuleLoaderClient/Modules', App::getModulesRoot());
+    }
+
+    public function testModulesRootDirectoryEndsNotWidthSlash()
+    {
         $this->assertStringEndsNotWith('ModifiedModuleLoaderClient/Modules/', App::getModulesRoot());
     }
 

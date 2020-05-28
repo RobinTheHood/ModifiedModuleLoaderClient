@@ -9,10 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Test\TestCase\Classes\GraphQl;
-
 use PHPUnit\Framework\TestCase;
-
 use RobinTheHood\ModifiedModuleLoaderClient\GraphQl\QueryParser;
 
 class QueryParserTest extends TestCase
