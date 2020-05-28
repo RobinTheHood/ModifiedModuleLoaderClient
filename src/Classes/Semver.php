@@ -18,15 +18,20 @@ class Semver
         $version = [
             'major' => 0,
             'minor' => 0,
-            'path' => 0
+            'patch' => 0
         ];
 
         $parts = explode('.', $string);
-        if (count($parts) == 3) {
-            $version['major'] = (int) $parts[0];
-            $version['minor'] = (int) $parts[1];
-            $version['path'] = (int) $parts[2];
+        
+        if (count($parts) != 3) {
+            throw new ParseErrorException('Can not parse string to version array');
+        } elseif ($parts[0] == '' || $parts[1] == '' || $parts[2] == '') {
+            throw new ParseErrorException('Some part of version string is empty');
         }
+
+        $version['major'] = (int) $parts[0];
+        $version['minor'] = (int) $parts[1];
+        $version['patch'] = (int) $parts[2];
 
         return $version;
     }
@@ -55,7 +60,7 @@ class Semver
 
         if ($version1['major'] == $version2['major'] &&
             $version1['minor'] == $version2['minor'] &&
-            $version1['path'] > $version2['path'] ) {
+            $version1['patch'] > $version2['patch'] ) {
             return true;
         }
 
@@ -66,6 +71,10 @@ class Semver
     {
         if ($versionString1 == 'auto' && $versionString2 == 'auto') {
             return true;
+        } elseif ($versionString1 == 'auto' && $versionString2 != 'auto') {
+            return false;
+        } elseif ($versionString1 != 'auto' && $versionString2 == 'auto') {
+            return false;
         }
 
         $version1 = self::parse($versionString1);
@@ -79,7 +88,7 @@ class Semver
             return false;
         }
 
-        if ($version1['path'] != $version2['path'] ) {
+        if ($version1['patch'] != $version2['patch'] ) {
             return false;
         }
 
@@ -198,38 +207,3 @@ class Semver
         return 1;
     }
 }
-
-// var_dump(Semver::greaterThan('1.2.3', '1.2.3')); var_dump('expect: false');
-// var_dump(Semver::greaterThan('1.2.10', '1.2.9')); var_dump('expect: true');
-// var_dump(Semver::greaterThan('1.3.3', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::greaterThan('2.2.3', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::greaterThan('2.2.9', '2.2.10')); var_dump('expect: false');
-//
-// var_dump(Semver::equalTo('1.2.3', '1.2.4')); var_dump('expect: false');
-// var_dump(Semver::equalTo('1.2.4', '1.2.3')); var_dump('expect: false');
-// var_dump(Semver::equalTo('1.2.3', '1.2.3')); var_dump('expect: true');
-//
-// var_dump(Semver::greaterThanOrEqualTo('1.2.3', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::greaterThanOrEqualTo('1.2.4', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::greaterThanOrEqualTo('1.3.3', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::greaterThanOrEqualTo('2.2.3', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::greaterThanOrEqualTo('2.2.3', '2.2.4')); var_dump('expect: false');
-//
-// var_dump(Semver::lessThan('1.2.3', '1.2.3')); var_dump('expect: false');
-// var_dump(Semver::lessThan('1.2.10', '1.2.9')); var_dump('expect: false');
-// var_dump(Semver::lessThan('1.10.3', '1.9.3')); var_dump('expect: false');
-// var_dump(Semver::lessThan('10.2.3', '9.2.3')); var_dump('expect: false');
-// var_dump(Semver::lessThan('2.2.9', '2.2.10')); var_dump('expect: true');
-//
-// var_dump(Semver::lessThanOrEqualTo('1.2.3', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::lessThanOrEqualTo('1.2.10', '1.2.9')); var_dump('expect: false');
-// var_dump(Semver::lessThanOrEqualTo('1.10.3', '1.9.3')); var_dump('expect: false');
-// var_dump(Semver::lessThanOrEqualTo('10.2.3', '9.2.3')); var_dump('expect: false');
-// var_dump(Semver::lessThanOrEqualTo('2.2.9', '2.2.10')); var_dump('expect: true');
-//
-// var_dump(Semver::notEqualTo('1.2.3', '1.2.4')); var_dump('expect: true');
-// var_dump(Semver::notEqualTo('1.2.4', '1.2.3')); var_dump('expect: true');
-// var_dump(Semver::notEqualTo('1.2.3', '1.2.3')); var_dump('expect: false');
-//
-// var_dump(Semver::sort(['17.111.9', '1.2.3', '18.22.10', '18.33.10', '18.22.9']));
-// var_dump(Semver::rsort(['17.111.9', '1.2.3', '18.22.9', '18.33.10', '18.22.10']));
