@@ -49,7 +49,7 @@
                                     Keine Berechtigung zur Installation. Nimm Kontakt zum Entwickler auf.
                                 <?php } ?>
 
-                                <?php if (ModuleStatus::isUpdateable($module) && !ModuleStatus::isRepairable($module)) { ?>
+                                <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
                                     <a class="button button-success" href="?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
                                 <?php } ?>
 

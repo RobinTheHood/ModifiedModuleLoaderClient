@@ -388,7 +388,7 @@ class Module extends ModuleInfo
     {
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllByArchiveName($this->getArchiveName());
-        $modules = ModuleFilter::orderByVersion($modules);
+        $modules = ModuleSorter::sortByVersion($modules);
         return $modules;
     }
 

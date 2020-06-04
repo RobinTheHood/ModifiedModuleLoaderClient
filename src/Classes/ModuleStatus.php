@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
@@ -16,19 +17,19 @@ use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
 
 class ModuleStatus
 {
-    public static function isValid($module)
+    public static function isValid(Module $module): bool
     {
         return !($module->isRemote() && $module->isLoaded());
     }
 
-    public static function isLoadable($module)
+    public static function isLoadable(Module $module): bool
     {
         return
             ($module->isLoadable() && $module->isRemote()) ||
             !$module->isRemote();
     }
 
-    public static function isCompatibleLoadebale($module)
+    public static function isCompatibleLoadebale(Module $module): bool
     {
         return
             $module->isLoadable() &&
@@ -38,7 +39,7 @@ class ModuleStatus
             $module->isCompatible();
     }
 
-    public static function isUncompatibleLoadebale($module)
+    public static function isUncompatibleLoadebale(Module $module): bool
     {
         return
             $module->isLoadable() &&
@@ -48,7 +49,7 @@ class ModuleStatus
             !$module->isCompatible();
     }
 
-    public static function isRepairable($module)
+    public static function isRepairable(Module $module): bool
     {
         return
             !$module->isRemote() &&
@@ -57,7 +58,7 @@ class ModuleStatus
             $module->isChanged();
     }
 
-    public static function isUninstallable($module)
+    public static function isUninstallable(Module $module): bool
     {
         return
             !$module->isRemote() &&
@@ -65,7 +66,7 @@ class ModuleStatus
             $module->isInstalled();
     }
 
-    public static function isInstallable($module)
+    public static function isInstallable(Module $module): bool
     {
         return
             !$module->isRemote() &&
@@ -73,7 +74,7 @@ class ModuleStatus
             !$module->getInstalledVersion();
     }
 
-    public static function isCompatibleInstallable($module)
+    public static function isCompatibleInstallable(Module $module): bool
     {
         return
             !$module->isRemote() &&
@@ -82,7 +83,7 @@ class ModuleStatus
             $module->isCompatible();
     }
 
-    public static function isUncompatibleInstallable($module)
+    public static function isUncompatibleInstallable(Module $module): bool
     {
         return
             !$module->isRemote() &&
@@ -91,17 +92,17 @@ class ModuleStatus
             !$module->isCompatible();
     }
 
-    public static function isCompatible($module)
+    public static function isCompatible(Module $module): bool
     {
         return $module->isCompatible();
     }
 
-    public static function isUncompatible($module)
+    public static function isUncompatible(Module $module): bool
     {
         return !$module->isCompatible();
     }
 
-    public static function isUpdateable($module)
+    public static function isUpdatable(Module $module): bool
     {
         $installedVersion = $module->getInstalledVersion();
         $newestVersion = $module->getNewestVersion();

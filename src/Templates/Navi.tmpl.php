@@ -2,10 +2,12 @@
 
 <div class="navi">
     <ul class="navi-left">
-        <li><a href="?filterModules=all">Alle Module</a></li>
-        <li><a href="?filterModules=installed">Installierte Module</a></li>
-        <li><a href="?filterModules=loaded">Geladene Module</a></li>
-        <li><a href="?filterModules=notloaded">Nicht geladene Module</a></li>
+        <li><a href="?filterModules=all">Alle</a></li>
+        <li><a href="?filterModules=loaded">Geladen</a></li>
+        <li><a href="?filterModules=installed">Installiert</a></li>
+        <li><a href="?filterModules=updatable">Updates</a></li>
+        <li><a href="?filterModules=changed">Geändert</a></li>
+        <li><a href="?filterModules=notloaded">Nicht geladen</a></li>
     </ul>
 
     <ul class="navi-right">

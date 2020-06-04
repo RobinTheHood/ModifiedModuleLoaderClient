@@ -24,6 +24,10 @@
                     <h1>Geladene Module</h1>
                 <?php } elseif (isset($_GET['filterModules']) && $_GET['filterModules'] == 'installed') { ?>
                     <h1>Installierte Module</h1>
+                <?php } elseif (isset($_GET['filterModules']) && $_GET['filterModules'] == 'updatable') { ?>
+                    <h1>Aktualisierbare Module</h1>
+                <?php } elseif (isset($_GET['filterModules']) && $_GET['filterModules'] == 'changed') { ?>
+                    <h1>Geänderte Module</h1>
                 <?php } elseif (isset($_GET['filterModules']) && $_GET['filterModules'] == 'notloaded') { ?>
                     <h1>Nicht geladene Module</h1>
                 <?php } else { ?>
@@ -34,7 +38,7 @@
                     <?php foreach($groupedModules as $category => $modules) { ?>
                         <?php //if ($category == 'nocategory') { continue; } ?>
 
-                        <h2><?php echo RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter::getCategoryName($category); ?></h2>
+                        <h2><?php echo RobinTheHood\ModifiedModuleLoaderClient\Category::getCategoryName($category); ?></h2>
 
                         <div class="row">
                         <?php foreach($modules as $module) { ?>
@@ -82,7 +86,7 @@
                                         <?php } elseif (ModuleStatus::isRepairable($module)) { ?>
                                             <a class="button button-warning" onclick="event.stopPropagation()" href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>">Änderungen ansehen</a>
 
-                                        <?php } elseif (ModuleStatus::isUpdateable($module)) { ?>
+                                        <?php } elseif (ModuleStatus::isUpdatable($module)) { ?>
                                             <a class="button button-success" onclick="event.stopPropagation()" href="?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>">Update installieren</a>
 
                                         <?php } elseif (ModuleStatus::isUninstallable($module)) { ?>

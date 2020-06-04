@@ -18,6 +18,9 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Redirect;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver;
 use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
+use RobinTheHood\ModifiedModuleLoaderClient\Category;
 
 class IndexController
 {
@@ -178,12 +181,16 @@ class IndexController
             $modules = ModuleFilter::filterLoaded($modules);
         } elseif($filterModules == 'installed') {
             $modules = ModuleFilter::filterInstalled($modules);
+        } elseif($filterModules == 'updatable') {
+            $modules = ModuleFilter::filterUpdatable($modules);
+        } elseif($filterModules == 'changed') {
+            $modules = ModuleFilter::filterRepairable($modules);
         } elseif($filterModules == 'notloaded') {
             $modules = ModuleFilter::filterNotLoaded($modules);
         }
 
-        $modules = ModuleFilter::orderByArchiveName($modules);
-        $groupedModules = ModuleFilter::groupByCategory($modules);
+        $modules = ModuleSorter::sortByArchiveName($modules);
+        $groupedModules = Category::groupByCategory($modules);
 
         $selfUpdater = new SelfUpdater();
         $checkUpdate = $selfUpdater->checkUpdate();

@@ -39,6 +39,28 @@ class ModuleFilter
         return $filteredModules;
     }
 
+    public static function filterUpdatable(array $modules): array
+    {
+        $filteredModules = [];
+        foreach($modules as $module) {
+            if (ModuleStatus::isUpdatable($module)) {
+                $filteredModules[] = $module;
+            }
+        }
+        return $filteredModules;
+    }
+
+    public static function filterRepairable(array $modules): array
+    {
+        $filteredModules = [];
+        foreach($modules as $module) {
+            if (ModuleStatus::isRepairable($module)) {
+                $filteredModules[] = $module;
+            }
+        }
+        return $filteredModules;
+    }
+
     public static function filterNotLoaded($modules)
     {
         $filteredModules = [];
@@ -153,110 +175,5 @@ class ModuleFilter
             }
         }
         return $selectedModule;
-    }
-
-    public static function groupByCategory($modules)
-    {
-        $groupedModules = [];
-        foreach($modules as $module) {
-            $category = $module->getCategory();
-            $groupedModules[$category][] = $module;
-        }
-
-        if (isset($groupedModules[''])) {
-            $groupedModules['nocategory'] = $groupedModules[''];
-            unset($groupedModules['']);
-        }
-
-        if (isset($groupedModules['library'])) {
-            $temp = $groupedModules['library'];
-            unset($groupedModules['library']);
-            $groupedModules['library'] = $temp;
-        }
-        
-        return $groupedModules;
-    }
-
-    public static function getCategoryName($category)
-    {
-        if ($category == 'import/export') {
-            return 'Import/Export';
-
-        } elseif ($category == 'persistance') {
-            return 'Datenbank Module';
-
-        } elseif ($category == 'productivity') {
-            return 'Produktivität';
-
-        } elseif ($category == 'promotion/marketing') {
-            return 'Promotion & Marketing';
-
-        } elseif ($category == 'productinfos') {
-            return 'Zusatzinformationen & Produkt-Tabs';
-
-        } elseif ($category == 'shipping') {
-            return 'Versand Module';
-
-        } elseif ($category == 'library') {
-            return 'Programmcode Bibliotheken';
-
-        } elseif ($category == 'nocategory') {
-            return 'Sonstige Module';
-
-        } elseif ($category) {
-            return $category;
-        }
-
-        return 'Sonstige Module';
-    }
-
-    public static function orderByArchiveName($modules)
-    {
-        usort($modules, function($moduleA, $moduleB) {
-            if ($moduleA->getArchiveName() < $moduleB->getArchiveName()) {
-                return -1;
-            } else {
-                return 1;
-            }
-        });
-        return $modules;
-    }
-
-    public static function orderByIsInstalled($modules)
-    {
-        usort($modules, function($moduleA, $moduleB) {
-            if ($moduleA->isInstalled()) {
-                return -1;
-            } else {
-                return 1;
-            }
-        });
-        return $modules;
-    }
-
-    public static function orderByCategory($modules)
-    {
-        usort($modules, function($moduleA, $moduleB) {
-
-            if ($moduleA->getCategory() < $moduleB->getCategory()) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-        return $modules;
-    }
-
-    public static function orderByVersion($modules)
-    {
-        usort($modules, function($moduleA, $moduleB) {
-            $semver = new Semver(new SemverParser());
-            if ($semver->lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-        return $modules;
     }
 }
