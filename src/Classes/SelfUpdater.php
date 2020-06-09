@@ -39,9 +39,11 @@ class SelfUpdater
         $newestVersionInfo = $this->getNewestVersionInfo();
         $installedVersion = $this->getInstalledVersion();
 
-        if ($this->semver->greaterThan($newestVersionInfo['version'], $installedVersion)) {
-            return true;
-        }
+        try {
+            if ($this->semver->greaterThan($newestVersionInfo['version'], $installedVersion)) {
+                return true;
+            }
+        } catch (ParseErrorException $e) {}
 
         return false;
     }
@@ -77,9 +79,11 @@ class SelfUpdater
         }
 
         foreach ($versionInfos as $versionInfo) {
-            if ($this->semver->greaterThan($versionInfo['version'], $newestVersionInfo['version'])) {
-                $newestVersionInfo = $versionInfo;
-            }
+            try {
+                if ($this->semver->greaterThan($versionInfo['version'], $newestVersionInfo['version'])) {
+                    $newestVersionInfo = $versionInfo;
+                }
+            } catch (ParseErrorException $e) {}
         }
 
         return $newestVersionInfo;
