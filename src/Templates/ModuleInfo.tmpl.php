@@ -281,11 +281,11 @@
                                     <h3>Geänderte Dateien</h3>
 
                                     <?php if ($module->isInstalled() && $module->isChanged()) { ?>
-                                        <ul style="font-size: 12px">
+                                        
                                             <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
-                                                <li><?php echo $file ?><span style="color: #bbbbbb">: <?php echo $mode ?></span></li>
+                                                <?php echo $file ?><span style="color: #bbbbbb">: <?php echo $mode ?></span>
+                                                <pre><code><?php echo RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher::getFileChanges($module, $file); ?></code></pre>
                                             <?php } ?>
-                                        </ul>
                                     <?php } else { ?>
                                         keine Änderungen vorhanden
                                     <?php } ?>
