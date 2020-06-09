@@ -30,10 +30,26 @@ class SemverParser
             throw new ParseErrorException('Some part of version string is empty');
         }
 
+        foreach($parts as $part) {
+            $value = (int) $part;
+            if ((string) $value !== $part) {
+                throw new ParseErrorException('Some part of version string is not a number');
+            }
+        }
+
         $version['major'] = (int) $parts[0];
         $version['minor'] = (int) $parts[1];
         $version['patch'] = (int) $parts[2];
 
         return $version;
+    }
+
+    public function isVersion(string $string): bool
+    {
+        try {
+            $version = $this->parse($string);
+            return true;
+        } catch(ParseErrorException $e) {}
+        return false;
     }
 }

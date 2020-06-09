@@ -32,6 +32,20 @@ class SemverParserTest extends TestCase
         $this->assertEquals($expectedVersion, $version);
     }
 
+    public function testCanCheckIfStringAVersion()
+    {
+        $this->assertFalse($this->parser->isVersion('a1.2.3'));
+        $this->assertFalse($this->parser->isVersion('test'));
+        $this->assertFalse($this->parser->isVersion('1.2.'));
+        $this->assertFalse($this->parser->isVersion('^1.2.3'));
+
+        $this->assertTrue($this->parser->isVersion('1.2.3'));
+        $this->assertTrue($this->parser->isVersion('99.2.3'));
+        $this->assertTrue($this->parser->isVersion('1.99.3'));
+        $this->assertTrue($this->parser->isVersion('1.2.99'));
+        $this->assertTrue($this->parser->isVersion('99.99.99'));
+    }
+
     public function testSemverThrowsParseErrorException1()
     {
         $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
