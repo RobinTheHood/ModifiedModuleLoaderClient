@@ -57,13 +57,17 @@ class ModuleHasher extends Hasher
         return $this->getChanges($hashesLoaded, $hashesCreatedA, $hashesCreatedB);
     }
 
-    public static function getFileChanges($module, $path)
+    public static function getFileChanges($module, $path, $mode = 'changed')
     {
+        if ($mode != 'changed') {
+            return '';
+        }
+
         $moduleFilePath = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $path;
         $installedFilePath = App::getShopRoot() . '/' . $path;
 
         if (file_exists($installedFilePath) && is_link($installedFilePath)) {
-            return "No line by line diff available for linked files, because they have equal content.";
+            return "No line by line diff available for linked files, because they have always equal content.";
         }
 
         $moduleFileContent = '';
