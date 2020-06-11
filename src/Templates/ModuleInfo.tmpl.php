@@ -2,10 +2,15 @@
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
 
+<?php  global $configuration; ?>
+
 <!DOCTYPE html>
 <html lang="de">
     <head>
         <?php include 'Head.tmpl.php' ?>
+        <link rel="stylesheet" href="src/Templates/Styles/github.css">
+        <script src="src/Templates/Scripts/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
     </head>
 
     <body>
@@ -294,8 +299,10 @@
                                     <?php if ($module->isInstalled() && $module->isChanged()) { ?>
                                         
                                             <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
-                                                <?php echo $file ?><span style="color: #bbbbbb">: <?php echo $mode ?></span>
-                                                <pre><code><?php echo RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher::getFileChanges($module, $file); ?></code></pre>
+                                                <?php $changes = htmlentities(RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher::getFileChanges($module, $file, $mode)); ?>
+
+                                                <div><?php echo $file ?><span style="color: #bbbbbb">: <?php echo $mode ?></span></div>
+                                                <?php if ($changes) {?><pre><code class="diff"><?php echo $changes ?></code></pre><?php }?>
                                             <?php } ?>
                                     <?php } else { ?>
                                         keine Änderungen vorhanden
