@@ -73,10 +73,7 @@ class SelfUpdater
     {
         $versionInfos = $this->getVersionInfos();
 
-        $newestVersionInfo = null;
-        if ($versionInfos) {
-            $newestVersionInfo = $versionInfos[0];
-        }
+        $newestVersionInfo = ['fileName' => '', 'version' => '0.0.0'];
 
         foreach ($versionInfos as $versionInfo) {
             try {
