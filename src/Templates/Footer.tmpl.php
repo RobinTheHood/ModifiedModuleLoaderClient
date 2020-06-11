@@ -1,6 +1,5 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
 
-<script src="src/Templates/Scripts/jquery-3.3.1.min.js"></script>
 <script src="src/Templates/Scripts/bootstrap.bundle.min.js"></script>
 <script src="src/Templates/Scripts/lightbox.js"></script>
 

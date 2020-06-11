@@ -54,7 +54,18 @@
                                 <?php } ?>
 
                                 <?php if (ModuleStatus::isRepairable($module)) { ?>
-                                    <a class="button button-warning" onclick="return confirm('Möchtest Du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&ref=moduleInfo">Änderungen verwerfen</a>
+                                    <a class="button button-warning" onclick="return confirm('Möchtest Du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&ref=moduleInfo">
+                                        <?php if ($configuration['installMode'] != 'link') {?>
+                                            Änderungen verwerfen
+                                        <?php } else { ?>
+                                            Änderungen übernehmen (Link-Mode)
+                                            <script>
+                                                $(document).ready(function() {
+                                                    $('#v-pills-files-tab').tab('show');
+                                                });
+                                            </script>
+                                        <?php } ?>
+                                    </a>
                                 <?php } ?>
 
                                 <?php if (ModuleStatus::isCompatibleLoadebale($module)) { ?>

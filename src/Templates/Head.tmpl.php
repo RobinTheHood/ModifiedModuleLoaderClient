@@ -9,3 +9,5 @@
 <link rel="stylesheet" type="text/css" href="src/Templates/Styles/style.css" media="screen" >
 
 <link href="src/Templates/Styles/lightbox.css" rel="stylesheet">
+
+<script src="src/Templates/Scripts/jquery-3.3.1.min.js"></script>
