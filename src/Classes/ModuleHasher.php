@@ -76,7 +76,12 @@ class ModuleHasher extends Hasher
             $installedFileContent = file_get_contents($installedFilePath);
         }
 
-        $differ = new \SebastianBergmann\Diff\Differ;
+        $builder = new \SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder(
+            "--- Original\n+++ New\n",  // custom header
+            true                        // show line numbers 
+        );
+
+        $differ = new \SebastianBergmann\Diff\Differ($builder);
         return $differ->diff($moduleFileContent, $installedFileContent);
     }
 }
