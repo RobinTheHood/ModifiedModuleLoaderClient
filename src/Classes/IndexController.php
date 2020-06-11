@@ -163,7 +163,9 @@ class IndexController
         }
 
         $checkUpdate = $selfUpdater->checkUpdate();
-
+        $updateCount = $_SESSION['updateCount'];
+        $repairalbeCount = $_SESSION['repairalbeCount'];
+        
         $semver = new Semver(new SemverParser);
         include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
@@ -175,6 +177,9 @@ class IndexController
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAll();
         $modules = ModuleFilter::filterNewestOrInstalledVersion($modules);
+
+        $_SESSION['updateCount'] = count(ModuleFilter::filterUpdatable($modules));
+        $_SESSION['repairalbeCount'] = count(ModuleFilter::filterRepairable($modules));
 
         $filterModules = ArrayHelper::getIfSet($_GET, 'filterModules', '');
         if ($filterModules == 'loaded') {
@@ -192,8 +197,11 @@ class IndexController
         $modules = ModuleSorter::sortByArchiveName($modules);
         $groupedModules = Category::groupByCategory($modules);
 
+        // Navigation badges
         $selfUpdater = new SelfUpdater();
         $checkUpdate = $selfUpdater->checkUpdate();
+        $updateCount = $_SESSION['updateCount'];
+        $repairalbeCount = $_SESSION['repairalbeCount'];
 
         include App::getTemplatesRoot() . '/ModuleListing.tmpl.php';
     }
@@ -211,8 +219,11 @@ class IndexController
             Redirect::redirect('/');
         }
 
+        // Navigation badges
         $selfUpdater = new SelfUpdater();
         $checkUpdate = $selfUpdater->checkUpdate();
+        $updateCount = $_SESSION['updateCount'];
+        $repairalbeCount = $_SESSION['repairalbeCount'];
 
         include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
     }
