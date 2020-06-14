@@ -11,9 +11,9 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
 
 class ModuleFilter
 {
@@ -93,8 +93,8 @@ class ModuleFilter
                     continue;
                 }
 
-                $semver = new Semver(new SemverParser());
-                if ($semver->lessThan($module->getVersion(), $filteredModule->getVersion())) {
+                $comparator = new Comparator(new Parser());
+                if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
                 }
@@ -127,8 +127,8 @@ class ModuleFilter
                     break;
                 }
 
-                $semver = new Semver(new SemverParser());
-                if ($semver->lessThan($module->getVersion(), $filteredModule->getVersion())) {
+                $comparator = new Comparator(new Parser());
+                if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
                 }
@@ -157,8 +157,8 @@ class ModuleFilter
     {
         $filteredModules = [];
         foreach($modules as $module) {
-            $semver = new Semver(new SemverParser());
-            if ($semver->satisfies($module->getVersion(), $constrain)) {
+            $comparator = new Comparator(new Parser());
+            if ($comparator->satisfies($module->getVersion(), $constrain)) {
                 $filteredModules[] = $module;
             }
         }
@@ -169,8 +169,8 @@ class ModuleFilter
     {
         $selectedModule = null;
         foreach($modules as $module) {
-            $semver = new Semver(new SemverParser());
-            if (!$selectedModule || $semver->greaterThan($module->getVersion(), $selectedModule->getVersion())) {
+            $comparator = new Comparator(new Parser());
+            if (!$selectedModule || $comparator->greaterThan($module->getVersion(), $selectedModule->getVersion())) {
                 $selectedModule = $module;
             }
         }

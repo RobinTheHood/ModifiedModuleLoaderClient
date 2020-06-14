@@ -11,8 +11,8 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Semver;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class ModuleSorter
 {
@@ -56,8 +56,8 @@ class ModuleSorter
     public static function sortByVersion($modules)
     {
         usort($modules, function($moduleA, $moduleB) {
-            $semver = new Semver(new SemverParser());
-            if ($semver->lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
+            $comparator = new Comparator(new Parser());
+            if ($comparator->lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
                 return 1;
             } else {
                 return -1;

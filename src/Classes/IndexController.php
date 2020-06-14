@@ -15,9 +15,9 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\Redirect;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
@@ -166,7 +166,7 @@ class IndexController
         $updateCount = $_SESSION['updateCount'];
         $repairalbeCount = $_SESSION['repairalbeCount'];
         
-        $semver = new Semver(new SemverParser);
+        $comparator = new Comparator(new Parser);
         include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
 

@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Semver;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class ModuleStatus
 {
@@ -115,8 +115,8 @@ class ModuleStatus
             return false;
         }
 
-        $semver = new Semver(new SemverParser());
-        if (!$semver->greaterThan($newestVersion->getVersion(), $installedVersion->getVersion())) {
+        $comparator = new Comparator(new Parser());
+        if (!$comparator->greaterThan($newestVersion->getVersion(), $installedVersion->getVersion())) {
             return false;
         }
 

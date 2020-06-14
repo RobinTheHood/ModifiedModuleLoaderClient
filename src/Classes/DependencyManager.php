@@ -13,16 +13,16 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class DependencyManager
 {
-    protected $semver;
+    protected $comparator;
 
     public function __construct()
     {
-        $this->semver = new Semver(new SemverParser());
+        $this->comparator = new Comparator(new Parser());
     }
 
     public function getInstalledModules()
@@ -71,7 +71,7 @@ class DependencyManager
     {
         $usedByEntrys = $this->getUsedByEntrys($module, $modules);
         foreach($usedByEntrys as $usedByEntry) {
-            if (!$this->semver->satisfies($module->getVersion(), $usedByEntry['requiredVersion'])) {
+            if (!$this->comparator->satisfies($module->getVersion(), $usedByEntry['requiredVersion'])) {
                 $a = $module->getArchiveName();
                 $av = $module->getVersion();
                 $b = $usedByEntry['module']->getArchiveName();
@@ -91,7 +91,7 @@ class DependencyManager
                 }
 
                 $moduleFound = true;
-                if (!$this->semver->satisfies($selectedModule->getVersion(), $version)) {
+                if (!$this->comparator->satisfies($selectedModule->getVersion(), $version)) {
                     $a = $selectedModule->getArchiveName();
                     $av = $module->getVersion();
                     debugDie("Module $a version $av can not be installed because module $archiveName version $version is required");
@@ -218,7 +218,7 @@ class DependencyManager
             return null;
         }
 
-        if ($this->semver->greaterThanOrEqualTo($localModule->getVersion(), $remoteModule->getVersion())) {
+        if ($this->comparator->greaterThanOrEqualTo($localModule->getVersion(), $remoteModule->getVersion())) {
             return $localModule;
         } else {
             return $remoteModule;
