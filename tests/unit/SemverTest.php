@@ -20,7 +20,7 @@ class SemverTest extends TestCase
 
     public function setUp()
     {
-        $this->semver = new Semver(new SemverParser);
+        $this->semver = new Semver(new SemverParser());
     }
 
     public function testSemverCanHandleGreaterThan()
