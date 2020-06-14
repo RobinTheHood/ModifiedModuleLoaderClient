@@ -12,8 +12,9 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\HttpRequest;
@@ -23,7 +24,7 @@ class SelfUpdater
 {
     private $appRoot = '';
     private $remoteUpdateServer = 'https://app.module-loader.de/Downloads/';
-    protected $semver;
+    protected $comparator;
 
     public function __construct()
     {
@@ -31,7 +32,7 @@ class SelfUpdater
         // wenn Dateien verschoben werden, die Methode App::getRoot() nicht
         // mehr richtige Ergebnisse liefert.
         $this->appRoot = App::getRoot();
-        $this->semver = new Semver(new SemverParser());
+        $this->comparator = new Comparator(new Parser());
     }
 
     public function checkUpdate()
@@ -40,7 +41,7 @@ class SelfUpdater
         $installedVersion = $this->getInstalledVersion();
 
         try {
-            if ($this->semver->greaterThan($newestVersionInfo['version'], $installedVersion)) {
+            if ($this->comparator->greaterThan($newestVersionInfo['version'], $installedVersion)) {
                 return true;
             }
         } catch (ParseErrorException $e) {}
@@ -71,13 +72,21 @@ class SelfUpdater
 
     public function getNewestVersionInfo()
     {
+        global $configuration;
+
         $versionInfos = $this->getVersionInfos();
 
-        $newestVersionInfo = ['fileName' => '', 'version' => '0.0.0'];
+        $newestVersionInfo = ['fileName' => '', 'version' => '0.0.0-alpha'];
 
         foreach ($versionInfos as $versionInfo) {
             try {
-                if ($this->semver->greaterThan($versionInfo['version'], $newestVersionInfo['version'])) {
+                $version = (new Parser)->parse($versionInfo['version']);
+
+                if ($configuration['selfUpdate'] != 'latest' && $version->getTag()) {
+                    continue;
+                }
+
+                if ($this->comparator->greaterThan($versionInfo['version'], $newestVersionInfo['version'])) {
                     $newestVersionInfo = $versionInfo;
                 }
             } catch (ParseErrorException $e) {}

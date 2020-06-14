@@ -2,10 +2,11 @@
 $configuration = [
     'username' => 'root',
     'password' => 'root',
+    'accessToken' => '',
 
     'modulesLocalDir' => 'Modules',
-    'installMode' => 'copy',
+    'remoteAddress' => 'https://app.module-loader.de/api.php',
 
-    'accessToken' => '',
-    'remoteAddress' => 'https://app.module-loader.de/api.php'
+    'installMode' => 'copy',
+    'selfUpdate' => 'stable'
 ];
