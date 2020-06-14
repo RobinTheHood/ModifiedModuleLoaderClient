@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Semver;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\TagComparator;
 
 class Comparator
 {
