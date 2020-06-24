@@ -153,6 +153,30 @@ class ModuleFilter
         return $filteredModules;
     }
 
+    public static function filterByVersion($modules, $version)
+    {
+        $filteredModules = [];
+        foreach($modules as $module) {
+            if ($module->getVersion() == $version) {
+                $filteredModules[] = $module;
+            }
+        }
+        return $filteredModules;
+    }
+
+    public static function getByArchiveNameAndVersion($modules, $archiveName, $version)
+    {
+        foreach ($modules as $module) {
+            if ($module->getArchiveName() != $archiveName) {
+                continue;
+            }
+
+            if ($module->getVersion() == $version) {
+                return $module;
+            }
+        }
+    }
+
     public static function filterByVersionConstrain($modules, $constrain)
     {
         $filteredModules = [];
