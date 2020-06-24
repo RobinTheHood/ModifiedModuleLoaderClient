@@ -104,6 +104,14 @@ class ModuleStatus
 
     public static function isUpdatable(Module $module): bool
     {
+        if ($module->isRemote()) {
+            return false;
+        }
+
+        if (!$module->isInstalled()) {
+            return false;
+        }
+
         $installedVersion = $module->getInstalledVersion();
         $newestVersion = $module->getNewestVersion();
 
