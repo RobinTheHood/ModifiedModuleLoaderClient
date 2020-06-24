@@ -241,7 +241,12 @@ class Module extends ModuleInfo
         return true;
     }
 
-    public function isCompatible()
+    /**
+     * Checks whether this module is compatible with the installed version of modified.
+     * 
+     * @return bool Returns true if the module is compatible, otherwise false.
+     */
+    public function isCompatible(): bool
     {
         $installedVersion = ShopInfo::getModifiedVersion();
         $versions = $this->getModifiedCompatibility();
