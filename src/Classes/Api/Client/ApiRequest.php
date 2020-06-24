@@ -59,4 +59,21 @@ class ApiRequest extends ApiBaseRequest
             }
         ');
     }
+
+    public function buildConditionString($conditions): string
+    {
+        $conditionStr = '';
+        foreach ($conditions as $name => $value) {
+            if ($conditionStr) {
+                $conditionStr .= ', ';
+            }
+            $conditionStr .= $name . ': "' . $value . '"';
+        }
+
+        if ($conditionStr) {
+            $conditionStr = '(' . $conditionStr . ')';
+        }
+
+        return $conditionStr;
+    }
 }
