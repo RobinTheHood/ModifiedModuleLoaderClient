@@ -11,7 +11,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Api\Exceptions\UrlNotExistsApiExcept
 class RemoteModuleLoader
 {
     private static $moduleLoader = null;
-    private $modules;
+    
+    private $cachedModules;
 
     public static function getModuleLoader()
     {
@@ -21,47 +22,71 @@ class RemoteModuleLoader
         return self::$moduleLoader;
     }
 
-    public function loadAll()
+    public function loadAllVersions(): array
     {
-        if (!isset($this->modules)) {
-            $apiRequest = new ApiRequest();
-            $result = $apiRequest->getAllModules();
-
-            if (!ArrayHelper::getIfSet($result, 'content')) {
-                return [];
-            }
-
-            $modules = [];
-            foreach($result['content'] as $moduleArray) {
-                $module = new Module();
-                $module->loadFromArray($moduleArray);
-                $modules[] = $module;
-            }
-
-            $this->modules = $modules;
-        }
-
-        return $this->modules;
-    }
-
-    public function loadAllByArchiveName($archiveName)
-    {
-        $modules = $this->loadAll();
-        $modules = ModuleFilter::filterByArchiveName($modules, $archiveName);
+        $apiRequest = new ApiRequest();
+        $result = $apiRequest->getAllModuleVersions();
+        $modules = $this->convertResultToModules($result);
         return $modules;
     }
 
-    public function loadByArchiveName($archiveName, $version = null)
+    /**
+     * Liefert alle aktuellsten entfernten Module
+     */
+    public function loadAllLatestVersions(): array
     {
-        $modules = $this->loadAllByArchiveName($archiveName);
-
-        if (!$version) {
-            $module = ModuleFilter::getNewestVersion($modules);
-        } else {
-            $modules = ModuleFilter::filterByVersionConstrain($modules, $version);
-            $module = ModuleFilter::getNewestVersion($modules);
+        if (isset($this->cachedModules)) {
+            return $this->cachedModules;
         }
 
-        return $module;
+        $apiRequest = new ApiRequest();
+        $result = $apiRequest->getModules(['filter' => 'latestVersion']);
+        $modules = $this->convertResultToModules($result);
+
+        $this->cachedModules = $modules;
+        return $this->cachedModules;
+    }
+
+
+    public function loadAllVersionsByArchiveName(string $archiveName): array
+    {
+        $apiRequest = new ApiRequest();
+        $result = $apiRequest->getModules(['archiveName' => $archiveName]);
+        $modules = $this->convertResultToModules($result);
+        return $modules;
+    }
+
+    public function loadLatestVersionByArchiveName(string $archiveName): ?Module
+    {
+        $apiRequest = new ApiRequest();
+        $result = $apiRequest->getModules(['filter' => 'latestVersion', 'archiveName' => $archiveName]);
+        $modules = $this->convertResultToModules($result);
+        return ArrayHelper::getIfSet($modules, 0, null);
+    }
+
+
+    public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
+    {
+        $apiRequest = new ApiRequest();
+        $result = $apiRequest->getModules(['archiveName' => $archiveName, 'version' => $version]);
+        $modules = $this->convertResultToModules($result);
+        return ArrayHelper::getIfSet($modules, 0, null);
+    }
+
+
+    public function convertResultToModules($result)
+    {
+        if (!ArrayHelper::getIfSet($result, 'content')) {
+            return [];
+        }
+
+        $modules = [];
+        foreach($result['content'] as $moduleArray) {
+            $module = new Module();
+            $module->loadFromArray($moduleArray);
+            $modules[] = $module;
+        }
+
+        return $modules;
     }
 }

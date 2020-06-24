@@ -6,7 +6,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 class ModuleLoader
 {
     private static $moduleLoader = null;
-    private $modules;
+    private $cachedModules;
 
     public static function getModuleLoader()
     {
@@ -16,40 +16,69 @@ class ModuleLoader
         return self::$moduleLoader;
     }
 
-    public function loadAll()
+
+    public function loadAllVersionsWithLatestRemote()
     {
-        if (!isset($this->modules)) {
-            $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-            $remoteModules = $remoteModuleLoader->loadAll();
-
-            $localModuleLoader = LocalModuleLoader::getModuleLoader();
-            $localModules = $localModuleLoader->loadAll();
-
-            $modules = array_merge($localModules, $remoteModules);
-            $modules = ModuleFilter::filterValid($modules);
-            $this->modules = $modules;
+        if (isset($this->cachedModules)) {
+            return $this->cachedModules;
         }
 
-        return $this->modules;
+        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
+        $remoteModules = $remoteModuleLoader->loadAllLatestVersions();
+
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $localModules = $localModuleLoader->loadAllVersions();
+
+        $modules = array_merge($localModules, $remoteModules);
+        $modules = ModuleFilter::filterValid($modules);
+        $this->cachedModules = $modules;
+
+        return $this->cachedModules;
     }
 
-    public function loadAllByArchiveName($archiveName)
+    public function loadAllVersionsByArchiveName($archiveName)
     {
-        $modules = $this->loadAll();
-        $modules = ModuleFilter::filterByArchiveName($modules, $archiveName);
+        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
+        $remoteModules = $remoteModuleLoader->loadAllVersionsByArchiveName($archiveName);
+
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
+
+        $modules = array_merge($localModules, $remoteModules);
+        $modules = ModuleFilter::filterValid($modules);
+
         return $modules;
     }
 
-    public function loadByArchiveName($archiveName, $version = null)
+    public function loadAllVersionsByArchiveNameWithLatestRemote($archiveName)
     {
-        $moduleLoader = LocalModuleLoader::getModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
+        $remoteModule = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
 
-        if (!$module) {
-            $moduleLoader = RemoteModuleLoader::getModuleLoader();
-            $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
+
+        $modules = $localModules;
+        if ($remoteModule) {
+            $modules[] = $remoteModule;
         }
 
+        $modules = ModuleFilter::filterValid($modules);
+        //$modules = ModuleFilter::filterByArchiveName($modules, $archiveName);
+        return $modules;
+    }
+
+    public function loadByArchiveNameAndVersion($archiveName, $version)
+    {
+        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+
+        if ($module) {
+            return $module;
+        }
+
+        $moduleLoader = RemoteModuleLoader::getModuleLoader();
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
         return $module;
     }
 }

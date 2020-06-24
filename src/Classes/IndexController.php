@@ -179,9 +179,9 @@ class IndexController
         $this->checkAccessRight();
 
         $moduleLoader = ModuleLoader::getModuleLoader();
-        $modules = $moduleLoader->loadAll();
+        $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
         $modules = ModuleFilter::filterNewestOrInstalledVersion($modules);
-
+        
         $_SESSION['updateCount'] = count(ModuleFilter::filterUpdatable($modules));
         $_SESSION['repairalbeCount'] = count(ModuleFilter::filterRepairable($modules));
 
@@ -215,8 +215,14 @@ class IndexController
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', null);
         $version = ArrayHelper::getIfSet($_GET, 'version', null);
 
-        $moduleLoader = ModuleLoader::getModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        if ($version) {
+            $moduleLoader = ModuleLoader::getModuleLoader();
+            $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+        } else {
+            $moduleLoader = ModuleLoader::getModuleLoader();
+            $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($archiveName);
+            $module = ModuleFilter::getNewestVersion($modules);
+        }
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
@@ -239,7 +245,7 @@ class IndexController
         $data = ArrayHelper::getIfSet($_GET, 'data', null);
 
         $moduleLoader = ModuleLoader::getModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if ($data == 'installationMd') {
             echo $module->getInstallationMd();
@@ -258,7 +264,7 @@ class IndexController
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
 
         $moduleLoader = new LocalModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
@@ -281,7 +287,7 @@ class IndexController
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
 
         $moduleLoader = new LocalModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
@@ -300,7 +306,7 @@ class IndexController
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
 
         $moduleLoader = new LocalModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
@@ -327,7 +333,7 @@ class IndexController
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
 
         $moduleLoader = RemoteModuleLoader::getModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
@@ -354,7 +360,7 @@ class IndexController
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
 
         $moduleLoader = RemoteModuleLoader::getModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
@@ -371,7 +377,7 @@ class IndexController
         }
 
         $moduleLoader = new LocalModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         $moduleInstaller = new ModuleInstaller();
         $moduleInstaller->install($module);
@@ -388,7 +394,7 @@ class IndexController
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
 
         $moduleLoader = new LocalModuleLoader();
-        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);

@@ -133,7 +133,7 @@ class ModuleInstaller
     public function createAutoloadFile()
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $localModules = $localModuleLoader->loadAll();
+        $localModules = $localModuleLoader->loadAllVersions();
         $installedLocalModules = ModuleFilter::filterLoaded($localModules);
 
         $namespaceMapping = '';
@@ -197,7 +197,7 @@ class ModuleInstaller
         // Da nach $newModule->pull() das Modul noch nicht lokal inistailisiert
         // sein kann, wird es noch einmal geladen.
         $moduleLoader = new LocalModuleLoader();
-        $newModule = $moduleLoader->loadByArchiveName($newModule->getArchiveName(), $newModule->getVersion());
+        $newModule = $moduleLoader->loadByArchiveNameAndVersion($newModule->getArchiveName(), $newModule->getVersion());
 
         if (!$newModule) {
             return false;

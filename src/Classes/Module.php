@@ -224,7 +224,7 @@ class Module extends ModuleInfo
     {
         if ($this->isRemote()) {
             $localModuleLoader = LocalModuleLoader::getModuleLoader();
-            $localModules = $localModuleLoader->loadAll();
+            $localModules = $localModuleLoader->loadAllVersions();
 
             foreach($localModules as $module) {
                 if ($module->getArchiveName() != $this->getArchiveName()) {
@@ -372,7 +372,7 @@ class Module extends ModuleInfo
 
     public function getInstalledVersion()
     {
-        $modules = $this->getVersions();
+        $modules = $this->getLocalVersions();
         $modules = ModuleFilter::filterInstalled($modules);
 
         if(isset($modules[0])) {
@@ -389,10 +389,28 @@ class Module extends ModuleInfo
         return $module;
     }
 
+    /**
+     * Retruns a array of modules.
+     * 
+     * @return array Returns a array of modules.
+     */
     public function getVersions()
     {
         $moduleLoader = ModuleLoader::getModuleLoader();
-        $modules = $moduleLoader->loadAllByArchiveName($this->getArchiveName());
+        $modules = $moduleLoader->loadAllVersionsByArchiveName($this->getArchiveName());
+        $modules = ModuleSorter::sortByVersion($modules);
+        return $modules;
+    }
+
+    /**
+     * Retruns a array of local modules.
+     * 
+     * @return array Returns a array of local modules.
+     */
+    public function getLocalVersions()
+    {
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $modules = $localModuleLoader->loadAllVersionsByArchiveName($this->getArchiveName());
         $modules = ModuleSorter::sortByVersion($modules);
         return $modules;
     }

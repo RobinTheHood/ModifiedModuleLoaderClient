@@ -28,7 +28,7 @@ class DependencyManager
     public function getInstalledModules()
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $modules = $localModuleLoader->loadAll();
+        $modules = $localModuleLoader->loadAllVersions();
         $installedModules = ModuleFilter::filterInstalled($modules);
         return $installedModules;
     }
@@ -197,13 +197,14 @@ class DependencyManager
         return $requireModulesTree;
     }
 
-    public function loadModuleByArchiveName($archiveName, $version)
+    public function loadModuleByArchiveName($archiveName, $versionConstraint)
     {
         $localModuleLoader = new LocalModuleLoader();
-        $localModule = $localModuleLoader->loadByArchiveName($archiveName, $version);
+        $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
+        $localModule = ModuleFilter::getNewestVersion($localModules);
 
         $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-        $remoteModule = $remoteModuleLoader->loadByArchiveName($archiveName, $version);
+        $remoteModule = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
 
         if ($localModule && !$remoteModule) {
             return $localModule;

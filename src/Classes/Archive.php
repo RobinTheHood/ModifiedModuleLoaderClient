@@ -82,7 +82,7 @@ class Archive
     public function tarArchive()
     {
         $localModuleLoader = new LocalModuleLoader();
-        $module = $localModuleLoader->loadByArchiveName($this->getArchiveName(), $this->getVersion());
+        $module = $localModuleLoader->loadByArchiveNameAndVersion($this->getArchiveName(), $this->getVersion());
 
         if (!$module) {
             return false;

@@ -20,21 +20,13 @@ class ApiRequest extends ApiBaseRequest
         $this->setAccessToken($configuration['accessToken']);
     }
 
-    public function getAllModules()
+    public function getModules($conditions)
     {
-        return $this->sendRequest('
-            {
-                allModules {
-                }
-            }
-        ');
-    }
+        $conditionStr = $this->buildConditionString($conditions);
 
-    public function getModule($archiveName)
-    {
         return $this->sendRequest('
             {
-                Module(archiveName: "' . $archiveName . '") {
+                allModules' . $conditionStr . ' {
                 }
             }
         ');

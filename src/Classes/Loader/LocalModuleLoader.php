@@ -19,44 +19,37 @@ class LocalModuleLoader
         return self::$moduleLoader;
     }
 
-    public function loadAll()
+    public function loadAllVersions()
     {
-        if (!isset($this->modules)) {
-            $modules = [];
+        if (isset($this->modules)) {
+            return $this->modules;
+        }
+        
+        $moduleDirs = $this->getModuleDirs();
 
-            $moduleDirs = $this->getModuleDirs();
-
-            foreach($moduleDirs as $moduleDir) {
-                $module = new Module();
-                if ($module->load($moduleDir)) {
-                    $modules[] = $module;
-                }
+        $modules = [];
+        foreach($moduleDirs as $moduleDir) {
+            $module = new Module();
+            if ($module->load($moduleDir)) {
+                $modules[] = $module;
             }
-
-            $this->modules = $modules;
         }
 
+        $this->modules = $modules;
         return $this->modules;
     }
 
-    public function loadAllByArchiveName($archiveName)
+    public function loadAllVersionsByArchiveName($archiveName)
     {
-        $modules = $this->loadAll();
+        $modules = $this->loadAllVersions();
         $modules = ModuleFilter::filterByArchiveName($modules, $archiveName);
         return $modules;
     }
 
-    public function loadByArchiveName($archiveName, $version = null)
+    public function loadByArchiveNameAndVersion($archiveName, $version)
     {
-        $modules = $this->loadAllByArchiveName($archiveName);
-
-        if (!$version) {
-            $module = ModuleFilter::getNewestVersion($modules);
-        } else {
-            $modules = ModuleFilter::filterByVersionConstrain($modules, $version);
-            $module = ModuleFilter::getNewestVersion($modules);
-        }
-
+        $modules = $this->loadAllVersions();
+        $module = ModuleFilter::getByArchiveNameAndVersion($modules, $archiveName, $version);
         return $module;
     }
 
