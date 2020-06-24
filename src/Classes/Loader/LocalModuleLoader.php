@@ -5,7 +5,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class LocalModuleLoader
 {
