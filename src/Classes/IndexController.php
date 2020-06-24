@@ -37,6 +37,10 @@ class IndexController
                 $this->invokeModuleInfo();
                 break;
 
+            case 'lazyModuleInfo':
+                $this->invokeLazyModuleInfo();
+                break;
+
             case 'install':
                 $this->invokeInstall();
                 break;
@@ -226,6 +230,24 @@ class IndexController
         $repairalbeCount = $_SESSION['repairalbeCount'];
 
         include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
+    }
+
+    public function invokeLazyModuleInfo()
+    {
+        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', null);
+        $version = ArrayHelper::getIfSet($_GET, 'version', null);
+        $data = ArrayHelper::getIfSet($_GET, 'data', null);
+
+        $moduleLoader = ModuleLoader::getModuleLoader();
+        $module = $moduleLoader->loadByArchiveName($archiveName, $version);
+
+        if ($data == 'installationMd') {
+            echo $module->getInstallationMd();
+        } elseif ($data == 'usageMd') {
+            echo $module->getUsageMd();
+        } elseif ($data == 'changelogMd') {
+            echo $module->getChangeLogMd();
+        }
     }
 
     public function invokeInstall()

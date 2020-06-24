@@ -1,6 +1,7 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
 
 <?php  global $configuration; ?>
 
@@ -175,36 +176,24 @@
 
                                 <div class="tab-pane fade" id="v-pills-install" role="tabpanel" aria-labelledby="v-pills-install-tab">
                                     <div class="markdown">
-                                        <?php if ($module->getInstallationMd()) { ?>
-                                            <?php echo $module->getInstallationMd() ?>
-                                        <?php } elseif ($module->getInstallation()) { ?>
-                                            <?php echo $module->getInstallation() ?>
-                                        <?php } else { ?>
-                                            keine manuelle Installation notwendig
-                                        <?php } ?>
+                                        loading ...
                                     </div>
                                 </div>
+                                <?php echo LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'keine manuelle Installation notwendig'); ?>
 
                                 <div class="tab-pane fade" id="v-pills-usage" role="tabpanel" aria-labelledby="v-pills-usage-tab">
                                     <div class="markdown">
-                                        <?php if ($module->getUsageMd()) { ?>
-                                            <?php echo $module->getUsageMd() ?>
-                                        <?php } else { ?>
-                                            keine Bedienungsanleitung vorhanden
-                                        <?php } ?>
+                                        loading ...
                                     </div>
                                 </div>
+                                <?php echo LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'keine Bedienungsanleitung vorhanden'); ?>
 
                                 <div class="tab-pane fade" id="v-pills-changes" role="tabpanel" aria-labelledby="v-pills-changes-tab">
                                     <div class="markdown changelog">
-                                        <?php if ($module->getChangeLogMd()) { ?>
-                                            <?php echo $module->getChangeLogMd() ?>
-                                        <?php } else { ?>
-                                            kein Änderungsprotokoll vorhanden
-                                        <?php } ?>
-
+                                        loading ...
                                     </div>
                                 </div>
+                                <?php echo LazyLoader::loadModuleChangelog($module, '#v-pills-changes .markdown', 'kein Änderungsprotokoll vorhanden'); ?>
 
                                 <div class="tab-pane fade" id="v-pills-details" role="tabpanel" aria-labelledby="v-pills-details-tab">
                                     <div class="infos" style="margin-bottom: 40px;">
