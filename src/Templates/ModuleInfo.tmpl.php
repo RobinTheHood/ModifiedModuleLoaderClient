@@ -90,12 +90,6 @@
                                     <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
                                 <?php } ?>
 
-                                <!--
-                                <?php if (!$module->isRemote() && $module->isLoaded()) { ?>
-                                    <a class="button button-default" href="?action=downloadArchive&archiveName=<?php echo $module->getArchiveName()?>&ref=moduleInfo">Herunterladen (.tar)</a>
-                                <?php } ?>
-                                !-->
-
                                 <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
                                     <a class="button button-danger" onclick="return confirm('Möchtest Du das Modul wirklich entfernen?');" href="?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
                                 <?php } ?>
