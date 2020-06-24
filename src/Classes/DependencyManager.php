@@ -174,14 +174,14 @@ class DependencyManager
         $require = $module->getRequire();
 
         $requireModulesTree = [];
-        foreach ($require as $archiveName => $version) {
+        foreach ($require as $archiveName => $versionConstraint) {
             // $version = str_replace('^', '', $version);
             // $requireModule = $this->loadModuleByArchiveName($archiveName, $version);
-            $requireModule = $this->loadModuleByArchiveName($archiveName, $version);
+            $requireModule = $this->loadModuleByArchiveName($archiveName, $versionConstraint);
 
             if ($requireModule) {
                 $entry['module'] = $requireModule;
-                $entry['requestedVersion'] = $version;
+                $entry['requestedVersion'] = $versionConstraint;
                 $entry['selectedVersion'] = $requireModule->getVersion();
                 $entry['require'] = [];
                 $requireModules = $this->buildTreeByModuleRecursive($requireModule, ++$depth);
