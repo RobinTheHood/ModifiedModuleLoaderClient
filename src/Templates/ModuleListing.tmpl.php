@@ -36,73 +36,45 @@
 
                 <div class="modules">
                     <?php foreach($groupedModules as $category => $modules) { ?>
-                        <?php //if ($category == 'nocategory') { continue; } ?>
-
                         <h2><?php echo RobinTheHood\ModifiedModuleLoaderClient\Category::getCategoryName($category); ?></h2>
 
                         <div class="row">
-                        <?php foreach($modules as $module) { ?>
-                            <?php if ($module->getVisibility() == 'hidden') { continue; } ?>
+                            <?php foreach($modules as $module) { ?>
+                                <?php if ($module->getVisibility() == 'hidden') { continue; } ?>
 
-                            <div class="col-3 module-serach-box" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>">
-                                <div class="module-box" onclick="location.href='?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>'">
+                                <div class="col-3 module-serach-box" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>">
+                                    <div class="module-box" onclick="location.href='?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>'">
 
-                                    <div class="module-badge"></div>
+                                        <div class="module-badge"></div>
 
-                                    <div class="module-icon">
-                                        <img src="<?php echo $module->getIconUri(); ?>">
-                                    </div>
+                                        <div class="module-icon">
+                                            <img src="<?php echo $module->getIconUri(); ?>">
+                                        </div>
 
-                                    <div class="module-title">
-                                        <?php echo $module->getName(); ?>
-                                    </div>
+                                        <div class="module-title">
+                                            <?php echo $module->getName(); ?>
+                                        </div>
 
-                                    <div class="module-version">
-                                        <?php echo $module->getVersion(); ?>
-                                        <?php //echo 'visibility: ' . $module->getVisibility(); ?>
-                                        <?php //echo 'price: ' . $module->getPrice(); ?>
-                                    </div>
+                                        <div class="module-version">
+                                            <?php echo $module->getVersion(); ?>
+                                        </div>
 
-                                    <div class="module-shortdescription">
-                                        <?php echo $module->getShortDescription(); ?>
-                                    </div>
+                                        <div class="module-shortdescription">
+                                            <?php echo $module->getShortDescription(); ?>
+                                        </div>
 
-                                    <div class="module-price">
-                                        <?php
-                                            if ($module->isInstalled()) {
-                                                echo 'Installiert';
-                                            } else {
-                                                echo $module->getPriceFormated();
-                                            }
-                                        ?>
-                                    </div>
-
-                                    <div style="display: none" class="module-button-wapper">
-                                        <?php if (ModuleStatus::isCompatibleLoadebale($module)) { ?>
-                                            <!--<a class="button button-default" onclick="event.stopPropagation()" href="?action=loadRemoteModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>">Download</a>!-->
-
-                                            <a class="button button-default" onclick="event.stopPropagation()" href="?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>">Download & Install</a>
-
-                                        <?php } elseif (ModuleStatus::isRepairable($module)) { ?>
-                                            <a class="button button-warning" onclick="event.stopPropagation()" href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>">Änderungen ansehen</a>
-
-                                        <?php } elseif (ModuleStatus::isUpdatable($module)) { ?>
-                                            <a class="button button-success" onclick="event.stopPropagation()" href="?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>">Update installieren</a>
-
-                                        <?php } elseif (ModuleStatus::isUninstallable($module)) { ?>
-                                            <a class="button button-danger" onclick="event.stopPropagation()" href="?action=uninstall&archiveName=<?php echo $module->getArchiveName()?>">Deinstallieren</a>
-
-                                        <?php } elseif (ModuleStatus::isCompatibleInstallable($module)) { ?>
-                                            <a class="button button-success" onclick="event.stopPropagation()" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>">Installieren</a>
-
-                                        <?php } elseif (ModuleStatus::isUncompatible($module)) {?>
-                                            <a class="button button-warning" onclick="event.stopPropagation()" href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>">Nicht kompatibel</a>
-                                        <?php }?>
+                                        <div class="module-price">
+                                            <?php
+                                                if ($module->isInstalled()) {
+                                                    echo 'Installiert';
+                                                } else {
+                                                    echo $module->getPriceFormated();
+                                                }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        <?php } ?>
-                        <!--<div style="clear: both"></div>!-->
+                            <?php } ?>
                         </div>
                     <?php } ?>
                 </div>
