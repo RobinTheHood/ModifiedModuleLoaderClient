@@ -201,7 +201,7 @@ class DependencyManager
     {
         $localModuleLoader = new LocalModuleLoader();
         $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
-        $localModule = ModuleFilter::getNewestVersion($localModules);
+        $localModule = ModuleFilter::getLatestVersion($localModules);
 
         $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
         $remoteModule = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);

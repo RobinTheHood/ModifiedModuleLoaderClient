@@ -221,7 +221,7 @@ class IndexController
         } else {
             $moduleLoader = ModuleLoader::getModuleLoader();
             $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($archiveName);
-            $module = ModuleFilter::getNewestVersion($modules);
+            $module = ModuleFilter::getLatestVersion($modules);
         }
 
         if (!$module) {

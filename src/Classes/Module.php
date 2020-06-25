@@ -389,7 +389,7 @@ class Module extends ModuleInfo
     {
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($this->getArchiveName());
-        $module = ModuleFilter::getNewestVersion($modules);
+        $module = ModuleFilter::getLatestVersion($modules);
         return $module;
     }
 
