@@ -40,6 +40,18 @@ class IndexController
             case 'lazyModuleInfo':
                 $this->invokeLazyModuleInfo();
                 break;
+            
+            case 'lazyModuleUpdateCount':
+                $this->invokeLazyModuleUpdateCount();
+                break;
+
+            case 'lazyModuleChangeCount':
+                $this->invokeLazyModuleChangeCount();
+                break;
+
+            case 'lazySystemUpdateCount':
+                $this->invokeLazySystemUpdateCount();
+                break;
 
             case 'install':
                 $this->invokeInstall();
@@ -167,8 +179,6 @@ class IndexController
         }
 
         $checkUpdate = $selfUpdater->checkUpdate();
-        $updateCount = $_SESSION['updateCount'];
-        $repairalbeCount = $_SESSION['repairalbeCount'];
         
         $comparator = new Comparator(new Parser);
         include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
@@ -181,9 +191,6 @@ class IndexController
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
         $modules = ModuleFilter::filterNewestOrInstalledVersion($modules);
-        
-        $_SESSION['updateCount'] = count(ModuleFilter::filterUpdatable($modules));
-        $_SESSION['repairalbeCount'] = count(ModuleFilter::filterRepairable($modules));
 
         $filterModules = ArrayHelper::getIfSet($_GET, 'filterModules', '');
         if ($filterModules == 'loaded') {
@@ -200,12 +207,6 @@ class IndexController
 
         $modules = ModuleSorter::sortByArchiveName($modules);
         $groupedModules = Category::groupByCategory($modules);
-
-        // Navigation badges
-        $selfUpdater = new SelfUpdater();
-        $checkUpdate = $selfUpdater->checkUpdate();
-        $updateCount = $_SESSION['updateCount'];
-        $repairalbeCount = $_SESSION['repairalbeCount'];
 
         include App::getTemplatesRoot() . '/ModuleListing.tmpl.php';
     }
@@ -229,13 +230,32 @@ class IndexController
             Redirect::redirect('/');
         }
 
-        // Navigation badges
+        include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
+    }
+
+    public function calcModuleUpdateCount()
+    {
+        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $modules = $moduleLoader->loadAllVersions();
+        $modules = ModuleFilter::filterInstalled($modules);
+        return count(ModuleFilter::filterUpdatable($modules));
+    }
+
+    public function calcModuleChangeCount()
+    {
+        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $modules = $moduleLoader->loadAllVersions();
+        return count(ModuleFilter::filterRepairable($modules));
+    }
+
+    public function calcSystemUpdateCount()
+    {
         $selfUpdater = new SelfUpdater();
         $checkUpdate = $selfUpdater->checkUpdate();
-        $updateCount = $_SESSION['updateCount'];
-        $repairalbeCount = $_SESSION['repairalbeCount'];
-
-        include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
+        if ($checkUpdate) {
+            return 1;
+        }
+        return 0;
     }
 
     public function invokeLazyModuleInfo()
@@ -254,6 +274,33 @@ class IndexController
         } elseif ($data == 'changelogMd') {
             echo $module->getChangeLogMd();
         }
+    }
+
+    public function invokeLazyModuleUpdateCount()
+    {
+        $value = $this->calcModuleUpdateCount();
+        if ($value) {
+            echo $value;
+        }
+        die();
+    }
+
+    public function invokeLazyModuleChangeCount()
+    {
+        $value = $this->calcModuleChangeCount();
+        if ($value) {
+            echo $value;
+        }
+        die();
+    }
+
+    public function invokeLazySystemUpdateCount()
+    {
+        $value = $this->calcSystemUpdateCount();
+        if ($value) {
+            echo $value;
+        }
+        die();
     }
 
     public function invokeInstall()
