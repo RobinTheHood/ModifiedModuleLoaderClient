@@ -370,21 +370,25 @@ class Module extends ModuleInfo
         return $files;
     }
 
-    public function getInstalledVersion()
+    /**
+     * Returns a localy installed version of this module.
+     * 
+     * @return Module|null Returns a localy installed version of this module or null.
+     */
+    public function getInstalledVersion(): ?Module
     {
         $modules = $this->getLocalVersions();
         $modules = ModuleFilter::filterInstalled($modules);
-
-        if(isset($modules[0])) {
-            return $modules[0];
-        }
-
-        return null;
+        return ArrayHelper::getIfSet($modules, 0, null);
     }
 
+    /**
+     * Returns the latest version of this module.
+     */
     public function getNewestVersion()
     {
-        $modules = $this->getVersions();
+        $moduleLoader = ModuleLoader::getModuleLoader();
+        $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($this->getArchiveName());
         $module = ModuleFilter::getNewestVersion($modules);
         return $module;
     }
