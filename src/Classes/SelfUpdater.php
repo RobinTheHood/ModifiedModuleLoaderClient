@@ -24,7 +24,7 @@ class SelfUpdater
 {
     private $appRoot = '';
     private $remoteUpdateServer;
-    protected $semver;
+    protected $comparator;
 
     public function __construct()
     {
