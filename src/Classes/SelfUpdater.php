@@ -129,6 +129,7 @@ class SelfUpdater
         $tarBall = $httpRequest->sendGetRequest($remoteAddress);
 
         if (!$tarBall) {
+            die("Error: Can not download $remoteAddress file. <a href=\"?action=selfUpdate\">back</a>");
             return false;
         }
 
