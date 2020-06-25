@@ -17,6 +17,7 @@ class LazyLoader
                 $.get("' . $url . '", function( data ) {
                     if (data) {
                         $("' . $target . '").html(data);
+                        $("' . $target . '").show();
                     } else {
                         $("' . $target . '").html("' . $default . '");
                     }
@@ -41,5 +42,23 @@ class LazyLoader
     {
         $url = self::createUrl($module, 'changelogMd');
         return self::createScript($target, $url, $default);
+    }
+
+    public static function loadModuleUpdateCount($target)
+    {
+        $url = '?action=lazyModuleUpdateCount';
+        return self::createScript($target, $url, '0');
+    }
+
+    public static function loadModuleChangeCount($target)
+    {
+        $url = '?action=lazyModuleChangeCount';
+        return self::createScript($target, $url, '0');
+    }
+
+    public static function loadSystemUpdateCount($target)
+    {
+        $url = '?action=lazySystemUpdateCount';
+        return self::createScript($target, $url, '0');
     }
 }
