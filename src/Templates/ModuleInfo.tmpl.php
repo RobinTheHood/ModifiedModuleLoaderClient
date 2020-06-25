@@ -89,9 +89,10 @@
                                 <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
                                     <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
                                 
-                                <?php } elseif ($module->getInstalledVersion()) { ?>
-                                    <?php $installedModule = $module->getInstalledVersion(); ?>
-                                    <a class="button button-default" href="?action=install&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
+                                <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
+                                    <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
+                                        <a class="button button-default" href="?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
+                                    <?php } ?>
                                 <?php } ?>
 
                                 <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
