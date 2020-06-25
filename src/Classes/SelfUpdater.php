@@ -23,17 +23,20 @@ use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
 class SelfUpdater
 {
     private $appRoot = '';
-    private $remoteUpdateServer = 'https://app.module-loader.de/Downloads/';
-    protected $comparator;
+    private $remoteUpdateServer;
+    protected $semver;
 
     public function __construct()
     {
         // appRoot wird in die Variable ausgelagert, da während der Installation,
         // wenn Dateien verschoben werden, die Methode App::getRoot() nicht
         // mehr richtige Ergebnisse liefert.
+        global $configuration;
+        $this->remoteUpdateServer = str_replace('/api.php', '/Downloads/', $configuration['remoteAddress']);
         $this->appRoot = App::getRoot();
         $this->comparator = new Comparator(new Parser());
     }
+
 
     public function checkUpdate()
     {
