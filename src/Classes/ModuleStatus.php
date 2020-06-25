@@ -83,6 +83,18 @@ class ModuleStatus
             $module->isCompatible();
     }
 
+    public static function isCompatibleLoadebaleAndInstallable(Module $module): bool
+    {
+        return
+            $module->isLoadable() &&
+            $module->isRemote() &&
+            $module->isCompatible() &&
+
+            !$module->isLoaded() &&
+            !$module->isInstalled() &&
+            !$module->getInstalledVersion();
+    }
+
     public static function isUncompatibleInstallable(Module $module): bool
     {
         return

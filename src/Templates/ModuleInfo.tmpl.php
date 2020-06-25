@@ -74,7 +74,7 @@
                                     </a>
                                 <?php } ?>
 
-                                <?php if (ModuleStatus::isCompatibleLoadebale($module) && ModuleStatus::isCompatibleInstallable($module)) { ?>
+                                <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
                                     <a class="button button-default" href="?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">Download & Install</a>
 
                                 <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
