@@ -40,4 +40,10 @@ mkdir ./build/ModifiedModuleLoaderClient/Archives
 # Create tar file
 COPYFILE_DISABLE=1 tar -C ./build/ -cf ./build/ModifiedModuleLoaderClient.tar ModifiedModuleLoaderClient/
 
+# Add Version
+VERSION=$(php -r "echo json_decode(file_get_contents('build/ModifiedModuleLoaderClient/config/version.json'))->version;")
+echo "${VERSION}"
+
+cp ./build/ModifiedModuleLoaderClient.tar ./build/ModifiedModuleLoaderClient_v${VERSION}.tar
+
 rm -rf ./build/ModifiedModuleLoaderClient
