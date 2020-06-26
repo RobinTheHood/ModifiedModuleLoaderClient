@@ -52,10 +52,15 @@ body {
     margin-right: auto;
     margin-bottom: 20px;
     width: 58px;
+    height: 58px;
+    background: #eeeeee;
+    border-radius: 10px;
 }
 
 .modules .module-icon img {
     width: 58px;
+    height: 58px;
+    background: #ffffff;
 }
 
 .off-modules .module-badge {
