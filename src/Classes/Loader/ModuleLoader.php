@@ -1,6 +1,17 @@
 <?php
+
+/*
+ * This file is part of MMLC - ModifiedModuleLoaderClient.
+ *
+ * (c) Robin Wieschendorf <mail@robinwieschendorf.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 
 class ModuleLoader
@@ -8,7 +19,7 @@ class ModuleLoader
     private static $moduleLoader = null;
     private $cachedModules;
 
-    public static function getModuleLoader()
+    public static function getModuleLoader(): ModuleLoader
     {
         if (!self::$moduleLoader) {
             self::$moduleLoader = new ModuleLoader();
@@ -16,8 +27,12 @@ class ModuleLoader
         return self::$moduleLoader;
     }
 
-
-    public function loadAllVersionsWithLatestRemote()
+    /**
+     * Loads all local module version plus all latest remote module version.
+     * 
+     * @return Modules[] Returns a array of module versions.
+     */
+    public function loadAllVersionsWithLatestRemote(): array
     {
         if (isset($this->cachedModules)) {
             return $this->cachedModules;
@@ -36,7 +51,12 @@ class ModuleLoader
         return $this->cachedModules;
     }
 
-    public function loadAllVersionsByArchiveName($archiveName)
+    /**
+     * Loads all local module versions plus all remote module versions by a given archiveName.
+     * 
+     * @return Modules[] Returns a array of module versions.
+     */
+    public function loadAllVersionsByArchiveName(string $archiveName): array
     {
         $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
         $remoteModules = $remoteModuleLoader->loadAllVersionsByArchiveName($archiveName);
@@ -50,7 +70,12 @@ class ModuleLoader
         return $modules;
     }
 
-    public function loadAllVersionsByArchiveNameWithLatestRemote($archiveName)
+    /**
+     * Loads all local module versions plus the latest remote module version by a given archiveName.
+     * 
+     * @return Modules[] Returns a array of module versions.
+     */
+    public function loadAllVersionsByArchiveNameWithLatestRemote(string $archiveName): array
     {
         $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
         $remoteModule = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
@@ -64,11 +89,16 @@ class ModuleLoader
         }
 
         $modules = ModuleFilter::filterValid($modules);
-        //$modules = ModuleFilter::filterByArchiveName($modules, $archiveName);
         return $modules;
     }
 
-    public function loadByArchiveNameAndVersion($archiveName, $version)
+    /**
+     * Loads a module version by a given archiveName and version from local or remote. If no local module is found, 
+     * a remote module is searched for.
+     * 
+     * @return Module|null Returns a module version or null.
+     */
+    public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
     {
         $moduleLoader = LocalModuleLoader::getModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);

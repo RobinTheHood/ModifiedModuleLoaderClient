@@ -1,4 +1,14 @@
 <?php
+
+/*
+ * This file is part of MMLC - ModifiedModuleLoaderClient.
+ *
+ * (c) Robin Wieschendorf <mail@robinwieschendorf.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
@@ -11,7 +21,7 @@ class LocalModuleLoader
     private static $moduleLoader = null;
     private $modules;
 
-    public static function getModuleLoader()
+    public static function getModuleLoader(): LocalModuleLoader
     {
         if (!self::$moduleLoader) {
             self::$moduleLoader = new LocalModuleLoader();
@@ -19,7 +29,12 @@ class LocalModuleLoader
         return self::$moduleLoader;
     }
 
-    public function loadAllVersions()
+    /**
+     * Loads all local module versions.
+     * 
+     * @return Modules[] Returns a array of module versions.
+     */
+    public function loadAllVersions(): array
     {
         if (isset($this->modules)) {
             return $this->modules;
@@ -39,14 +54,24 @@ class LocalModuleLoader
         return $this->modules;
     }
 
-    public function loadAllVersionsByArchiveName($archiveName)
+    /**
+     * Loads all local module versions by a given archiveName.
+     * 
+     * @return Modules[] Returns a array of module versions.
+     */
+    public function loadAllVersionsByArchiveName(string $archiveName): array
     {
         $modules = $this->loadAllVersions();
         $modules = ModuleFilter::filterByArchiveName($modules, $archiveName);
         return $modules;
     }
 
-    public function loadByArchiveNameAndVersion($archiveName, $version)
+    /**
+     * Loads a local module version by a given archiveName and version.
+     * 
+     * @return Module|null Returns a module version or null.
+     */
+    public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
     {
         $modules = $this->loadAllVersions();
         $module = ModuleFilter::getByArchiveNameAndVersion($modules, $archiveName, $version);
