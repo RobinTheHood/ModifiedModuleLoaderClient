@@ -39,7 +39,7 @@ class RemoteModuleLoader
     public function loadAllVersions(): array
     {
         $apiRequest = new ApiRequest();
-        $result = $apiRequest->getAllModuleVersions();
+        $result = $apiRequest->getModules([]);
         $modules = $this->convertResultToModules($result);
         return $modules;
     }
