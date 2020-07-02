@@ -426,6 +426,11 @@ class IndexController
         $moduleLoader = new LocalModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
+        if (!$module) {
+            $this->addModuleNotFoundNotification($archiveName, $version);
+            Redirect::redirect('/');
+        }
+
         $moduleInstaller = new ModuleInstaller();
         $moduleInstaller->install($module);
         $moduleInstaller->installDependencies($module);
