@@ -31,6 +31,7 @@ class ModuleInfo
     protected $installation;
     protected $visibility;
     protected $price;
+    protected $autoload;
 
     public function getName()
     {
