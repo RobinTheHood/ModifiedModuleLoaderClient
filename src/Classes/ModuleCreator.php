@@ -32,14 +32,14 @@ class ModuleCreator
         // MODULE_MY_FIRST_MODULE
         $moduleConstName = str_replace('-', '_', strtoupper('MODULE_' . $vendorPrefix . '_' . $moduleName));
 
-        $this->createFolders($archiveName, $fileName);
+        $this->createFolders($archiveName, $fileName, $vendorName, $moduleNameCamelCase);
         $this->createModuleInfoJsonFile($archiveName, $moduleName);
         $this->createSystemModuleFile($archiveName, $fileName, $className, $moduleConstName);
         $this->createSystemModuleLanguageDeFile($archiveName, $fileName, $moduleConstName, $vendorName);
         $this->createSystemModuleLanguageEnFile($archiveName, $fileName, $moduleConstName, $vendorName);
     }
 
-    public function createFolders($archiveName, $fileName)
+    public function createFolders($archiveName, $fileName, $vendorName, $moduleNameCamelCase)
     {
         @mkdir(App::getModulesRoot() . '/' . $archiveName, 0777, true);
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/docs');
