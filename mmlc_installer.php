@@ -13,11 +13,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-define('VERSION', '0.3.0');
+define('VERSION', '0.4.0');
 
 class Installer
 {
     const REMOTE_ADDRESS = 'https://app.module-loader.de/Downloads/ModifiedModuleLoaderClient.tar';
+    const REQUIRED_PHP_VERSION = '7.1.12';
 
     public function invoke()
     {
@@ -32,7 +33,22 @@ class Installer
 
     public function invokeIndex()
     {
-        if (!$this->isInstalled()) {
+        $systemCheck = true;
+
+        $errors = [];
+        if (ini_get('allow_url_fopen')) {
+            $systemCheck = false;
+            $errors[] = 'No connection to server. <strong>allow_url_fopen</strong> has to be activated in php.ini.';
+        }
+
+        if (!version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
+            $systemCheck = false;
+            $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
+        }
+
+        if (!$systemCheck) {
+            echo Template::showSystemCheck($errors);
+        } else if (!$this->isInstalled()) {
             echo Template::showInstall();
         } else {
             echo Template::showInstalled();
@@ -153,6 +169,24 @@ class Template
                         <input type="submit" value="Install now">
                     </div>
                 </form>
+            </div>
+        ';
+    }
+
+    public static function showSystemCheck($errors)
+    {
+        $errorStr = '';
+        foreach ($errors as $error) {
+            $errorStr .= "<div>$error</div><br>"; 
+        }
+
+        return
+            self::style() . '
+            <div style="text-align: center">
+                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                <div>ModifiedModuleLoaderClient system check faild.</div>
+                <br>
+                <div style="color: red">' . $errorStr . '</div>
             </div>
         ';
     }
