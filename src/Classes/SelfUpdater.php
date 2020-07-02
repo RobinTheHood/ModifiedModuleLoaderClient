@@ -120,7 +120,7 @@ class SelfUpdater
         $this->download($installFileName);
         $this->backup($installFileName);
         $this->untar($installFileName);
-        $this->install($installFileName);
+        $this->install();
         $this->setupConfig();
     }
 
