@@ -25,7 +25,7 @@ class ShopInfo
 
         $fileStr = file_get_contents($path);
         $pos = strpos($fileStr, 'MOD_');
-        $version = substr($fileStr, $pos + 4, 7);
+        $version = substr($fileStr, (int) $pos + 4, 7);
         return $version;
     }
 
