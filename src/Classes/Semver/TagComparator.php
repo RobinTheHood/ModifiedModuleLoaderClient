@@ -59,6 +59,7 @@ class TagComparator
         if ($string1 === $string2) {
             return true;
         }
+        return false;
     }
 
     public function greaterThan(string $string1, string $string2): bool
