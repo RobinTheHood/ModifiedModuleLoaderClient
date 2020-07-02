@@ -82,12 +82,13 @@ class Parser
     public function deletePrefix(string $string, array $prefixes = ['v']): string
     {
         foreach ($prefixes as $prefix) {
-            if (substr($string, 0, strlen($prefix)) !== $prefix) {
-                return $string;
+            $prefixLen = strlen($prefix);
+            if (substr($string, 0, $prefixLen) === $prefix) {
+                return substr($string, $prefixLen);
             }
-
-            return substr($string, strlen($prefix));
         }
+
+        return $string;
     }
 
     public function isVersion(string $string): bool
