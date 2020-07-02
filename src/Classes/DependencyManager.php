@@ -76,7 +76,7 @@ class DependencyManager
                 $av = $module->getVersion();
                 $b = $usedByEntry['module']->getArchiveName();
                 $bv = $usedByEntry['requiredVersion'];
-                debugDie("Module $a version $av can not be installed because module $b requires version $bv");
+                die("Module $a version $av can not be installed because module $b requires version $bv");
             }
         }
     }
@@ -94,12 +94,12 @@ class DependencyManager
                 if (!$this->comparator->satisfies($selectedModule->getVersion(), $version)) {
                     $a = $selectedModule->getArchiveName();
                     $av = $module->getVersion();
-                    debugDie("Module $a version $av can not be installed because module $archiveName version $version is required");
+                    die("Module $a version $av can not be installed because module $archiveName version $version is required");
                 }
             }
 
             if (!$moduleFound) {
-                debugDie("Module $archiveName version $version can not be installed because module was not found.");
+                die("Module $archiveName version $version can not be installed because module was not found.");
             }
         }
     }
@@ -179,6 +179,7 @@ class DependencyManager
             // $requireModule = $this->loadModuleByArchiveName($archiveName, $version);
             $requireModule = $this->loadModuleByArchiveName($archiveName, $versionConstraint);
 
+            $entry = [];
             if ($requireModule) {
                 $entry['module'] = $requireModule;
                 $entry['requestedVersion'] = $versionConstraint;
