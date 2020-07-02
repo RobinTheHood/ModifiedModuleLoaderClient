@@ -32,7 +32,7 @@ class LocalModuleLoader
     /**
      * Loads all local module versions.
      * 
-     * @return Modules[] Returns a array of module versions.
+     * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersions(): array
     {
@@ -57,7 +57,7 @@ class LocalModuleLoader
     /**
      * Loads all local module versions by a given archiveName.
      * 
-     * @return Modules[] Returns a array of module versions.
+     * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersionsByArchiveName(string $archiveName): array
     {

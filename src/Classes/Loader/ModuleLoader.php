@@ -30,7 +30,7 @@ class ModuleLoader
     /**
      * Loads all local module version plus all latest remote module version.
      * 
-     * @return Modules[] Returns a array of module versions.
+     * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersionsWithLatestRemote(): array
     {
@@ -54,7 +54,7 @@ class ModuleLoader
     /**
      * Loads all local module versions plus all remote module versions by a given archiveName.
      * 
-     * @return Modules[] Returns a array of module versions.
+     * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersionsByArchiveName(string $archiveName): array
     {
@@ -73,7 +73,7 @@ class ModuleLoader
     /**
      * Loads all local module versions plus the latest remote module version by a given archiveName.
      * 
-     * @return Modules[] Returns a array of module versions.
+     * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersionsByArchiveNameWithLatestRemote(string $archiveName): array
     {
