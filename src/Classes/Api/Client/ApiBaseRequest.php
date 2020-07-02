@@ -39,7 +39,9 @@ class ApiBaseRequest extends HttpRequest
             ]);
         }
 
-        $data['query'] = $query;
+        $data = [
+            'query' => $query
+        ];
         $this->createAccess($data);
 
         $content = $this->sendPostRequest($this->url, $data);
