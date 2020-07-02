@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.12.1@9b860214d58c48b5cbe99bdb17914d0eb723c9cd">
+  <file src="src/Classes/DependencyManager.php">
+    <PossiblyNullReference occurrences="1">
+      <code>getVersion</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="src/Classes/IndexController.php">
+    <PossiblyNullReference occurrences="8">
+      <code>getInstallationMd</code>
+      <code>getUsageMd</code>
+      <code>getChangeLogMd</code>
+      <code>getVersion</code>
+      <code>getVersion</code>
+      <code>getNewestVersion</code>
+      <code>getVersion</code>
+      <code>getVersion</code>
+    </PossiblyNullReference>
+  </file>
+</files>
