@@ -30,6 +30,8 @@ rm ./build/ModifiedModuleLoaderClient/.gitignore
 rm ./build/ModifiedModuleLoaderClient/composer.json
 rm ./build/ModifiedModuleLoaderClient/composer.lock
 rm ./build/ModifiedModuleLoaderClient/phpunit.xml
+rm ./build/ModifiedModuleLoaderClient/psalm.xml
+rm ./build/ModifiedModuleLoaderClient/psalm-baseline.xml
 rm ./build/ModifiedModuleLoaderClient/mmlc_installer.php
 rm ./build/ModifiedModuleLoaderClient/scripts/buildClient.sh
 
