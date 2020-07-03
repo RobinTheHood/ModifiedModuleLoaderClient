@@ -36,12 +36,12 @@ class Installer
         $systemCheck = true;
 
         $errors = [];
-        if (ini_get('allow_url_fopen')) {
+        if (!ini_get('allow_url_fopen')) {
             $systemCheck = false;
             $errors[] = 'No connection to server. <strong>allow_url_fopen</strong> has to be activated in php.ini.';
         }
 
-        if (!version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
+        if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
             $systemCheck = false;
             $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
         }
