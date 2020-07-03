@@ -22,8 +22,19 @@ use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
 
 class SelfUpdater
 {
+    /**
+     * @var string
+     */
     private $appRoot = '';
+
+    /**
+     * @var string
+     */
     private $remoteUpdateServer;
+
+    /**
+     * @var Comparator
+     */
     protected $comparator;
 
     public function __construct()
@@ -38,7 +49,7 @@ class SelfUpdater
     }
 
 
-    public function checkUpdate()
+    public function checkUpdate(): bool
     {
         $newestVersionInfo = $this->getNewestVersionInfo();
         $installedVersion = $this->getInstalledVersion();
@@ -52,7 +63,7 @@ class SelfUpdater
         return false;
     }
 
-    public function getVersionInfos()
+    public function getVersionInfos(): array
     {
         $apiRequest = new ApiRequest();
         $result = $apiRequest->getAllVersions();
@@ -64,16 +75,20 @@ class SelfUpdater
         return $result['content'];
     }
 
-    public function getInstalledVersion()
+    public function getInstalledVersion(): string
     {
         $json = file_get_contents($this->appRoot . '/config/version.json');
         $version = json_decode($json);
         if ($version) {
             return $version->version;
         }
+        return ''; // Better throw an exception
     }
 
-    public function getNewestVersionInfo()
+    /**
+     * @return array<string, string> Returns the latest version info
+     */
+    public function getNewestVersionInfo(): array
     {
         global $configuration;
 
@@ -98,7 +113,7 @@ class SelfUpdater
         return $newestVersionInfo;
     }
 
-    public function getFileNameByVersion($version)
+    public function getFileNameByVersion(string $version): string
     {
         $versionInfos = $this->getVersionInfos();
         $installFileName = '';
@@ -110,7 +125,7 @@ class SelfUpdater
         return '';
     }
 
-    public function update($installVersion)
+    public function update(string $installVersion): void
     {
         $installFileName = $this->getFileNameByVersion($installVersion);
         if (!$installFileName) {
@@ -124,7 +139,7 @@ class SelfUpdater
         $this->setupConfig();
     }
 
-    public function download($fileName)
+    public function download(string $fileName): bool
     {
         $remoteAddress = $this->remoteUpdateServer . $fileName;
 
@@ -137,9 +152,10 @@ class SelfUpdater
         }
 
         file_put_contents($this->appRoot . '/' . $fileName, $tarBall);
+        return true;
     }
 
-    public function backup($installFileName)
+    public function backup(string $installFileName): void
     {
         $srcPath = $this->appRoot;
         $destPath = $this->appRoot . '/backup';
@@ -156,7 +172,7 @@ class SelfUpdater
         FileHelper::moveFilesTo($files, $srcPath, $destPath, $exclude);
     }
 
-    public function untar($installFileName)
+    public function untar(string $installFileName): void
     {
         $tarFilePath = $this->appRoot . '/' . $installFileName;
 
@@ -166,7 +182,7 @@ class SelfUpdater
         system('rm -rf ' . $tarFilePath);
     }
 
-    public function install()
+    public function install(): void
     {
         $srcPath = $this->appRoot . '/ModifiedModuleLoaderClient';
         $destPath = $this->appRoot;
@@ -177,14 +193,14 @@ class SelfUpdater
         system('rm -rf ' . $srcPath);
     }
 
-    public function setupConfig()
+    public function setupConfig(): void
     {
         @unlink($this->appRoot . '/config/config.php');
         @copy($this->appRoot . '/backup/config/config.php', $this->appRoot . '/config/config.php');
     }
 
 
-    public function checkAndDoPostUpdate()
+    public function checkAndDoPostUpdate(): bool
     {
         if (file_exists($this->appRoot . '/config/postUpdate')) {
             return false;
@@ -197,7 +213,7 @@ class SelfUpdater
         return true;
     }
 
-    public function postUpdate()
+    public function postUpdate(): void
     {
         // Vor der Version 1.12.0 haben sich die config.php und die version.json
         // im Root-Verzeichnis befunden und der alte SelfUpdater hat nicht alle

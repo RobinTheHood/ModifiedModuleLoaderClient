@@ -13,13 +13,13 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class Redirect
 {
-    public static function redirect($url, $domain = '')
+    public static function redirect(string $url, string $domain = ''): void
     {
         self::status302($url, $domain);
         exit();
     }
 
-    public static function status302($url, $domain = '')
+    public static function status302(string $url, string $domain = ''): void
     {
         $host  = $_SERVER['HTTP_HOST'];
         if ($domain) {
@@ -33,7 +33,7 @@ class Redirect
         exit();
     }
 
-    public static function status404($url)
+    public static function status404(string $url): void
     {
         $host  = $_SERVER['HTTP_HOST'];
 
@@ -45,7 +45,7 @@ class Redirect
         exit();
     }
 
-    public static function getProtocoll()
+    public static function getProtocoll(): string
     {
         if (empty($_SERVER['HTTPS'])) {
             return 'http';

@@ -14,7 +14,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 class Notification
 {
 
-    public static function renderFlashMessages()
+    public static function renderFlashMessages(): string
     {
         $flashMessages = self::pullAllFlashMessages();
         $html = '';
@@ -24,7 +24,7 @@ class Notification
         return $html;
     }
 
-    public static function renderFlashMessage($message, $type)
+    public static function renderFlashMessage(string $message, string $type): string
     {
         if ($type == 'warning') {
             return '<div class="alert alert-warning" role="alert">' . $message . '</div>';
@@ -34,7 +34,10 @@ class Notification
         return '<div class="alert alert-info" role="alert">' . $message . '</div>';
     }
 
-    public static function pushFlashMessage($message)
+    /**
+     * @param array<string, string> $message
+     */
+    public static function pushFlashMessage(array $message): void
     {
         if (isset($_SESSION['mml']) && isset($_SESSION['mml']['flashMessages'])) {
             foreach ($_SESSION['mml']['flashMessages'] as $oldMessage) {
@@ -47,7 +50,7 @@ class Notification
         $_SESSION['mml']['flashMessages'][] = $message;
     }
 
-    public static function pullAllFlashMessages()
+    public static function pullAllFlashMessages(): array
     {
         $flashMessages = isset($_SESSION['mml']['flashMessages']) ? $_SESSION['mml']['flashMessages'] : [];
         $_SESSION['mml']['flashMessages'] = [];

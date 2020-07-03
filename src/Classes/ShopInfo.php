@@ -16,11 +16,15 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 
 class ShopInfo
 {
-    public static function getModifiedVersion()
+
+    /**
+     * @return string Returns the installed modified version as string.
+     */
+    public static function getModifiedVersion(): string
     {
         $path = App::getShopRoot() . '/admin/includes/version.php';
         if (!file_exists($path)) {
-            return false;
+            return '';
         }
 
         $fileStr = file_get_contents($path);
@@ -29,7 +33,10 @@ class ShopInfo
         return $version;
     }
 
-    public static function getTemplates()
+    /**
+     * @return string[] Returns a array auf templates directory names (not paths).
+     */
+    public static function getTemplates(): array
     {
         $templates = [];
 

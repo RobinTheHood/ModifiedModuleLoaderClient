@@ -22,7 +22,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class ModuleInstaller
 {
-    public function pull($module)
+    public function pull(Module $module): bool
     {
         if ($module->isLoaded()) {
             return true;
@@ -47,7 +47,7 @@ class ModuleInstaller
         return true;
     }
 
-    public function delete($module)
+    public function delete(Module $module)
     {
         $path = $module->getLocalRootPath() . $module->getModulePath();
 
@@ -73,7 +73,7 @@ class ModuleInstaller
         }
     }
 
-    public function install($module)
+    public function install(Module $module): void
     {
         $dependencyManager = new DependencyManager();
         $dependencyManager->canBeInstalled($module);
@@ -99,7 +99,7 @@ class ModuleInstaller
         $this->createAutoloadFile();
     }
 
-    public function installDependencies($module)
+    public function installDependencies(Module $module): void
     {
         $dependencyManager = new DependencyManager();
         $modules = $dependencyManager->getAllModules($module);
@@ -121,7 +121,7 @@ class ModuleInstaller
         $this->createAutoloadFile();
     }
 
-    public function installWithDependencies($module)
+    public function installWithDependencies(Module $module): void
     {
         $dependencyManager = new DependencyManager();
         $dependencyManager->canBeInstalled($module);
@@ -130,7 +130,7 @@ class ModuleInstaller
         $this->installDependencies($module);
     }
 
-    public function createAutoloadFile()
+    public function createAutoloadFile(): void
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
         $localModules = $localModuleLoader->loadAllVersions();
@@ -161,7 +161,8 @@ class ModuleInstaller
         \file_put_contents(App::getShopRoot() . '/vendor-no-composer/autoload.php', $template);
     }
 
-    public function uninstall($module)
+    //TODO: Better return void type an thorw exception at error
+    public function uninstall(?Module $module): bool
     {
         if (!$module) {
             return false;
@@ -181,9 +182,11 @@ class ModuleInstaller
 
         $moduleHasher = new ModuleHasher();
         $moduleHasher->unhashModule($module);
+
+        return true;
     }
 
-    public function update($module)
+    public function update(Module $module): ?Module
     {
         $oldModule = $module->getInstalledVersion();
         $newModule = $module->getNewestVersion();
@@ -200,7 +203,7 @@ class ModuleInstaller
         $newModule = $moduleLoader->loadByArchiveNameAndVersion($newModule->getArchiveName(), $newModule->getVersion());
 
         if (!$newModule) {
-            return false;
+            return null; //TODO: Better return not nullable type Module and thorw an exception
         }
 
         $this->install($newModule);
@@ -208,22 +211,18 @@ class ModuleInstaller
         return $newModule;
     }
 
-    public function updateWithDependencies($module)
+    public function updateWithDependencies(Module $module): ?Module
     {
-        if (!$module) {
-            return false;
-        }
-
         $newModule = $this->update($module);
         if (!$newModule) {
-            return false;
+            return null; //TODO: Better return not nullable type Module and thorw an exception
         }
 
         $this->installDependencies($newModule);
         return $newModule;
     }
 
-    public function installFile($src, $dest, $overwrite = false)
+    public function installFile(string $src, string $dest, bool $overwrite = false): bool
     {
         global $configuration;
 
@@ -248,9 +247,11 @@ class ModuleInstaller
         } else {
             copy($src, $dest);
         }
+
+        return true;
     }
 
-    public function uninstallFile($dest)
+    public function uninstallFile(string $dest): void
     {
         if (file_exists($dest)) {
             unlink($dest);

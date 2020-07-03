@@ -16,9 +16,13 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class ModuleSorter
 {
-    public static function sortByArchiveName($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[] Return a array of modules sorted by ArchiveName.
+     */
+    public static function sortByArchiveName(array $modules): array
     {
-        usort($modules, function($moduleA, $moduleB) {
+        usort($modules, function(Module $moduleA, Module $moduleB):int {
             if ($moduleA->getArchiveName() < $moduleB->getArchiveName()) {
                 return -1;
             } else {
@@ -28,9 +32,13 @@ class ModuleSorter
         return $modules;
     }
 
-    public static function sortByIsInstalled($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[] Return a array of modules sorted by isInstalled.
+     */
+    public static function sortByIsInstalled($modules): array
     {
-        usort($modules, function($moduleA, $moduleB) {
+        usort($modules, function(Module $moduleA, Module $moduleB): int {
             if ($moduleA->isInstalled()) {
                 return -1;
             } else {
@@ -40,10 +48,13 @@ class ModuleSorter
         return $modules;
     }
 
-    public static function sortByCategory($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[] Return a array of modules sorted by category.
+     */
+    public static function sortByCategory($modules): array
     {
-        usort($modules, function($moduleA, $moduleB) {
-
+        usort($modules, function(Module $moduleA, Module $moduleB): int {
             if ($moduleA->getCategory() < $moduleB->getCategory()) {
                 return 1;
             } else {
@@ -53,9 +64,13 @@ class ModuleSorter
         return $modules;
     }
 
-    public static function sortByVersion($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[] Return a array of modules sorted by version.
+     */
+    public static function sortByVersion(array $modules): array
     {
-        usort($modules, function($moduleA, $moduleB) {
+        usort($modules, function(Module $moduleA, Module $moduleB): int {
             $comparator = new Comparator(new Parser());
             if ($comparator->lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
                 return 1;

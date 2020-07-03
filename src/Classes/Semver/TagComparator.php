@@ -17,6 +17,9 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class TagComparator
 {
+    /**
+      * @var array<string, int>
+      */
     protected $map = [
         'alpha' => 10,
         'alpha.0' => 10,

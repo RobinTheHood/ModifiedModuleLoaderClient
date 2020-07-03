@@ -15,65 +15,116 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class ModuleInfo
 {
+    /**
+     * @var string
+     */
     protected $name;
+
+    /**
+     * @var string
+     */
     protected $archiveName;
+    
+    /**
+     * @var string
+     */
     protected $sourceDir;
+    
+    /**
+     * @var string
+     */
     protected $version;
+    
+    /**
+     * @var string
+     */
     protected $shortDescription;
+    
+    /**
+     * @var string
+     */
     protected $description;
+    
+    /**
+     * @var string
+     */
     protected $developer;
+    
+    /**
+     * @var string
+     */
     protected $developerWebsite;
+    
+    /**
+     * @var string
+     */
     protected $website;
+    
+
     protected $require;
+    
+    /**
+     * @var string
+     */
     protected $category;
+    
+    /**
+     * @var string
+     */
     protected $type;
+    
+
     protected $modifiedCompatibility;
+    
+    /**
+     * @var string
+     */
     protected $installation;
     protected $visibility;
     protected $price;
     protected $autoload;
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getArchiveName()
+    public function getArchiveName(): string
     {
         return $this->archiveName;
     }
 
-    public function getSourceDir()
+    public function getSourceDir(): string
     {
         return $this->sourceDir;
     }
 
-    public function getVersion()
+    public function getVersion(): string
     {
         return $this->version;
     }
 
-    public function getShortDescription()
+    public function getShortDescription(): string
     {
         return $this->shortDescription;
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function getDeveloper()
+    public function getDeveloper(): string
     {
         return $this->developer;
     }
 
-    public function getDeveloperWebsite()
+    public function getDeveloperWebsite(): string
     {
         return $this->developerWebsite;
     }
 
-    public function getWebsite()
+    public function getWebsite(): string
     {
         return $this->website;
     }
@@ -83,12 +134,12 @@ class ModuleInfo
         return $this->require;
     }
 
-    public function getCategory()
+    public function getCategory(): string
     {
         return $this->category;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }

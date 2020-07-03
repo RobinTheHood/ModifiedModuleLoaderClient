@@ -48,7 +48,10 @@ class Parser
         return $version;
     }
 
-    public function parseVersion($string ): array
+    /**
+     * @return array<string, int> Returns version as array with its major, minor and path number.
+     */
+    public function parseVersion(string $string): array
     {
         $parts = explode('.', $string);
 
