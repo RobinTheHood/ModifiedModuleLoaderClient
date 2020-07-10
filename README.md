@@ -1,5 +1,7 @@
 # MMLC - Modified Module Loader Client
 
+[![dicord](https://img.shields.io/discord/727190419158597683)](https://discord.gg/9NqwJqP)
+
 Der MMLC ist eine Software zur Verwaltung von Modulen in deinem modified eCommerce Shop.
 
 ![alt text](docs/overview.png)
