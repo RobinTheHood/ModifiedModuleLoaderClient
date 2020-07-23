@@ -84,6 +84,11 @@ class ModuleInfo
     protected $price;
     protected $autoload;
 
+    /**
+     * @var string
+     */
+    protected $productNumber;
+
     public function getName(): string
     {
         return $this->name;
@@ -169,6 +174,11 @@ class ModuleInfo
         return $this->autoload;
     }
 
+    public function getProductNumber(): string
+    {
+        return $this->productNumber;
+    }
+
     public function loadFromJson($path)
     {
         if (!file_exists($path)) {
@@ -204,6 +214,7 @@ class ModuleInfo
         $this->visibility = ArrayHelper::getIfSet($array, 'visibility');
         $this->price = ArrayHelper::getIfSet($array, 'price');
         $this->autoload = ArrayHelper::getIfSet($array, 'autoload');
+        $this->productNumber = ArrayHelper::getIfSet($array, 'productNumber');
 
         return true;
     }
@@ -227,7 +238,8 @@ class ModuleInfo
             'installation' => $this->installation,
             'visibility' => $this->visibility,
             'price' => $this->price,
-            'autoload' => $this->autoload
+            'autoload' => $this->autoload,
+            'productNumber' => $this->productNumber
         ];
     }
 }
