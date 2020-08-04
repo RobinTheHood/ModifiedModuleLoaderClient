@@ -177,7 +177,7 @@ class Template
     {
         $errorStr = '';
         foreach ($errors as $error) {
-            $errorStr .= "<div>$error</div><br>"; 
+            $errorStr .= "<div>$error</div><br>";
         }
 
         return
@@ -193,25 +193,49 @@ class Template
 
     public static function showInstalled()
     {
-        return
-            self::style() . '
-            <div style="text-align: center">
-                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div>ModifiedModuleLoaderClient is already installed.</div>
-                <div>You can delete the installer.php</div>
-                <br><br>
-                <div>
-                    Open: <br>
-                    <a href="/ModifiedModuleLoaderClient">
-                        ' . $_SERVER['SERVER_NAME'] . '/ModifiedModuleLoaderClient
-                    </a>
+        $shopURL = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+        $mmlcURL = $shopURL . '/ModifiedModuleLoaderClient';
+        $installerFilepath = $_SERVER['SCRIPT_FILENAME'];
+
+
+        /**
+         * Installer automatisch löschen
+         */
+        unlink($installerFilepath);
+
+
+        /**
+         * Falls installer nicht gelöscht wurde, Nachricht anzeigen
+         */
+        if ( file_exists($installerFilepath) ) {
+            return
+                self::style() . '
+                <div style="text-align: center">
+                    <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                    <div>ModifiedModuleLoaderClient is already installed.</div>
+                    <div>You can delete the installer.php</div>
+                    <br><br>
+                    <div>
+                        Open: <br>
+                        <a href="' . $mmlcURL . '">
+                            ' . $shopURL . '
+                        </a>
+                    </div>
                 </div>
-            </div>
-        ';
+            ';
+        }
+
+        /**
+         * Weiterleiten, wenn Datei gelöscht werden konnte
+         */
+        header('Location: ModifiedModuleLoaderClient');
     }
 
     public static function showInstallDone()
     {
+        $shopURL = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+        $mmlcURL = $shopURL . '/ModifiedModuleLoaderClient';
+
         return
             self::style() . '
             <div style="text-align: center">
@@ -221,8 +245,8 @@ class Template
                 <br><br>
                 <div>
                     Open: <br>
-                    <a href="/ModifiedModuleLoaderClient">
-                        ' . $_SERVER['SERVER_NAME'] . '/ModifiedModuleLoaderClient
+                    <a href="' . $mmlcURL . '">
+                        ' . $shopURL . '
                     </a>
                 </div>
             </div>
