@@ -185,6 +185,8 @@ class ModuleInstaller
         $moduleHasher = new ModuleHasher();
         $moduleHasher->unhashModule($module);
 
+        $this->createAutoloadFile();
+
         return true;
     }
 
