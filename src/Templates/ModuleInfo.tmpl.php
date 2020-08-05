@@ -160,8 +160,7 @@
                                                                 if ($version == $installedVersion) {
                                                                     $badgeClasses[] = 'badge-primary';
                                                                     $badgeInnerHTML .= ' (installiert)';
-                                                                }
-                                                                else {
+                                                                } else {
                                                                     $badgeClasses[] = 'badge-secondary';
                                                                 }
                                                                 ?>
