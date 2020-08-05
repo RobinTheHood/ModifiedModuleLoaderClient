@@ -30,6 +30,17 @@ class LocalModuleLoader
     }
 
     /**
+     * Resets / deletes allready loaded modules data. For examplae because
+     * during the script runtime the amount of modules or data of modules
+     * changed and the LocalModuleLoader does not give the latest module
+     * informations.
+     */
+    public function resetCache()
+    {
+        $this->modules = null;
+    }
+
+    /**
      * Loads all local module versions.
      * 
      * @return Module[] Returns a array of module versions.
