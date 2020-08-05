@@ -136,8 +136,7 @@ class ModuleInstaller
         $localModules = $localModuleLoader->loadAllVersions();
         $installedLocalModules = ModuleFilter::filterLoaded($localModules);
 
-        $namespaceMapping = '';
-        
+        $namespaceEntrys = [];
         foreach($installedLocalModules as $module) {
             $autoload = $module->getAutoload();
 
@@ -150,9 +149,12 @@ class ModuleInstaller
             }
 
             foreach($autoload['psr-4'] as $namespace => $path) {
-                $namespaceMapping .= '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');' . "\n";
+                $namespaceEntrys[] = '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
             }
         }
+
+        $namespaceEntrys = array_unique($namespaceEntrys);
+        $namespaceMapping = implode("\n", $namespaceEntrys);
 
         $template = \file_get_contents(App::getTemplatesRoot() . '/autoload.php.tmpl');
         $template = \str_replace('{VENDOR_PSR4_NAMESPACE_MAPPINGS}', $namespaceMapping, $template);
