@@ -59,6 +59,10 @@
                                             <?php echo $module->getVersion(); ?>
                                         </div>
 
+                                        <div class="module-compatibility">
+                                            <?php echo $module->isCompatible() ? 'kompatibel' : 'incompatibel'; ?>
+                                        </div>
+
                                         <div class="module-shortdescription">
                                             <?php echo $module->getShortDescription(); ?>
                                         </div>
