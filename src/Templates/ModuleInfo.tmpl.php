@@ -141,11 +141,7 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <?php
-
-
-                                                    $installedVersion = ShopInfo::getModifiedVersion();
-                                                    ?>
+                                                    <?php $installedVersion = ShopInfo::getModifiedVersion(); ?>
                                                     <td>Kompatible mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
