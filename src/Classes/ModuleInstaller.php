@@ -133,8 +133,9 @@ class ModuleInstaller
     public function createAutoloadFile(): void
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $localModuleLoader->resetCache();
         $localModules = $localModuleLoader->loadAllVersions();
-        $installedLocalModules = ModuleFilter::filterLoaded($localModules);
+        $installedLocalModules = ModuleFilter::filterInstalled($localModules);
 
         $namespaceEntrys = [];
         foreach($installedLocalModules as $module) {
