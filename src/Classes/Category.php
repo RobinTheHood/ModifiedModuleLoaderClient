@@ -32,40 +32,24 @@ class Category
             unset($groupedModules['library']);
             $groupedModules['library'] = $temp;
         }
-        
+
         return $groupedModules;
     }
 
     public static function getCategoryName($category)
     {
-        if ($category == 'import/export') {
-            return 'Import/Export';
+        $allCategories = array(
+          'import/export' => 'Import / Export',
+          'language' => 'Sprachpaket',
+          'persistance' => 'Datenbank Module',
+          'productivity' => 'Produktivität',
+          'promotion/marketing' => 'Promotion & Marketing',
+          'productinfos' => 'Zusatzinformationen & Produkt-Tabs',
+          'shipping' => 'Versand Module',
+          'library' => 'Programmcode Bibliotheken',
+          'nocategory' => 'Sonstige Module',
+        );
 
-        } elseif ($category == 'persistance') {
-            return 'Datenbank Module';
-
-        } elseif ($category == 'productivity') {
-            return 'Produktivität';
-
-        } elseif ($category == 'promotion/marketing') {
-            return 'Promotion & Marketing';
-
-        } elseif ($category == 'productinfos') {
-            return 'Zusatzinformationen & Produkt-Tabs';
-
-        } elseif ($category == 'shipping') {
-            return 'Versand Module';
-
-        } elseif ($category == 'library') {
-            return 'Programmcode Bibliotheken';
-
-        } elseif ($category == 'nocategory') {
-            return 'Sonstige Module';
-
-        } elseif ($category) {
-            return $category;
-        }
-
-        return 'Sonstige Module';
+        return isset( $allCategories['$category'] ) ? $allCategories['$category'] : $category;
     }
 }
