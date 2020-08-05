@@ -2,6 +2,7 @@
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
 
 <?php  global $configuration; ?>
 
@@ -140,11 +141,27 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <td>Kompatibel mit Modified</td>
+                                                    <?php $installedVersion = ShopInfo::getModifiedVersion(); ?>
+                                                    <td>Kompatible mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
                                                             <?php foreach($module->getModifiedCompatibility() as $version) { ?>
-                                                                <span class="badge badge-secondary"><?php echo $version; ?></span>
+                                                                <?php
+                                                                $badgeClasses = [
+                                                                    'badge'
+                                                                ];
+                                                                $badgeInnerHTML = '';
+                                                                $badgeInnerHTML .= $version;
+
+                                                                if ($version == $installedVersion) {
+                                                                    $badgeClasses[] = 'badge-primary';
+                                                                    $badgeInnerHTML .= ' (installiert)';
+                                                                } else {
+                                                                    $badgeClasses[] = 'badge-secondary';
+                                                                }
+                                                                ?>
+
+                                                                <span class="<?php echo implode(' ', $badgeClasses); ?>"><?php echo $badgeInnerHTML; ?></span>
                                                             <?php } ?>
                                                         <?php } else { ?>
                                                             unbekannt

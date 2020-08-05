@@ -36,6 +36,13 @@ body {
 .modules .module-version {
     text-align: center;
     font-size: 14px;
+    margin-bottom: 5px;
+    color: #bbbbbb;
+}
+
+.modules .module-compatibility {
+    text-align: center;
+    font-size: 14px;
     margin-bottom: 20px;
     color: #bbbbbb;
 }
