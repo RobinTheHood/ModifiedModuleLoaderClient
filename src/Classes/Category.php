@@ -50,6 +50,6 @@ class Category
           'nocategory' => 'Sonstige Module',
         );
 
-        return isset( $allCategories['$category'] ) ? $allCategories['$category'] : $category;
+        return isset( $allCategories[$category] ) ? $allCategories[$category] : $category;
     }
 }
