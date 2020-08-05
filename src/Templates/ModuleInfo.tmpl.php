@@ -2,6 +2,7 @@
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
 
 <?php  global $configuration; ?>
 
@@ -141,7 +142,7 @@
 
                                                 <tr>
                                                     <?php
-                                                    use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
+
 
                                                     $installedVersion = ShopInfo::getModifiedVersion();
                                                     ?>
@@ -150,23 +151,22 @@
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
                                                             <?php foreach($module->getModifiedCompatibility() as $version) { ?>
                                                                 <?php
-                                                                $class = array(
-                                                                  'badge',
-                                                                );
-                                                                $innerHTML = '';
-
-                                                                $innerHTML .= $version;
+                                                                $badgeClasses = [
+                                                                    'badge'
+                                                                ];
+                                                                $badgeInnerHTML = '';
+                                                                $badgeInnerHTML .= $version;
 
                                                                 if ($version == $installedVersion) {
-                                                                  $class[] = 'badge-primary';
-                                                                  $innerHTML .= ' (installiert)';
+                                                                    $badgeClasses[] = 'badge-primary';
+                                                                    $badgeInnerHTML .= ' (installiert)';
                                                                 }
                                                                 else {
-                                                                  $class[] = 'badge-secondary';
+                                                                    $badgeClasses[] = 'badge-secondary';
                                                                 }
                                                                 ?>
 
-                                                                <span class="<?php echo implode(' ', $class); ?>"><?php echo $innerHTML; ?></span>
+                                                                <span class="<?php echo implode(' ', $badgeClasses); ?>"><?php echo $badgeInnerHTML; ?></span>
                                                             <?php } ?>
                                                         <?php } else { ?>
                                                             unbekannt
