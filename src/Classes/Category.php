@@ -39,7 +39,7 @@ class Category
     public static function getCategoryName($category)
     {
         $allCategories = array(
-          'import/export' => 'Import / Export',
+          'import/export' => 'Import/Export',
           'language' => 'Sprachpaket',
           'persistance' => 'Datenbank Module',
           'productivity' => 'Produktivität',
