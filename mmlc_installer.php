@@ -136,8 +136,8 @@ class Template
         return
             self::style() . '
             <div style="text-align: center">
-                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div> Please setup a <strong>username</strong> and <strong>password</strong>.</div>
+                <h1>ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                <div>Please setup a <strong>username</strong> and <strong>password</strong>.</div>
                 <br>
                 <form action="?action=install" method="post">
                     ' . $errorHtml . '
@@ -183,8 +183,8 @@ class Template
         return
             self::style() . '
             <div style="text-align: center">
-                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div>ModifiedModuleLoaderClient system check faild.</div>
+                <h1>ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                <div>ModifiedModuleLoaderClient system check failed.</div>
                 <br>
                 <div style="color: red">' . $errorStr . '</div>
             </div>
@@ -239,9 +239,9 @@ class Template
         return
             self::style() . '
             <div style="text-align: center">
-                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                <h1>ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
                 <div>ModifiedModuleLoaderClient was installed.</div>
-                <div>You can delete the installer.php</div>
+                <div>You can now delete the mmlc_installer.php</div>
                 <br><br>
                 <div>
                     Open: <br>
@@ -259,7 +259,7 @@ class Template
             <style>
                 body {
                     margin: 0px;
-                    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+                    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
                 }
 
                 .input-text {
