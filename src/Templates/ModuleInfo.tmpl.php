@@ -88,7 +88,7 @@
 
                                 <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
                                     <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
-                                
+
                                 <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
                                     <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
                                         <a class="button button-default" href="?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
@@ -140,7 +140,7 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <td>Kompatible mit Modified</td>
+                                                    <td>Kompatibel mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
                                                             <?php foreach($module->getModifiedCompatibility() as $version) { ?>
@@ -292,7 +292,7 @@
                                     <h3>Geänderte Dateien</h3>
 
                                     <?php if ($module->isInstalled() && $module->isChanged()) { ?>
-                                        
+
                                             <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
                                                 <?php $changes = htmlentities(RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher::getFileChanges($module, $file, $mode)); ?>
 
