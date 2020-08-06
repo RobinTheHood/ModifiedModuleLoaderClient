@@ -53,7 +53,9 @@
 
                             <div class="moduleinfo-buttons">
                                 <?php if (!ModuleStatus::isLoadable($module)) { ?>
-                                    Keine Berechtigung zur Installation. Nimm Kontakt zum Entwickler auf.
+                                    <div class="alert alert-warning" role="alert">
+                                      Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf.
+                                    </div>
                                 <?php } ?>
 
                                 <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>

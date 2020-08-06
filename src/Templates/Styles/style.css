@@ -12,116 +12,86 @@ body {
     -max-width: 1100px;
 }
 
-.modules .module-box {
+.modules .category {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+
+    margin-bottom: 8em;
+}
+
+.modules .category .card .card-body {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+}
+
+
+.modules .category .card .card-title {
+    display: inline-block;
+}
+
+.modules .category .card .card-compatibility {
+    color: var(--gray);
+
+    cursor: help;
+}
+
+.modules .category .card .card-compatibility::after {
+    display: none;
+    content: attr(data-tooltip);
+    padding: 0.375rem 0.75rem;
+    max-width: 60ch;
+
+    position: absolute;
+
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+
+    color: var(--light);
+    background-color: var(--dark);
+}
+
+.modules .category .card .card-compatibility:hover::after {
     display: block;
-    height: 300px;
-    padding: 20px;
-    margin-bottom: 25px;
-    border: 1px solid #cccccc;
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
 }
 
-.modules .module-box:hover {
-    box-shadow: 0 5px 10px 1px #eceaea;
+.modules .category .card .card-version {
+    display: inline-block;
+    color: var(--gray);
 }
 
-.modules .module-title {
-    text-align: center;
-    font-size: 16px;
-    margin-bottom: 5px;
+.modules .category .card .module-price {
+    font-size: 1.25em;
+    color: var(--blue);
 }
 
-.modules .module-version {
-    text-align: center;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #bbbbbb;
-}
+.modules .category .card .card-text {
+    flex: 1 1 auto;
 
-.modules .module-compatibility {
-    text-align: center;
-    font-size: 14px;
-    margin-bottom: 20px;
-    color: #bbbbbb;
-}
-
-.modules .module-shortdescription {
-    text-align: center;
-    font-size: 13px;
-    max-height: 60px;
+    margin-top: 0.75em;
+    max-height: 4.4em;
     overflow: hidden;
 }
 
-.modules .module-icon {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 20px;
-    width: 58px;
-    height: 58px;
-    background: #eeeeee;
-    border-radius: 10px;
-}
-
-.modules .module-icon img {
-    width: 58px;
-    height: 58px;
-    background: #ffffff;
-}
-
-.off-modules .module-badge {
-    position: absolute;
-    background-color: #32cfff;
-    top: 11px;
-    right: 0px;
-    height: 30px;
-    width: 45px;
-    clip-path: polygon(100% 0%, 100% 100px, 0% 0%, 0% 0%);
-    -webkit-clip-path: polygon(100% 0%, 100% 100px, 0% 0%, 0% 0%);
-}
-
-.modules .module-button-wapper {
-    font-size: 16px;
-    bottom: 15px;
-    left: 0px;
-    position: absolute;
-    width: 100%;
-}
-
-.modules .module-price {
-    position: absolute;
-    bottom: 5px;
-    left: 0px;
-    width: 100%;
-    padding: 5px 13px 5px 0px;
-    margin-bottom: -5px;
-    z-index: -1;
-    color: #000000;
-    background-color: #f7f7f7;
-    border-top: 1px solid #cccccc;
-    text-align: right;
-    font-weight: 300;
-    font-size: 16px;
-}
-
-.moduleinfo-buttons {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #cccccc;
-}
-
-.modules .button {
+.modules .category .card .card-img-top {
     display: block;
-    margin: 0px 20px 0px 20px;
-    padding: 15px;
+    padding: 40px;
+    width: auto;
+    height: 64px;
+    margin: auto;
+
+    box-sizing: content-box;
 }
 
-.modules .module-install-info {
-    font-size: 13px;
-    bottom: 15px;
-    position: absolute;
-    color: green;
+.modules .category .card.incompatible .card-img-top {
+    transition: filter 0.2s;
+
+    filter: grayscale(100%);
+}
+
+.modules .category .card.incompatible:hover .card-img-top {
+    filter: grayscale(0%);
 }
 
 .navi {
@@ -357,4 +327,20 @@ pre code {
     display: block;
     padding: 15px;
     margin: 20px 0px;
+}
+
+
+/**
+ * Responsive
+ */
+@media(max-width: 768px) {
+    .modules .category {
+    	grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 512px) {
+    .modules .category {
+    	grid-template-columns: repeat(1, 1fr);
+    }
 }
