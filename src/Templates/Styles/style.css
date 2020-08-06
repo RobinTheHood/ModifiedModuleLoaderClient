@@ -26,7 +26,6 @@ body {
     align-items: flex-start;
 }
 
-
 .modules .category .card .card-title {
     display: inline-block;
 }
@@ -246,6 +245,12 @@ body {
 .moduleinfo .button {
     margin: 0px;
     margin-right: 10px;
+}
+
+.content .moduleinfo .moduleinfo-buttons {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #cccccc;
 }
 
 .moduleinfo-row {
