@@ -42,7 +42,7 @@
                             <?php foreach($modules as $module) { ?>
                                 <?php if ($module->getVisibility() == 'hidden') { continue; } ?>
 
-                                <div class="card <?php echo $module->isCompatible() ? 'compatible' : 'incompatible'; ?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>">
+                                <div class="card module-serach-box <?php echo $module->isCompatible() ? 'compatible' : 'incompatible'; ?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>">
                                     <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>">
                                         <img src="<?php echo $module->getIconUri(); ?>" class="card-img-top" alt="<?php echo $module->getName(); ?>">
                                     </a>
