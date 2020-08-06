@@ -480,7 +480,7 @@ class Module extends ModuleInfo
     public function getPriceFormated()
     {
         if ($this->getPrice() === 'free') {
-            return '<span class="price-free">Kostenlos</span>';
+            return '<span class="price-free">kostenlos</span>';
         } elseif (!$this->getPrice()) {
             return '<span class="price-request">Preis auf Anfrage</span>';
         } else {
