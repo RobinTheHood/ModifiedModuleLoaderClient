@@ -54,7 +54,13 @@
                             <div class="moduleinfo-buttons">
                                 <?php if (!ModuleStatus::isLoadable($module)) { ?>
                                     <div class="alert alert-warning" role="alert">
-                                      Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf.
+                                        Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf.
+                                    </div>
+                                <?php } ?>
+
+                                <?php if (!$module->isCompatible()) { ?>
+                                    <div class="alert alert-warning" role="alert">
+                                        Dieses Modul wurde noch nicht mit Deiner Version von modified getestet. Du hast modifed <?php echo ShopInfo::getModifiedVersion()?> installiert.
                                     </div>
                                 <?php } ?>
 
