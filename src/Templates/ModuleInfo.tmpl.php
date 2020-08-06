@@ -143,7 +143,6 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <?php $installedVersion = ShopInfo::getModifiedVersion(); ?>
                                                     <td>Kompatible mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
@@ -155,7 +154,7 @@
                                                                 $badgeInnerHTML = '';
                                                                 $badgeInnerHTML .= $version;
 
-                                                                if ($version == $installedVersion) {
+                                                                if ($version == ShopInfo::getModifiedVersion()) {
                                                                     $badgeClasses[] = 'badge-primary';
                                                                     $badgeInnerHTML .= ' (installiert)';
                                                                 } else {
