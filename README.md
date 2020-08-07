@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://module-loader.de/" target="_blank" >
+    <img alt="MMLC - Modified Module Loader Client" src="https://module-loader.de/images/mmlc-logo-transparent.png" width="200" />
+  </a>
+</p>
+
 # MMLC - Modified Module Loader Client
 
 [![dicord](https://img.shields.io/discord/727190419158597683)](https://discord.gg/9NqwJqP)
