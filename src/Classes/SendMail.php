@@ -24,10 +24,10 @@ class SendMail
     $message = ArrayHelper::getIfSet($_POST, 'message', '');
     if ($fromEmail == '' || $from == '' || $message == '') {
       Notification::pushFlashMessage(
-        array(
-          "text" => "Warnung: Felder k&ouml;nnen nicht leer gelassen werden.", 
+        [
+          "text" => "Warnung: Felder können nicht leer gelassen werden.", 
           "type" => "error"
-        )
+        ]
       );
       return;
     }
@@ -39,13 +39,13 @@ class SendMail
     $message .= 'PHP version: ' . phpversion() . '<br />';
     $headers[] = 'MIME-Version: 1.0';
     $headers[] = 'Content-type: text/html; charset=iso-8859-1';
-    $headers[] = 'From: '.$from.' <'.$fromEmail.'>';
+    $headers[] = 'From: ' . $from . ' <' . $fromEmail . '>';
     if (mail($to, $subject, $message, implode("\r\n", $headers))) {
       Notification::pushFlashMessage(
-        array(
-          "text" => "Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie m&ouml;glich antworten.", 
+        [
+          "text" => "Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie möglich antworten.", 
           "type" => "info"
-        )
+        ]
       );
     }
   }
