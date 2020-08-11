@@ -198,7 +198,7 @@ class Template
             <div style="text-align: center">
                 <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
                 <div>ModifiedModuleLoaderClient is already installed.</div>
-                <div>You can delete the installer.php</div>
+                <div>You can delete the mmlc_installer.php</div>
                 <br><br>
                 <div>
                     Open: <br>
@@ -217,7 +217,7 @@ class Template
             <div style="text-align: center">
                 <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
                 <div>ModifiedModuleLoaderClient was installed.</div>
-                <div>You can delete the installer.php</div>
+                <div>You can delete the mmlc_installer.php</div>
                 <br><br>
                 <div>
                     Open: <br>
