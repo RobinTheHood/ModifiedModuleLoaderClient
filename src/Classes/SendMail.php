@@ -31,11 +31,7 @@ class SendMail
       );
       return;
     }
-<<<<<<< HEAD
-    $to      = 'info@module-loader.de';
-=======
-    $to      = 'd.bjelajac@hoqmee.net';
->>>>>>> 6f0fd2da1a35f193cb77eb4d64af6ebf91575596
+    $to = 'info@module-loader.de';
     $subject = 'Report problem';
     $shopVersion = ShopInfo::getModifiedVersion();
     $message .= "<br />Modified version: " . $shopVersion . '<br />';
