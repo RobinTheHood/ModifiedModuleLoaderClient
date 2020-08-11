@@ -21,6 +21,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Redirect;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
+use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 
 class IndexController
 {
@@ -466,6 +467,9 @@ class IndexController
     public function invokeReportProblem() 
     {
         $this->checkAccessRight();
+        if (isset($_POST['send_mail'])) {
+            SendMail::sendFeedback();
+        } 
         include App::getTemplatesRoot() . '/ReportProblem.tmpl.php';
     }
 

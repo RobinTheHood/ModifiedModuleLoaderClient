@@ -25,8 +25,8 @@ class SendMail
     if ($fromEmail == '' || $from == '' || $message == '') {
       Notification::pushFlashMessage(
         [
-          "text" => "Warnung: Felder können nicht leer gelassen werden.", 
-          "type" => "error"
+          'text' => 'Warnung: Felder können nicht leer gelassen werden.', 
+          'type' => 'error'
         ]
       );
       return;
@@ -34,17 +34,22 @@ class SendMail
     $to = 'info@module-loader.de';
     $subject = 'Report problem';
     $shopVersion = ShopInfo::getModifiedVersion();
-    $message .= "<br />Modified version: " . $shopVersion . '<br />';
-    $message .= 'Browser: ' . $_SERVER['HTTP_USER_AGENT'] . '<br />';
-    $message .= 'PHP version: ' . phpversion() . '<br />';
-    $headers[] = 'MIME-Version: 1.0';
-    $headers[] = 'Content-type: text/html; charset=iso-8859-1';
-    $headers[] = 'From: ' . $from . ' <' . $fromEmail . '>';
+    $message .=
+      '<hr />Message sent from: ' . $_SERVER['HTTP_HOST'] .
+      '<br />Modified version: ' . $shopVersion . 
+      '<br />Browser: ' . $_SERVER['HTTP_USER_AGENT'] .
+      '<br />PHP version: ' . phpversion();
+    $headers = [
+      'MIME-Version: 1.0',
+      'Content-type: text/html; charset=utf-8',
+      'From: ' . $from . ' <' . $fromEmail . '>'
+    ];
+
     if (mail($to, $subject, $message, implode("\r\n", $headers))) {
       Notification::pushFlashMessage(
         [
-          "text" => "Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie möglich antworten.", 
-          "type" => "info"
+          'text' => 'Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie möglich antworten.', 
+          'type' => 'info'
         ]
       );
     }
