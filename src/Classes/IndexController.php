@@ -89,6 +89,10 @@ class IndexController
                 $this->invokeSelfUpdate();
                 break;
 
+            case 'reportProblem':
+                $this->invokeReportProblem();
+                break;
+
             default:
                 $this->invokeIndex();
                 break;
@@ -457,6 +461,12 @@ class IndexController
         $moduleInstaller->delete($module);
 
         Redirect::redirect('/');
+    }
+
+    public function invokeReportProblem() 
+    {
+        $this->checkAccessRight();
+        include App::getTemplatesRoot() . '/ReportProblem.tmpl.php';
     }
 
     public function checkAccessRight()
