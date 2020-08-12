@@ -2,6 +2,7 @@
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
 
 <?php  global $configuration; ?>
 
@@ -52,7 +53,15 @@
 
                             <div class="moduleinfo-buttons">
                                 <?php if (!ModuleStatus::isLoadable($module)) { ?>
-                                    Keine Berechtigung zur Installation. Nimm Kontakt zum Entwickler auf.
+                                    <div class="alert alert-warning" role="alert">
+                                        Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf.
+                                    </div>
+                                <?php } ?>
+
+                                <?php if (!$module->isCompatible()) { ?>
+                                    <div class="alert alert-warning" role="alert">
+                                        Dieses Modul wurde noch nicht mit Deiner Version von modified getestet. Du hast modifed <?php echo ShopInfo::getModifiedVersion()?> installiert.
+                                    </div>
                                 <?php } ?>
 
                                 <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
@@ -88,7 +97,7 @@
 
                                 <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
                                     <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
-                                
+
                                 <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
                                     <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
                                         <a class="button button-default" href="?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
@@ -144,7 +153,22 @@
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
                                                             <?php foreach($module->getModifiedCompatibility() as $version) { ?>
-                                                                <span class="badge badge-secondary"><?php echo $version; ?></span>
+                                                                <?php
+                                                                $badgeClasses = [
+                                                                    'badge'
+                                                                ];
+                                                                $badgeInnerHTML = '';
+                                                                $badgeInnerHTML .= $version;
+
+                                                                if ($version == ShopInfo::getModifiedVersion()) {
+                                                                    $badgeClasses[] = 'badge-primary';
+                                                                    $badgeInnerHTML .= ' (installiert)';
+                                                                } else {
+                                                                    $badgeClasses[] = 'badge-secondary';
+                                                                }
+                                                                ?>
+
+                                                                <span class="<?php echo implode(' ', $badgeClasses); ?>"><?php echo $badgeInnerHTML; ?></span>
                                                             <?php } ?>
                                                         <?php } else { ?>
                                                             unbekannt
@@ -292,7 +316,7 @@
                                     <h3>Geänderte Dateien</h3>
 
                                     <?php if ($module->isInstalled() && $module->isChanged()) { ?>
-                                        
+
                                             <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
                                                 <?php $changes = htmlentities(RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher::getFileChanges($module, $file, $mode)); ?>
 

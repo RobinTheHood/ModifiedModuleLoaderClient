@@ -38,40 +38,42 @@
                     <?php foreach($groupedModules as $category => $modules) { ?>
                         <h2><?php echo RobinTheHood\ModifiedModuleLoaderClient\Category::getCategoryName($category); ?></h2>
 
-                        <div class="row">
+                        <div class="category">
                             <?php foreach($modules as $module) { ?>
                                 <?php if ($module->getVisibility() == 'hidden') { continue; } ?>
 
-                                <div class="col-3 module-serach-box" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>">
-                                    <div class="module-box" onclick="location.href='?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>'">
+                                <div class="card module-serach-box <?php echo $module->isCompatible() ? 'compatible' : 'incompatible'; ?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?>">
+                                    <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>">
+                                        <img src="<?php echo $module->getIconUri(); ?>" class="card-img-top" alt="<?php echo $module->getName(); ?>">
+                                    </a>
 
-                                        <div class="module-badge"></div>
-
-                                        <div class="module-icon">
-                                            <img src="<?php echo $module->getIconUri(); ?>">
-                                        </div>
-
-                                        <div class="module-title">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
                                             <?php echo $module->getName(); ?>
-                                        </div>
-
-                                        <div class="module-version">
-                                            <?php echo $module->getVersion(); ?>
-                                        </div>
-
-                                        <div class="module-shortdescription">
-                                            <?php echo $module->getShortDescription(); ?>
-                                        </div>
+                                            <span class="card-version"><?php echo $module->getVersion(); ?></span>
+                                        </h5>
 
                                         <div class="module-price">
                                             <?php
                                                 if ($module->isInstalled()) {
-                                                    echo 'Installiert';
+                                                    echo 'installiert';
                                                 } else {
                                                     echo $module->getPriceFormated();
                                                 }
                                             ?>
                                         </div>
+
+                                        <?php
+                                            $compatibility = $module->isCompatible() ? 'kompatibel' : 'inkompatibel';
+                                            $tooltip = $module->isCompatible() ? 'Dieses Modul wurde getestet und funktioniert mit Deiner Version von modified.' : 'Dieses Modul wurde noch nicht mit Deiner Version von modified getestet.';
+                                        ?>
+                                        <div class="card-compatibility" data-tooltip="<?php echo $tooltip; ?>">
+                                            <?php echo $compatibility; ?>
+                                        </div>
+
+                                        <p class="card-text"><?php echo $module->getShortDescription(); ?></p>
+                                        
+                                        <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>" class="btn <?php echo $module->isCompatible() ? 'btn-primary' : 'btn-secondary'; ?>">Details</a>
                                     </div>
                                 </div>
                             <?php } ?>

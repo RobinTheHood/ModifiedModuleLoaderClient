@@ -13,7 +13,9 @@
     </ul>
 
     <ul class="navi-right">
+        <li><a href="<?php echo '//' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . 'admin/start.php'; ?>">zurück zum Shop</a></li>
         <li><a href="?action=selfUpdate">System <span style="display: none" id="systemUpdateCount" class="badge badge-light">0<span></a></li>
+        <li><a href="?action=reportProblem">Nachricht an Entwickler senden</a></li>
         <li><a href="?action=signOut">Abmelden</a></li>
     </ul>
 

@@ -22,12 +22,16 @@
             }
         });
 
-        // Überschriften ausblenden
+        // Überschriften und Kategorien ausblenden
         $('.modules h2').each(function() {
             $(this).show();
         });
 
-        $('.modules .row').each(function(index) {
+        $('.modules .category').each(function() {
+            $(this).show();
+        });
+
+        $('.modules .category').each(function(index) {
             var a = $('.module-serach-box:visible', this);
 
             if (a.length != 0) {
@@ -35,6 +39,12 @@
             }
 
             $('.modules h2').each(function(index2) {
+                if (index2 == index) {
+                    $(this).hide();
+                }
+            })
+
+            $('.modules .category').each(function(index2) {
                 if (index2 == index) {
                     $(this).hide();
                 }
