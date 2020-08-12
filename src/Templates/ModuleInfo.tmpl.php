@@ -127,6 +127,13 @@
                                                     <td><?php echo $module->getVersion(); ?></td>
                                                 </tr>
 
+                                                <?php if($module->getProductNumber()) { ?>
+                                                    <tr>
+                                                        <td>Produkt Nummer</td>
+                                                        <td><?php echo $module->getProductNumber(); ?></td>
+                                                    </tr>
+                                                <?php } ?>
+
                                                 <tr>
                                                     <td>Preis</td>
                                                     <td><?php echo $module->getPriceFormated(); ?></td>
