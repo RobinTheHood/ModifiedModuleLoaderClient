@@ -21,6 +21,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Redirect;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
+use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 
 class IndexController
 {
@@ -87,6 +88,14 @@ class IndexController
 
             case 'selfUpdate':
                 $this->invokeSelfUpdate();
+                break;
+
+            case 'reportIssue':
+                $this->invokeReportIssue();
+                break;
+
+            case 'support':
+                $this->invokeSupport();
                 break;
 
             default:
@@ -457,6 +466,22 @@ class IndexController
         $moduleInstaller->delete($module);
 
         Redirect::redirect('/');
+    }
+
+    public function invokeReportIssue() 
+    {
+        $this->checkAccessRight();
+        
+        if (isset($_POST['send_mail'])) {
+            SendMail::sendIssue();
+        }
+
+        include App::getTemplatesRoot() . '/ReportIssue.tmpl.php';
+    }
+
+    public function invokeSupport()
+    {
+        include App::getTemplatesRoot() . '/Support.tmpl.php';
     }
 
     public function checkAccessRight()

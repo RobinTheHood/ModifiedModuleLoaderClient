@@ -335,6 +335,11 @@ pre code {
 }
 
 
+.support h3 {
+    margin-top: 50px;
+    font-size: 24px;
+}
+
 /**
  * Responsive
  */
