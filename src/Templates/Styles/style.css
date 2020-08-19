@@ -100,8 +100,9 @@ body {
     justify-content: space-between;
     width: 100%;
 
-    position: fixed;
+    position: sticky;
     top: 0px;
+
     background-color: #32cfff;
     z-index: 1000;
 }
@@ -348,6 +349,13 @@ pre code {
 /**
  * Responsive
  */
+@media(max-width: 1140px) {
+    .navi {
+        grid-template-columns: max-content;
+        justify-content: flex-start;
+    }
+}
+
 @media(max-width: 768px) {
     .modules .category {
     	grid-template-columns: repeat(2, 1fr);
