@@ -18,8 +18,6 @@
         <li><a href="?action=selfUpdate">System <span style="display: none" id="systemUpdateCount" class="badge badge-light">0<span></a></li>
         <li><a href="?action=signOut">Abmelden</a></li>
     </ul>
-
-    <div style="clear: both"></div>
 </div>
 
 <?php echo LazyLoader::loadModuleUpdateCount('#moduleUpdateCount') ?>

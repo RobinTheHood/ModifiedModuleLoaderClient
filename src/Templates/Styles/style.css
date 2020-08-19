@@ -94,7 +94,12 @@ body {
 }
 
 .navi {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    grid-template-rows: max-content;
+    justify-content: space-between;
     width: 100%;
+
     position: fixed;
     top: 0px;
     background-color: #32cfff;
