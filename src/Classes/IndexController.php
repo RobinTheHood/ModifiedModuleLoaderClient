@@ -90,8 +90,12 @@ class IndexController
                 $this->invokeSelfUpdate();
                 break;
 
-            case 'reportProblem':
-                $this->invokeReportProblem();
+            case 'reportIssue':
+                $this->invokeReportIssue();
+                break;
+
+            case 'support':
+                $this->invokeSupport();
                 break;
 
             default:
@@ -464,13 +468,20 @@ class IndexController
         Redirect::redirect('/');
     }
 
-    public function invokeReportProblem() 
+    public function invokeReportIssue() 
     {
         $this->checkAccessRight();
+        
         if (isset($_POST['send_mail'])) {
-            SendMail::sendFeedback();
-        } 
-        include App::getTemplatesRoot() . '/ReportProblem.tmpl.php';
+            SendMail::sendIssue();
+        }
+
+        include App::getTemplatesRoot() . '/ReportIssue.tmpl.php';
+    }
+
+    public function invokeSupport()
+    {
+        include App::getTemplatesRoot() . '/Support.tmpl.php';
     }
 
     public function checkAccessRight()
