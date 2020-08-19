@@ -5,11 +5,9 @@ body {
 }
 
 .content {
-    -margin-left: auto;
-    -margin-right: auto;
-    margin-top: 90px;
-    margin-bottom: 30px;
-    -max-width: 1100px;
+    max-width: 1100px;
+
+    margin: 30px auto;
 }
 
 .modules .category {
@@ -94,41 +92,45 @@ body {
 }
 
 .navi {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    grid-template-rows: max-content;
+    justify-content: space-between;
     width: 100%;
-    position: fixed;
+
+    position: sticky;
     top: 0px;
+
     background-color: #32cfff;
     z-index: 1000;
 }
 
 .navi ul {
+    display: flex;
+    flex-flow: row nowrap;
+
     margin: 0px;
     padding: 0px;
+
+    list-style: none;
 }
 
 .navi ul li {
-    display: inline-block;
-    padding: 20px;
     color: white;
 }
 
 .navi ul li a {
+    display: block;
+    padding: 20px;
+
     color: white;
     font-weight:bolder;
     text-decoration: none;
+    text-align: center;
 }
 
 .navi ul li a:hover {
     text-decoration: underline;
-}
-
-.navi .navi-left {
-    display: inline-block;
-}
-
-.navi .navi-right {
-    display: inline-block;
-    float: right;
 }
 
 .content h1 {
@@ -343,13 +345,47 @@ pre code {
 /**
  * Responsive
  */
+@media(max-width: 1140px) {
+    .navi {
+        grid-template-columns:
+            minmax(max-content, 100%)
+            minmax(max-content, 100%);
+    }
+
+    .navi ul li {
+        flex: 1 1 auto;
+    }
+
+    .navi ul li a {
+        padding: 20px 0;
+    }
+}
+
 @media(max-width: 768px) {
+    .navi ul {
+        flex-flow: column nowrap;
+    }
+
+    .navi ul li {
+        flex: 0 1 auto;
+    }
+
+    .navi ul li a {
+        padding: 20px;
+
+        text-align: inherit;
+    }
+
     .modules .category {
     	grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media(max-width: 512px) {
+    .navi {
+        grid-template-columns: minmax(max-content, 100%);
+    }
+
     .modules .category {
     	grid-template-columns: repeat(1, 1fr);
     }
