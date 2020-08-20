@@ -47,7 +47,7 @@
                                 <div class="alert alert-warning" role="alert">
                                     <strong>Achtung:</strong> Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast Du an diesen
                                     Anpassungen vorgenommen. <strong>Deinstallation</strong> und <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur
-                                    Verfügung, damit Deine Arbeit nicht verloren geht. <a href="#" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
+                                    Verfügung, damit Deine Arbeit nicht verloren geht. <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
                                 </div>
                             <?php } ?>
 
@@ -69,7 +69,7 @@
                                 <?php } ?>
 
                                 <?php if (ModuleStatus::isRepairable($module)) { ?>
-                                    <a class="button button-warning" onclick="return confirm('Möchtest Du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
+                                    <a class="button button-danger" onclick="return confirm('Möchtest Du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
                                         <?php if ($configuration['installMode'] != 'link') {?>
                                             Änderungen verwerfen
                                         <?php } else { ?>
