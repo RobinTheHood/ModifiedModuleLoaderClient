@@ -10,7 +10,7 @@
         <?php include 'Navi.tmpl.php' ?>
         <div class="content">
             <div class="support">
-                <div class="container">
+                <div>
                     <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
                     
                     <h2>Hilfe und Support</h2>

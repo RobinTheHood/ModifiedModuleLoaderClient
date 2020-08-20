@@ -20,7 +20,7 @@
 
         <div class="content">
             <div class="moduleinfo">
-                <div class="container">
+                <div>
                     <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
 
                     <div class="row">
