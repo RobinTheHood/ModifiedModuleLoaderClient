@@ -60,7 +60,7 @@
 
                                 <?php if (!$module->isCompatible()) { ?>
                                     <div class="alert alert-warning" role="alert">
-                                        Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <?php echo ShopInfo::getModifiedVersion()?> installiert.
+                                        Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?php echo ShopInfo::getModifiedVersion()?></strong> installiert.
                                     </div>
                                 <?php } ?>
 
