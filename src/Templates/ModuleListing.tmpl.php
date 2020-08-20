@@ -13,7 +13,7 @@
 
         <div class="content module-listing">
 
-            <div class="container">
+            <div>
                 <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
 
                 <div class="search">
