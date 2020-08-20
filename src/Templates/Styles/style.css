@@ -1,5 +1,7 @@
 :root {
     --gutter: 20px;
+
+    --colourPrimary: #007bff;
 }
 
 body {
@@ -11,7 +13,7 @@ body {
 .content {
     max-width: 1100px;
 
-    margin: var(--gutter) auto;
+    margin: 40px auto var(--gutter) auto;
     padding: 0 var(--gutter);
 
     box-sizing: content-box;
@@ -113,7 +115,7 @@ body {
             0 8px 8px rgba(0,0,0,0.12),
             0 16px 16px rgba(0,0,0,0.12);
 
-    background-color: #007bff;
+    background-color: var(--colourPrimary);
     z-index: 1000;
 }
 
@@ -172,6 +174,8 @@ body {
 
 .navi .menu picture > * {
     transition: transform 0.4s;
+
+    height: calc(1em + var(--gutter));
 }
 
 .navi .menu:hover picture > * {
@@ -196,7 +200,7 @@ body {
 
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-    background-color: #007bff;
+    background-color: var(--colourPrimary);
 }
 
 .navi ul li {
@@ -208,7 +212,7 @@ body {
     padding: var(--gutter);
 
     color: white;
-    font-weight:bolder;
+    font-weight: bolder;
     text-decoration: none;
 }
 
@@ -252,7 +256,7 @@ body {
     max-width: 400px;
     padding: var(--gutter);
     border-radius: 4px;
-    border: 1px solid #32cfff;
+    border: 1px solid var(--colourPrimary);
 }
 
 .signin-frame input[type="text"],
@@ -264,7 +268,7 @@ body {
     margin-bottom: var(--gutter);
     font-size: 16px;
     padding: 12px;
-    border: 1px solid #32cfff;
+    border: 1px solid var(--colourPrimary);
     font-weight: lighter;
     outline: none;
 }
@@ -272,8 +276,8 @@ body {
 .signin-frame input[type="submit"] {
     margin-top: 10px;
     width: 100%;
-    color: #32cfff;
-    border: 1px solid #32cfff;
+    color: var(--colourPrimary);
+    border: 1px solid var(--colourPrimary);
     background-color: white;
     height: 50px;
     font: bold 15px arial, sans-serif;
@@ -282,7 +286,7 @@ body {
 }
 
 .signin-frame input[type="submit"]:hover {
-    background-color: #32cfff;
+    background-color: var(--colourPrimary);
     color: white;
 }
 
@@ -392,7 +396,7 @@ body {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    background-color: #32cfff;
+    background-color: var(--colourPrimary);
 }
 
 .infos .table-sm td {
