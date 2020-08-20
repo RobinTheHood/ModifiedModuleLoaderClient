@@ -87,7 +87,7 @@ class ModuleInfo
     /**
      * @var string
      */
-    protected $productNumber;
+    protected $tags;
 
     public function getName(): string
     {
@@ -174,9 +174,9 @@ class ModuleInfo
         return $this->autoload;
     }
 
-    public function getProductNumber(): string
+    public function getTags(): string
     {
-        return $this->productNumber;
+        return $this->tags;
     }
 
     public function loadFromJson($path)
@@ -214,7 +214,7 @@ class ModuleInfo
         $this->visibility = ArrayHelper::getIfSet($array, 'visibility');
         $this->price = ArrayHelper::getIfSet($array, 'price');
         $this->autoload = ArrayHelper::getIfSet($array, 'autoload');
-        $this->productNumber = ArrayHelper::getIfSet($array, 'productNumber');
+        $this->tags = ArrayHelper::getIfSet($array, 'tags');
 
         return true;
     }
@@ -239,7 +239,7 @@ class ModuleInfo
             'visibility' => $this->visibility,
             'price' => $this->price,
             'autoload' => $this->autoload,
-            'productNumber' => $this->productNumber
+            'tags' => $this->tags
         ];
     }
 }

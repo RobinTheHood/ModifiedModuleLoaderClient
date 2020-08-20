@@ -136,13 +136,6 @@
                                                     <td><?php echo $module->getVersion(); ?></td>
                                                 </tr>
 
-                                                <?php if($module->getProductNumber()) { ?>
-                                                    <tr>
-                                                        <td>Produkt Nummer</td>
-                                                        <td><?php echo $module->getProductNumber(); ?></td>
-                                                    </tr>
-                                                <?php } ?>
-
                                                 <tr>
                                                     <td>Preis</td>
                                                     <td><?php echo $module->getPriceFormated(); ?></td>
@@ -152,7 +145,7 @@
                                                     <td>Kompatible mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
-                                                            <?php foreach($module->getModifiedCompatibility() as $version) { ?>
+                                                            <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
                                                                 <?php
                                                                 $badgeClasses = [
                                                                     'badge'
@@ -243,7 +236,7 @@
                                                     <td>Kompatible mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
-                                                            <?php foreach($module->getModifiedCompatibility() as $version) { ?>
+                                                            <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
                                                                 <span class="badge badge-secondary"><?php echo $version; ?></span>
                                                             <?php } ?>
                                                         <?php } else { ?>
@@ -251,6 +244,17 @@
                                                         <?php } ?>
                                                     </td>
                                                 </tr>
+
+                                                <?php if($module->getTags()) { ?>
+                                                    <tr>
+                                                        <td>Tags</td>
+                                                        <td>
+                                                            <?php foreach (explode(',', $module->getTags()) as $tag) { ?>
+                                                                <span class="badge badge-secondary"><?php echo trim($tag); ?></span>
+                                                            <?php } ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php } ?>
 
                                                 <tr>
                                                     <td>Entwickler</td>
@@ -268,7 +272,7 @@
                                                 <tr>
                                                     <td>Alle Versionen</td>
                                                     <td>
-                                                        <?php foreach($module->getVersions() as $moduleVersion) {?>
+                                                        <?php foreach ($module->getVersions() as $moduleVersion) {?>
                                                             <a href="?action=moduleInfo&archiveName=<?php echo $moduleVersion->getArchiveName() ?>&version=<?php echo $moduleVersion->getVersion()?>"><?php echo $moduleVersion->getVersion(); ?></a>
                                                             <?php if ($moduleVersion->isInstalled()) { ?>
                                                                 <span style="color: #bbbbbb">installiert</span>
