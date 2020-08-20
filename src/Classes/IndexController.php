@@ -131,6 +131,7 @@ class IndexController
     public function invokeSignIn()
     {
         global $configuration;
+        
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -168,6 +169,8 @@ class IndexController
 
     public function invokeSelfUpdate()
     {
+        $this->checkAccessRight();
+
         $selfUpdater = new SelfUpdater();
         $installedVersion = $selfUpdater->getInstalledVersion();
         $version = $selfUpdater->getNewestVersionInfo();
@@ -222,6 +225,8 @@ class IndexController
 
     public function invokeModuleInfo()
     {
+        $this->checkAccessRight();
+
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', null);
         $version = ArrayHelper::getIfSet($_GET, 'version', null);
 
@@ -242,33 +247,10 @@ class IndexController
         include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
     }
 
-    public function calcModuleUpdateCount()
-    {
-        $moduleLoader = LocalModuleLoader::getModuleLoader();
-        $modules = $moduleLoader->loadAllVersions();
-        $modules = ModuleFilter::filterInstalled($modules);
-        return count(ModuleFilter::filterUpdatable($modules));
-    }
-
-    public function calcModuleChangeCount()
-    {
-        $moduleLoader = LocalModuleLoader::getModuleLoader();
-        $modules = $moduleLoader->loadAllVersions();
-        return count(ModuleFilter::filterRepairable($modules));
-    }
-
-    public function calcSystemUpdateCount()
-    {
-        $selfUpdater = new SelfUpdater();
-        $checkUpdate = $selfUpdater->checkUpdate();
-        if ($checkUpdate) {
-            return 1;
-        }
-        return 0;
-    }
-
     public function invokeLazyModuleInfo()
     {
+        $this->checkAccessRight();
+
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', null);
         $version = ArrayHelper::getIfSet($_GET, 'version', null);
         $data = ArrayHelper::getIfSet($_GET, 'data', null);
@@ -287,6 +269,8 @@ class IndexController
 
     public function invokeLazyModuleUpdateCount()
     {
+        $this->checkAccessRight();
+
         $value = $this->calcModuleUpdateCount();
         if ($value) {
             echo $value;
@@ -296,6 +280,8 @@ class IndexController
 
     public function invokeLazyModuleChangeCount()
     {
+        $this->checkAccessRight();
+
         $value = $this->calcModuleChangeCount();
         if ($value) {
             echo $value;
@@ -305,6 +291,8 @@ class IndexController
 
     public function invokeLazySystemUpdateCount()
     {
+        $this->checkAccessRight();
+
         $value = $this->calcSystemUpdateCount();
         if ($value) {
             echo $value;
@@ -358,6 +346,8 @@ class IndexController
 
     public function invokeUpdate()
     {
+        $this->checkAccessRight();
+
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
 
@@ -403,7 +393,6 @@ class IndexController
                 'type' => 'error'
             ]);
         }
-
 
         $this->redirectRef($archiveName, $module->getVersion());
     }
@@ -481,7 +470,34 @@ class IndexController
 
     public function invokeSupport()
     {
+        $this->checkAccessRight();
+        
         include App::getTemplatesRoot() . '/Support.tmpl.php';
+    }
+
+    public function calcModuleUpdateCount()
+    {
+        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $modules = $moduleLoader->loadAllVersions();
+        $modules = ModuleFilter::filterInstalled($modules);
+        return count(ModuleFilter::filterUpdatable($modules));
+    }
+
+    public function calcModuleChangeCount()
+    {
+        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $modules = $moduleLoader->loadAllVersions();
+        return count(ModuleFilter::filterRepairable($modules));
+    }
+
+    public function calcSystemUpdateCount()
+    {
+        $selfUpdater = new SelfUpdater();
+        $checkUpdate = $selfUpdater->checkUpdate();
+        if ($checkUpdate) {
+            return 1;
+        }
+        return 0;
     }
 
     public function checkAccessRight()
