@@ -10,26 +10,47 @@ declare(strict_types=1);
  */
 
 use PHPUnit\Framework\TestCase;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverParser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class SemverParserTest extends TestCase
 {
     public function setUp()
     {
-        $this->parser = new SemverParser();
+        $this->parser = new Parser();
     }
 
     public function testSemverCanParseVersionString()
     {
         $version = $this->parser->parse('1.2.3');
+        $this->assertEquals(1, $version->getMajor());
+        $this->assertEquals(2, $version->getMinor());
+        $this->assertEquals(3, $version->getPatch());
+    }
 
-        $expectedVersion = [
-            'major' => '1',
-            'minor' => '2',
-            'patch' => '3'
-        ];
+    public function testSemverCanParseVersionStringWithPrefix()
+    {
+        $version = $this->parser->parse('v11.222.3333');
+        $this->assertEquals(11, $version->getMajor());
+        $this->assertEquals(222, $version->getMinor());
+        $this->assertEquals(3333, $version->getPatch());
+    }
 
-        $this->assertEquals($expectedVersion, $version);
+    public function testSemverCanParseVersionStringWithTag()
+    {
+        $version = $this->parser->parse('1.2.3-beta');
+        $this->assertEquals(1, $version->getMajor());
+        $this->assertEquals(2, $version->getMinor());
+        $this->assertEquals(3, $version->getPatch());
+        $this->assertEquals('beta', $version->getTag());
+    }
+
+    public function testSemverCanParseVersionStringWithPrefixAndTag()
+    {
+        $version = $this->parser->parse('v17.7.87-alpha');
+        $this->assertEquals(17, $version->getMajor());
+        $this->assertEquals(7, $version->getMinor());
+        $this->assertEquals(87, $version->getPatch());
+        $this->assertEquals('alpha', $version->getTag());
     }
 
     public function testCanCheckIfStringAVersion()
@@ -48,49 +69,55 @@ class SemverParserTest extends TestCase
 
     public function testSemverThrowsParseErrorException1()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('.');
     }
 
     public function testSemverThrowsParseErrorException2()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('..');
     }
 
     public function testSemverThrowsParseErrorException3()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('...');
     }
 
     public function testSemverThrowsParseErrorException4()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('1');
     }
 
     public function testSemverThrowsParseErrorException5()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('1.');
     }
 
     public function testSemverThrowsParseErrorException6()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('1.2');
     }
 
     public function testSemverThrowsParseErrorException7()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('1.2.');
     }
 
     public function testSemverThrowsParseErrorException8()
     {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\ParseErrorException::class);
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
         $version = $this->parser->parse('1.2.3.');
+    }
+
+    public function testSemverThrowsParseErrorException9()
+    {
+        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
+        $version = $this->parser->parse('1.2.3-');
     }
 }
