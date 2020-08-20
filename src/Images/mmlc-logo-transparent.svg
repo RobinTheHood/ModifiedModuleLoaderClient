@@ -17,7 +17,7 @@
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="mmlc-logo-transparent.svg"
-   inkscape:export-filename="D:\WampServer\www\modified-shop\ModifiedModuleLoaderClient\src\Images\mmlc-logo-transparent.png"
+   inkscape:export-filename="D:\WampServer\www\module-loader.de\public\images\mmlc-logo-transparent.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
   <defs
@@ -38,11 +38,11 @@
        inkscape:collect="always"
        id="linearGradient1695">
       <stop
-         style="stop-color:#b821da;stop-opacity:1"
+         style="stop-color:#007bff;stop-opacity:1"
          offset="0"
          id="stop1691" />
       <stop
-         style="stop-color:#b84bda;stop-opacity:1"
+         style="stop-color:#007bff;stop-opacity:1"
          offset="1"
          id="stop1693" />
     </linearGradient>
@@ -624,9 +624,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="377.58388"
-     inkscape:cy="-94.289134"
+     inkscape:zoom="2"
+     inkscape:cx="6.9501346"
+     inkscape:cy="151.93433"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -877,7 +877,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <dc:creator>
           <cc:Agent>
             <dc:title>Jay</dc:title>
@@ -974,26 +974,26 @@
        inkscape:connector-curvature="0"
        id="path1837"
        d="m -283.13114,436.05752 c -10e-6,-2.18039 4.6e-4,-0.67591 -10e-6,-3.17442 -4.91818,2.86604 -4.39062,2.5518 -9.30882,5.41785 0,3.1803 0.003,0.97287 0.002,3.1803 9.30724,-5.4261 -0.002,0 9.30725,-5.42373 z"
-       style="fill:#b821da;fill-opacity:1;stroke:none;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#007bff;fill-opacity:1;stroke:none;stroke-width:2.64583325;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot1703"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:BolsterBold;-inkscape-font-specification:'BolsterBold, weight=101';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#b821da;fill-opacity:1;stroke:none;stroke-width:0.52392346"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:BolsterBold;-inkscape-font-specification:'BolsterBold, weight=101';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#007bff;fill-opacity:1;stroke:none;stroke-width:0.52392346;"
        transform="matrix(0.50481311,0.29661965,0,0.50519452,-99.928229,584.18619)"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"><flowRegion
          id="flowRegion1705"
-         style="font-style:normal;font-variant:normal;font-stretch:normal;font-size:40px;font-family:BolsterBold;-inkscape-font-specification:'BolsterBold, weight=101';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#b821da;fill-opacity:1;stroke-width:0.52392346"><rect
+         style="font-style:normal;font-variant:normal;font-stretch:normal;font-size:40px;font-family:BolsterBold;-inkscape-font-specification:'BolsterBold, weight=101';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#007bff;fill-opacity:1;stroke-width:0.52392346;"><rect
            id="rect1707"
            width="125.1579"
            height="135.7645"
            x="-434.16357"
            y="-86.698036"
-           style="font-style:normal;font-variant:normal;font-stretch:normal;font-size:40px;font-family:BolsterBold;-inkscape-font-specification:'BolsterBold, weight=101';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#b821da;fill-opacity:1;stroke-width:0.52392346" /></flowRegion><flowPara
+           style="font-style:normal;font-variant:normal;font-stretch:normal;font-size:40px;font-family:BolsterBold;-inkscape-font-specification:'BolsterBold, weight=101';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#007bff;fill-opacity:1;stroke-width:0.52392346;" /></flowRegion><flowPara
          id="flowPara1709"
-         style="fill:#b821da;fill-opacity:1;stroke-width:0.52392346">M</flowPara></flowRoot>    <flowRoot
+         style="fill:#007bff;fill-opacity:1;stroke-width:0.52392346;">M</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot1703-9-7"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:BolsterBold;-inkscape-font-specification:'BolsterBold, weight=101';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.44117594;"
