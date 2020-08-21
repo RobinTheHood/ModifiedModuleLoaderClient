@@ -1,5 +1,6 @@
 <?php
 /**
+ * For more information about this config.php file and options visit:
  * @link https://module-loader.de/docs/config_config.php
  */
  
