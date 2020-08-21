@@ -12,20 +12,20 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class TemplateHelper
 {
-    public static function loadStyleSheet( $stylesheetPath )
+    public static function loadStyleSheet(string $stylesheetPath): string
     {
-        $link;
+        $link = '<link>';
         $attributes = [
             'rel' => 'stylesheet',
             'type' => 'text/css',
-            'href' => $stylesheetPath . '?v' . hash( 'crc32', $stylesheetPath ),            
+            'href' => $stylesheetPath . '?v' . hash('crc32', $stylesheetPath),
         ];
         $attributesToString = [];
 
         foreach ($attributes as $key => $value) {
             $attributesToString[] = $key . '="' . $value . '"';
 
-            $link = '<link ' . implode( ' ', $attributesToString ) . '>';
+            $link = '<link ' . implode(' ', $attributesToString) . '>';
         }
 
         return $link;

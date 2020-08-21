@@ -34,9 +34,9 @@ use RobinTheHood\ModifiedModuleLoaderClient\IndexController;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 
 ExceptionMonitor::register([
-    'ip' => $configuration['exceptionMonitorIp'],
-    'domain' => $configuration['exceptionMonitorDomain'],
-    'mail' => $configuration['exceptionMonitorMail']
+    'ip' => $configuration['exceptionMonitorIp'] ?? '127.0.0.1',
+    'domain' => $configuration['exceptionMonitorDomain'] ?? 'modified.localhost',
+    'mail' => $configuration['exceptionMonitorMail'] ?? 'info@module-loader.de'
 ]);
 
 function debugOut($value)
