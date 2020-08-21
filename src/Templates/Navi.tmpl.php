@@ -5,7 +5,7 @@
 <div class="navi">
     <div class="wrapper">
         <div class="logo">
-            <img src="src/images/mmlc-logo-transparent.png" alt="MMLC Logo">
+            <img src="src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo">
         </div>
 
         <ul class="navi-main row">
@@ -21,10 +21,10 @@
 
         <div class="menu">
             <picture class="menu-icon">
-                <source src="src/images/settings.png">
-                <source src="src/images/settings.svg">
+                <source src="src/Templates/Images/settings.png">
+                <source src="src/Templates/Images/settings.svg">
 
-                <img src="src/images/settings.png" alt="Menu">
+                <img src="src/Templates/Images/settings.png" alt="Menu">
             </picture>
 
             <ul class="menu-items">
