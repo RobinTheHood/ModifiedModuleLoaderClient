@@ -13,7 +13,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-define('VERSION', '0.4.0');
+define('VERSION', '0.5.0');
 
 class Installer
 {
@@ -33,26 +33,29 @@ class Installer
 
     public function invokeIndex()
     {
-        $systemCheck = true;
+        $errors = $this->doSystemCheck();
 
-        $errors = [];
-        if (!ini_get('allow_url_fopen')) {
-            $systemCheck = false;
-            $errors[] = 'No connection to server. <strong>allow_url_fopen</strong> has to be activated in php.ini.';
-        }
-
-        if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
-            $systemCheck = false;
-            $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
-        }
-
-        if (!$systemCheck) {
+        if ($errors) {
             echo Template::showSystemCheck($errors);
         } else if (!$this->isInstalled()) {
             echo Template::showInstall();
         } else {
             echo Template::showInstalled();
         }
+    }
+
+    public function doSystemCheck()
+    {
+        $errors = [];
+        if (!ini_get('allow_url_fopen')) {
+            $errors[] = 'No connection to server. <strong>allow_url_fopen</strong> has to be activated in php.ini.';
+        }
+
+        if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
+            $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
+        }
+
+        return $errors;
     }
 
     public function invokeInstall()
@@ -74,6 +77,7 @@ class Installer
             $this->download();
             $this->untar();
             $this->setLogin($user, $password);
+            $this->setUpAccessToken();
             $this->cleanUp();
 
             echo Template::showInstallDone();
@@ -118,6 +122,15 @@ class Installer
         file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $string);
     }
 
+    public function setUpAccessToken()
+    {
+        $accessToken = md5(uniqid());
+
+        $string = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
+        $string = str_replace("'accessToken' => ''", "'accessToken' => '$accessToken'", $string);
+        file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $string);
+    }
+
     public function cleanUp()
     {
         @unlink('ModifiedModuleLoaderClient.tar');
@@ -137,8 +150,19 @@ class Template
             self::style() . '
             <div style="text-align: center">
                 <h1>ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div>Please setup a <strong>username</strong> and <strong>password</strong>.</div>
+                <div>
+                    With this login data you can get access to the MMLC after installation.<br>
+                    For more information visit <a target="_blank" href="https://module-loader.de">module-loader.de</a>
+                </div>
+                
                 <br>
+
+                <div>
+                    Please setup a <strong>username</strong> and <strong>password</strong>.<br>
+                </div>
+                
+                <br>
+                
                 <form action="?action=install" method="post">
                     ' . $errorHtml . '
                     <div>
@@ -193,60 +217,53 @@ class Template
 
     public static function showInstalled()
     {
-        $shopURL = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
-        $mmlcURL = $shopURL . '/ModifiedModuleLoaderClient';
-        $installerFilepath = $_SERVER['SCRIPT_FILENAME'];
+        $shopUrl = $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+        $mmlcUrl = $shopUrl . '/ModifiedModuleLoaderClient';
+        $installerFilepath = __FILE__;
 
+        // Installer automatisch löschen
+        //unlink($installerFilepath);
 
-        /**
-         * Installer automatisch löschen
-         */
-        unlink($installerFilepath);
-
-
-        /**
-         * Falls installer nicht gelöscht wurde, Nachricht anzeigen
-         */
-        if ( file_exists($installerFilepath) ) {
-            return
-                self::style() . '
-                <div style="text-align: center">
-                    <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                    <div>ModifiedModuleLoaderClient is already installed.</div>
-                    <div>You can now delete the mmlc_installer.php</div>
-                    <br><br>
-                    <div>
-                        Open: <br>
-                        <a href="' . $mmlcURL . '">
-                            ' . $shopURL . '
-                        </a>
-                    </div>
-                </div>
-            ';
+        if (!file_exists($installerFilepath)) {
+            // Weiterleiten, wenn Datei gelöscht werden konnte
+            header('Location: ' . $mmlcUrl);
+            die();
         }
 
-        /**
-         * Weiterleiten, wenn Datei gelöscht werden konnte
-         */
-        header('Location: ModifiedModuleLoaderClient');
+        // Falls installer nicht gelöscht wurde, Nachricht anzeigen
+        return
+            self::style() . '
+            <div style="text-align: center">
+                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                <div>ModifiedModuleLoaderClient is already installed.</div>
+                <div>You can now delete the mmlc_installer.php</div>
+                <br><br>
+                <div>
+                    Open the MMLC: <br>
+                    <a href="//' . $mmlcUrl . '">
+                        ' . $mmlcUrl . '
+                    </a>
+                </div>
+            </div>
+        ';
     }
 
     public static function showInstallDone()
     {
-        $shopURL = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
-        $mmlcURL = $shopURL . '/ModifiedModuleLoaderClient';
+        $shopUrl = $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+        $mmlcUrl = $shopUrl . '/ModifiedModuleLoaderClient';
 
         return
             self::style() . '
             <div style="text-align: center">
-                <h1>ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div>ModifiedModuleLoaderClient was installed.</div>
+                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                <div>ModifiedModuleLoaderClient is ready installed.</div>
                 <div>You can now delete the mmlc_installer.php</div>
                 <br><br>
                 <div>
-                    Open: <br>
-                    <a href="' . $mmlcURL . '">
-                        ' . $shopURL . '
+                    Open the MMLC: <br>
+                    <a href="//' . $mmlcUrl . '">
+                        ' . $mmlcUrl . '
                     </a>
                 </div>
             </div>
@@ -279,13 +296,13 @@ class Template
                 h1 {
                     padding: 10px;
                     color: #ffffff;
-                    background-color: #32cfff;
+                    background-color: #007bff;
                 }
 
                 code {
                     max-width: 800px;
                     display: block;
-                    padding: 5px;
+                    padding: 10px;
                     border: 1px solid #cccccc;
                     background-color: #eeeeee;
                     margin-left: auto;
