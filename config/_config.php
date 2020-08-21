@@ -1,4 +1,8 @@
 <?php
+/**
+ * @link https://module-loader.de/docs/config_config.php
+ */
+ 
 $configuration = [
     'username' => 'root',
     'password' => 'root',
