@@ -5,7 +5,7 @@
 <div class="navi">
     <div class="wrapper">
         <div class="logo">
-            <img src="src/images/mmlc-logo-transparent.png" alt="MMLC Logo">
+            <img src="src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo">
         </div>
 
         <ul class="navi-main row">
@@ -21,15 +21,15 @@
 
         <div class="menu">
             <picture class="menu-icon">
-                <source src="src/images/settings.png">
-                <source src="src/images/settings.svg">
+                <source src="src/Templates/Images/settings.png">
+                <source src="src/Templates/Images/settings.svg">
 
-                <img src="src/images/settings.png" alt="Menu">
+                <img src="src/Templates/Images/settings.png" alt="Menu">
             </picture>
 
             <ul class="menu-items">
-                <li><a href="<?php echo '//' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . 'admin/start.php'; ?>">zum Shop</a></li>
-                <li><a href="?action=support">Hilfe</a></li>
+                <li><a href="<?php echo '//' . rtrim($_SERVER['HTTP_HOST'], '/') . '/admin/start.php' ?>">zurück zum Shopadmin</a></li>
+                <li><a href="?action=support">Hilfe & Support</a></li>
                 <li><a href="?action=selfUpdate">System <span id="systemUpdateCount" class="badge badge-light">0<span></a></li>
                 <li><a href="?action=signOut">Abmelden</a></li>
             </ul>

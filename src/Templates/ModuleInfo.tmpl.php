@@ -45,22 +45,22 @@
 
                             <?php if (ModuleStatus::isRepairable($module)) { ?>
                                 <div class="alert alert-warning" role="alert">
-                                    <strong>Achtung:</strong> Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast Du an diesen
+                                    <strong>Achtung:</strong> Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an diesen
                                     Anpassungen vorgenommen. <strong>Deinstallation</strong> und <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur
-                                    Verfügung, damit Deine Arbeit nicht verloren geht. <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
+                                    Verfügung, damit deine Arbeit nicht verloren geht. <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
                                 </div>
                             <?php } ?>
 
                             <div class="moduleinfo-buttons">
                                 <?php if (!ModuleStatus::isLoadable($module)) { ?>
                                     <div class="alert alert-warning" role="alert">
-                                        Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf.
+                                        Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf, dieser kann dir das Modul z. B. nach einem Kauf freischalten.
                                     </div>
                                 <?php } ?>
 
                                 <?php if (!$module->isCompatible()) { ?>
                                     <div class="alert alert-warning" role="alert">
-                                        Dieses Modul wurde noch nicht mit Deiner Version von modified getestet. Du hast modifed <?php echo ShopInfo::getModifiedVersion()?> installiert.
+                                        Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?php echo ShopInfo::getModifiedVersion()?></strong> installiert.
                                     </div>
                                 <?php } ?>
 
@@ -69,7 +69,7 @@
                                 <?php } ?>
 
                                 <?php if (ModuleStatus::isRepairable($module)) { ?>
-                                    <a class="button button-danger" onclick="return confirm('Möchtest Du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
+                                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
                                         <?php if ($configuration['installMode'] != 'link') {?>
                                             Änderungen verwerfen
                                         <?php } else { ?>
@@ -105,7 +105,7 @@
                                 <?php } ?>
 
                                 <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
-                                    <a class="button button-danger" onclick="return confirm('Möchtest Du das Modul wirklich entfernen?');" href="?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
+                                    <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
                                 <?php } ?>
                             </div>
                         </div>
@@ -136,13 +136,6 @@
                                                     <td><?php echo $module->getVersion(); ?></td>
                                                 </tr>
 
-                                                <?php if($module->getProductNumber()) { ?>
-                                                    <tr>
-                                                        <td>Produkt Nummer</td>
-                                                        <td><?php echo $module->getProductNumber(); ?></td>
-                                                    </tr>
-                                                <?php } ?>
-
                                                 <tr>
                                                     <td>Preis</td>
                                                     <td><?php echo $module->getPriceFormated(); ?></td>
@@ -152,7 +145,7 @@
                                                     <td>Kompatible mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
-                                                            <?php foreach($module->getModifiedCompatibility() as $version) { ?>
+                                                            <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
                                                                 <?php
                                                                 $badgeClasses = [
                                                                     'badge'
@@ -243,7 +236,7 @@
                                                     <td>Kompatible mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
-                                                            <?php foreach($module->getModifiedCompatibility() as $version) { ?>
+                                                            <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
                                                                 <span class="badge badge-secondary"><?php echo $version; ?></span>
                                                             <?php } ?>
                                                         <?php } else { ?>
@@ -251,6 +244,17 @@
                                                         <?php } ?>
                                                     </td>
                                                 </tr>
+
+                                                <?php if($module->getTags()) { ?>
+                                                    <tr>
+                                                        <td>Tags</td>
+                                                        <td>
+                                                            <?php foreach (explode(',', $module->getTags()) as $tag) { ?>
+                                                                <span class="badge badge-secondary"><?php echo trim($tag); ?></span>
+                                                            <?php } ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php } ?>
 
                                                 <tr>
                                                     <td>Entwickler</td>
@@ -268,7 +272,7 @@
                                                 <tr>
                                                     <td>Alle Versionen</td>
                                                     <td>
-                                                        <?php foreach($module->getVersions() as $moduleVersion) {?>
+                                                        <?php foreach ($module->getVersions() as $moduleVersion) {?>
                                                             <a href="?action=moduleInfo&archiveName=<?php echo $moduleVersion->getArchiveName() ?>&version=<?php echo $moduleVersion->getVersion()?>"><?php echo $moduleVersion->getVersion(); ?></a>
                                                             <?php if ($moduleVersion->isInstalled()) { ?>
                                                                 <span style="color: #bbbbbb">installiert</span>

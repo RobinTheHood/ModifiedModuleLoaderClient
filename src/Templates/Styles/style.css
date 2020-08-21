@@ -1,5 +1,10 @@
 :root {
-    --gutter: 20px;
+    --gutterDefault: 20px;
+
+    --paddingDefault: 20px;
+    --paddingNavigation: 10px;
+
+    --colourPrimary: #007bff;
 }
 
 body {
@@ -11,15 +16,15 @@ body {
 .content {
     max-width: 1100px;
 
-    margin: var(--gutter) auto;
-    padding: 0 var(--gutter);
+    margin: 40px auto var(--gutterDefault) auto;
+    padding: 0 var(--paddingDefault);
 
     box-sizing: content-box;
 }
 
 .modules .category {
     display: grid;
-    grid-gap: var(--gutter);
+    grid-gap: var(--gutterDefault);
     grid-template-columns: repeat(3, 1fr);
 
     margin-bottom: 8em;
@@ -105,7 +110,7 @@ body {
 .navi {
     position: sticky;
     top: 0px;
-    padding: 0.2em var(--gutter);
+    padding: 0.2em var(--paddingDefault);
 
     box-shadow: 0 1px 1px rgba(0,0,0,0.12),
             0 2px 2px rgba(0,0,0,0.12),
@@ -113,7 +118,7 @@ body {
             0 8px 8px rgba(0,0,0,0.12),
             0 16px 16px rgba(0,0,0,0.12);
 
-    background-color: #007bff;
+    background-color: var(--colourPrimary);
     z-index: 1000;
 }
 
@@ -151,13 +156,19 @@ body {
 }
 
 .navi .menu {
+    transition: padding 0.4s ease;
+
     position: relative;
 
     height: 100%;
 }
 
-.navi .menu ul {
+.navi .menu ul.menu-items {
     display: none;
+}
+
+.navi .menu:hover {
+    padding: 0 var(--paddingDefault);
 }
 
 .navi .menu picture {
@@ -172,17 +183,19 @@ body {
 
 .navi .menu picture > * {
     transition: transform 0.4s;
+
+    height: calc(1em + var(--gutterDefault));
 }
 
 .navi .menu:hover picture > * {
-    transform: rotate(45deg);
+    transform: rotate(-90deg);
 }
 
 .navi .menu:hover ul {
     display: block;
 }
 
-.navi .menu ul {
+.navi .menu ul.menu-items {
     position: absolute;
     right: 0;
 
@@ -196,7 +209,7 @@ body {
 
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-    background-color: #007bff;
+    background-color: var(--colourPrimary);
 }
 
 .navi ul li {
@@ -205,10 +218,11 @@ body {
 
 .navi ul li a {
     display: block;
-    padding: var(--gutter);
+    padding: var(--paddingNavigation) var(--paddingDefault);
+    white-space: nowrap;
 
     color: white;
-    font-weight:bolder;
+    font-weight: bolder;
     text-decoration: none;
 }
 
@@ -218,7 +232,7 @@ body {
 
 .moduleinfo h1 {
     font-weight: normal;
-    margin-bottom: var(--gutter);
+    margin-bottom: var(--gutterDefault);
 }
 
 .module-listing h1 {
@@ -230,8 +244,8 @@ body {
 .module-listing h2 {
     font-weight: normal;
     font-size: 1.5em;
-    margin-bottom: var(--gutter);
-    margin-top: var(--gutter);
+    margin-bottom: var(--gutterDefault);
+    margin-top: var(--gutterDefault);
 
 }
 
@@ -250,9 +264,9 @@ body {
     margin-left: auto;
     margin-right: auto;
     max-width: 400px;
-    padding: var(--gutter);
+    padding: var(--paddingDefault);
     border-radius: 4px;
-    border: 1px solid #32cfff;
+    border: 1px solid var(--colourPrimary);
 }
 
 .signin-frame input[type="text"],
@@ -261,10 +275,10 @@ body {
     box-sizing: border-box;
     width: 100%;
     margin-top: 6px;
-    margin-bottom: var(--gutter);
+    margin-bottom: var(--gutterDefault);
     font-size: 16px;
     padding: 12px;
-    border: 1px solid #32cfff;
+    border: 1px solid var(--colourPrimary);
     font-weight: lighter;
     outline: none;
 }
@@ -272,8 +286,8 @@ body {
 .signin-frame input[type="submit"] {
     margin-top: 10px;
     width: 100%;
-    color: #32cfff;
-    border: 1px solid #32cfff;
+    color: var(--colourPrimary);
+    border: 1px solid var(--colourPrimary);
     background-color: white;
     height: 50px;
     font: bold 15px arial, sans-serif;
@@ -282,14 +296,14 @@ body {
 }
 
 .signin-frame input[type="submit"]:hover {
-    background-color: #32cfff;
+    background-color: var(--colourPrimary);
     color: white;
 }
 
 .content .moduleinfo .moduleinfo-row {
-    padding-bottom: var(--gutter);
+    padding-bottom: var(--paddingDefault);
     border-bottom: 1px solid #cccccc;
-    margin-bottom: var(--gutter);
+    margin-bottom: var(--gutterDefault);
 }
 
 .content .moduleinfo .moduleinfo-row .info-heading {
@@ -304,9 +318,7 @@ body {
 }
 
 .content .moduleinfo .moduleinfo-images {
-    -border-bottom: 1px solid #cccccc;
-    padding-bottom: var(--gutter);
-    -margin-bottom: var(--gutter);
+    padding-bottom: var(--paddingDefault);
 }
 
 .content .moduleinfo .moduleinfo-images img {
@@ -328,8 +340,8 @@ body {
 }
 
 .content .moduleinfo .moduleinfo-buttons {
-    margin-bottom: var(--gutter);
-    padding-bottom: var(--gutter);
+    margin-bottom: var(--gutterDefault);
+    padding-bottom: var(--paddingDefault);
     border-bottom: 1px solid #cccccc;
 }
 
@@ -367,7 +379,7 @@ body {
 
 .markdown h4 {
     font-weight: normal;
-    margin-top: var(--gutter);
+    margin-top: var(--gutterDefault);
 }
 
 .markdown hr {
@@ -392,7 +404,7 @@ body {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    background-color: #32cfff;
+    background-color: var(--colourPrimary);
 }
 
 .infos .table-sm td {
@@ -403,7 +415,7 @@ pre code {
     background: #eeeeee;
     display: block;
     padding: 15px;
-    margin: var(--gutter) 0px;
+    margin: var(--gutterDefault) 0px;
 }
 
 
@@ -442,7 +454,7 @@ pre code {
     .navi {
         position: static;
 
-        padding: var(--gutter);
+        padding: var(--paddingDefault);
     }
 
     .navi ul.row {
@@ -451,14 +463,18 @@ pre code {
 
     .navi ul li a,
     .navi ul.navi-main li a {
-    	padding: var(--gutter) 0;
+    	padding: var(--paddingDefault) 0;
+    }
+
+    .navi .menu:hover {
+    	padding: 0;
     }
 
     .navi .menu .menu-icon {
         display: none;
     }
 
-    .navi .menu .menu-items {
+    .navi .menu ul.menu-items {
         display: block;
 
         position: static;
