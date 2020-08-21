@@ -149,7 +149,7 @@ class Template
         return
             self::style() . '
             <div style="text-align: center">
-                <h1>ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
+                <h1>Modified Module Loader Client Installer v' . VERSION . '</h1>
                 <div>
                     With this login data you can get access to the MMLC after installation.<br>
                     For more information visit <a target="_blank" href="https://module-loader.de">module-loader.de</a>
@@ -207,8 +207,8 @@ class Template
         return
             self::style() . '
             <div style="text-align: center">
-                <h1>ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div>ModifiedModuleLoaderClient system check failed.</div>
+                <h1>Modified Module Loader Client Installer v' . VERSION . '</h1>
+                <div>Modified Module Loader Client system check failed.</div>
                 <br>
                 <div style="color: red">' . $errorStr . '</div>
             </div>
@@ -234,8 +234,8 @@ class Template
         return
             self::style() . '
             <div style="text-align: center">
-                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div>ModifiedModuleLoaderClient is already installed.</div>
+                <h1>Modified Module Loader Client Installer v' . VERSION . '</h1>
+                <div>Modified Module Loader Client is already installed.</div>
                 <div>You can now delete the mmlc_installer.php</div>
                 <br><br>
                 <div>
@@ -256,8 +256,8 @@ class Template
         return
             self::style() . '
             <div style="text-align: center">
-                <h1> ModifiedModuleLoaderClient Installer v' . VERSION . '</h1>
-                <div>ModifiedModuleLoaderClient is ready installed.</div>
+                <h1> Modified Module Loader Client Installer v' . VERSION . '</h1>
+                <div>Modified Module Loader Client is ready installed.</div>
                 <div>You can now delete the mmlc_installer.php</div>
                 <br><br>
                 <div>
