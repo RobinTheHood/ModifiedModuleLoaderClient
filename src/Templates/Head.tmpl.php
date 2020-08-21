@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 <?php
-use RobinTheHood\ModifiedModuleLoaderClient\TemplateHelper;
+use RobinTheHood\ModifiedModuleLoaderClient\Helpers\TemplateHelper;
 
 echo TemplateHelper::loadStyleSheet('src/Templates/Styles/bootstrap.min.css');
 echo TemplateHelper::loadStyleSheet('src/Templates/Styles/button.css');
