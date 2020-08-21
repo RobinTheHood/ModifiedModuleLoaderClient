@@ -8,5 +8,9 @@ $configuration = [
     'remoteAddress' => 'https://app.module-loader.de/api.php',
 
     'installMode' => 'copy',
-    'selfUpdate' => 'stable'
+    'selfUpdate' => 'stable',
+
+    'exceptionMonitorIp' => '127.0.0.0',
+    'exceptionMonitorDomain' => 'modified.localhost',
+    'exceptionMonitorMail' => 'info@module-loader.de'
 ];

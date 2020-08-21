@@ -4,10 +4,14 @@
 <title>MMLC - Modified Module Loader Client</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<link rel="stylesheet" type="text/css" href="src/Templates/Styles/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="src/Templates/Styles/button.css" media="screen" >
-<link rel="stylesheet" type="text/css" href="src/Templates/Styles/style.css" media="screen" >
+<?php
+use RobinTheHood\ModifiedModuleLoaderClient\TemplateHelper;
 
-<link href="src/Templates/Styles/lightbox.css" rel="stylesheet">
+echo TemplateHelper::loadStyleSheet('src/Templates/Styles/bootstrap.min.css');
+echo TemplateHelper::loadStyleSheet('src/Templates/Styles/button.css');
+echo TemplateHelper::loadStyleSheet('src/Templates/Styles/style.css');
+
+echo TemplateHelper::loadStyleSheet('src/Templates/Styles/lightbox.css');
+?>
 
 <script src="src/Templates/Scripts/jquery-3.3.1.min.js"></script>
