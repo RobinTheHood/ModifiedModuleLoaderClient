@@ -13,6 +13,32 @@ body {
     margin: 0px;
 }
 
+/**
+ * Tooltip
+ */
+[data-tooltip]::after {
+    display: none;
+    padding: 0.375rem 0.75rem;
+    max-width: 60ch;
+
+    position: absolute;
+
+    font-size: 0.8rem;
+    text-align: left;
+    border-radius: 0.25rem;
+
+    color: var(--light);
+    background-color: var(--dark);
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+}
+
+[data-tooltip]:hover::after {
+    display: block;
+}
+
 .content {
     max-width: 1100px;
 
@@ -44,25 +70,6 @@ body {
     color: var(--gray);
 
     cursor: help;
-}
-
-.modules .category .card .card-compatibility::after {
-    display: none;
-    content: attr(data-tooltip);
-    padding: 0.375rem 0.75rem;
-    max-width: 60ch;
-
-    position: absolute;
-
-    font-size: 0.8rem;
-    border-radius: 0.25rem;
-
-    color: var(--light);
-    background-color: var(--dark);
-}
-
-.modules .category .card .card-compatibility:hover::after {
-    display: block;
 }
 
 .modules .category .card .card-version {
@@ -167,6 +174,40 @@ body {
     display: none;
 }
 
+.navi .menu ul.menu-items li a.icon:before {
+    content: '';
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0 0.6em 0.2em 0;
+    vertical-align: middle;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    filter: invert(100%);
+}
+
+.navi .menu ul.menu-items li a.icon.externalLink:before {
+    background-image: url('../Images/external-link.png');
+    background-image: url('../Images/external-link.svg');
+}
+
+.navi .menu ul.menu-items li a.icon.help:before {
+    background-image: url('../Images/help.png');
+    background-image: url('../Images/help.svg');
+}
+
+.navi .menu ul.menu-items li a.icon.system:before {
+    background-image: url('../Images/system.png');
+    background-image: url('../Images/system.svg');
+}
+
+.navi .menu ul.menu-items li a.icon.signOut:before {
+    background-image: url('../Images/sign-out.png');
+    background-image: url('../Images/sign-out.svg');
+}
+
 .navi .menu:hover {
     padding: 0 var(--paddingDefault);
 }
@@ -191,7 +232,7 @@ body {
     transform: rotate(-90deg);
 }
 
-.navi .menu:hover ul {
+.navi .menu:hover ul.menu-items {
     display: block;
 }
 
@@ -491,6 +532,10 @@ pre code {
             max-content;
         align-items: unset;
         justify-content: unset;
+    }
+
+    .navi .menu ul.menu-items li a.icon::before {
+    	display: none;
     }
 
     .modules .category {
