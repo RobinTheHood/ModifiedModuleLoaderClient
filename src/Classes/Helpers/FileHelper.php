@@ -145,4 +145,14 @@ class FileHelper
         }
         return '';
     }
+
+    public static function containsAllFiles($files, $baseDirectory): bool
+    {
+        foreach ($files as $file) {
+            if (!\file_exists($baseDirectory . '/' . $file)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
