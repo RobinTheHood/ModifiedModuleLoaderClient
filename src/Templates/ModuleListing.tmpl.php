@@ -16,10 +16,6 @@
             <div>
                 <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
 
-                <div class="search">
-                    <input type="text" value="" placeholder="Suche Modul- oder Archivname" onkeyup="filterModule(this.value)">
-                </div>
-
                 <?php if (isset($_GET['filterModules']) && $_GET['filterModules'] == 'loaded') { ?>
                     <h1>Geladene Module</h1>
                 <?php } elseif (isset($_GET['filterModules']) && $_GET['filterModules'] == 'installed') { ?>
@@ -33,6 +29,17 @@
                 <?php } else { ?>
                     <h1>Alle Module</h1>
                 <?php } ?>
+
+                <div class="search">
+                    <h2>Suche</h2>
+                    <input type="text" value="" placeholder="Suche Modul- oder Archivname" onkeyup="filterModule(this.value)">
+
+                    <h3>Optionen</h3>
+                    <fieldset>
+                        <input type="checkbox" id="checkbox" name="" value="">
+                        <label for="checkbox">Nur kostenlose Module suchen</label>
+                    </fieldset>
+                </div>
 
                 <div class="modules">
                     <?php foreach($groupedModules as $category => $modules) { ?>
@@ -72,7 +79,7 @@
                                         </div>
 
                                         <p class="card-text"><?php echo $module->getShortDescription(); ?></p>
-                                        
+
                                         <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>" class="btn <?php echo $module->isCompatible() ? 'btn-primary' : 'btn-secondary'; ?>">Details</a>
                                     </div>
                                 </div>
