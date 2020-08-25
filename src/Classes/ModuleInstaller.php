@@ -79,6 +79,7 @@ class ModuleInstaller
         $dependencyManager->canBeInstalled($module);
         
         $files = $module->getSrcFilePaths();
+        
         foreach($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $file;
 
@@ -88,6 +89,9 @@ class ModuleInstaller
                 if (!FileInfo::isTemplateFile($file)) {
                     $overwrite = true;
                 }
+
+                $file = ModulePathMapper::mmlcToShop($file);
+
                 $dest = App::getShopRoot() . $file;
                 $this->installFile($src, $dest, $overwrite);
             }
@@ -179,6 +183,7 @@ class ModuleInstaller
         $files = $module->getSrcFilePaths();
 
         foreach($files as $file) {
+            $file = ModulePathMapper::mmlcToShop($file);
             $dest = App::getShopRoot() . $file;
             $this->uninstallFile($dest);
         }

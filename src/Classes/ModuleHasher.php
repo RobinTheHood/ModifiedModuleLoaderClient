@@ -30,15 +30,32 @@ class ModuleHasher extends Hasher
 
     public function createModuleHashes($module, $moduleDir = false)
     {
+        $files = $module->getSrcFilePaths();
+
         if ($moduleDir) {
             $root = $module->getLocalRootPath() . $module->getSrcRootPath() . '/';
         } else {
             $root = App::getShopRoot();
+            $files = ModulePathMapper::mmlcPathsToShopPaths($files);
         }
 
-        $files = $module->getSrcFilePaths();
         $hashes = $this->createFileHashes($files, $root);
+        
+        if (!$moduleDir) {
+            $hashes = $this->mapHashesShopToMmlc($hashes);
+        }
+
         return $hashes;
+    }
+
+    public function mapHashesShopToMmlc($hashes)
+    {
+        $mappedHashes = [];
+        foreach ($hashes as $file => $hash) {
+            $file = ModulePathMapper::shopToMmlc($file);
+            $mappedHashes[$file] = $hash;
+        }
+        return $mappedHashes;
     }
 
     public function loadeModuleHashes($module)
@@ -64,7 +81,7 @@ class ModuleHasher extends Hasher
         }
 
         $moduleFilePath = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $path;
-        $installedFilePath = App::getShopRoot() . '/' . $path;
+        $installedFilePath = App::getShopRoot() . '/' . ModulePathMapper::mmlcToShop($path);;
 
         if (file_exists($installedFilePath) && is_link($installedFilePath)) {
             return "No line by line diff available for linked files, because they have always equal content.";
