@@ -52,4 +52,10 @@ class ShopInfo
 
         return $templates;
     }
+
+    public static function getAdminDir(): string
+    {
+        global $configuration;
+        return $configuration['adminDir'] ?? 'admin';
+    }
 }
