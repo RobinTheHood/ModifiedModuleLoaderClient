@@ -1,0 +1,11 @@
+/**
+ * Font
+ */
+@font-face {
+  font-family: 'Work Sans';
+  src:
+    local('Work Sans'),
+    url('../../Fonts/WorkSans-VariableFont_wght.ttf') format('woff2-variations');
+  font-display: swap;
+  font-weight: 400;
+}
