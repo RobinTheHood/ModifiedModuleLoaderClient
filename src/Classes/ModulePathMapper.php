@@ -22,7 +22,7 @@ class ModulePathMapper
     {
         $adminDir = ShopInfo::getAdminDir();
         // Replace string that starts with "/DEFAULT_ADMIN_DIR/"
-        $shopPath = preg_replace('/^\/' . DEFAULT_ADMIN_DIR .'\//', '/' . $adminDir . '/', $mmlcPath);
+        $shopPath = preg_replace('/^\/' . self::DEFAULT_ADMIN_DIR .'\//', '/' . $adminDir . '/', $mmlcPath);
         return $shopPath;
     }
 
@@ -30,7 +30,7 @@ class ModulePathMapper
     {
         $adminDir = ShopInfo::getAdminDir();
         // Replace string that starts with "/$adminDir/"
-        $mmlcPath = preg_replace('/^\/' . $adminDir . '\//', '/' . DEFAULT_ADMIN_DIR . '/', $shopPath);
+        $mmlcPath = preg_replace('/^\/' . $adminDir . '\//', '/' . self::DEFAULT_ADMIN_DIR . '/', $shopPath);
         return $mmlcPath;
     }
 
