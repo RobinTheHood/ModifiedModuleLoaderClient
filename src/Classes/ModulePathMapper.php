@@ -12,26 +12,30 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\Hasher;
+use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 
 class ModulePathMapper
 {
+    const DEFAULT_ADMIN_DIR = 'admin';
+
     public static function mmlcToShop(string $mmlcPath): string
     {
-        global $configuration;
-        $shopPath = preg_replace('/^\/admin\//', '/' . $configuration['adminDir'] . '/', $mmlcPath);
+        $adminDir = ShopInfo::getAdminDir();
+        // Replace string that starts with "/DEFAULT_ADMIN_DIR/"
+        $shopPath = preg_replace('/^\/' . self::DEFAULT_ADMIN_DIR .'\//', '/' . $adminDir . '/', $mmlcPath);
         return $shopPath;
     }
 
     public static function shopToMmlc(string $shopPath): string
     {
-        global $configuration;
-        $mmlcPath = preg_replace('/^\/' . $configuration['adminDir'] . '\//', '/admin/', $shopPath);
+        $adminDir = ShopInfo::getAdminDir();
+        // Replace string that starts with "/$adminDir/"
+        $mmlcPath = preg_replace('/^\/' . $adminDir . '\//', '/' . self::DEFAULT_ADMIN_DIR . '/', $shopPath);
         return $mmlcPath;
     }
 
     public static function mmlcPathsToShopPaths(array $mmlcPaths): array
     {
-        global $configuration;
         $shopPaths = [];
         foreach ($mmlcPaths as $path) {
             $shopPaths[] = self::mmlcToShop($path);
@@ -41,7 +45,6 @@ class ModulePathMapper
 
     public static function shopPathsToMmlcPaths(array $shopPaths): array
     {
-        global $configuration;
         $mmlcPaths = [];
         foreach ($shopPaths as $path) {
             $mmlcPaths[] = self::mmlcToShop($path);
