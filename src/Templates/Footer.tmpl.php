@@ -22,11 +22,6 @@
             var tagsMatch = false;
             var priceMatch = false;
 
-            if (!searchString) {
-                $(this).show();
-                return;
-            }
-
             /**
              * Filter by Tags
              */
