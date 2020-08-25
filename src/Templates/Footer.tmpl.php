@@ -12,7 +12,7 @@
         var moduleSearchBoxes = $('.module-serach-box');
         var searchString = filterModuleSearch.val();
 
-        var considerTags = true;
+        var considerTags = searchString ? true : false;
         var considerPrice = $('#filterModuleOptionFree').is(":checked");
 
         moduleSearchBoxes.each(function() {
