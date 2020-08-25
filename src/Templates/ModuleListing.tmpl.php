@@ -32,12 +32,12 @@
 
                 <div class="search">
                     <h2>Suche</h2>
-                    <input type="text" value="" placeholder="Suche Modul- oder Archivname" onkeyup="filterModule(this.value)">
+                    <input id="filterModuleSearch" type="text" value="" placeholder="Suche Modul- oder Archivname" onkeyup="filterModule();">
 
                     <h3>Optionen</h3>
                     <fieldset>
-                        <input type="checkbox" id="checkbox" name="" value="">
-                        <label for="checkbox">Nur kostenlose Module suchen</label>
+                        <input id="filterModuleOptionFree" type="checkbox" onchange="filterModule();">
+                        <label for="filterModuleOptionFree">Nur kostenlose Module suchen</label>
                     </fieldset>
                 </div>
 
@@ -49,7 +49,10 @@
                             <?php foreach($modules as $module) { ?>
                                 <?php if ($module->getVisibility() == 'hidden') { continue; } ?>
 
-                                <div class="card module-serach-box <?php echo $module->isCompatible() ? 'compatible' : 'incompatible'; ?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?> <?php echo str_replace(',', ' ', $module->getTags())?>">
+                                <div
+                                class="card module-serach-box <?php echo $module->isCompatible() ? 'compatible' : 'incompatible'; ?>"
+                                data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?> <?php echo str_replace(',', ' ', $module->getTags())?>"
+                                data-price="<?php echo $module->getPrice(); ?>">
                                     <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>">
                                         <img src="<?php echo $module->getIconUri(); ?>" class="card-img-top" alt="<?php echo $module->getName(); ?>">
                                     </a>

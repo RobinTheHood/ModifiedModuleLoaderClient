@@ -4,18 +4,44 @@
 <script src="src/Templates/Scripts/lightbox.js"></script>
 
 <script>
-    function filterModule(searchString)
+    function filterModule()
     {
+        var filterModuleSearch = $('#filterModuleSearch');
+        var filterModuleOptionFree = $('#filterModuleOptionFree');
+
         var moduleSearchBoxes = $('.module-serach-box');
+        var searchString = filterModuleSearch.val();
+
+        var considerTags = true;
+        var considerPrice = $('#filterModuleOptionFree').is(":checked");
+
         moduleSearchBoxes.each(function() {
             var tags = $(this).data('tags');
+            var price = $(this).data('price');
+
+            var tagsMatch = false;
+            var priceMatch = false;
 
             if (!searchString) {
                 $(this).show();
                 return;
             }
 
-            if (tags.toLowerCase().includes(searchString.toLowerCase())) {
+            /**
+             * Filter by Tags
+             */
+            if (tags.toLowerCase().includes(searchString.toLowerCase()) || !considerTags) {
+                tagsMatch = true;
+            }
+
+            /**
+             * Filter by Price
+             */
+            if (price === 'free' || !considerPrice) {
+                priceMatch = true;
+            }
+
+            if (tagsMatch && priceMatch) {
                 $(this).show();
             } else {
                 $(this).hide();
