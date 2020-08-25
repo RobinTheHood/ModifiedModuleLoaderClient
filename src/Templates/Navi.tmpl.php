@@ -28,10 +28,10 @@
             </picture>
 
             <ul class="menu-items">
-                <li><a href="<?php echo '//' . rtrim($_SERVER['HTTP_HOST'], '/') . '/admin/start.php' ?>">zurück zum Shopadmin</a></li>
-                <li><a href="?action=support">Hilfe & Support</a></li>
-                <li><a href="?action=selfUpdate">System <span id="systemUpdateCount" class="badge badge-light">0<span></a></li>
-                <li><a href="?action=signOut">Abmelden</a></li>
+                <li><a class="icon externalLink" href="<?php echo '//' . rtrim($_SERVER['HTTP_HOST'], '/') . '/admin/start.php' ?>">zurück zum Shopadmin</a></li>
+                <li><a class="icon help" href="?action=support">Hilfe & Support</a></li>
+                <li><a class="icon system" href="?action=selfUpdate">System <span id="systemUpdateCount" class="badge badge-light">0<span></a></li>
+                <li><a class="icon signOut" href="?action=signOut">Abmelden</a></li>
             </ul>
         </div>
     </div>
