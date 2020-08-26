@@ -1,5 +1,6 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
 <?php global $configuration; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -10,13 +11,9 @@
     <body>
         <?php include 'Navi.tmpl.php' ?>
 
-        <style>
-            .self-update {
-                text-align: center;
-            }
-        </style>
-
         <div class="content">
+            <h1>System</h1>
+
             <div class="self-update">
                 <h2>MMLC - Modified Module Loader Client</h2>
                 <?php echo $installedVersion ?><br><br>
@@ -39,6 +36,16 @@
                     <br>
                     Domain: <?php echo $_SERVER['SERVER_NAME']; ?>
                 </small>
+
+                <table>
+                    <?php foreach ($configuration as $key => $value) { ?>
+                        <tr>
+                            <td class="name"><?php echo $key; ?></td>
+                            <td class="value"><input type="text" name="<?php echo $key; ?>" value="<?php echo $value; ?>"></td>
+                        </tr>
+                    <?php } ?>
+                    <?php  ?>
+                </table>
             </div>
         </div>
     </body>
