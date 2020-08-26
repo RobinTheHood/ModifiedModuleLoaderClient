@@ -186,7 +186,7 @@ table {
     margin: 0 0.6em 0.2em 0;
     vertical-align: middle;
 
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
 
     filter: invert(100%);
@@ -200,6 +200,11 @@ table {
 .navi .menu ul.menu-items li a.icon.help:before {
     background-image: url('../Images/help.png');
     background-image: url('../Images/help.svg');
+}
+
+.navi .menu ul.menu-items li a.icon.settings:before {
+    background-image: url('../Images/settings.png');
+    background-image: url('../Images/settings.svg');
 }
 
 .navi .menu ul.menu-items li a.icon.system:before {

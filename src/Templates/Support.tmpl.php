@@ -5,30 +5,30 @@
     <head>
         <?php include 'Head.tmpl.php' ?>
     </head>
-    
+
     <body>
         <?php include 'Navi.tmpl.php' ?>
         <div class="content">
+            <h1>Hilfe & Support</h1>
+
             <div class="support">
                 <div>
                     <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
-                    
-                    <h2>Hilfe und Support</h2>
-                    
+
                     <section>
-                        <h3>Anleitung</h3>
+                        <h2>Anleitung</h2>
                         <p>Wenn du Hilfe brauchst und eine Anleitung für den MMLC benötigst, findest du diese unter: <a target="_blank" href="https://module-loader.de/documentation.php">module-loader.de/documentation.php</a>.
                     </section>
 
                     <section>
-                        <h3>Community / Forum / Chat</h3>
+                        <h2>Community / Forum / Chat</h2>
                         <p>
                             Auf unserem <strong><a target="_blank" href="https://discord.gg/9NqwJqP">Discord #mmlc DE/EN</a></strong> Community Server beantworten wir dir deine Fragen sehr gerne, wenn du zusätzliche Hilfe benötigst. Auf Discord kannst du dich auch mit anderen Entwickelrn und Usern austauschen. Wenn du dich fragst, wieso wir Discord verwenden, findest du <a target="_blank" href="https://discord.com/open-source">hier die Antwort</a> auf deine Frage.
                         </p>
                     </section>
 
                     <section>
-                        <h3>Support-Anfrage an die MMLC Entwickler</h3>
+                        <h2>Support-Anfrage an die MMLC Entwickler</h2>
                         <p>
                             Du kannst uns auch direkt eine Nachricht zukommen lassen mit deinen Fragen. Die Nachricht wird automatisch um einige technische Informationen zu deinem System ergänzt, was uns die Bearbeitung deiner E-Mail erleichtert. Folgende Daten erhalten wir von deinem System:
                         </p>
@@ -47,14 +47,14 @@
                     </section>
 
                     <section>
-                        <h3>Modul-Entwickler werden</h3>
+                        <h2>Modul-Entwickler werden</h2>
                         <p>
                             Wir freuen uns sehr, wenn du dich dafür interessierst selber Module für den MMLC zu entwickeln. Wenn du selber Module für den MMLC schreiben möchtest, findest hierzu Anleitungen und Tutorials unter: <a target="_blank" href="https://module-loader.de/docs">module-loader.de/docs</a>.
                         </p>
                     </section>
 
                     <section>
-                        <h3>MMLC-Entwickler werden / Contributing</h3>
+                        <h2>MMLC-Entwickler werden / Contributing</h2>
 
                         <p>
                             Wir freuen uns sehr, dass du dich für den MMLC interessierst und Lust hast dich am MMLC zu beteiligen. Es gibt viele Dinge zu denen du hier beitragen kannst. Sei es die Dokumentation zu erweitern oder den Programmcode zu verbessern und natürlich all die Dinge, die hier noch nicht aufgeführt sind. Wir freuen uns auch über kleine Beiträge.

@@ -1,6 +1,5 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
 <?php global $configuration; ?>
-<?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -36,16 +35,6 @@
                     <br>
                     Domain: <?php echo $_SERVER['SERVER_NAME']; ?>
                 </small>
-
-                <table>
-                    <?php foreach ($configuration as $key => $value) { ?>
-                        <tr>
-                            <td class="name"><?php echo $key; ?></td>
-                            <td class="value"><input type="text" name="<?php echo $key; ?>" value="<?php echo $value; ?>"></td>
-                        </tr>
-                    <?php } ?>
-                    <?php  ?>
-                </table>
             </div>
         </div>
     </body>

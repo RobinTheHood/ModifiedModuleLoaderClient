@@ -34,6 +34,10 @@ class IndexController
         $action = ArrayHelper::getIfSet($_GET, 'action', '');
 
         switch ($action) {
+            case '':
+                $this->invokeIndex();
+                break;
+
             case 'moduleInfo':
                 $this->invokeModuleInfo();
                 break;
@@ -41,7 +45,7 @@ class IndexController
             case 'lazyModuleInfo':
                 $this->invokeLazyModuleInfo();
                 break;
-            
+
             case 'lazyModuleUpdateCount':
                 $this->invokeLazyModuleUpdateCount();
                 break;
@@ -98,8 +102,16 @@ class IndexController
                 $this->invokeSupport();
                 break;
 
+            case 'settings':
+                $this->invokeSettings();
+                break;
+
             default:
-                $this->invokeIndex();
+                /**
+                 * To do: Setup .htaccess to catch error codes (4xx, 5xx)
+                 * and display error documents
+                 */
+                http_response_code(404);
                 break;
         }
     }
@@ -131,7 +143,7 @@ class IndexController
     public function invokeSignIn()
     {
         global $configuration;
-        
+
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -191,7 +203,7 @@ class IndexController
         }
 
         $checkUpdate = $selfUpdater->checkUpdate();
-        
+
         $comparator = new Comparator(new Parser);
         include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
@@ -457,10 +469,10 @@ class IndexController
         Redirect::redirect('/');
     }
 
-    public function invokeReportIssue() 
+    public function invokeReportIssue()
     {
         $this->checkAccessRight();
-        
+
         if (isset($_POST['send_mail'])) {
             SendMail::sendIssue();
         }
@@ -471,8 +483,15 @@ class IndexController
     public function invokeSupport()
     {
         $this->checkAccessRight();
-        
+
         include App::getTemplatesRoot() . '/Support.tmpl.php';
+    }
+
+    public function invokeSettings()
+    {
+        $this->checkAccessRight();
+
+        include App::getTemplatesRoot() . '/Settings.tmpl.php';
     }
 
     public function calcModuleUpdateCount()
