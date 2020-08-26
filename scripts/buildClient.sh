@@ -2,15 +2,30 @@
 
 # *** USAGE ***
 # Execute this script from the mmlc root directory
-# ./scripts/buildClient.sh
+# ./scripts/buildClient.sh Git-Tag-Versionsc    
+
+
+TAG_VERSION=$1
 
 # Prepare build directory
 mkdir ./build
 rm -rf ./build/ModifiedModuleLoaderClient.tar
 
 # Git
-git clone git@github.com:RobinTheHood/ModifiedModuleLoaderClient.git ./build/ModifiedModuleLoaderClient
+echo "Build Version: ${TAG_VERSION}"
+git clone git@github.com:RobinTheHood/ModifiedModuleLoaderClient.git ./build/ModifiedModuleLoaderClient -b ${TAG_VERSION}
 rm -rf ./build/ModifiedModuleLoaderClient/.git
+
+# Detect fileVersion
+# Add Version
+FILE_VERSION=$(php -r "echo json_decode(file_get_contents('build/ModifiedModuleLoaderClient/config/version.json'))->version;")
+echo "Detect FileVersion: ${FILE_VERSION}"
+
+if [ "${FILE_VERSION}" != "${TAG_VERSION}" ]; then
+    rm -rf ./build/ModifiedModuleLoaderClient
+    echo "Error: versions are not equal. Can't build version."
+    exit 1
+fi
 
 # Install dependencies
 composer install -d ./build/ModifiedModuleLoaderClient --no-dev
@@ -43,9 +58,6 @@ mkdir ./build/ModifiedModuleLoaderClient/Archives
 COPYFILE_DISABLE=1 tar -C ./build/ -cf ./build/ModifiedModuleLoaderClient.tar ModifiedModuleLoaderClient/
 
 # Add Version
-VERSION=$(php -r "echo json_decode(file_get_contents('build/ModifiedModuleLoaderClient/config/version.json'))->version;")
-echo "${VERSION}"
-
-cp ./build/ModifiedModuleLoaderClient.tar ./build/ModifiedModuleLoaderClient_v${VERSION}.tar
+cp ./build/ModifiedModuleLoaderClient.tar ./build/ModifiedModuleLoaderClient_v${FILE_VERSION}.tar
 
 rm -rf ./build/ModifiedModuleLoaderClient
