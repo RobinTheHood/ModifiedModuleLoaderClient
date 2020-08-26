@@ -14,11 +14,30 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class Category
 {
-    public static function groupByCategory($modules)
+    const DEFAULT_CATEGORY = 'nocategory';
+
+    const CATEGORIES = [
+        'import/export' => 'Import/Export',
+        'language' => 'Sprachpaket',
+        'persistance' => 'Datenbank Module',
+        'productivity' => 'Produktivität',
+        'promotion/marketing' => 'Promotion & Marketing',
+        'productinfos' => 'Zusatzinformationen & Produkt-Tabs',
+        'shipping' => 'Versand Module',
+        'library' => 'Programmcode Bibliotheken',
+        'nocategory' => 'Sonstige Module',
+    ];
+
+    /**
+     * @param Module[] $modules
+     * @return array<string, Module[]> Returns a list of modules grouped by category.
+     */
+    public static function groupByCategory(array $modules): array
     {
         $groupedModules = [];
         foreach($modules as $module) {
             $category = $module->getCategory();
+            $category = self::getCategory($category);
             $groupedModules[$category][] = $module;
         }
 
@@ -36,20 +55,16 @@ class Category
         return $groupedModules;
     }
 
-    public static function getCategoryName($category)
+    public static function getCategory(string $category): string
     {
-        $allCategories = array(
-          'import/export' => 'Import/Export',
-          'language' => 'Sprachpaket',
-          'persistance' => 'Datenbank Module',
-          'productivity' => 'Produktivität',
-          'promotion/marketing' => 'Promotion & Marketing',
-          'productinfos' => 'Zusatzinformationen & Produkt-Tabs',
-          'shipping' => 'Versand Module',
-          'library' => 'Programmcode Bibliotheken',
-          'nocategory' => 'Sonstige Module',
-        );
+        if (isset(self::CATEGORIES[$category])) {
+            return $category;
+        }
+        return self::DEFAULT_CATEGORY;
+    }
 
-        return isset( $allCategories[$category] ) ? $allCategories[$category] : $category;
+    public static function getCategoryName(string $category): string
+    {
+        return self::CATEGORIES[$category] ?? self::CATEGORIES[self::DEFAULT_CATEGORY];
     }
 }

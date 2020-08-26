@@ -97,16 +97,16 @@
         },
         {
             "name": "robinthehood/exception-monitor",
-            "version": "0.1.7",
+            "version": "0.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RobinTheHood/ExceptionMonitor.git",
-                "reference": "6ce89c11ba24c4c3042617882af362069e9a1298"
+                "reference": "7190c6faf8a3614b0017263721f5ac7deebc4a80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinTheHood/ExceptionMonitor/zipball/6ce89c11ba24c4c3042617882af362069e9a1298",
-                "reference": "6ce89c11ba24c4c3042617882af362069e9a1298",
+                "url": "https://api.github.com/repos/RobinTheHood/ExceptionMonitor/zipball/7190c6faf8a3614b0017263721f5ac7deebc4a80",
+                "reference": "7190c6faf8a3614b0017263721f5ac7deebc4a80",
                 "shasum": ""
             },
             "require": {
@@ -140,7 +140,7 @@
                 "nice looking",
                 "php"
             ],
-            "time": "2019-01-22T10:23:57+00:00"
+            "time": "2020-08-26T07:29:02+00:00"
         },
         {
             "name": "robinthehood/syntax-highlighter",

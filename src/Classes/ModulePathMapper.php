@@ -34,6 +34,13 @@ class ModulePathMapper
         return $mmlcPath;
     }
 
+    /**
+     * Converts multible mmlc-paths to shop-paths. For example this method
+     * renames all custome admin-directory-names like admin to admin_123456.
+     * 
+     * @param string[] $shopPaths A Array of path in shop-path-scope
+     * @return string[] Returns a array of mapped strings
+     */
     public static function mmlcPathsToShopPaths(array $mmlcPaths): array
     {
         $shopPaths = [];
@@ -43,6 +50,13 @@ class ModulePathMapper
         return $shopPaths;
     }
 
+    /**
+     * Converts multible shop-paths to mmlc-paths. For example this method
+     * renames all custome admin-directory-names like admin_123456 to admin.
+     * 
+     * @param string[] $shopPaths A Array of path in shop-path-scope
+     * @return string[] Returns a array of mapped strings
+     */
     public static function shopPathsToMmlcPaths(array $shopPaths): array
     {
         $mmlcPaths = [];
