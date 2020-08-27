@@ -276,9 +276,9 @@ class Config
     {
         self::getConfigContents();
 
-        $mail = self::$configurationFile['exceptionMonitorMail'];
+        $mail = isset(self::$configurationFile['exceptionMonitorMail']) ? self::$configurationFile['exceptionMonitorMail'] : '';
 
-        if (isset($mail) && trim($mail) !== '') {
+        if (trim($mail) !== '') {
             return $mail;
         }
         else {
