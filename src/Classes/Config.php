@@ -55,13 +55,15 @@ class Config
         /**
          * Determine if new file was written properly and delete the old config
          */
-        var_dump( hash( 'crc32', file_get_contents( App::getConfigRoot() . '/configNew.php' ) ) );
-        var_dump( hash( 'crc32', implode( PHP_EOL, self::$configurationFile ) ) );
+        // var_dump( hash( 'crc32', file_get_contents( App::getConfigRoot() . '/configNew.php' ) ) );
+        // var_dump( hash( 'crc32', implode( PHP_EOL, self::$configurationFile ) ) );
     }
 
     public static function getOptions()
     {
+        self::getConfigContents();
 
+        return self::$configurationFile;
     }
 
     /**
@@ -75,7 +77,7 @@ class Config
     {
         $configPath = App::getConfigRoot() . '/config.php';
         $configOld = file_get_contents($configPath);
-        $configNew = $configOld;
+        $configNew = '';
 
         foreach ($options as $key => $value) {
             $matches = [];
@@ -94,6 +96,7 @@ class Config
             switch (count($matches)) {
                 case 3:
                     $configNew = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $configOld);
+                    $configOld = $configNew;
                     break;
 
                 case 0:
@@ -101,12 +104,13 @@ class Config
                      * To do: add option if it doesn't exist
                      * instead of showing an error.
                      */
+                    $configNew = $configOld;
                     echo 'Option "' . $key . '" does not not exist in "' . $configPath . '".';
                     break;
             }
-
-            file_put_contents($configPath, $configNew);
         }
+
+        file_put_contents($configPath, $configNew);
     }
 
     /*

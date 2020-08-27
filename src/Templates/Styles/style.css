@@ -2,6 +2,7 @@
     --gutterDefault: 20px;
 
     --paddingDefault: 20px;
+    --paddingDefaultHalf: 10px;
     --paddingNavigation: 10px;
 
     --colourPrimary: #007bff;
@@ -15,6 +16,13 @@ body {
 
 table {
     text-align: left;
+}
+
+input {
+    width: 60ch;
+    padding: var(--paddingDefaultHalf);
+    border: 1px solid #333;
+    border-radius: 0.25rem;
 }
 
 /**
