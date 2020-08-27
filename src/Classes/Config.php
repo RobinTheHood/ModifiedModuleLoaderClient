@@ -79,6 +79,14 @@ class Config
 
         foreach ($options as $key => $value) {
             $matches = [];
+
+            /**
+             * Look for line in config which matches:
+             * '$key' => 'foobar' (i. e.: 'username' => 'root')
+             *
+             * Look for $value in found line and replace it:
+             * '$key' => 'foobar' becomes '$key' => '$value'
+             */
             $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.*)\'/';
 
             preg_match($regex, $configOld, $matches);
@@ -89,6 +97,10 @@ class Config
                     break;
 
                 case 0:
+                    /**
+                     * To do: add option if it doesn't exist
+                     * instead of showing an error.
+                     */
                     echo 'Option "' . $key . '" does not not exist in "' . $configPath . '".';
                     break;
             }
