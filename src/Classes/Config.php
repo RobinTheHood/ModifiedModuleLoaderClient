@@ -44,13 +44,19 @@ class Config
     {
         self::getConfigContents();
 
-        file_put_contents(App::getConfigRoot() . '/configNew.php', self::$configurationFile);
+        $fileContents = var_export(self::$configurationFile, true);
+        $fileContents = str_replace('array', '<?php' . PHP_EOL . '$configuration =', $fileContents);
+        $fileContents = str_replace('(', '[', $fileContents);
+        $fileContents = str_replace(')', ']', $fileContents);
+        $fileContents .= ';';
+
+        file_put_contents(App::getConfigRoot() . '/configNew.php', $fileContents);
 
         /**
          * Determine if new file was written properly and delete the old config
          */
-        var_dump( hash( 'crc32', self::$configurationFile ) );
-        var_dump( hash( 'crc32', self::getConfigContents() ) );
+        var_dump( hash( 'crc32', file_get_contents( App::getConfigRoot() . '/configNew.php' ) ) );
+        var_dump( hash( 'crc32', implode( PHP_EOL, self::$configurationFile ) ) );
     }
 
     public static function getOptions()
@@ -98,7 +104,7 @@ class Config
     public static function getPassword()
     {
         self::getConfigContents();
-        
+
         return isset(self::$configurationFile['password']) ? self::$configurationFile['password'] : '';
     }
 
@@ -266,11 +272,18 @@ class Config
     /**
      * exceptionMonitorMail
      */
-    public static function getExceptionMonitorMail()
+    public static function getExceptionMonitorMail(): ?string
     {
         self::getConfigContents();
 
-        return isset(self::$configurationFile['exceptionMonitorMail']) ? self::$configurationFile['exceptionMonitorMail'] : '';
+        $mail = self::$configurationFile['exceptionMonitorMail'];
+
+        if (isset($mail) && trim($mail) !== '') {
+            return $mail;
+        }
+        else {
+            return null;
+        }
     }
 
     public static function setExceptionMonitorMail(string $newExceptionMonitorMail)

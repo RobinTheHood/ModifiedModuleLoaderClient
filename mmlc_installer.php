@@ -8,10 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace RobinTheHood\ModifiedModuleLoaderClient;
-
-use RobinTheHood\ModifiedModuleLoaderClient\Config;
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -119,9 +115,9 @@ class Installer
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        Config::setOptions([
-            'username' => $user,
-            'password' => $passwordHash
+        self::setConfig([
+            ['username' => $user],
+            ['password' => $passwordHash]
         ]);
     }
 
@@ -129,9 +125,25 @@ class Installer
     {
         $accessToken = md5(uniqid());
 
-        $string = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
-        $string = str_replace("'accessToken' => ''", "'accessToken' => '$accessToken'", $string);
-        file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $string);
+        self::setConfig([
+            ['accessToken' => $accessToken]
+        ]);
+    }
+
+    protected function setConfig(array $options)
+    {
+        for ($i=0; $i < count($options); $i++) {
+            foreach ($options[$i] as $key => $value) {
+                $oldConfig = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
+                $matches;
+                $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.+)\'/';
+
+                preg_match($regex, $oldConfig, $matches);
+                $newConfig = str_replace($matches[2], $value, $oldConfig);
+
+                file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $newConfig);
+            }
+        }
     }
 
     public function cleanUp()
