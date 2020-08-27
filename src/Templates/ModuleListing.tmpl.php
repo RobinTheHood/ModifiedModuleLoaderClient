@@ -65,14 +65,14 @@
 
                                         <?php
                                             $compatibility = $module->isCompatible() ? 'kompatibel' : 'inkompatibel';
-                                            $tooltip = $module->isCompatible() ? 'Dieses Modul wurde getestet und funktioniert mit Deiner Version von modified.' : 'Dieses Modul wurde noch nicht mit Deiner Version von modified getestet.';
+                                            $tooltip = $module->isCompatible() ? 'Dieses Modul wurde getestet und funktioniert mit deiner Version von modified.' : 'Dieses Modul wurde noch nicht mit deiner Version von modified getestet.';
                                         ?>
                                         <div class="card-compatibility" data-tooltip="<?php echo $tooltip; ?>">
                                             <?php echo $compatibility; ?>
                                         </div>
 
                                         <p class="card-text"><?php echo $module->getShortDescription(); ?></p>
-                                        
+
                                         <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>" class="btn <?php echo $module->isCompatible() ? 'btn-primary' : 'btn-secondary'; ?>">Details</a>
                                     </div>
                                 </div>
