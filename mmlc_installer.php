@@ -8,6 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace RobinTheHood\ModifiedModuleLoaderClient;
+
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -116,10 +119,10 @@ class Installer
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        $string = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
-        $string = str_replace("username' => 'root',", "username' => '$user',", $string);
-        $string = str_replace("'password' => 'root',", "'password' => '$passwordHash',", $string);
-        file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $string);
+        Config::setOptions([
+            'username' => $user,
+            'password' => $passwordHash
+        ]);
     }
 
     public function setUpAccessToken()
@@ -154,15 +157,15 @@ class Template
                     With this login data you can get access to the MMLC after installation.<br>
                     For more information visit <a target="_blank" href="https://module-loader.de">module-loader.de</a>
                 </div>
-                
+
                 <br>
 
                 <div>
                     Please setup a <strong>username</strong> and <strong>password</strong>.<br>
                 </div>
-                
+
                 <br>
-                
+
                 <form action="?action=install" method="post">
                     ' . $errorHtml . '
                     <div>

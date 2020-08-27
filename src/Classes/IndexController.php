@@ -22,6 +22,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
 class IndexController
 {
@@ -34,10 +35,6 @@ class IndexController
         $action = ArrayHelper::getIfSet($_GET, 'action', '');
 
         switch ($action) {
-            case '':
-                $this->invokeIndex();
-                break;
-
             case 'moduleInfo':
                 $this->invokeModuleInfo();
                 break;
@@ -107,11 +104,7 @@ class IndexController
                 break;
 
             default:
-                /**
-                 * To do: Setup .htaccess to catch error codes (4xx, 5xx)
-                 * and display error documents
-                 */
-                http_response_code(404);
+                $this->invokeIndex();
                 break;
         }
     }
@@ -142,8 +135,6 @@ class IndexController
 
     public function invokeSignIn()
     {
-        global $configuration;
-
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -151,9 +142,9 @@ class IndexController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error = '';
 
-            if ($_POST['username'] != $configuration['username']) {
-                $error = 'Unbekannter Username';
-            } elseif (!password_verify($_POST['password'], $configuration['password'])) {
+            if ($_POST['username'] != Config::getUsername()) {
+                $error = 'Unbekannter Benutzername';
+            } elseif (!password_verify($_POST['password'], Config::getPassword())) {
                 $error = 'Falsches passwort';
             }
 

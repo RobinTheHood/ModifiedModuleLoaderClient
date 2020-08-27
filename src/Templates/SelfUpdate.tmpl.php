@@ -1,5 +1,5 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
-<?php global $configuration; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -26,8 +26,8 @@
 
                 <br><br>
                 <small>
-                    <?php if ($configuration['accessToken']) { ?>
-                        AccessToken: <?php echo $configuration['accessToken']; ?>
+                    <?php if (Config::getAccessToken()) { ?>
+                        AccessToken: <?php echo Config::getAccessToken(); ?>
                     <?php } else {?>
                         AccessToken eintragen unter:<br>
                         <i>/ModifiedModuleLoaderClient/config/config.php</i><br>
