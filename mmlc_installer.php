@@ -115,9 +115,9 @@ class Installer
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        self::setConfig([
-            ['username' => $user],
-            ['password' => $passwordHash]
+        $this->setConfig([
+            'username' => $user,
+            'password' => $passwordHash
         ]);
     }
 
@@ -125,24 +125,23 @@ class Installer
     {
         $accessToken = md5(uniqid());
 
-        self::setConfig([
-            ['accessToken' => $accessToken]
+        $this->setConfig([
+            'accessToken' => $accessToken
         ]);
     }
 
     protected function setConfig(array $options)
     {
-        for ($i=0; $i < count($options); $i++) {
-            foreach ($options[$i] as $key => $value) {
-                $oldConfig = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
-                $matches;
-                $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.+)\'/';
+        foreach ($options as $key => $value) {
+            $oldConfig = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
+            $matches;
+            $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.*)\'/';
 
-                preg_match($regex, $oldConfig, $matches);
-                $newConfig = str_replace($matches[2], $value, $oldConfig);
+            preg_match($regex, $oldConfig, $matches);
 
-                file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $newConfig);
-            }
+            $newConfig = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $oldConfig);
+
+            file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $newConfig);
         }
     }
 
