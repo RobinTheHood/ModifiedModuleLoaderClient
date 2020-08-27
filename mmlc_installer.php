@@ -130,11 +130,22 @@ class Installer
         ]);
     }
 
+    /**
+     * Read config and set new values with regex (and write to file)
+     */
     protected function setConfig(array $options)
     {
         foreach ($options as $key => $value) {
             $oldConfig = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
-            $matches;
+            $matches = [];
+
+            /**
+             * Look for line in config which matches:
+             * '$key' => 'foobar' (i. e.: 'username' => 'root')
+             *
+             * Look for $value in found line and replace it:
+             * '$key' => 'foobar' becomes '$key' => '$value'
+             */
             $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.*)\'/';
 
             preg_match($regex, $oldConfig, $matches);

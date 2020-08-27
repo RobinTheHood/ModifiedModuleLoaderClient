@@ -64,6 +64,40 @@ class Config
 
     }
 
+    /**
+     * Allows manipulating values in the config.php
+     *
+     * As opposed to other static methods in this class,
+     * this method will read and write the config
+     * after it has manipulated the config.
+     */
+    public static function setOptions(array $options)
+    {
+        $configPath = App::getConfigRoot() . '/config.php';
+        $configOld = file_get_contents($configPath);
+        $configNew = $configOld;
+
+        foreach ($options as $key => $value) {
+            $matches = [];
+            $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.*)\'/';
+
+            preg_match($regex, $configOld, $matches);
+
+            switch (count($matches)) {
+                case 3:
+                    $configNew = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $configOld);
+                    break;
+
+                case 0:
+                    echo 'Option "' . $key . '" does not not exist in "' . $configPath . '".';
+                    break;
+            }
+
+            file_put_contents($configPath, $configNew);
+        }
+    }
+
+    /*
     public static function setOptions(array $options)
     {
         self::getConfigContents();
@@ -74,6 +108,7 @@ class Config
 
         self::setConfigContents();
     }
+    */
 
     /**
      * username
