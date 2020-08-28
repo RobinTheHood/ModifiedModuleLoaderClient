@@ -54,7 +54,7 @@ class Config
      *
      * @param array $options
      */
-    public static function setConfiguration(array $options)
+    public static function setConfiguration(array $options): void
     {
         $configPath = App::getConfigRoot() . '/config.php';
         $configOld = file_get_contents($configPath);
@@ -167,7 +167,7 @@ class Config
      *
      * @param string $newUsername.
      */
-    public static function setUsername(string $newUsername)
+    public static function setUsername(string $newUsername): void
     {
         self::setConfiguration([$newUsername]);
     }
@@ -188,7 +188,7 @@ class Config
      * @param string $newPassword Sets a new password used for logging in.
      * The password will be hashed.
      */
-    public static function setPassword(string $newPassword)
+    public static function setPassword(string $newPassword): void
     {
         self::setConfiguration([password_hash($newPassword)]);
     }
@@ -208,7 +208,7 @@ class Config
      *
      * @param string $newAdminDir.
      */
-    public static function setAdminDir(string $newAdminDir)
+    public static function setAdminDir(string $newAdminDir): void
     {
         self::setConfiguration([$newAdminDir]);
     }
@@ -228,7 +228,7 @@ class Config
      *
      * @param string $newModulesLocalDir.
      */
-    public static function setModulesLocalDir(string $newModulesLocalDir)
+    public static function setModulesLocalDir(string $newModulesLocalDir): void
     {
         self::setConfiguration([$newModulesLocalDir]);
     }
@@ -248,7 +248,7 @@ class Config
      *
      * @param string $newRemoteAddress.
      */
-    public static function setRemoteAddress(string $newRemoteAddress)
+    public static function setRemoteAddress(string $newRemoteAddress): void
     {
         self::setConfiguration([$newRemoteAddress]);
     }
@@ -268,7 +268,7 @@ class Config
      *
      * @param string $newInstallMode.
      */
-    public static function setInstallMode(string $newInstallMode)
+    public static function setInstallMode(string $newInstallMode): void
     {
         self::setConfiguration([$newInstallMode]);
     }
@@ -288,7 +288,7 @@ class Config
      *
      * @param string $newSelfUpdate.
      */
-    public static function setSelfUpdate(string $newSelfUpdate)
+    public static function setSelfUpdate(string $newSelfUpdate): void
     {
         self::setConfiguration([$newSelfUpdate]);
     }
@@ -308,7 +308,7 @@ class Config
      *
      * @param string $newAccessToken.
      */
-    public static function setAccessToken(string $newAccessToken)
+    public static function setAccessToken(string $newAccessToken): void
     {
         self::setConfiguration([$newAccessToken]);
     }
@@ -328,7 +328,7 @@ class Config
      *
      * @param string $newExceptionMonitorIp.
      */
-    public static function setExceptionMonitorIp(string $newExceptionMonitorIp)
+    public static function setExceptionMonitorIp(string $newExceptionMonitorIp): void
     {
         self::setConfiguration([$newExceptionMonitorIp]);
     }
@@ -348,7 +348,7 @@ class Config
      *
      * @param string $newExceptionMonitorDomain.
      */
-    public static function setExceptionMonitorDomain(string $newExceptionMonitorDomain)
+    public static function setExceptionMonitorDomain(string $newExceptionMonitorDomain): void
     {
         self::setConfiguration([$newExceptionMonitorDomain]);
     }
@@ -375,7 +375,7 @@ class Config
      *
      * @param string $newExceptionMonitorMail.
      */
-    public static function setExceptionMonitorMail(string $newExceptionMonitorMail)
+    public static function setExceptionMonitorMail(string $newExceptionMonitorMail): void
     {
         self::setConfiguration([$newExceptionMonitorMail]);
     }
