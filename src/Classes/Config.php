@@ -15,71 +15,50 @@ use RobinTheHood\ModifiedModuleLoaderClient\App;
 class Config
 {
     /**
-     * @var array $configurationFile will have the contents of the config.php
-     * which is a multidimenional array
+     * @var array $configuration will have the contents of the config.php.
      */
-    protected static $configurationFile;
+    protected static $configuration = [];
 
     /**
-     * Read the config file
+     * @param bool $cache whether to load from file (true) or not.
+     *
+     * @return array config.php contents.
      */
-    protected static function getConfigContents()
+    protected static function getConfiguration(bool $cache = true): array
     {
-        if (file_exists(App::getConfigRoot() . '/config.php'))
-        {
-            include App::getConfigRoot() . '/config.php';
-
-            self::$configurationFile = $configuration;
-        }
-        else
-        {
-            self::$configurationFile = [];
-        }
-    }
-
-    /**
-     * Write the config file
-     */
-    protected static function setConfigContents()
-    {
-        self::getConfigContents();
-
-        $fileContents = var_export(self::$configurationFile, true);
-        $fileContents = str_replace('array', '<?php' . PHP_EOL . '$configuration =', $fileContents);
-        $fileContents = str_replace('(', '[', $fileContents);
-        $fileContents = str_replace(')', ']', $fileContents);
-        $fileContents .= ';';
-
-        file_put_contents(App::getConfigRoot() . '/configNew.php', $fileContents);
+        $configurationPath = App::getConfigRoot() . '/config.php';
 
         /**
-         * Determine if new file was written properly and delete the old config
+         * Only load config from file when it exists and either:
+         * - Cache is disabled
+         * - Config is empty
          */
-        // var_dump( hash( 'crc32', file_get_contents( App::getConfigRoot() . '/configNew.php' ) ) );
-        // var_dump( hash( 'crc32', implode( PHP_EOL, self::$configurationFile ) ) );
-    }
+        if ((!$cache || count(self::$configuration) === 0) && file_exists($configurationPath))
+        {
+            include $configurationPath;
 
-    public static function getOptions()
-    {
-        self::getConfigContents();
+            /**
+             * $configurationPath contains an array named $configuration.
+             */
+            self::$configuration = $configuration;
+        }
 
-        return self::$configurationFile;
+        return self::$configuration;
     }
 
     /**
-     * Allows manipulating values in the config.php
+     * Manipulate values in the config.php
      *
-     * As opposed to other static methods in this class,
-     * this method will read and write the config
-     * after it has manipulated the config.
+     * @param array $options
      */
-    public static function setOptions(array $options)
+    public static function setConfiguration(array $options)
     {
         $configPath = App::getConfigRoot() . '/config.php';
         $configOld = file_get_contents($configPath);
         $configNew = '';
 
-        foreach ($options as $key => $value) {
+        foreach ($options as $key => $value)
+        {
             $matches = [];
 
             /**
@@ -93,7 +72,8 @@ class Config
 
             preg_match($regex, $configOld, $matches);
 
-            switch (count($matches)) {
+            switch (count($matches))
+            {
                 case 3:
                     $configNew = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $configOld);
                     $configOld = $configNew;
@@ -113,236 +93,285 @@ class Config
         file_put_contents($configPath, $configNew);
     }
 
-    /*
-    public static function setOptions(array $options)
+    /**
+     * Get any option from config.
+     *
+     * @param array $options An array of options you would like to retrieve.
+     *
+     * @return mixed Returns the requested options as an array
+     * if they were found. Return the requested option as a String
+     * if there is just one. Return null if the option was not found.
+     */
+    public static function getOptions(array $options = [])
     {
-        self::getConfigContents();
+        $configuration = self::getConfiguration();
+        $configurationValues = [];
 
-        foreach ($options as $key => $value) {
-            self::$configurationFile[$key] = $value;
+        /**
+         * Return all options if none are specified.
+         */
+        if (!$options)
+        {
+            return $configuration;
         }
 
-        self::setConfigContents();
+        /**
+         * Iterate through all specified options and list them
+         * in $configurationValues.
+         */
+        foreach ($options as $key)
+        {
+            if (isset($configuration[$key]) && $configuration[$key] !== '')
+            {
+                $configurationValues[$key] = $configuration[$key];
+            }
+        }
+
+        /**
+         * Output different data types based on found value(s).
+         */
+        switch (count($configurationValues)) {
+            case 0:
+                return null;
+                break;
+
+            case 1:
+                $onlyOneKey = key($configurationValues);
+
+                return $configurationValues[$onlyOneKey];
+                break;
+
+            default:
+                return $configurationValues;
+                break;
+        }
     }
-    */
 
     /**
-     * username
+     * Get username from config.
+     *
+     * @return string|null Returns the username from config or null.
      */
-    public static function getUsername()
+    public static function getUsername(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['username']) ? self::$configurationFile['username'] : '';
+        return self::getOptions(['username']);
     }
 
+    /**
+     * Set username in config.
+     *
+     * @param string $newUsername.
+     */
     public static function setUsername(string $newUsername)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['username'] = $newUsername;
-
-        self::setConfigContents();
+        self::setConfiguration([$newUsername]);
     }
 
     /**
-     * password
+     * Get password from config.
      *
-     * Sets a new password used for logging in.
-     * Password muss be parsed as a hash.
-     *
+     * @return string|null Returns the password which is expected to be a hash or null.
      */
-    public static function getPassword()
+    public static function getPassword(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['password']) ? self::$configurationFile['password'] : '';
+        return self::getOptions(['password']);
     }
 
+    /**
+     * Set password in config.
+     *
+     * @param string $newPassword Sets a new password used for logging in.
+     * Password should be a hash.
+     */
     public static function setPassword(string $newPassword)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['password'] = $newPassword;
-
-        self::setConfigContents();
+        self::setConfiguration([$newPassword]);
     }
 
     /**
-     * adminDir
+     * Get adminDir from config.
+     *
+     * @return string|null Returns the adminDir from config or null.
      */
-    public static function getAdminDir()
+    public static function getAdminDir(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['adminDir']) ? self::$configurationFile['adminDir'] : '';
+        return self::getOptions(['adminDir']);
     }
 
+    /**
+     * Set adminDir in config.
+     *
+     * @param string $newAdminDir.
+     */
     public static function setAdminDir(string $newAdminDir)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['adminDir'] = $newAdminDir;
-
-        self::setConfigContents();
+        self::setConfiguration([$newAdminDir]);
     }
 
     /**
-     * modulesLocalDir
+     * Get modulesLocalDir from config.
+     *
+     * @return string|null Returns the modulesLocalDir from config or null.
      */
-    public static function getModulesLocalDir()
+    public static function getModulesLocalDir(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['modulesLocalDir']) ? self::$configurationFile['modulesLocalDir'] : '';
+        return self::getOptions(['modulesLocalDir']);
     }
 
+    /**
+     * Set modulesLocalDir in config.
+     *
+     * @param string $newModulesLocalDir.
+     */
     public static function setModulesLocalDir(string $newModulesLocalDir)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['modulesLocalDir'] = $newModulesLocalDir;
-
-        self::setConfigContents();
+        self::setConfiguration([$newModulesLocalDir]);
     }
 
     /**
-     * remoteAddress
+     * Get remoteAddress from config.
+     *
+     * @return string|null Returns the remoteAddress from config or null.
      */
-    public static function getRemoteAddress()
+    public static function getRemoteAddress(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['remoteAddress']) ? self::$configurationFile['remoteAddress'] : '';
+        return self::getOptions(['remoteAddress']);
     }
 
+    /**
+     * Set remoteAddress in config.
+     *
+     * @param string $newRemoteAddress.
+     */
     public static function setRemoteAddress(string $newRemoteAddress)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['remoteAddress'] = $newRemoteAddress;
-
-        self::setConfigContents();
+        self::setConfiguration([$newRemoteAddress]);
     }
 
     /**
-     * installMode
+     * Get installMode from config.
+     *
+     * @return string|null Returns the installMode from config or null.
      */
-    public static function getInstallMode()
+    public static function getInstallMode(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['installMode']) ? self::$configurationFile['installMode'] : '';
+        return self::getOptions(['installMode']);
     }
 
+    /**
+     * Set installMode in config.
+     *
+     * @param string $newInstallMode.
+     */
     public static function setInstallMode(string $newInstallMode)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['installMode'] = $newInstallMode;
-
-        self::setConfigContents();
+        self::setConfiguration([$newInstallMode]);
     }
 
     /**
-     * selfUpdate
+     * Get selfUpdate from config.
+     *
+     * @return string|null Returns the selfUpdate from config or null.
      */
-    public static function getSelfUpdate()
+    public static function getSelfUpdate(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['selfUpdate']) ? self::$configurationFile['selfUpdate'] : '';
+        return self::getOptions(['selfUpdate']);
     }
 
+    /**
+     * Set selfUpdate in config.
+     *
+     * @param string $newSelfUpdate.
+     */
     public static function setSelfUpdate(string $newSelfUpdate)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['selfUpdate'] = $newSelfUpdate;
-
-        self::setConfigContents();
+        self::setConfiguration([$newSelfUpdate]);
     }
 
     /**
-     * accessToken
+     * Get accessToken from config.
+     *
+     * @return string|null Returns the accessToken from config or null.
      */
-    public static function getAccessToken()
+    public static function getAccessToken(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['accessToken']) ? self::$configurationFile['accessToken'] : '';
+        return self::getOptions(['accessToken']);
     }
 
+    /**
+     * Set accessToken in config.
+     *
+     * @param string $newAccessToken.
+     */
     public static function setAccessToken(string $newAccessToken)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['accessToken'] = $newAccessToken;
-
-        self::setConfigContents();
+        self::setConfiguration([$newAccessToken]);
     }
 
     /**
-     * exceptionMonitorIp
+     * Get exceptionMonitorIp from config.
+     *
+     * @return string|null Returns the exceptionMonitorIp from config or null.
      */
-    public static function getExceptionMonitorIp()
+    public static function getExceptionMonitorIp(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['exceptionMonitorIp']) ? self::$configurationFile['exceptionMonitorIp'] : '';
+        return self::getOptions(['exceptionMonitorIp']);
     }
 
+    /**
+     * Set exceptionMonitorIp in config.
+     *
+     * @param string $newExceptionMonitorIp.
+     */
     public static function setExceptionMonitorIp(string $newExceptionMonitorIp)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['exceptionMonitorIp'] = $newExceptionMonitorIp;
-
-        self::setConfigContents();
+        self::setConfiguration([$newExceptionMonitorIp]);
     }
 
     /**
-     * exceptionMonitorDomain
+     * Get exceptionMonitorDomain from config.
+     *
+     * @return string|null Returns the exceptionMonitorDomain from config or null.
      */
-    public static function getExceptionMonitorDomain()
+    public static function getExceptionMonitorDomain(): ?string
     {
-        self::getConfigContents();
-
-        return isset(self::$configurationFile['exceptionMonitorDomain']) ? self::$configurationFile['exceptionMonitorDomain'] : '';
+        return self::getOptions(['exceptionMonitorDomain']);
     }
 
+    /**
+     * Set exceptionMonitorDomain in config.
+     *
+     * @param string $newExceptionMonitorDomain.
+     */
     public static function setExceptionMonitorDomain(string $newExceptionMonitorDomain)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['exceptionMonitorDomain'] = $newExceptionMonitorDomain;
-
-        self::setConfigContents();
+        self::setConfiguration([$newExceptionMonitorDomain]);
     }
 
     /**
-     * exceptionMonitorMail
+     * Get exceptionMonitorMail from config.
+     *
+     * @return string|null Returns the exceptionMonitorMail from config or null.
      */
     public static function getExceptionMonitorMail(): ?string
     {
-        self::getConfigContents();
+        /**
+         * Expect a string or null
+         * depending if the user specified an email address.
+         * You will not receive an empty string.
+         */
+        $exceptionMonitorMail = self::getOptions(['exceptionMonitorMail']);
 
-        $mail = isset(self::$configurationFile['exceptionMonitorMail']) ? self::$configurationFile['exceptionMonitorMail'] : '';
-
-        if (trim($mail) !== '') {
-            return $mail;
-        }
-        else {
-            return null;
-        }
+        return $exceptionMonitorMail;
     }
 
+    /**
+     * Set exceptionMonitorMail in config.
+     *
+     * @param string $newExceptionMonitorMail.
+     */
     public static function setExceptionMonitorMail(string $newExceptionMonitorMail)
     {
-        self::getConfigContents();
-
-        self::$configurationFile['exceptionMonitorMail'] = $newExceptionMonitorMail;
-
-        self::setConfigContents();
+        self::setConfiguration([$newExceptionMonitorMail]);
     }
 }
