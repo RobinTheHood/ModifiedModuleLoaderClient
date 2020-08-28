@@ -55,7 +55,40 @@ class ShopInfo
 
     public static function getAdminDir(): string
     {
-        global $configuration;
-        return $configuration['adminDir'] ?? 'admin';
+        return Config::getAdminDir() ?? self::scanForAdminDir();
+    }
+
+    /**
+     * This method scans for the shop-admin-directory.
+     *
+     * @return string Returns the name of the directory of the shop-admin-directory.
+     */
+    public static function scanForAdminDir(): string
+    {
+        $resultDirectory = 'admin'; // Set default
+
+        $knownAdminPath = App::getShopRoot() . '/admin';
+
+        if (\file_exists($knownAdminPath) && \is_dir($knownAdminPath)) {
+            return $resultDirectory;
+        }
+
+        $directorys = FileHelper::scanDir(App::getShopRoot(), FileHelper::DIRS_ONLY, false);
+
+        // List of Files, that the admin dire
+        $files = [
+            'check_update.php'
+        ];
+
+        foreach ($directorys as $directory) {
+            if (!FileHelper::containsAllFiles($files, $directory)) {
+                continue;
+            }
+
+            $resultDirectory = $directory;
+            break;
+        }
+
+        return basename($resultDirectory);
     }
 }

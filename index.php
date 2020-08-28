@@ -32,11 +32,12 @@ use RobinTheHood\Debug\Debug;
 
 use RobinTheHood\ModifiedModuleLoaderClient\IndexController;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
 ExceptionMonitor::register([
-    'ip' => $configuration['exceptionMonitorIp'] ?? '127.0.0.1',
-    'domain' => $configuration['exceptionMonitorDomain'] ?? 'modified.localhost',
-    'mail' => $configuration['exceptionMonitorMail'] ?? 'info@module-loader.de'
+    'exceptionMonitorIp' => Config::getExceptionMonitorIp() ?? '127.0.0.1',
+    'exceptionMonitorDomain' => Config::getExceptionMonitorDomain() ?? 'modified.localhost',
+    'exceptionMonitorMail' => Config::getExceptionMonitorMail()
 ]);
 
 function debugOut($value)
@@ -57,7 +58,7 @@ function debugLog($value)
     file_put_contents(App::getRoot() . '/log.txt', $str, FILE_APPEND);
 }
 
-App::setModulesDir($configuration['modulesLocalDir']);
+App::setModulesDir(Config::getModulesLocalDir());
 
 $indexController = new IndexController();
 $indexController->invoke();

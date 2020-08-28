@@ -3,8 +3,7 @@
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
-
-<?php  global $configuration; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -70,7 +69,7 @@
 
                                 <?php if (ModuleStatus::isRepairable($module)) { ?>
                                     <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
-                                        <?php if ($configuration['installMode'] != 'link') {?>
+                                        <?php if (Config::installMode() != 'link') {?>
                                             Änderungen verwerfen
                                         <?php } else { ?>
                                             Änderungen übernehmen (Link-Mode)

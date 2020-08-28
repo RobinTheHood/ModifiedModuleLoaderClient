@@ -1,5 +1,5 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
-<?php global $configuration; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -10,13 +10,9 @@
     <body>
         <?php include 'Navi.tmpl.php' ?>
 
-        <style>
-            .self-update {
-                text-align: center;
-            }
-        </style>
-
         <div class="content">
+            <h1>System</h1>
+
             <div class="self-update">
                 <h2>MMLC - Modified Module Loader Client</h2>
                 <?php echo $installedVersion ?><br><br>
@@ -30,8 +26,8 @@
 
                 <br><br>
                 <small>
-                    <?php if ($configuration['accessToken']) { ?>
-                        AccessToken: <?php echo $configuration['accessToken']; ?>
+                    <?php if (Config::getAccessToken()) { ?>
+                        AccessToken: <?php echo Config::getAccessToken(); ?>
                     <?php } else {?>
                         AccessToken eintragen unter:<br>
                         <i>/ModifiedModuleLoaderClient/config/config.php</i><br>

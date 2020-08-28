@@ -12,6 +12,7 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
@@ -42,8 +43,13 @@ class SelfUpdater
         // appRoot wird in die Variable ausgelagert, da während der Installation,
         // wenn Dateien verschoben werden, die Methode App::getRoot() nicht
         // mehr richtige Ergebnisse liefert.
-        global $configuration;
-        $this->remoteUpdateServer = str_replace('/api.php', '/Downloads/', $configuration['remoteAddress']);
+        $remoteAddress = Config::getRemoteAddress() ?? '';
+
+        if (empty(Config::getRemoteAddress())) {
+           throw new \RuntimeException('Unable to connect. RemoteAddress is empty or not set.');
+        }
+
+        $this->remoteUpdateServer = str_replace('/api.php', '/Downloads/', $remoteAddress);
         $this->appRoot = App::getRoot();
         $this->comparator = new Comparator(new Parser());
     }
@@ -90,8 +96,6 @@ class SelfUpdater
      */
     public function getNewestVersionInfo(): array
     {
-        global $configuration;
-
         $versionInfos = $this->getVersionInfos();
 
         $newestVersionInfo = ['fileName' => '', 'version' => '0.0.0-alpha'];
@@ -100,7 +104,7 @@ class SelfUpdater
             try {
                 $version = (new Parser)->parse($versionInfo['version']);
 
-                if ($configuration['selfUpdate'] != 'latest' && $version->getTag()) {
+                if (Config::getSelfUpdate() != 'latest' && $version->getTag()) {
                     continue;
                 }
 
@@ -238,7 +242,7 @@ class SelfUpdater
         // Wenn die config/version.json Datei fehlt, gibt es 3 Möglichkeiten diese
         // zu erzeugen.
         $dest = $this->appRoot . '/config/version.json';
-        
+
         if (!file_exists($dest) && file_exists($this->appRoot . '/ModifiedModuleLoaderClient/config/version.json')) {
             rename($this->appRoot . '/ModifiedModuleLoaderClient/config/version.json', $dest);
         }
