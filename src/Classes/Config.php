@@ -28,13 +28,16 @@ class Config
     {
         $configurationPath = App::getConfigRoot() . '/config.php';
 
+        if (!file_exists($configurationPath)) {
+            throw new \RuntimeException('Configuration not found. The file "' . $configurationPath . '" does not seem to exist.');
+        }
+
         /**
-         * Only load config from file when it exists and either:
+         * Only load config from file when either:
          * - Cache is disabled
          * - Config is empty
          */
-        if ((!$cache || count(self::$configuration) === 0) && file_exists($configurationPath))
-        {
+        if (!$cache || !self::$configuration) {
             include $configurationPath;
 
             /**
@@ -57,8 +60,7 @@ class Config
         $configOld = file_get_contents($configPath);
         $configNew = '';
 
-        foreach ($options as $key => $value)
-        {
+        foreach ($options as $key => $value) {
             $matches = [];
 
             /**
@@ -72,8 +74,7 @@ class Config
 
             preg_match($regex, $configOld, $matches);
 
-            switch (count($matches))
-            {
+            switch (count($matches)) {
                 case 3:
                     $configNew = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $configOld);
                     $configOld = $configNew;
@@ -85,7 +86,7 @@ class Config
                      * instead of showing an error.
                      */
                     $configNew = $configOld;
-                    echo 'Option "' . $key . '" does not not exist in "' . $configPath . '".';
+                    throw new \RuntimeException('Cannot write option. Option "' . $key . '" does not not exist in ' . $configPath . '.');
                     break;
             }
         }
@@ -94,15 +95,38 @@ class Config
     }
 
     /**
-     * Get any option from config.
+     * Get an option from config.
+     *
+     * @param string $option The option to retrieve.
+     *
+     * @return string|null Returns the requested option
+     * or null if it was not found.
+     */
+    public static function getOption(string $option = ''): ?string
+    {
+        $configuration = self::getConfiguration();
+
+        if (isset($configuration[$option]) && $configuration[$option] !== '')
+        {
+            return $configuration[$option];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get any options from config.
+     *
+     * If you parse multiple options, only the ones found will be returned.
+     * The invalid options will be silently ignored. Null is only returned if
+     * none of the specified options were found.
      *
      * @param array $options An array of options you would like to retrieve.
      *
-     * @return mixed Returns the requested options as an array
-     * if they were found. Return the requested option as a String
-     * if there is just one. Return null if the option was not found.
+     * @return array|null Returns the requested options if they were found.
+     * Returns null if no options were found.
      */
-    public static function getOptions(array $options = [])
+    public static function getOptions(array $options = []): ?array
     {
         $configuration = self::getConfiguration();
         $configurationValues = [];
@@ -110,8 +134,7 @@ class Config
         /**
          * Return all options if none are specified.
          */
-        if (!$options)
-        {
+        if (!$options) {
             return $configuration;
         }
 
@@ -119,32 +142,14 @@ class Config
          * Iterate through all specified options and list them
          * in $configurationValues.
          */
-        foreach ($options as $key)
-        {
+        foreach ($options as $key) {
             if (isset($configuration[$key]) && $configuration[$key] !== '')
             {
                 $configurationValues[$key] = $configuration[$key];
             }
         }
 
-        /**
-         * Output different data types based on found value(s).
-         */
-        switch (count($configurationValues)) {
-            case 0:
-                return null;
-                break;
-
-            case 1:
-                $onlyOneKey = key($configurationValues);
-
-                return $configurationValues[$onlyOneKey];
-                break;
-
-            default:
-                return $configurationValues;
-                break;
-        }
+        return $configurationValues ? $configurationValues : null;
     }
 
     /**
@@ -154,7 +159,7 @@ class Config
      */
     public static function getUsername(): ?string
     {
-        return self::getOptions(['username']);
+        return self::getOption('username');
     }
 
     /**
@@ -174,18 +179,18 @@ class Config
      */
     public static function getPassword(): ?string
     {
-        return self::getOptions(['password']);
+        return self::getOption('password');
     }
 
     /**
      * Set password in config.
      *
      * @param string $newPassword Sets a new password used for logging in.
-     * Password should be a hash.
+     * The password will be hashed.
      */
     public static function setPassword(string $newPassword)
     {
-        self::setConfiguration([$newPassword]);
+        self::setConfiguration([password_hash($newPassword)]);
     }
 
     /**
@@ -195,7 +200,7 @@ class Config
      */
     public static function getAdminDir(): ?string
     {
-        return self::getOptions(['adminDir']);
+        return self::getOption('adminDir');
     }
 
     /**
@@ -215,7 +220,7 @@ class Config
      */
     public static function getModulesLocalDir(): ?string
     {
-        return self::getOptions(['modulesLocalDir']);
+        return self::getOption('modulesLocalDir');
     }
 
     /**
@@ -235,7 +240,7 @@ class Config
      */
     public static function getRemoteAddress(): ?string
     {
-        return self::getOptions(['remoteAddress']);
+        return self::getOption('remoteAddress');
     }
 
     /**
@@ -255,7 +260,7 @@ class Config
      */
     public static function getInstallMode(): ?string
     {
-        return self::getOptions(['installMode']);
+        return self::getOption('installMode');
     }
 
     /**
@@ -275,7 +280,7 @@ class Config
      */
     public static function getSelfUpdate(): ?string
     {
-        return self::getOptions(['selfUpdate']);
+        return self::getOption('selfUpdate');
     }
 
     /**
@@ -295,7 +300,7 @@ class Config
      */
     public static function getAccessToken(): ?string
     {
-        return self::getOptions(['accessToken']);
+        return self::getOption('accessToken');
     }
 
     /**
@@ -315,7 +320,7 @@ class Config
      */
     public static function getExceptionMonitorIp(): ?string
     {
-        return self::getOptions(['exceptionMonitorIp']);
+        return self::getOption('exceptionMonitorIp');
     }
 
     /**
@@ -335,7 +340,7 @@ class Config
      */
     public static function getExceptionMonitorDomain(): ?string
     {
-        return self::getOptions(['exceptionMonitorDomain']);
+        return self::getOption('exceptionMonitorDomain');
     }
 
     /**
@@ -360,7 +365,7 @@ class Config
          * depending if the user specified an email address.
          * You will not receive an empty string.
          */
-        $exceptionMonitorMail = self::getOptions(['exceptionMonitorMail']);
+        $exceptionMonitorMail = self::getOption('exceptionMonitorMail');
 
         return $exceptionMonitorMail;
     }
