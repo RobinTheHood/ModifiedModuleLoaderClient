@@ -106,27 +106,20 @@ class Config
     {
         $configuration = self::getConfiguration();
 
-        if (isset($configuration[$option]) && $configuration[$option] !== '')
-        {
-            return $configuration[$option];
-        }
-
-        return null;
+        return !empty($configuration[$option]) ? $configuration[$option] : null;
     }
 
     /**
      * Get any options from config.
      *
      * If you parse multiple options, only the ones found will be returned.
-     * The invalid options will be silently ignored. Null is only returned if
-     * none of the specified options were found.
+     * The invalid options will be silently ignored.
      *
      * @param array $options An array of options you would like to retrieve.
      *
-     * @return array|null Returns the requested options if they were found.
-     * Returns null if no options were found.
+     * @return array Returns the requested options if they were found.
      */
-    public static function getOptions(array $options = []): ?array
+    public static function getOptions(array $options = []): array
     {
         $configuration = self::getConfiguration();
         $configurationValues = [];
@@ -143,13 +136,12 @@ class Config
          * in $configurationValues.
          */
         foreach ($options as $key) {
-            if (isset($configuration[$key]) && $configuration[$key] !== '')
-            {
+            if (isset($configuration[$key])) {
                 $configurationValues[$key] = $configuration[$key];
             }
         }
 
-        return $configurationValues ? $configurationValues : null;
+        return $configurationValues;
     }
 
     /**
