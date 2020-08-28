@@ -144,7 +144,7 @@ class IndexController
 
             if ($_POST['username'] != Config::getUsername()) {
                 $error = 'Unbekannter Benutzername';
-            } elseif (!password_verify($_POST['password'], Config::getPassword())) {
+            } elseif (!password_verify($_POST['password'], Config::getPassword() ?? '' )) {
                 $error = 'Falsches passwort';
             }
 

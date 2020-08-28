@@ -182,7 +182,7 @@ class Config
      */
     public static function setPassword(string $newPassword): void
     {
-        self::writeConfiguration([password_hash($newPassword)]);
+        self::writeConfiguration([password_hash($newPassword, PASSWORD_DEFAULT)]);
     }
 
     /**

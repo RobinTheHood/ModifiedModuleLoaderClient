@@ -43,7 +43,13 @@ class SelfUpdater
         // appRoot wird in die Variable ausgelagert, da während der Installation,
         // wenn Dateien verschoben werden, die Methode App::getRoot() nicht
         // mehr richtige Ergebnisse liefert.
-        $this->remoteUpdateServer = str_replace('/api.php', '/Downloads/', Config::getRemoteAddress());
+        $remoteAddress = Config::getRemoteAddress() ?? '';
+
+        if (empty(Config::getRemoteAddress())) {
+           throw new \RuntimeException('Unable to connect. RemoteAddress is empty or not set.');
+        }
+
+        $this->remoteUpdateServer = str_replace('/api.php', '/Downloads/', $remoteAddress);
         $this->appRoot = App::getRoot();
         $this->comparator = new Comparator(new Parser());
     }
