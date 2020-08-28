@@ -313,6 +313,7 @@ class IndexController
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
             Redirect::redirect('/');
+            return;
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -336,6 +337,7 @@ class IndexController
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
             Redirect::redirect('/');
+            return;
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -357,6 +359,7 @@ class IndexController
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
             Redirect::redirect('/');
+            return;
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -366,6 +369,7 @@ class IndexController
             $newestModule = $module->getNewestVersion();
             $this->addModuleNotFoundNotification($archiveName, $newestModule->getVersion());
             Redirect::redirect('/');
+            return;
         }
 
         $this->redirectRef($archiveName, $newModule->getVersion());
@@ -384,6 +388,7 @@ class IndexController
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
             Redirect::redirect('/');
+            return;
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -410,6 +415,7 @@ class IndexController
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
             Redirect::redirect('/');
+            return;
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -427,6 +433,7 @@ class IndexController
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
             Redirect::redirect('/');
+            return;
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -449,6 +456,7 @@ class IndexController
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
             Redirect::redirect('/');
+            return;
         }
 
         $moduleInstaller = new ModuleInstaller();
