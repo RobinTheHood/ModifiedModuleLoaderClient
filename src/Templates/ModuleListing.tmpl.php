@@ -72,7 +72,7 @@
                                         </div>
 
                                         <p class="card-text"><?php echo $module->getShortDescription(); ?></p>
-                                        
+
                                         <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>" class="btn <?php echo $module->isCompatible() ? 'btn-primary' : 'btn-secondary'; ?>">Details</a>
                                     </div>
                                 </div>

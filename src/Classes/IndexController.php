@@ -22,6 +22,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
 class IndexController
 {
@@ -41,7 +42,7 @@ class IndexController
             case 'lazyModuleInfo':
                 $this->invokeLazyModuleInfo();
                 break;
-            
+
             case 'lazyModuleUpdateCount':
                 $this->invokeLazyModuleUpdateCount();
                 break;
@@ -98,6 +99,10 @@ class IndexController
                 $this->invokeSupport();
                 break;
 
+            case 'settings':
+                $this->invokeSettings();
+                break;
+
             default:
                 $this->invokeIndex();
                 break;
@@ -130,8 +135,6 @@ class IndexController
 
     public function invokeSignIn()
     {
-        global $configuration;
-        
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -139,9 +142,9 @@ class IndexController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error = '';
 
-            if ($_POST['username'] != $configuration['username']) {
-                $error = 'Unbekannter Username';
-            } elseif (!password_verify($_POST['password'], $configuration['password'])) {
+            if ($_POST['username'] != Config::getUsername()) {
+                $error = 'Unbekannter Benutzername';
+            } elseif (!password_verify($_POST['password'], Config::getPassword() ?? '' )) {
                 $error = 'Falsches passwort';
             }
 
@@ -191,7 +194,7 @@ class IndexController
         }
 
         $checkUpdate = $selfUpdater->checkUpdate();
-        
+
         $comparator = new Comparator(new Parser);
         include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
@@ -465,10 +468,10 @@ class IndexController
         Redirect::redirect('/');
     }
 
-    public function invokeReportIssue() 
+    public function invokeReportIssue()
     {
         $this->checkAccessRight();
-        
+
         if (isset($_POST['send_mail'])) {
             SendMail::sendIssue();
         }
@@ -479,8 +482,15 @@ class IndexController
     public function invokeSupport()
     {
         $this->checkAccessRight();
-        
+
         include App::getTemplatesRoot() . '/Support.tmpl.php';
+    }
+
+    public function invokeSettings()
+    {
+        $this->checkAccessRight();
+
+        include App::getTemplatesRoot() . '/Settings.tmpl.php';
     }
 
     public function calcModuleUpdateCount()

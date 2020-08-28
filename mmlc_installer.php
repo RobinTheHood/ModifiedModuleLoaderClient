@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -116,19 +115,45 @@ class Installer
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        $string = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
-        $string = str_replace("username' => 'root',", "username' => '$user',", $string);
-        $string = str_replace("'password' => 'root',", "'password' => '$passwordHash',", $string);
-        file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $string);
+        $this->setConfig([
+            'username' => $user,
+            'password' => $passwordHash
+        ]);
     }
 
     public function setUpAccessToken()
     {
         $accessToken = md5(uniqid());
 
-        $string = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
-        $string = str_replace("'accessToken' => ''", "'accessToken' => '$accessToken'", $string);
-        file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $string);
+        $this->setConfig([
+            'accessToken' => $accessToken
+        ]);
+    }
+
+    /**
+     * Read config and set new values with regex (and write to file)
+     */
+    protected function setConfig(array $options)
+    {
+        foreach ($options as $key => $value) {
+            $oldConfig = file_get_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php');
+            $matches = [];
+
+            /**
+             * Look for line in config which matches:
+             * '$key' => 'foobar' (i. e.: 'username' => 'root')
+             *
+             * Look for $value in found line and replace it:
+             * '$key' => 'foobar' becomes '$key' => '$value'
+             */
+            $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.*)\'/';
+
+            preg_match($regex, $oldConfig, $matches);
+
+            $newConfig = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $oldConfig);
+
+            file_put_contents(__DIR__ . '/ModifiedModuleLoaderClient/config/config.php', $newConfig);
+        }
     }
 
     public function cleanUp()
@@ -154,15 +179,15 @@ class Template
                     With this login data you can get access to the MMLC after installation.<br>
                     For more information visit <a target="_blank" href="https://module-loader.de">module-loader.de</a>
                 </div>
-                
+
                 <br>
 
                 <div>
                     Please setup a <strong>username</strong> and <strong>password</strong>.<br>
                 </div>
-                
+
                 <br>
-                
+
                 <form action="?action=install" method="post">
                     ' . $errorHtml . '
                     <div>

@@ -11,13 +11,14 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\Client;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
+
 class ApiRequest extends ApiBaseRequest
 {
     public function __construct()
     {
-        global $configuration;
-        $this->setUrl($configuration['remoteAddress']);
-        $this->setAccessToken($configuration['accessToken']);
+        $this->setUrl(Config::getRemoteAddress());
+        $this->setAccessToken(Config::getAccessToken());
     }
 
     public function getModules($conditions)

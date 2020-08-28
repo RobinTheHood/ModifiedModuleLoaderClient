@@ -55,13 +55,12 @@ class ShopInfo
 
     public static function getAdminDir(): string
     {
-        global $configuration;
-        return $configuration['adminDir'] ?? self::scanForAdminDir();
+        return Config::getAdminDir() ?? self::scanForAdminDir();
     }
 
     /**
      * This method scans for the shop-admin-directory.
-     * 
+     *
      * @return string Returns the name of the directory of the shop-admin-directory.
      */
     public static function scanForAdminDir(): string

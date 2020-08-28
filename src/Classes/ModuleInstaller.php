@@ -13,6 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Archive;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
@@ -77,9 +78,9 @@ class ModuleInstaller
     {
         $dependencyManager = new DependencyManager();
         $dependencyManager->canBeInstalled($module);
-        
+
         $files = $module->getSrcFilePaths();
-        
+
         foreach($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $file;
 
@@ -234,8 +235,6 @@ class ModuleInstaller
 
     public function installFile(string $src, string $dest, bool $overwrite = false): bool
     {
-        global $configuration;
-
         if (!file_exists($src)) {
             return false;
         }
@@ -252,7 +251,7 @@ class ModuleInstaller
             return false;
         }
 
-        if ($configuration['installMode'] == 'link') {
+        if (Config::getInstallMode() == 'link') {
             symlink($src, $dest);
         } else {
             copy($src, $dest);
