@@ -24,7 +24,7 @@ class Config
      *
      * @return array config.php contents.
      */
-    protected static function getConfiguration(bool $cache = true): array
+    protected static function readConfiguration(bool $cache = true): array
     {
         $configurationPath = App::getConfigRoot() . '/config.php';
 
@@ -54,7 +54,7 @@ class Config
      *
      * @param array $options
      */
-    public static function setConfiguration(array $options): void
+    public static function writeConfiguration(array $options): void
     {
         $configPath = App::getConfigRoot() . '/config.php';
         $configOld = file_get_contents($configPath);
@@ -104,7 +104,7 @@ class Config
      */
     public static function getOption(string $option = ''): ?string
     {
-        $configuration = self::getConfiguration();
+        $configuration = self::readConfiguration();
 
         return !empty($configuration[$option]) ? $configuration[$option] : null;
     }
@@ -121,7 +121,7 @@ class Config
      */
     public static function getOptions(array $options = []): array
     {
-        $configuration = self::getConfiguration();
+        $configuration = self::readConfiguration();
         $configurationValues = [];
 
         /**
@@ -161,7 +161,7 @@ class Config
      */
     public static function setUsername(string $newUsername): void
     {
-        self::setConfiguration([$newUsername]);
+        self::writeConfiguration([$newUsername]);
     }
 
     /**
@@ -182,7 +182,7 @@ class Config
      */
     public static function setPassword(string $newPassword): void
     {
-        self::setConfiguration([password_hash($newPassword)]);
+        self::writeConfiguration([password_hash($newPassword)]);
     }
 
     /**
@@ -202,7 +202,7 @@ class Config
      */
     public static function setAdminDir(string $newAdminDir): void
     {
-        self::setConfiguration([$newAdminDir]);
+        self::writeConfiguration([$newAdminDir]);
     }
 
     /**
@@ -222,7 +222,7 @@ class Config
      */
     public static function setModulesLocalDir(string $newModulesLocalDir): void
     {
-        self::setConfiguration([$newModulesLocalDir]);
+        self::writeConfiguration([$newModulesLocalDir]);
     }
 
     /**
@@ -242,7 +242,7 @@ class Config
      */
     public static function setRemoteAddress(string $newRemoteAddress): void
     {
-        self::setConfiguration([$newRemoteAddress]);
+        self::writeConfiguration([$newRemoteAddress]);
     }
 
     /**
@@ -262,7 +262,7 @@ class Config
      */
     public static function setInstallMode(string $newInstallMode): void
     {
-        self::setConfiguration([$newInstallMode]);
+        self::writeConfiguration([$newInstallMode]);
     }
 
     /**
@@ -282,7 +282,7 @@ class Config
      */
     public static function setSelfUpdate(string $newSelfUpdate): void
     {
-        self::setConfiguration([$newSelfUpdate]);
+        self::writeConfiguration([$newSelfUpdate]);
     }
 
     /**
@@ -302,7 +302,7 @@ class Config
      */
     public static function setAccessToken(string $newAccessToken): void
     {
-        self::setConfiguration([$newAccessToken]);
+        self::writeConfiguration([$newAccessToken]);
     }
 
     /**
@@ -322,7 +322,7 @@ class Config
      */
     public static function setExceptionMonitorIp(string $newExceptionMonitorIp): void
     {
-        self::setConfiguration([$newExceptionMonitorIp]);
+        self::writeConfiguration([$newExceptionMonitorIp]);
     }
 
     /**
@@ -342,7 +342,7 @@ class Config
      */
     public static function setExceptionMonitorDomain(string $newExceptionMonitorDomain): void
     {
-        self::setConfiguration([$newExceptionMonitorDomain]);
+        self::writeConfiguration([$newExceptionMonitorDomain]);
     }
 
     /**
@@ -369,6 +369,6 @@ class Config
      */
     public static function setExceptionMonitorMail(string $newExceptionMonitorMail): void
     {
-        self::setConfiguration([$newExceptionMonitorMail]);
+        self::writeConfiguration([$newExceptionMonitorMail]);
     }
 }
