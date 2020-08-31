@@ -69,7 +69,7 @@
 
                                 <?php if (ModuleStatus::isRepairable($module)) { ?>
                                     <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
-                                        <?php if (Config::installMode() != 'link') {?>
+                                        <?php if (Config::getInstallMode() != 'link') {?>
                                             Änderungen verwerfen
                                         <?php } else { ?>
                                             Änderungen übernehmen (Link-Mode)
