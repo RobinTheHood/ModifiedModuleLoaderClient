@@ -38,6 +38,10 @@ input {
     border-radius: 0.25rem;
 }
 
+input:focus {
+    outline: unset;
+}
+
 input[type="submit"].primary {
     color: #fff;
     background-color: var(--colourPrimary);
@@ -463,7 +467,7 @@ pre code {
  * signIn
  */
 #signIn {
-    background-image: url('../Images/login-background-mobile.jpg');
+    background-image: linear-gradient(45deg, #1cb5e0 0%, #000851 100%);
     background-size: cover;
 }
 
@@ -486,7 +490,7 @@ pre code {
 }
 
 #signIn img.logo {
-    animation: HueRotate 15s linear infinite;
+    animation: moveDown 1s ease;
 
     max-height: 100%;
     margin: auto auto var(--gutterDefault) auto;
@@ -495,6 +499,8 @@ pre code {
 }
 
 #signIn .signin-frame {
+    animation: moveUp 1s ease;
+
     height: 100%;
     padding: var(--paddingDefault);
 
@@ -561,13 +567,31 @@ pre code {
     background: unset;
 }
 
-@keyframes HueRotate {
+
+/**
+ * Animations
+ */
+@keyframes moveDown {
     0% {
-        filter: hue-rotate(0deg);
+        position: relative;
+        top: 150px;
     }
 
     100% {
-        filter: hue-rotate(360deg);
+        position: relative;
+        top: 0;
+    }
+}
+
+@keyframes moveUp {
+    0% {
+        position: relative;
+        top: -150px;
+    }
+
+    100% {
+        position: relative;
+        top: 0;
     }
 }
 
@@ -647,21 +671,5 @@ pre code {
 
     .modules .category {
     	grid-template-columns: repeat(1, 1fr);
-    }
-}
-
-
-/**
- * signIn
- */
-@media(min-width: 1280px) {
-    #signIn {
-        background-image: url('../Images/login-background-desktop.jpg');
-    }
-}
-
-@media(min-width: 3840px) {
-    #signIn {
-        background-image: url('../Images/login-background.jpg');
     }
 }
