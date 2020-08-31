@@ -6,7 +6,11 @@
 <div class="navi">
     <div class="wrapper">
         <div class="logo">
-            <img src="src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo">
+            <picture>
+                <source src="src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo">
+
+                <img src="src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo">
+            </picture>         
         </div>
 
         <ul class="navi-main row">
