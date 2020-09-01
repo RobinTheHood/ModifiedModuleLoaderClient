@@ -16,7 +16,7 @@
                 <form action="?action=signIn" method="post">
                     <h1>MMLC Anmeldung</h1>
 
-                    <fieldset>
+                    <div>
                         <label for="username">
                             <picture>
                                 <source src="src/Templates/Images/user.png">
@@ -25,9 +25,9 @@
                             </picture>
                         </label>
                         <input id="username" type="text" name="username" value="<?php echo empty($_POST['username']) ? '' :  $_POST['username'] ?>" placeholder="Benutzername">
-                    </fieldset>
+                    </div>
 
-                    <fieldset>
+                    <div>
                         <label for="password">
                             <picture>
                                 <source src="src/Templates/Images/password.png">
@@ -37,7 +37,7 @@
                         </label>
 
                         <input id="password" type="password" name="password" value="" placeholder="Passwort">
-                    </fieldset>
+                    </div>
 
                     <input type="submit" value="Anmelden" class="primary">
                 </form>

@@ -324,7 +324,6 @@ input[type="submit"].primary:hover {
     font-size: 1.5em;
     margin-bottom: var(--gutterDefault);
     margin-top: var(--gutterDefault);
-
 }
 
 .module-listing .search {
@@ -532,7 +531,7 @@ pre code {
     text-transform: uppercase;
 }
 
-#signIn .signin-frame fieldset {
+#signIn .signin-frame div {
     display: grid;
     grid-gap: var(--gutterDefaultHalf);
     grid-template-columns: 1fr 20fr;
@@ -547,18 +546,18 @@ pre code {
     border-radius: var(--radiusDefault);
 }
 
-#signIn .signin-frame fieldset * {
+#signIn .signin-frame div * {
     margin: 0;
 
     max-width: 100%;
     max-height: 100%;
 }
 
-#signIn .signin-frame fieldset picture {
+#signIn .signin-frame div picture {
     filter: brightness(0%);
 }
 
-#signIn .signin-frame fieldset input {
+#signIn .signin-frame div input {
     width: auto;
     padding: unset;
 
