@@ -141,7 +141,7 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <td>Kompatible mit Modified</td>
+                                                    <td>Kompatibel mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
                                                             <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
@@ -232,7 +232,7 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <td>Kompatible mit Modified</td>
+                                                    <td>Kompatibel mit Modified</td>
                                                     <td>
                                                         <?php if ($module->getModifiedCompatibility()) { ?>
                                                             <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
