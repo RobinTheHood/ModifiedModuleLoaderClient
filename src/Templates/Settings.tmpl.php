@@ -15,7 +15,13 @@
          * Save submitted form input to config.
          */
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            Config::setOptions($_POST);
+            if (!empty($_POST['username'])) {
+                Config::setUsername($_POST['username']);
+            }
+
+            if (!empty($_POST['password'])) {
+                Config::setPassword($_POST['password']);
+            }
         }
         ?>
 
@@ -33,18 +39,26 @@
                 <div class="col-9">
                     <div class="tab-content" id="v-pills-tabContent">
                         <div class="tab-pane fade show active" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
-                            <h2>Benutzer</h2>
                             <form method="post">
-                                <table>
-                                    <?php foreach (Config::getOptionsUser(['pretty']) as $key => $value) { ?>
-                                    <tr>
-                                        <td><?php echo $key; ?></td>
-                                        <td><input type="text" name="<?php echo $key; ?>" value="<?php echo $value; ?>"></td>
-                                    </tr>
-                                    <?php } ?>
-                                </table>
+                                <div class="form-group row">
+                                    <label for="inputEmail3" class="col-sm-2 col-form-label">Benutzername</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="username" class="form-control" id="inputEmail3" value="<?php echo Config::getUsername(); ?>">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+                                    <div class="col-sm-10">
+                                        <input type="password" name="password" class="form-control" id="inputPassword3">
+                                        <p>Gib ein neues Passwort ein, wenn du es ändern möchtest.</p>
+                                    </div>
+                                </div>
 
-                                <button type="submit">Speichern</button>
+                                <div class="form-group row">
+                                    <div class="col-sm-10">
+                                        <button type="submit" class="btn btn-primary">Speichern</button>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>

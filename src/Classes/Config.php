@@ -145,63 +145,6 @@ class Config
     }
 
     /**
-     * Get a group of options relevant to the user from config.
-     *
-     * Options relevant to the user are:
-     * - username
-     * - password
-     *
-     * @param array $options An array of options to process.
-     *
-     * @return array Returns all user related options.
-     */
-    public static function getOptionsUser(array $options): array
-    {
-        $optionsUser = self::processOptions($options, [
-            'username' => self::getUsername(),
-            'password' => self::getPassword()
-        ]);
-
-        return $optionsUser;
-    }
-
-    /**
-     * Applies options to the parsed data.
-     *
-     * @param array $options An array of options to apply.
-     * @param array $data An array of data to process with the options.
-     *
-     * @return array Returns the processed data.
-     */
-    public static function processOptions(array $options, array $data): array
-    {
-        for ($i=0; $i < count($options); $i++) {
-            switch ($options[$i]) {
-                case 'pretty':
-                    /**
-                     * Edit the array keys to be displayed for humans.
-                     */
-                    foreach ($data as $key => $value) {
-                        switch ($key) {
-                            case 'username':
-                                $data['Benutzername'] = $value;
-                                unset($data[$key]);
-                                break;
-
-                            case 'password':
-                                $data['Passwort'] = $value;
-                                unset($data[$key]);
-                                break;
-                        }
-                    }
-                    break;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * Get username from config.
      *
      * @return string|null Returns the username from config or null.
@@ -218,7 +161,7 @@ class Config
      */
     public static function setUsername(string $newUsername): void
     {
-        self::writeConfiguration([$newUsername]);
+        self::writeConfiguration(['username' => $newUsername]);
     }
 
     /**
@@ -239,7 +182,7 @@ class Config
      */
     public static function setPassword(string $newPassword): void
     {
-        self::writeConfiguration([password_hash($newPassword, PASSWORD_DEFAULT)]);
+        self::writeConfiguration(['password' => password_hash($newPassword, PASSWORD_DEFAULT)]);
     }
 
     /**
@@ -259,7 +202,7 @@ class Config
      */
     public static function setAdminDir(string $newAdminDir): void
     {
-        self::writeConfiguration([$newAdminDir]);
+        self::writeConfiguration(['adminDir' => $newAdminDir]);
     }
 
     /**
@@ -279,7 +222,7 @@ class Config
      */
     public static function setModulesLocalDir(string $newModulesLocalDir): void
     {
-        self::writeConfiguration([$newModulesLocalDir]);
+        self::writeConfiguration(['modulesLocalDir' => $newModulesLocalDir]);
     }
 
     /**
@@ -299,7 +242,7 @@ class Config
      */
     public static function setRemoteAddress(string $newRemoteAddress): void
     {
-        self::writeConfiguration([$newRemoteAddress]);
+        self::writeConfiguration(['remoteAddress' => $newRemoteAddress]);
     }
 
     /**
@@ -319,7 +262,7 @@ class Config
      */
     public static function setInstallMode(string $newInstallMode): void
     {
-        self::writeConfiguration([$newInstallMode]);
+        self::writeConfiguration(['installMode' => $newInstallMode]);
     }
 
     /**
@@ -339,7 +282,7 @@ class Config
      */
     public static function setSelfUpdate(string $newSelfUpdate): void
     {
-        self::writeConfiguration([$newSelfUpdate]);
+        self::writeConfiguration(['selfUpdate' => $newSelfUpdate]);
     }
 
     /**
@@ -359,7 +302,7 @@ class Config
      */
     public static function setAccessToken(string $newAccessToken): void
     {
-        self::writeConfiguration([$newAccessToken]);
+        self::writeConfiguration(['accessToken' => $newAccessToken]);
     }
 
     /**
@@ -379,7 +322,7 @@ class Config
      */
     public static function setExceptionMonitorIp(string $newExceptionMonitorIp): void
     {
-        self::writeConfiguration([$newExceptionMonitorIp]);
+        self::writeConfiguration(['exceptionMonitorIp' => $newExceptionMonitorIp]);
     }
 
     /**
@@ -399,7 +342,7 @@ class Config
      */
     public static function setExceptionMonitorDomain(string $newExceptionMonitorDomain): void
     {
-        self::writeConfiguration([$newExceptionMonitorDomain]);
+        self::writeConfiguration(['exceptionMonitorDomain' => $newExceptionMonitorDomain]);
     }
 
     /**
@@ -426,6 +369,6 @@ class Config
      */
     public static function setExceptionMonitorMail(string $newExceptionMonitorMail): void
     {
-        self::writeConfiguration([$newExceptionMonitorMail]);
+        self::writeConfiguration(['exceptionMonitorMail' => $newExceptionMonitorMail]);
     }
 }
