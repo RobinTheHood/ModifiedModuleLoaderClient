@@ -54,7 +54,7 @@ input[type="submit"].primary:hover {
 }
 
 input + p {
-    margin: 0.375rem 0.75rem;
+    margin: 0.375rem 0rem;
     font-size: 0.8rem;
     color: var(--colourLight);
 }

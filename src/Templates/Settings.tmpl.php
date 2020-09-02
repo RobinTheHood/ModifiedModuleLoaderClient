@@ -25,77 +25,61 @@
                     <div class="tab-content" id="v-pills-tabContent">
                         <!-- General -->
                         <div class="tab-pane fade show active" id="v-pills-general" role="tabpanel" aria-labelledby="v-pills-general-tab">
+                            <h2>Allgemein</h2>
                             <form method="post">
-                                <div class="form-group row">
-                                    <label for="inputAccessToken" class="col-sm-2 col-form-label">Access Token</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>"<?php echo empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
-
-                                        <p>Aus Sicherheitsgründen ist das Ändern des AccessToken gesperrt. Der Wert kann unter "<?php echo Config::path(); ?>" geändert werden.</p>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="inputAccessToken">Access Token</label>
+                                    <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>"<?php echo empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
+                                    <p>Aus Sicherheitsgründen ist das Ändern des AccessTokens gesperrt. Der Wert kann unter <code style="word-break: break-all"><?php echo Config::path(); ?></code> geändert werden.</p>
                                 </div>
 
-                                <div class="form-group row">
-                                    <div class="col-sm-10">
-                                        <button type="submit" class="btn btn-primary">Speichern</button>
-                                    </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Speichern</button>
                                 </div>
                             </form>
                         </div>
 
                         <!-- User -->
                         <div class="tab-pane fade" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
+                            <h2>Benutzer</h2>
                             <form method="post">
-                                <div class="form-group row">
-                                    <label for="inputUsername" class="col-sm-2 col-form-label">Benutzername</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="username" class="form-control" id="inputUsername" value="<?php echo Config::getUsername(); ?>">
-
-                                        <p>Mit diesem Namen meldest du dich im MMLC an.</p>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="inputUsername">Benutzername</label>
+                                    <input type="text" name="username" class="form-control" id="inputUsername" value="<?php echo Config::getUsername(); ?>">
+                                    <p>Mit diesem Namen meldest du dich im MMLC an.</p>
                                 </div>
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-                                    <div class="col-sm-10">
-                                        <input type="password" name="password" class="form-control" id="inputPassword">
-
-                                        <p>Gib ein neues Passwort ein, wenn du es ändern möchtest.</p>
-                                    </div>
+                                
+                                <div class="form-group">
+                                    <label for="inputPassword">Password</label>
+                                    <input type="password" name="password" class="form-control" id="inputPassword">
+                                    <p>Gib ein neues Passwort ein, wenn du es ändern möchtest.</p>
                                 </div>
 
-                                <div class="form-group row">
-                                    <div class="col-sm-10">
-                                        <button type="submit" class="btn btn-primary">Speichern</button>
-                                    </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Speichern</button>
                                 </div>
                             </form>
                         </div>
 
                         <!-- Advanced -->
                         <div class="tab-pane fade show" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
+                            <h2>Erweitert</h2>
                             <form method="post">
                                 <!-- modulesLocalDir -->
-                                <div class="form-group row">
-                                    <label for="inputModulesLocalDir" class="col-sm-2 col-form-label">Module Pfad</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?php echo Config::getModulesLocalDir(); ?>">
-
-                                        <p>In diesem Ordner werden Module für den MMLC installiert.</p>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="inputModulesLocalDir">Module Pfad</label>
+                                    <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?php echo Config::getModulesLocalDir(); ?>">
+                                    <p>In diesem Ordner werden Module für den MMLC heruntergeladen.</p>
                                 </div>
 
                                 <!-- installMode -->
-                                <div class="form-group row">
-                                    <label for="inputInstallMode" class="col-sm-2 col-form-label">Installationsmodus</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="installMode" class="form-control" id="inputInstallMode" value="<?php echo Config::getInstallMode(); ?>">
-                                    </div>
+                                <div class="form-group">
+                                    <label for="inputInstallMode">Installationsmodus</label>
+                                    <input type="text" name="installMode" class="form-control" id="inputInstallMode" value="<?php echo Config::getInstallMode(); ?>">
                                 </div>
 
-                                <div class="form-group row">
-                                    <div class="col-sm-10">
-                                        <button type="submit" class="btn btn-primary">Speichern</button>
-                                    </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Speichern</button>
                                 </div>
                             </form>
                         </div>
