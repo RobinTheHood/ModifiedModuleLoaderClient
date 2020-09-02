@@ -494,19 +494,23 @@ class IndexController
          * Save submitted form input to config.
          */
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (!empty($_POST['username'])) {
+            if (isset($_POST['username'])) {
                 Config::setUsername($_POST['username']);
             }
 
+            /**
+             * Don't overwrite the password
+             * if the user doesn't want to change it.
+             */
             if (!empty($_POST['password'])) {
                 Config::setPassword($_POST['password']);
             }
 
-            if (!empty($_POST['accessToken'])) {
+            if (isset($_POST['accessToken'])) {
                 Config::setAccessToken($_POST['accessToken']);
             }
 
-            if (!empty($_POST['modulesLocalDir'])) {
+            if (isset($_POST['modulesLocalDir'])) {
                 Config::setModulesLocalDir($_POST['modulesLocalDir']);
             }
         }

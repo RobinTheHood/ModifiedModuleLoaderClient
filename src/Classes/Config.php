@@ -60,23 +60,28 @@ class Config
         $configOld = file_get_contents($configPath);
         $configNew = '';
 
-        foreach ($options as $key => $value) {
+        foreach ($options as $key => $lineNewValue) {
             $matches = [];
 
             /**
              * Look for line in config which matches:
              * '$key' => 'foobar' (i. e.: 'username' => 'root')
              *
-             * Look for $value in found line and replace it:
-             * '$key' => 'foobar' becomes '$key' => '$value'
+             * Look for $lineNewValue in found line and replace it:
+             * '$key' => 'foobar' becomes '$key' => '$lineNewValue'
              */
-            $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.*)\'/';
+            $regex = '/(\'' . $key . '\')[ ]*=>[ ]*(\'.*\')/';
 
             preg_match($regex, $configOld, $matches);
 
             switch (count($matches)) {
                 case 3:
-                    $configNew = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $configOld);
+                    $lineOld = $matches[0];
+                    $lineOldValue = $matches[2];
+                    $lineNewValue = '\'' . $lineNewValue . '\'';
+                    $lineNew = str_replace($lineOldValue, $lineNewValue, $lineOld);
+
+                    $configNew = str_replace($lineOld, $lineNew, $configOld);
                     $configOld = $configNew;
                     break;
 
@@ -92,6 +97,8 @@ class Config
         }
 
         file_put_contents($configPath, $configNew);
+
+        self::$configuration = [];
     }
 
     /**
