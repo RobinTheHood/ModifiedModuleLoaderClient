@@ -30,6 +30,8 @@ class Notification
             return '<div class="alert alert-warning" role="alert">' . $message . '</div>';
         } elseif ($type == 'error') {
             return '<div class="alert alert-danger" role="alert">' . $message . '</div>';
+        } elseif ($type == 'success') {
+            return '<div class="alert alert-success auto-fade-out" role="alert">' . $message . '</div>';
         }
         return '<div class="alert alert-info" role="alert">' . $message . '</div>';
     }

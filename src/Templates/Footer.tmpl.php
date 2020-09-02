@@ -52,3 +52,9 @@
         });
     }
 </script>
+
+<script>
+    $(".alert-success.auto-fade-out").fadeTo(2000, 0).slideUp(500, function() {
+        $(this).remove();
+    });
+</script>
