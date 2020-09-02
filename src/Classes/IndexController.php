@@ -518,6 +518,8 @@ class IndexController
                 'text' => 'Einstellungen erfolgreich gespeichert.',
                 'type' => 'success'
             ]);
+            
+            Redirect::redirect('/?action=settings'); 
         }
 
         include App::getTemplatesRoot() . '/Settings.tmpl.php';
