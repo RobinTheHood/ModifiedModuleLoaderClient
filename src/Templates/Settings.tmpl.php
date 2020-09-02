@@ -15,6 +15,9 @@
 
             <h1>Einstellungen</h1>
 
+            <p>Mehr Information zu den Einstellungen kannst du dir unter <a target="_blank" href="https://module-loader.de/docs/config_config.php">module-loader.de</a> durchlesen.</p>
+            <br>
+
             <div class="row">
                 <div class="col-3">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
