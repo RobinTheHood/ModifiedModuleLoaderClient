@@ -97,6 +97,8 @@ class Config
         }
 
         file_put_contents($configPath, $configNew);
+
+        self::$configuration = [];
     }
 
     /**
