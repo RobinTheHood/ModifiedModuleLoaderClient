@@ -34,7 +34,12 @@
                             <form method="post">
                                 <div class="form-group">
                                     <label for="inputAccessToken">Access Token</label>
-                                    <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>"<?php echo empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>"<?php echo empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="copyToClipboard('inputAccessToken')">kopieren</button>
+                                        </div>
+                                    </div>
                                     <p>Aus Sicherheitsgründen ist das Ändern des AccessTokens gesperrt. Der Wert kann unter <code style="word-break: break-all"><?php echo Config::path(); ?></code> geändert werden.</p>
                                 </div>
 
