@@ -29,7 +29,9 @@
                                 <div class="form-group row">
                                     <label for="inputAccessToken" class="col-sm-2 col-form-label">Access Token</label>
                                     <div class="col-sm-10">
-                                        <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>">
+                                        <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>"<?php echo empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
+
+                                        <p>Aus Sicherheitsgründen ist das Ändern des AccessToken gesperrt. Der Wert kann unter "<?php echo Config::path(); ?>" geändert werden.</p>
                                     </div>
                                 </div>
 
@@ -48,12 +50,15 @@
                                     <label for="inputUsername" class="col-sm-2 col-form-label">Benutzername</label>
                                     <div class="col-sm-10">
                                         <input type="text" name="username" class="form-control" id="inputUsername" value="<?php echo Config::getUsername(); ?>">
+
+                                        <p>Mit diesem Namen meldest du dich im MMLC an.</p>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
                                     <div class="col-sm-10">
                                         <input type="password" name="password" class="form-control" id="inputPassword">
+
                                         <p>Gib ein neues Passwort ein, wenn du es ändern möchtest.</p>
                                     </div>
                                 </div>
@@ -69,10 +74,21 @@
                         <!-- Advanced -->
                         <div class="tab-pane fade show" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
                             <form method="post">
+                                <!-- modulesLocalDir -->
                                 <div class="form-group row">
                                     <label for="inputModulesLocalDir" class="col-sm-2 col-form-label">Module Pfad</label>
                                     <div class="col-sm-10">
                                         <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?php echo Config::getModulesLocalDir(); ?>">
+
+                                        <p>In diesem Ordner werden Module für den MMLC installiert.</p>
+                                    </div>
+                                </div>
+
+                                <!-- installMode -->
+                                <div class="form-group row">
+                                    <label for="inputInstallMode" class="col-sm-2 col-form-label">Installationsmodus</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="installMode" class="form-control" id="inputInstallMode" value="<?php echo Config::getInstallMode(); ?>">
                                     </div>
                                 </div>
 
