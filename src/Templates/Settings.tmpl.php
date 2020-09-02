@@ -11,6 +11,8 @@
         <?php include 'Navi.tmpl.php' ?>
 
         <div class="content">
+            <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
+
             <h1>Einstellungen</h1>
 
             <div class="row">

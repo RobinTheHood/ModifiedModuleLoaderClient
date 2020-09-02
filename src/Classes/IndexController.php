@@ -513,6 +513,11 @@ class IndexController
             if (isset($_POST['modulesLocalDir'])) {
                 Config::setModulesLocalDir($_POST['modulesLocalDir']);
             }
+
+            Notification::pushFlashMessage([
+                'text' => 'Einstellungen erfolgreich gespeichert.',
+                'type' => 'success'
+            ]);
         }
 
         include App::getTemplatesRoot() . '/Settings.tmpl.php';
