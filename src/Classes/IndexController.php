@@ -519,7 +519,8 @@ class IndexController
                 'type' => 'success'
             ]);
             
-            Redirect::redirect('/?action=settings'); 
+            $section = $_GET['section'] ?? 'general';
+            Redirect::redirect('/?action=settings&section=' . $section); 
         }
 
         include App::getTemplatesRoot() . '/Settings.tmpl.php';
