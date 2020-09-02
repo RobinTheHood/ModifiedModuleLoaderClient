@@ -19,6 +19,11 @@ class Config
      */
     protected static $configuration = [];
 
+    public static function path(): string
+    {
+        return App::getConfigRoot() . '/config.php';
+    }
+
     /**
      * @param bool $cache whether to load from file (true) or not.
      *
@@ -26,10 +31,8 @@ class Config
      */
     protected static function readConfiguration(bool $cache = true): array
     {
-        $configurationPath = App::getConfigRoot() . '/config.php';
-
-        if (!file_exists($configurationPath)) {
-            throw new \RuntimeException('Configuration not found. The file "' . $configurationPath . '" does not seem to exist.');
+        if (!file_exists(self::path())) {
+            throw new \RuntimeException('Configuration not found. The file "' . self::path() . '" does not seem to exist.');
         }
 
         /**
@@ -38,10 +41,12 @@ class Config
          * - Config is empty
          */
         if (!$cache || !self::$configuration) {
-            include $configurationPath;
+            opcache_invalidate(self::path());
+
+            include self::path();
 
             /**
-             * $configurationPath contains an array named $configuration.
+             * self::path() contains an array named $configuration.
              */
             self::$configuration = $configuration;
         }
