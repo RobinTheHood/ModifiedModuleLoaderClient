@@ -145,6 +145,63 @@ class Config
     }
 
     /**
+     * Get a group of options relevant to the user from config.
+     *
+     * Options relevant to the user are:
+     * - username
+     * - password
+     *
+     * @param array $options An array of options to process.
+     *
+     * @return array Returns all user related options.
+     */
+    public static function getOptionsUser(array $options): array
+    {
+        $optionsUser = self::processOptions($options, [
+            'username' => self::getUsername(),
+            'password' => self::getPassword()
+        ]);
+
+        return $optionsUser;
+    }
+
+    /**
+     * Applies options to the parsed data.
+     *
+     * @param array $options An array of options to apply.
+     * @param array $data An array of data to process with the options.
+     *
+     * @return array Returns the processed data.
+     */
+    public static function processOptions(array $options, array $data): array
+    {
+        for ($i=0; $i < count($options); $i++) {
+            switch ($options[$i]) {
+                case 'pretty':
+                    /**
+                     * Edit the array keys to be displayed for humans.
+                     */
+                    foreach ($data as $key => $value) {
+                        switch ($key) {
+                            case 'username':
+                                $data['Benutzername'] = $value;
+                                unset($data[$key]);
+                                break;
+
+                            case 'password':
+                                $data['Passwort'] = $value;
+                                unset($data[$key]);
+                                break;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Get username from config.
      *
      * @return string|null Returns the username from config or null.

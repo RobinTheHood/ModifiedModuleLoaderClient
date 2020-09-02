@@ -52,6 +52,16 @@ input[type="submit"].primary:hover {
     background-color: var(--colourPrimaryLight);
 }
 
+h1 {
+    text-transform: uppercase;
+    font-size: 4rem;
+    opacity: 0.2;
+}
+
+section {
+    margin: 4em 0;
+}
+
 
 /**
  * Tooltip
@@ -473,10 +483,10 @@ pre code {
 #signIn .content {
     width: 100vw;
     height: 100vh;
-    
+
     max-width: 100vw;
     max-height: 100vh;
-    
+
     padding: 0;
     margin: 0;
 
