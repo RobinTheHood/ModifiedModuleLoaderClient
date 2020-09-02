@@ -41,7 +41,9 @@ class Config
          * - Config is empty
          */
         if (!$cache || !self::$configuration) {
-            opcache_invalidate(self::path());
+            if (function_exists('opcache_invalidate')) {
+                opcache_invalidate(self::path());
+            }
 
             include self::path();
 
