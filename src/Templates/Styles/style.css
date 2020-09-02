@@ -8,6 +8,7 @@
 
     --colourPrimary: #007bff;
     --colourPrimaryLight: #66b0f7;
+    --colourBorder: #d9d9d9;
 
     --radiusDefault: 4px;
 
@@ -50,6 +51,18 @@ input[type="submit"].primary {
 
 input[type="submit"].primary:hover {
     background-color: var(--colourPrimaryLight);
+}
+
+h1 {
+    margin-bottom: 1em;
+
+    text-transform: uppercase;
+    font-size: 4rem;
+    opacity: 0.2;
+}
+
+section {
+    margin: 4em 0;
 }
 
 
@@ -473,10 +486,10 @@ pre code {
 #signIn .content {
     width: 100vw;
     height: 100vh;
-    
+
     max-width: 100vw;
     max-height: 100vh;
-    
+
     padding: 0;
     margin: 0;
 
