@@ -405,10 +405,21 @@ section {
     margin: 0 -30px 0 -30px;
 }
 
-.content .moduleinfo-images img {
+.content .moduleinfo-images .preview {
     width: 100%;
-    max-height: 256px;
-    border: 1px solid #cccccc;
+    height: 140px;
+
+    overflow: hidden;
+
+    border: 1px solid var(--colourBorder);
+    border-radius: var(--radiusDefault);
+}
+
+.content .moduleinfo-images .preview img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
 }
 
 .content .button {
