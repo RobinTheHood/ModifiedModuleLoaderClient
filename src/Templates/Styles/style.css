@@ -6,9 +6,19 @@
     --paddingDefaultHalf: 10px;
     --paddingNavigation: 10px;
 
+    --sizeH1: 2.0rem;
+
     --colourPrimary: #007bff;
     --colourPrimaryLight: #66b0f7;
     --colourLight: #777;
+    --colourBorder: #d9d9d9;
+    --colourBorderLight: #f4f4f4;
+
+    /**
+     * Apply bootstrap colour
+     */
+    --colourGreen: var(--green);
+    --colourOrange: var(--orange);
 
     --radiusDefault: 4px;
 
@@ -59,16 +69,32 @@ input + p, .input-group + p {
     color: var(--colourLight);
 }
 
-h1 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin-bottom: 1em;
-
-    text-transform: uppercase;
-    font-size: 4rem;
-    opacity: 0.2;
 }
+
+h1 { font-size: var(--sizeH1); }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1.0rem; }
 
 section {
     margin: 4em 0;
+}
+
+
+/**
+ * Badge
+ */
+.badge {
+    cursor: default;
 }
 
 
@@ -327,22 +353,12 @@ section {
     text-decoration: underline;
 }
 
-.moduleinfo h1 {
-    font-weight: normal;
-    margin-bottom: var(--gutterDefault);
-}
 
-.module-listing h1 {
-    font-weight: normal;
-    border-bottom: 1px solid #cccccc;
-    font-size: 2em;
-}
-
+/**
+ * Module list
+ */
 .module-listing h2 {
-    font-weight: normal;
-    font-size: 1.5em;
-    margin-bottom: var(--gutterDefault);
-    margin-top: var(--gutterDefault);
+    margin-bottom: 0.2em;
 }
 
 .module-listing .search {
@@ -356,49 +372,48 @@ section {
     border: 1px solid #cccccc;
 }
 
-.content .moduleinfo .moduleinfo-row {
+.content .module-title {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+}
+
+.content .module-title img {
+    margin: 0.2em 0.4em 0.2em 0.2em;
+    height: var(--sizeH1);
+}
+
+.content .moduleinfo-row {
     padding-bottom: var(--paddingDefault);
     border-bottom: 1px solid #cccccc;
     margin-bottom: var(--gutterDefault);
 }
 
-.content .moduleinfo .moduleinfo-row .info-heading {
+.content .moduleinfo-row .info-heading {
     display: inline-block;
     font-weight: bold;
     width: 300px;
     float: left;
 }
 
-.content .moduleinfo .moduleinfo-row .info-body {
+.content .moduleinfo-row .info-body {
     padding-left: 300px;
 }
 
-.content .moduleinfo .moduleinfo-images {
-    padding-bottom: var(--paddingDefault);
+.content .moduleinfo-images {
+    padding-bottom: 1rem;
+    margin: 0 -30px 0 -30px;
 }
 
-.content .moduleinfo .moduleinfo-images img {
-    -width: 300px;
+.content .moduleinfo-images img {
     width: 100%;
+    max-height: 256px;
     border: 1px solid #cccccc;
 }
 
-.content .moduleinfo .module-icon img {
-    float: left;
-    margin-right: 10px;
-    height: 32px;
-    margin-top: 8px
-}
-
-.moduleinfo .button {
+.content .button {
     margin: 0px;
     margin-right: 10px;
-}
-
-.content .moduleinfo .moduleinfo-buttons {
-    margin-bottom: var(--gutterDefault);
-    padding-bottom: var(--paddingDefault);
-    border-bottom: 1px solid #cccccc;
 }
 
 .moduleinfo-row {
@@ -413,37 +428,42 @@ section {
     font-weight: bold;
 }
 
-.markdown h1 {
-    border: none;
+/**
+ * Markdown
+ */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+    margin-bottom: 0.2em;
+}
+
+.markdown h1 { font-size: 1.6rem; }
+.markdown h2 { font-size: 1.4rem; }
+.markdown h3 { font-size: 1.2rem; }
+.markdown h4 { font-size: 1.0rem; }
+.markdown h5 { font-size: 1.0rem; }
+.markdown h6 { font-size: 1.0rem; }
+
+.markdown h1,
+.markdown h2 {
+    margin-bottom: 0.6em;
+    padding-bottom: 0.1em;
+
+    border-bottom: 1px solid var(--colourBorder);
 }
 
 .markdown h2 {
-    font-weight: normal;
-    margin-top: 60px;
-}
-
-.markdown h3 {
-    font-weight: normal;
-    margin-top: 40px;
-}
-
-.markdown.changelog h3 {
-    font-weight: bold;
-    margin-top: 16px;
-    font-size: 18px;
-}
-
-.markdown h4 {
-    font-weight: normal;
-    margin-top: var(--gutterDefault);
+    margin-top: 4rem;
 }
 
 .markdown hr {
-    margin: 40px 0px 40px;
-    border: none;
-    border-top: 1px dashed #cccccc;
-    height: 0px;
-    background-color: none;
+    margin: 2rem 1rem;
+
+    border: unset;
+    border-top: 1px dashed var(--colourBorder);
 }
 
 .markdown table {
