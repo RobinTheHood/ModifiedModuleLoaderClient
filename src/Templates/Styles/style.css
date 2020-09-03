@@ -449,17 +449,14 @@ section {
 
 .markdown h1,
 .markdown h2 {
+    margin-bottom: 0.6em;
+    padding-bottom: 0.1em;
+
     border-bottom: 1px solid var(--colourBorder);
 }
 
-.markdown h1 {
-    margin-bottom: 0.6em;
-    padding-bottom: 0.1em;
-}
-
 .markdown h2 {
-    margin: 4rem 0 0.4em 0;
-    padding: 0 0 0.1em 0;
+    margin-top: 4rem;
 }
 
 .markdown hr {
