@@ -112,6 +112,8 @@
                 </div>
             </div>
 
+            <hr>
+
             <div class="row">
                 <div class="col-3">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">

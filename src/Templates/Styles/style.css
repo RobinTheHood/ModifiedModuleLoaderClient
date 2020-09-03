@@ -85,6 +85,13 @@ h4 { font-size: 1.4rem; }
 h5 { font-size: 1.2rem; }
 h6 { font-size: 1.0rem; }
 
+hr {
+    margin: 2rem 0;
+
+    border: unset;
+    border-top: 1px solid var(--colourBorder);
+}
+
 section {
     margin: 4em 0;
 }
