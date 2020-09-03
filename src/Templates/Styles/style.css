@@ -6,7 +6,7 @@
     --paddingDefaultHalf: 10px;
     --paddingNavigation: 10px;
 
-    --sizeH1: 2.8rem;
+    --sizeH1: 2.0rem;
 
     --colourPrimary: #007bff;
     --colourPrimaryLight: #66b0f7;
@@ -79,11 +79,11 @@ h6 {
 }
 
 h1 { font-size: var(--sizeH1); }
-h2 { font-size: 2.4rem; }
-h3 { font-size: 2.0rem; }
-h4 { font-size: 1.6rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
 h5 { font-size: 1.2rem; }
-h6 { font-size: 0.8rem; }
+h6 { font-size: 1.0rem; }
 
 section {
     margin: 4em 0;
@@ -379,7 +379,7 @@ section {
 }
 
 .content .module-title img {
-    margin: 0.4rem 0.8rem 0.4rem 0.4rem;
+    margin: 0.2em 0.4em 0.2em 0.2em;
     height: var(--sizeH1);
 }
 
@@ -402,23 +402,18 @@ section {
 
 .content .moduleinfo-images {
     padding-bottom: var(--paddingDefault);
+    margin: 0 -30px 0 -30px;
 }
 
 .content .moduleinfo-images img {
     width: 100%;
-    max-height: 128px;
+    max-height: 256px;
     border: 1px solid #cccccc;
 }
 
 .content .button {
     margin: 0px;
     margin-right: 10px;
-}
-
-.content .moduleinfo-buttons {
-    margin-bottom: var(--gutterDefault);
-    padding-bottom: var(--paddingDefault);
-    border-bottom: 1px solid #cccccc;
 }
 
 .moduleinfo-row {
@@ -443,6 +438,35 @@ section {
 .markdown h5,
 .markdown h6 {
     margin-bottom: 0.2em;
+}
+
+.markdown h1 { font-size: 1.6rem; }
+.markdown h2 { font-size: 1.4rem; }
+.markdown h3 { font-size: 1.2rem; }
+.markdown h4 { font-size: 1.0rem; }
+.markdown h5 { font-size: 1.0rem; }
+.markdown h6 { font-size: 1.0rem; }
+
+.markdown h1,
+.markdown h2 {
+    border-bottom: 1px solid var(--colourBorder);
+}
+
+.markdown h1 {
+    margin-bottom: 0.6em;
+    padding-bottom: 0.1em;
+}
+
+.markdown h2 {
+    margin: 4rem 0 0.4em 0;
+    padding: 0 0 0.1em 0;
+}
+
+.markdown hr {
+    margin: 2rem 1rem;
+
+    border: unset;
+    border-top: 1px dashed var(--colourBorder);
 }
 
 .markdown table {
