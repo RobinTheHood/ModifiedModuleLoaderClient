@@ -33,9 +33,11 @@
                             <?php if ($module->getImageUris()) { ?>
                                 <?php foreach($module->getImageUris() as $image) { ?>
                                     <div class="col-3">
-                                        <a href="<?php echo $image ?>" data-lightbox="show-1" data-title="<?php echo $module->getName() ?>">
-                                            <img src="<?php echo $image ?>">
-                                        </a>
+                                        <div class="preview">
+                                            <a href="<?php echo $image ?>" data-lightbox="show-1" data-title="<?php echo $module->getName() ?>">
+                                                <img src="<?php echo $image ?>">
+                                            </a>
+                                        </div>
                                     </div>
                                 <?php } ?>
                             <?php } ?>
