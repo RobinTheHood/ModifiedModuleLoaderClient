@@ -28,17 +28,17 @@
                         <h1><?php echo $module->getName() ?></h1>
                     </div>
 
-                    <div class="module-previews">
-                        <?php if ($module->getImageUris()) { ?>
-                            <?php foreach($module->getImageUris() as $image) { ?>
-                                <div class="preview">
-                                    <a href="<?php echo $image ?>" data-lightbox="show-1" data-title="<?php echo $module->getName() ?>">
-                                        <img src="<?php echo $image ?>">
-                                    </a>
-                                </div>
-                            <?php } ?>
+                    <?php if ($module->getImageUris()) { ?>
+                        <div class="module-previews">
+                        <?php foreach($module->getImageUris() as $image) { ?>
+                            <div class="preview">
+                                <a href="<?php echo $image ?>" data-lightbox="show-1" data-title="<?php echo $module->getName() ?>">
+                                    <img src="<?php echo $image ?>">
+                                </a>
+                            </div>
                         <?php } ?>
-                    </div>
+                        </div>
+                    <?php } ?>
 
                     <?php if (ModuleStatus::isRepairable($module)) { ?>
                         <div class="alert alert-warning" role="alert">
