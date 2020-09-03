@@ -19,6 +19,11 @@ class Config
      */
     protected static $configuration = [];
 
+    public static function path(): string
+    {
+        return App::getConfigRoot() . '/config.php';
+    }
+
     /**
      * @param bool $cache whether to load from file (true) or not.
      *
@@ -26,10 +31,8 @@ class Config
      */
     protected static function readConfiguration(bool $cache = true): array
     {
-        $configurationPath = App::getConfigRoot() . '/config.php';
-
-        if (!file_exists($configurationPath)) {
-            throw new \RuntimeException('Configuration not found. The file "' . $configurationPath . '" does not seem to exist.');
+        if (!file_exists(self::path())) {
+            throw new \RuntimeException('Configuration not found. The file "' . self::path() . '" does not seem to exist.');
         }
 
         /**
@@ -38,10 +41,14 @@ class Config
          * - Config is empty
          */
         if (!$cache || !self::$configuration) {
-            include $configurationPath;
+            if (function_exists('opcache_invalidate')) {
+                opcache_invalidate(self::path());
+            }
+
+            include self::path();
 
             /**
-             * $configurationPath contains an array named $configuration.
+             * self::path() contains an array named $configuration.
              */
             self::$configuration = $configuration;
         }
@@ -60,23 +67,28 @@ class Config
         $configOld = file_get_contents($configPath);
         $configNew = '';
 
-        foreach ($options as $key => $value) {
+        foreach ($options as $key => $lineNewValue) {
             $matches = [];
 
             /**
              * Look for line in config which matches:
              * '$key' => 'foobar' (i. e.: 'username' => 'root')
              *
-             * Look for $value in found line and replace it:
-             * '$key' => 'foobar' becomes '$key' => '$value'
+             * Look for $lineNewValue in found line and replace it:
+             * '$key' => 'foobar' becomes '$key' => '$lineNewValue'
              */
-            $regex = '/\'(' . $key . ')\'[ ]*=>[ ]*\'(.*)\'/';
+            $regex = '/(\'' . $key . '\')[ ]*=>[ ]*(\'.*\')/';
 
             preg_match($regex, $configOld, $matches);
 
             switch (count($matches)) {
                 case 3:
-                    $configNew = str_replace($matches[0], str_replace($matches[2], $value, $matches[0]), $configOld);
+                    $lineOld = $matches[0];
+                    $lineOldValue = $matches[2];
+                    $lineNewValue = '\'' . $lineNewValue . '\'';
+                    $lineNew = str_replace($lineOldValue, $lineNewValue, $lineOld);
+
+                    $configNew = str_replace($lineOld, $lineNew, $configOld);
                     $configOld = $configNew;
                     break;
 
@@ -92,6 +104,8 @@ class Config
         }
 
         file_put_contents($configPath, $configNew);
+
+        self::$configuration = [];
     }
 
     /**
@@ -161,7 +175,7 @@ class Config
      */
     public static function setUsername(string $newUsername): void
     {
-        self::writeConfiguration([$newUsername]);
+        self::writeConfiguration(['username' => $newUsername]);
     }
 
     /**
@@ -182,7 +196,7 @@ class Config
      */
     public static function setPassword(string $newPassword): void
     {
-        self::writeConfiguration([password_hash($newPassword, PASSWORD_DEFAULT)]);
+        self::writeConfiguration(['password' => password_hash($newPassword, PASSWORD_DEFAULT)]);
     }
 
     /**
@@ -202,7 +216,7 @@ class Config
      */
     public static function setAdminDir(string $newAdminDir): void
     {
-        self::writeConfiguration([$newAdminDir]);
+        self::writeConfiguration(['adminDir' => $newAdminDir]);
     }
 
     /**
@@ -222,7 +236,7 @@ class Config
      */
     public static function setModulesLocalDir(string $newModulesLocalDir): void
     {
-        self::writeConfiguration([$newModulesLocalDir]);
+        self::writeConfiguration(['modulesLocalDir' => $newModulesLocalDir]);
     }
 
     /**
@@ -242,7 +256,7 @@ class Config
      */
     public static function setRemoteAddress(string $newRemoteAddress): void
     {
-        self::writeConfiguration([$newRemoteAddress]);
+        self::writeConfiguration(['remoteAddress' => $newRemoteAddress]);
     }
 
     /**
@@ -262,7 +276,7 @@ class Config
      */
     public static function setInstallMode(string $newInstallMode): void
     {
-        self::writeConfiguration([$newInstallMode]);
+        self::writeConfiguration(['installMode' => $newInstallMode]);
     }
 
     /**
@@ -282,7 +296,7 @@ class Config
      */
     public static function setSelfUpdate(string $newSelfUpdate): void
     {
-        self::writeConfiguration([$newSelfUpdate]);
+        self::writeConfiguration(['selfUpdate' => $newSelfUpdate]);
     }
 
     /**
@@ -302,7 +316,7 @@ class Config
      */
     public static function setAccessToken(string $newAccessToken): void
     {
-        self::writeConfiguration([$newAccessToken]);
+        self::writeConfiguration(['accessToken' => $newAccessToken]);
     }
 
     /**
@@ -322,7 +336,7 @@ class Config
      */
     public static function setExceptionMonitorIp(string $newExceptionMonitorIp): void
     {
-        self::writeConfiguration([$newExceptionMonitorIp]);
+        self::writeConfiguration(['exceptionMonitorIp' => $newExceptionMonitorIp]);
     }
 
     /**
@@ -342,7 +356,7 @@ class Config
      */
     public static function setExceptionMonitorDomain(string $newExceptionMonitorDomain): void
     {
-        self::writeConfiguration([$newExceptionMonitorDomain]);
+        self::writeConfiguration(['exceptionMonitorDomain' => $newExceptionMonitorDomain]);
     }
 
     /**
@@ -369,6 +383,6 @@ class Config
      */
     public static function setExceptionMonitorMail(string $newExceptionMonitorMail): void
     {
-        self::writeConfiguration([$newExceptionMonitorMail]);
+        self::writeConfiguration(['exceptionMonitorMail' => $newExceptionMonitorMail]);
     }
 }

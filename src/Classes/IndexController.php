@@ -490,6 +490,39 @@ class IndexController
     {
         $this->checkAccessRight();
 
+        /**
+         * Save submitted form input to config.
+         */
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (isset($_POST['username'])) {
+                Config::setUsername($_POST['username']);
+            }
+
+            /**
+             * Don't overwrite the password
+             * if the user doesn't want to change it.
+             */
+            if (!empty($_POST['password'])) {
+                Config::setPassword($_POST['password']);
+            }
+
+            if (isset($_POST['accessToken'])) {
+                Config::setAccessToken($_POST['accessToken']);
+            }
+
+            if (isset($_POST['modulesLocalDir'])) {
+                Config::setModulesLocalDir($_POST['modulesLocalDir']);
+            }
+
+            Notification::pushFlashMessage([
+                'text' => 'Einstellungen erfolgreich gespeichert.',
+                'type' => 'success'
+            ]);
+            
+            $section = $_GET['section'] ?? 'general';
+            Redirect::redirect('/?action=settings&section=' . $section); 
+        }
+
         include App::getTemplatesRoot() . '/Settings.tmpl.php';
     }
 
