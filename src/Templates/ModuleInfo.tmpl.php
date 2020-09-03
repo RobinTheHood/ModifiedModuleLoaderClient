@@ -190,7 +190,7 @@
                                     <?php if ($module->getDescription()) { ?>
                                         <?php echo $module->getDescription() ?>
                                     <?php } else { ?>
-                                        keine Beschreibung vorhanden
+                                        Keine Beschreibung vorhanden.
                                     <?php } ?>
                                 </p>
                             </div>

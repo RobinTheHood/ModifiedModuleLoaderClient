@@ -6,6 +6,8 @@
     --paddingDefaultHalf: 10px;
     --paddingNavigation: 10px;
 
+    --sizeH1: 2.8rem;
+
     --colourPrimary: #007bff;
     --colourPrimaryLight: #66b0f7;
     --colourLight: #777;
@@ -67,18 +69,30 @@ input + p, .input-group + p {
     color: var(--colourLight);
 }
 
-h1 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin-bottom: 1em;
-
-    text-transform: uppercase;
-    font-size: 4rem;
-    opacity: 0.2;
 }
+
+h1 { font-size: var(--sizeH1); }
+h2 { font-size: 2.4rem; }
+h3 { font-size: 2.0rem; }
+h4 { font-size: 1.6rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 0.8rem; }
 
 section {
     margin: 4em 0;
 }
 
+
+/**
+ * Badge
+ */
 .badge {
     cursor: default;
 }
@@ -339,6 +353,14 @@ section {
     text-decoration: underline;
 }
 
+
+/**
+ * Module list
+ */
+.module-listing h2 {
+    margin-bottom: 0.2em;
+}
+
 .module-listing .search {
     margin-bottom: 25px;
 }
@@ -358,7 +380,7 @@ section {
 
 .content .module-title img {
     margin: 0.4rem 0.8rem 0.4rem 0.4rem;
-    height: 4rem;
+    height: var(--sizeH1);
 }
 
 .content .moduleinfo-row {
@@ -414,13 +436,13 @@ section {
 /**
  * Markdown
  */
-.markdown h1 {
-    margin: initial;
-
-    font-size: 3rem;
-    text-transform: none;
-
-    opacity: 1;
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+    margin-bottom: 0.2em;
 }
 
 .markdown table {
