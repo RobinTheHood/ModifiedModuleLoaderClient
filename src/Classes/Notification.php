@@ -27,11 +27,11 @@ class Notification
     public static function renderFlashMessage(string $message, string $type): string
     {
         if ($type == 'warning') {
-            return '<div class="alert alert-warning" role="alert">' . $message . '</div>';
+            return '<div class="alert alert-warning" role="alert"><i class="fas fa-exclamation-triangle fa-fw"></i> ' . $message . '</div>';
         } elseif ($type == 'error') {
             return '<div class="alert alert-danger" role="alert">' . $message . '</div>';
         } elseif ($type == 'success') {
-            return '<div class="alert alert-success auto-fade-out" role="alert">' . $message . '</div>';
+            return '<div class="alert alert-success auto-fade-out" role="alert"><i class="fas fa-check fa-fw"></i> ' . $message . '</div>';
         }
         return '<div class="alert alert-info" role="alert">' . $message . '</div>';
     }
