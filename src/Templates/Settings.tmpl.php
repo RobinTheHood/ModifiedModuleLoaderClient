@@ -33,7 +33,7 @@
                             <h2>Allgemein</h2>
                             <form action="?action=settings&section=general" method="post">
                                 <div class="form-group">
-                                    <label for="inputAccessToken">Access Token</label>
+                                    <label for="inputAccessToken">AccessToken</label>
                                     <div class="input-group mb-3">
                                         <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>"<?php echo empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
                                         <div class="input-group-append">
@@ -86,6 +86,7 @@
                                 <div class="form-group">
                                     <label for="inputInstallMode">Installationsmodus</label>
                                     <input type="text" name="installMode" class="form-control" id="inputInstallMode" value="<?php echo Config::getInstallMode(); ?>">
+                                    <p>Du kannst zwischen <code>copy</code> und <code>link</code> wählen. Hast du den MMLC in einem Live-Shop im Einsatz, wähle <code>copy</code>. Wenn du mit dem MMLC Module entwickelst, wähle <code>link</code>.</p>
                                 </div>
 
                                 <div class="form-group">
