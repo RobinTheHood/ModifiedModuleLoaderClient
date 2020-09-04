@@ -50,8 +50,8 @@
                         <?php } ?>
 
                         <?php if (!ModuleStatus::isLoadable($module)) { ?>
-                                <div class="alert alert-warning" role="alert">
-                                    Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf, dieser kann dir das Modul z. B. nach einem Kauf freischalten.
+                                <div class="alert alert-primary" role="alert">
+                                    Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann dir das Modul (z. B. nach einem Kauf) freischalten.
                                 </div>
                             <?php } ?>
 
@@ -60,15 +60,13 @@
                                 Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?php echo ShopInfo::getModifiedVersion()?></strong> installiert.
                             </div>
                         <?php } ?>
-
-                        
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="content">
-            <div class="moduleinfo-buttons">         
+            <div class="moduleinfo-buttons">
                 <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
                     <a class="button button-success" href="?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
                 <?php } ?>
