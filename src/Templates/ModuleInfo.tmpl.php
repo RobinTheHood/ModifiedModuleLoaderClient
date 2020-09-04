@@ -77,10 +77,10 @@
                 <?php if (ModuleStatus::isRepairable($module)) { ?>
                     <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
                         <?php if (Config::getInstallMode() != 'link') {?>
-                            <i class="fas fa-tools fw-fw"></i>
+                            <i class="fas fa-tools fa-fw"></i>
                             Änderungen verwerfen
                         <?php } else { ?>
-                            <i class="fas fa-check fw-fw"></i>
+                            <i class="fas fa-check fa-fw"></i>
                             Änderungen übernehmen (Link-Mode)
                             <script>
                                 $(document).ready(function() {
