@@ -43,20 +43,23 @@
 
                         <?php if (ModuleStatus::isRepairable($module)) { ?>
                             <div class="alert alert-warning" role="alert">
-                                <strong>Achtung:</strong> Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an diesen
+                                <i class="fas fa-exclamation-triangle fa-fw"></i>
+                                Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an diesen
                                 Anpassungen vorgenommen. <strong>Deinstallation</strong> und <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur
                                 Verfügung, damit deine Arbeit nicht verloren geht. <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
                             </div>
                         <?php } ?>
 
                         <?php if (!ModuleStatus::isLoadable($module)) { ?>
-                                <div class="alert alert-primary" role="alert">
-                                    Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann dir das Modul (z. B. nach einem Kauf) freischalten.
-                                </div>
-                            <?php } ?>
+                            <div class="alert alert-primary" role="alert">
+                                <i class="fas fa-info-circle fa-fw"></i>
+                                Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann dir das Modul (z. B. nach einem Kauf) freischalten.
+                            </div>
+                        <?php } ?>
 
                         <?php if (!$module->isCompatible()) { ?>
                             <div class="alert alert-warning" role="alert">
+                                <i class="fas fa-exclamation-triangle fa-fw"></i>
                                 Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?php echo ShopInfo::getModifiedVersion()?></strong> installiert.
                             </div>
                         <?php } ?>
