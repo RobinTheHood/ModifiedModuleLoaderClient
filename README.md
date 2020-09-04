@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://module-loader.de/" target="_blank" >
-    <img alt="MMLC - Modified Module Loader Client" src="https://module-loader.de/images/mmlc-logo-transparent.png" width="200" />
+    <img alt="MMLC - Modified Module Loader Client" src="https://module-loader.de/images/mmlc-logo-transparent.png" width="200">
   </a>
 </p>
 
@@ -10,7 +10,7 @@
 
 Der MMLC ist eine Software zur Verwaltung von Modulen in deinem modified eCommerce Shop.
 
-![alt text](docs/overview.png)
+<img alt="MMLC - Modul Übersichtsseite" src="https://module-loader.de/images/Modul_Uebersichtsseite_mit_Schatten.png">
 
 ## Installation und Anleitung
 
