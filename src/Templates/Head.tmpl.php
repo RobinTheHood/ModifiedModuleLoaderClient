@@ -8,10 +8,10 @@
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\TemplateHelper;
 
 echo TemplateHelper::loadStyleSheet('src/Templates/Styles/bootstrap.min.css');
+echo TemplateHelper::loadStyleSheet('src/Templates/Styles/font-awesome-all.css');
 echo TemplateHelper::loadStyleSheet('src/Templates/Styles/button.css');
-echo TemplateHelper::loadStyleSheet('src/Templates/Styles/style.css');
-
 echo TemplateHelper::loadStyleSheet('src/Templates/Styles/lightbox.css');
+echo TemplateHelper::loadStyleSheet('src/Templates/Styles/style.css');
 ?>
 
 <script src="src/Templates/Scripts/jquery-3.3.1.min.js"></script>
