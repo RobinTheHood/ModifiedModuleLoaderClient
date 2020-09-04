@@ -94,9 +94,15 @@ section {
     margin: 4em 0;
 }
 
+/**
+ * Alert
+ */
+.alert-primary {
+    border-color: #9ccdff;
+}
 
 .alert-warning {
-    border-color: #F9D366;
+    border-color: #f9d366;
 }
 
 /**
