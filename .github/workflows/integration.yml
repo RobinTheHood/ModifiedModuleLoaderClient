@@ -11,5 +11,7 @@ jobs:
       uses: actions/checkout@v1
     - name: composer install missing files
       run: composer install
+    - name: copy config
+      run: cp config/_config.php config/config.php
     - name: run tests
-      run: /usr/bin/php -f bin/phpunit
+      run: php7.3 vendor/bin/phpunit
