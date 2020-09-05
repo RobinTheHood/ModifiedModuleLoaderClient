@@ -7,8 +7,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: php-actions/composer@v1
-    - name: Copy config
-      run: cp config/_config.php config/config.php
-    - uses: php-actions/phpunit@v9
+    - name: checkout project
+      uses: actions/checkout@v1
+    - name: composer install missing files
+      run: composer install
+    - name: run tests
+      run: /usr/bin/php -f bin/phpunit > output.txt
