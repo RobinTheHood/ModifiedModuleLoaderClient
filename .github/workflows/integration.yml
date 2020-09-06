@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout project
+      uses: actions/checkout@v1
+    - name: composer install missing files
+      run: composer install
+    - name: copy config
+      run: cp config/_config.php config/config.php
+    - name: run tests
+      run: php7.3 vendor/bin/phpunit
