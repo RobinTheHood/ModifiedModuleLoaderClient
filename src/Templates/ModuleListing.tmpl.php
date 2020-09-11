@@ -1,6 +1,10 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
 
+<?php use RobinTheHood\ModifiedModuleLoaderClient\App; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\DemoMode; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\LinkBuilder; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Category; ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -36,14 +40,14 @@
 
                 <div class="modules">
                     <?php foreach($groupedModules as $category => $modules) { ?>
-                        <h2><?php echo RobinTheHood\ModifiedModuleLoaderClient\Category::getCategoryName($category); ?></h2>
+                        <h2><?php echo Category::getCategoryName($category) ?></h2>
 
                         <div class="category">
                             <?php foreach($modules as $module) { ?>
                                 <?php if ($module->getVisibility() == 'hidden') { continue; } ?>
 
                                 <div class="card module-serach-box <?php echo $module->isCompatible() ? 'compatible' : 'incompatible'; ?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?> <?php echo str_replace(',', ' ', $module->getTags())?>">
-                                    <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>">
+                                    <a href="<?php echo LinkBuilder::getModulUrl($module) ?>">
                                         <img src="<?php echo $module->getIconUri(); ?>" class="card-img-top" alt="<?php echo $module->getName(); ?>">
                                     </a>
 
@@ -65,15 +69,18 @@
 
                                         <?php
                                             $compatibility = $module->isCompatible() ? 'kompatibel' : 'inkompatibel';
-                                            $tooltip = $module->isCompatible() ? 'Dieses Modul wurde getestet und funktioniert mit deiner Version von modified.' : 'Dieses Modul wurde noch nicht mit deiner Version von modified getestet.';
+                                            $compatibilityTooltip = $module->isCompatible() ? 'Dieses Modul wurde getestet und funktioniert mit deiner Version von modified.' : 'Dieses Modul wurde noch nicht mit deiner Version von modified getestet.';
                                         ?>
-                                        <div class="card-compatibility" data-tooltip="<?php echo $tooltip; ?>">
-                                            <?php echo $compatibility; ?>
-                                        </div>
+
+                                        <?php if (DemoMode::isNotDemo()) { ?>
+                                            <div class="card-compatibility" data-tooltip="<?php echo $compatibilityTooltip; ?>">
+                                                <?php echo $compatibility; ?>
+                                            </div>
+                                        <?php } ?>
 
                                         <p class="card-text"><?php echo $module->getShortDescription(); ?></p>
 
-                                        <a href="?action=moduleInfo&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>" class="btn <?php echo $module->isCompatible() ? 'btn-primary' : 'btn-secondary'; ?>">Details</a>
+                                        <a href="<?php echo LinkBuilder::getModulUrl($module) ?>" class="btn <?php echo $module->isCompatible() ? 'btn-primary' : 'btn-secondary'; ?>">Details</a>
                                     </div>
                                 </div>
                             <?php } ?>

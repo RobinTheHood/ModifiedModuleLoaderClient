@@ -25,7 +25,7 @@ class TemplateHelper
         $attributes = [
             'rel' => 'stylesheet',
             'type' => 'text/css',
-            'href' => $stylesheetPath . '?v=' . hash('crc32', $absPath),
+            'href' => App::getUrlRoot() . $stylesheetPath . '?v=' . hash('crc32', $absPath),
         ];
         $attributesToString = [];
 

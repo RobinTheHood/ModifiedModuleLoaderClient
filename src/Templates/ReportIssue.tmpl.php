@@ -19,7 +19,7 @@
                         <p>Wenn du einen Fehler im MMLC gefunden oder eine Frage hast, kannst du uns mit diesem Formular eine E-Mail an <a href="mailto:info@module-loader.de">info@module-loader.de</a> senden. Die E-Mail wird um technische Daten zu deinem System ergänzt.</p>
 
                         <br>
-                        <form method="POST" action="?action=reportIssue">
+                        <form method="POST" action="<?php echo App::getUrlRoot();?>?action=reportIssue">
                             <input class="form-control mb-2 w-100" placeholder="Dein Name" type="text" required name="name" id="name">
                             <input class="form-control mb-2 w-100" placeholder="Deine E-Mail Adresse" type="email" required name="email" id="email">
                             <textarea class="form-control mb-2" style="resize: none;" placeholder="Deine Nachricht" rows="8" required name="message"></textarea>

@@ -17,7 +17,7 @@
 
                 <?php if ($comparator->greaterThan($version['version'], $installedVersion)) { ?>
                     Version <?php echo $version['version'] ?> verfügbar<br><br>
-                    <a class="button button-success" href="?action=selfUpdate&install=<?php echo $version['version']?>">Update installieren</a>
+                    <a class="button button-success" href="<?php echo App::getUrlRoot();?>?action=selfUpdate&install=<?php echo $version['version']?>">Update installieren</a>
                 <?php } else { ?>
                     Diese Version ist aktuell.
                 <?php } ?>

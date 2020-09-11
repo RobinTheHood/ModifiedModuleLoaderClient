@@ -31,7 +31,7 @@
                         <!-- General -->
                         <div class="tab-pane fade show active" id="v-pills-general" role="tabpanel" aria-labelledby="v-pills-general-tab">
                             <h2>Allgemein</h2>
-                            <form action="?action=settings&section=general" method="post">
+                            <form action="<?php echo App::getUrlRoot();?>?action=settings&section=general" method="post">
                                 <div class="form-group">
                                     <label for="inputAccessToken">AccessToken</label>
                                     <div class="input-group mb-3">
@@ -52,7 +52,7 @@
                         <!-- User -->
                         <div class="tab-pane fade" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
                             <h2>Benutzer</h2>
-                            <form action="?action=settings&section=user" method="post">
+                            <form action="<?php echo App::getUrlRoot();?>?action=settings&section=user" method="post">
                                 <div class="form-group">
                                     <label for="inputUsername">Benutzername</label>
                                     <input type="text" name="username" class="form-control" id="inputUsername" value="<?php echo Config::getUsername(); ?>">
@@ -74,7 +74,7 @@
                         <!-- Advanced -->
                         <div class="tab-pane fade show" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
                             <h2>Erweitert</h2>
-                            <form action="?action=settings&section=advanced" method="post">
+                            <form action="<?php echo App::getUrlRoot();?>?action=settings&section=advanced" method="post">
                                 <!-- modulesLocalDir -->
                                 <div class="form-group">
                                     <label for="inputModulesLocalDir">Module Pfad</label>
