@@ -12,6 +12,7 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\DemoMode;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFiler;
@@ -248,6 +249,10 @@ class Module extends ModuleInfo
      */
     public function isCompatible(): bool
     {
+        if (DemoMode::isDemo()) {
+            return true;
+        }
+
         $installedVersion = ShopInfo::getModifiedVersion();
         $versions = $this->getModifiedCompatibility();
 

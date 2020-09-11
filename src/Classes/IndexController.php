@@ -11,6 +11,7 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use RobinTheHood\ModifiedModuleLoaderClient\DemoMode;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
@@ -173,6 +174,7 @@ class IndexController
     public function invokeSelfUpdate()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         $selfUpdater = new SelfUpdater();
         $installedVersion = $selfUpdater->getInstalledVersion();
@@ -306,6 +308,7 @@ class IndexController
     public function invokeInstall()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
@@ -330,6 +333,7 @@ class IndexController
     public function invokeUninstall()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
@@ -352,6 +356,7 @@ class IndexController
     public function invokeUpdate()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
@@ -381,6 +386,7 @@ class IndexController
     public function invokeLoadRemoteModule()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
@@ -408,6 +414,7 @@ class IndexController
     public function invokeLoadAndInstall()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
@@ -449,6 +456,7 @@ class IndexController
     public function invokeUnloadLocalModule()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
         $version = ArrayHelper::getIfSet($_GET, 'version', '');
@@ -471,6 +479,7 @@ class IndexController
     public function invokeReportIssue()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         if (isset($_POST['send_mail'])) {
             SendMail::sendIssue();
@@ -482,6 +491,7 @@ class IndexController
     public function invokeSupport()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         include App::getTemplatesRoot() . '/Support.tmpl.php';
     }
@@ -489,6 +499,7 @@ class IndexController
     public function invokeSettings()
     {
         $this->checkAccessRight();
+        DemoMode::dieIsDemo();
 
         /**
          * Save submitted form input to config.
@@ -551,10 +562,14 @@ class IndexController
         return 0;
     }
 
-    public function checkAccessRight()
+    public function checkAccessRight(): void
     {
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
+        }
+
+        if (DemoMode::isDemo()) {
+            return;
         }
 
         if (empty($_SESSION['accessRight']) || $_SESSION['accessRight'] !== true) {
