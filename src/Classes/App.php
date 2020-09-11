@@ -67,4 +67,16 @@ class App
     {
         return self::$modulesDir;
     }
+
+    // (www.shop.de) /shop/ModifiedModuleLoaderClient
+    public static function getUrlRoot(): string
+    {
+        return dirname($_SERVER['PHP_SELF']);
+    }
+
+    // (www.shop.de) /shop
+    public static function getUrlShopRoot(): string
+    {
+        return dirname(self::getUrlRoot());
+    }
 }
