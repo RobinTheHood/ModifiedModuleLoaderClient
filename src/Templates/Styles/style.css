@@ -25,9 +25,7 @@
     --shadowDefault:
         0 1px 1px rgba(0,0,0,0.12),
         0 2px 2px rgba(0,0,0,0.12),
-        0 4px 4px rgba(0,0,0,0.12),
-        0 8px 8px rgba(0,0,0,0.12),
-        0 16px 16px rgba(0,0,0,0.12);
+        0 4px 4px rgba(0,0,0,0.12);
 }
 
 body {
@@ -96,9 +94,15 @@ section {
     margin: 4em 0;
 }
 
+/**
+ * Alert
+ */
+.alert-primary {
+    border-color: #9ccdff;
+}
 
 .alert-warning {
-    border-color: #F9D366;
+    border-color: #f9d366;
 }
 
 /**
@@ -402,19 +406,14 @@ section {
 .content .module-previews {
     display: grid;
     grid-gap: 1rem;
-    grid-template-columns: repeat(4, 250px);
-    grid-template-rows: 187px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 141px;
 
-    grid-auto-rows: 140px;
+    grid-auto-rows: 141px;
 
     width: 100%;
     margin-bottom: 1rem;
     justify-content: space-between;
-
-    border: 1px solid #cccccc;
-    border-radius: var(--radiusDefault);
-    background-color: #ffffff;
-    padding: 20px;
 }
 
 .content .module-previews * {
@@ -423,10 +422,14 @@ section {
 }
 
 .content .module-previews .preview {
+    padding: 4px;
+
     overflow: hidden;
 
     border: 1px solid var(--colourBorder);
     border-radius: var(--radiusDefault);
+
+    background-color: #fff;
 }
 
 .content .module-previews .preview a {
@@ -441,7 +444,7 @@ section {
 
 .content .moduleinfo-row {
     padding-bottom: var(--paddingDefault);
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid var(--colourBorder);
     margin-bottom: var(--gutterDefault);
 }
 
@@ -527,7 +530,7 @@ section {
 }
 
 .infos {
-    border-bottom: 1px solid #dfdfdf;
+    border-bottom: 1px solid var(--colourBorder);
 }
 
 .infos .table-sm td {
@@ -657,7 +660,7 @@ pre code {
 
 
 .block {
-    background-color: rgba(133, 196, 255, 0.22);
+    background-color: #e4f2ff;
 }
 
 /**

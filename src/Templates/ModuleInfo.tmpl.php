@@ -43,32 +43,33 @@
 
                         <?php if (ModuleStatus::isRepairable($module)) { ?>
                             <div class="alert alert-warning" role="alert">
-                                <strong>Achtung:</strong> Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an diesen
+                                <i class="fas fa-exclamation-triangle fa-fw"></i>
+                                Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an diesen
                                 Anpassungen vorgenommen. <strong>Deinstallation</strong> und <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur
                                 Verfügung, damit deine Arbeit nicht verloren geht. <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
                             </div>
                         <?php } ?>
 
                         <?php if (!ModuleStatus::isLoadable($module)) { ?>
-                                <div class="alert alert-warning" role="alert">
-                                    Du hast keine Berechtigung dieses Modul zu installieren. Bitte nimm Kontakt zum Entwickler auf, dieser kann dir das Modul z. B. nach einem Kauf freischalten.
-                                </div>
-                            <?php } ?>
-
-                        <?php if (!$module->isCompatible()) { ?>
-                            <div class="alert alert-warning" role="alert">
-                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?php echo ShopInfo::getModifiedVersion()?></strong> installiert.
+                            <div class="alert alert-primary" role="alert">
+                                <i class="fas fa-info-circle fa-fw"></i>
+                                Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann dir das Modul (z. B. nach einem Kauf) freischalten.
                             </div>
                         <?php } ?>
 
-                        
+                        <?php if (!$module->isCompatible()) { ?>
+                            <div class="alert alert-warning" role="alert">
+                                <i class="fas fa-exclamation-triangle fa-fw"></i>
+                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?php echo ShopInfo::getModifiedVersion()?></strong> installiert.
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="content">
-            <div class="moduleinfo-buttons">         
+            <div class="moduleinfo-buttons">
                 <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
                     <a class="button button-success" href="?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
                 <?php } ?>
@@ -76,8 +77,10 @@
                 <?php if (ModuleStatus::isRepairable($module)) { ?>
                     <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
                         <?php if (Config::getInstallMode() != 'link') {?>
+                            <i class="fas fa-tools fa-fw"></i>
                             Änderungen verwerfen
                         <?php } else { ?>
+                            <i class="fas fa-check fa-fw"></i>
                             Änderungen übernehmen (Link-Mode)
                             <script>
                                 $(document).ready(function() {

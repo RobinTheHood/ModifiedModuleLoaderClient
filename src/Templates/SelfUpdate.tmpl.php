@@ -10,9 +10,7 @@
     <body>
         <?php include 'Navi.tmpl.php' ?>
 
-        <div class="content">
-            <h1>System</h1>
-
+        <div class="content" style="text-align: center">
             <div class="self-update">
                 <h2>MMLC - Modified Module Loader Client</h2>
                 <?php echo $installedVersion ?><br><br>

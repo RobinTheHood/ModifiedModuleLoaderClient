@@ -17,12 +17,17 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 class ShopInfo
 {
 
+    public static function getAdminPath()
+    {
+        return App::getShopRoot() . '/' . self::getAdminDir();
+    }
+
     /**
      * @return string Returns the installed modified version as string.
      */
     public static function getModifiedVersion(): string
     {
-        $path = App::getShopRoot() . '/admin/includes/version.php';
+        $path = self::getAdminPath() .'/includes/version.php';
         if (!file_exists($path)) {
             return '';
         }
