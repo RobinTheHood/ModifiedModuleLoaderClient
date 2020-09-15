@@ -84,8 +84,12 @@
 
                                 <!-- installMode -->
                                 <div class="form-group">
-                                    <label for="inputInstallMode">Installationsmodus</label>
-                                    <input type="text" name="installMode" class="form-control" id="inputInstallMode" value="<?php echo Config::getInstallMode(); ?>">
+                                    <label for="inputInstallMode">Installationsmodus
+					<select name="installMode" class="form-control" id="inputInstallMode" size="1">
+					    <option <?php if (Config::getInstallMode() == 'copy') echo 'selected="selected"'; ?> value="copy">copy</option>
+					    <option <?php if (Config::getInstallMode() == 'link') echo 'selected="selected"'; ?> value="link">link</option>
+					</select>
+                                    </label>
                                     <p>Du kannst zwischen <code>copy</code> und <code>link</code> wählen. Hast du den MMLC in einem Live-Shop im Einsatz, wähle <code>copy</code>. Wenn du mit dem MMLC Module entwickelst, wähle <code>link</code>.</p>
                                 </div>
 
