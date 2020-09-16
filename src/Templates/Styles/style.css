@@ -61,11 +61,17 @@ input[type="submit"].primary:hover {
     background-color: var(--colourPrimaryLight);
 }
 
-input + p, .input-group + p {
+input + p,
+.input-group + p,
+select + p {
     margin: 0.375rem 0rem;
     font-size: 0.8rem;
     color: var(--colourLight);
 }
+
+select.form-control {
+    height: 38px !important;
+} 
 
 h1,
 h2,
