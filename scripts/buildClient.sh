@@ -38,6 +38,7 @@ mv ./build/ModifiedModuleLoaderClient/config/_config.php ./build/ModifiedModuleL
 rm -rf ./build/ModifiedModuleLoaderClient/docs
 rm -rf ./build/ModifiedModuleLoaderClient/tests
 rm -rf ./build/ModifiedModuleLoaderClient/patches
+rm -rf ./build/ModifiedModuleLoaderClient/.github
 
 # Delete files
 rm ./build/ModifiedModuleLoaderClient/README.md

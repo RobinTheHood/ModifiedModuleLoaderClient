@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_NOTICE);
 
-define('VERSION', '0.5.0');
+define('VERSION', '0.6.1');
 
 class Installer
 {
-    const REMOTE_ADDRESS = 'https://app.module-loader.de/Downloads/ModifiedModuleLoaderClient.tar';
+    const REMOTE_ADDRESS = 'https://app.module-loader.de';
+    const INSTALL_FILE = '/Downloads/ModifiedModuleLoaderClient.tar';
     const REQUIRED_PHP_VERSION = '7.1.12';
 
     public function invoke()
@@ -95,7 +95,8 @@ class Installer
 
     public function download()
     {
-        $remoteAddress = self::REMOTE_ADDRESS;
+        $remoteAddress = self::REMOTE_ADDRESS . self::INSTALL_FILE;
+        $remoteAddress .= '?sn=' . $_SERVER['SERVER_NAME'] ?? 'no-server-name';
         $tarBall = file_get_contents($remoteAddress);
 
         if (!$tarBall) {
@@ -209,7 +210,7 @@ class Template
                     <div>
                         Install-Directory:
                         <br><br>
-                        <code>' . __DIR__ . '/ModifiedModuleLoderClient</code>
+                        <code>' . __DIR__ . '/ModifiedModuleLoaderClient</code>
                     </div>
 
                     <br><br>
@@ -240,10 +241,16 @@ class Template
         ';
     }
 
+    public static function getShopUrl()
+    {
+        $dirname = dirname($_SERVER['PHP_SELF']);
+        $dirname = $dirname == '/' ? '' : $dirname;
+        return $_SERVER['HTTP_HOST'] . $dirname;
+    }
+
     public static function showInstalled()
     {
-        $shopUrl = $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
-        $mmlcUrl = $shopUrl . '/ModifiedModuleLoaderClient';
+        $mmlcUrl = self::getShopUrl() . '/ModifiedModuleLoaderClient';
         $installerFilepath = __FILE__;
 
         // Installer automatisch löschen
@@ -275,8 +282,7 @@ class Template
 
     public static function showInstallDone()
     {
-        $shopUrl = $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
-        $mmlcUrl = $shopUrl . '/ModifiedModuleLoaderClient';
+        $mmlcUrl = self::getShopUrl() . '/ModifiedModuleLoaderClient';
 
         return
             self::style() . '
