@@ -13,7 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
-use RobinTheHood\ModifiedModuleLoaderClient\DemoMode;
+use RobinTheHood\ModifiedModuleLoaderClient\Mode;
 
 class LinkBuilder
 {
@@ -29,7 +29,7 @@ class LinkBuilder
 
     public static function getModulUrl(Module $module): string
     {
-        if (DemoMode::isDemo()) {
+        if (Mode::isOverview()) {
             return self::getModulUrlPretty($module);
         }
 
@@ -55,7 +55,7 @@ class LinkBuilder
 
     public static function getModulUrlByValue(string $archiveName, string $version = ''): string
     {
-        if (DemoMode::isDemo()) {
+        if (Mode::isOverview()) {
             return self::getModulUrlByValuePretty($archiveName, $version);
         }
 

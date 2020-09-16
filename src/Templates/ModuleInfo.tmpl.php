@@ -6,7 +6,7 @@
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
-<?php use RobinTheHood\ModifiedModuleLoaderClient\DemoMode; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Mode; ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -95,7 +95,7 @@
                     </a>
                 <?php } ?>
 
-                <?php if (DemoMode::isNotDemo()) { ?>
+                <?php if (Mode::isStandard()) { ?>
                     <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
                         <a class="button button-default" href="<?php echo App::getUrlRoot();?>/?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">Download & Install</a>
 

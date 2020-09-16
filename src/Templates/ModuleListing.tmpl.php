@@ -2,7 +2,7 @@
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\App; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
-<?php use RobinTheHood\ModifiedModuleLoaderClient\DemoMode; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Mode; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LinkBuilder; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\Category; ?>
 
@@ -72,7 +72,7 @@
                                             $compatibilityTooltip = $module->isCompatible() ? 'Dieses Modul wurde getestet und funktioniert mit deiner Version von modified.' : 'Dieses Modul wurde noch nicht mit deiner Version von modified getestet.';
                                         ?>
 
-                                        <?php if (DemoMode::isNotDemo()) { ?>
+                                        <?php if (Mode::isStandard()) { ?>
                                             <div class="card-compatibility" data-tooltip="<?php echo $compatibilityTooltip; ?>">
                                                 <?php echo $compatibility; ?>
                                             </div>

@@ -12,26 +12,28 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 
-class DemoMode
+class Mode
 {
-    const DEMO_MODE = true;
-
-    public static function isDemo(): bool
+    public static function isOverview(): bool
     {
-        if (Config::getOption('demoMode') == 'true') {
+        if (Config::getOption('mode') == 'overview') {
             return true;
         }
         return false;
     }
 
-    public static function isNotDemo(): bool
+    public static function isStandard(): bool
     {
-        return !self::isDemo();
+        $mode = Config::getOption('mode');
+        if ($mode === 'standard' || $mode === '' || $mode === null) {
+            return true;
+        }
+        return false;
     }
 
-    public static function dieIsDemo(): void
+    public static function dieIsNotStandard(): void
     {
-        if (self::isDemo()) {
+        if (!self::isStandard()) {
             header("HTTP/1.0 404 Not Found");
             die('This action is not allowed in demo mode. Use the back button in you browser.');
         }
