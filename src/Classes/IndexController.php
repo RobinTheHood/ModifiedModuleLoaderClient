@@ -524,6 +524,10 @@ class IndexController
             if (isset($_POST['modulesLocalDir'])) {
                 Config::setModulesLocalDir($_POST['modulesLocalDir']);
             }
+            
+            if (isset($_POST['installMode'])) {
+                Config::setInstallMode($_POST['installMode']);
+            }
 
             Notification::pushFlashMessage([
                 'text' => 'Einstellungen erfolgreich gespeichert.',
