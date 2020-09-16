@@ -33,7 +33,7 @@
                 <img src="<?php echo App::getUrlRoot();?>/src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo" class="logo">
 
                 <div class="signin-frame">
-                    <form action="<?php echo App::getUrlRoot();?>?action=signIn" method="post">
+                    <form action="<?php echo App::getUrlRoot();?>/?action=signIn" method="post">
                         <h1>MMLC Anmeldung</h1>
 
                         <div>
