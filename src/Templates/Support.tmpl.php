@@ -40,7 +40,7 @@
                 </ul>
 
                 <p>
-                    <a href="<?php echo App::getUrlRoot();?>?action=reportIssue">Zum Formular und eine Nachricht verfassen</a>
+                    <a href="<?php echo App::getUrlRoot();?>/?action=reportIssue">Zum Formular und eine Nachricht verfassen</a>
                 </p>
             </section>
 

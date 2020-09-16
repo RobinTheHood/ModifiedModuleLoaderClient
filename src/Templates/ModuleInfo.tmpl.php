@@ -75,11 +75,11 @@
         <div class="content">
             <div class="moduleinfo-buttons">
                 <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-success" href="<?php echo App::getUrlRoot();?>?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
+                    <a class="button button-success" href="<?php echo App::getUrlRoot();?>/?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
                 <?php } ?>
 
                 <?php if (ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="<?php echo App::getUrlRoot();?>?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
+                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="<?php echo App::getUrlRoot();?>/?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
                         <?php if (Config::getInstallMode() != 'link') {?>
                             <i class="fas fa-tools fa-fw"></i>
                             Änderungen verwerfen
@@ -97,28 +97,28 @@
 
                 <?php if (DemoMode::isNotDemo()) { ?>
                     <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
-                        <a class="button button-default" href="<?php echo App::getUrlRoot();?>?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">Download & Install</a>
+                        <a class="button button-default" href="<?php echo App::getUrlRoot();?>/?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">Download & Install</a>
 
                     <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
-                        <a class="button button-default" href="<?php echo App::getUrlRoot();?>?action=loadRemoteModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Download (inkompatible Version)</a>
+                        <a class="button button-default" href="<?php echo App::getUrlRoot();?>/?action=loadRemoteModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Download (inkompatible Version)</a>
 
                     <?php } elseif (ModuleStatus::isUninstallable($module) && !ModuleStatus::isRepairable($module)) { ?>
-                        <a class="button button-danger" href="<?php echo App::getUrlRoot();?>?action=uninstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Deinstallieren</a>
+                        <a class="button button-danger" href="<?php echo App::getUrlRoot();?>/?action=uninstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Deinstallieren</a>
 
                     <?php } elseif (ModuleStatus::isCompatibleInstallable($module)) { ?>
-                        <a class="button button-success" href="<?php echo App::getUrlRoot();?>?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren</a>
+                        <a class="button button-success" href="<?php echo App::getUrlRoot();?>/?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren</a>
 
                     <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
-                        <a class="button button-success" href="<?php echo App::getUrlRoot();?>?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
+                        <a class="button button-success" href="<?php echo App::getUrlRoot();?>/?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
 
                     <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
                         <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
-                            <a class="button button-default" href="<?php echo App::getUrlRoot();?>?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
+                            <a class="button button-default" href="<?php echo App::getUrlRoot();?>/?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
                         <?php } ?>
                     <?php } ?>
 
                     <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
-                        <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?php echo App::getUrlRoot();?>?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
+                        <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?php echo App::getUrlRoot();?>/?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
                     <?php } ?>
                 <?php } ?>
             </div>
