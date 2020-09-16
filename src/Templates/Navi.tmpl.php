@@ -25,12 +25,10 @@
                 <li><a href="<?php echo App::getUrlRoot();?>?filterModules=notloaded">Nicht geladen</a></li>
             <?php } else { ?>
                 <li><a href="<?php echo App::getUrlRoot();?>?filterModules=all">Übersicht aller Module</a></li>
-                <li><a href="https://module-loader.de">module-loader.de</a></li>
-                <li><a href="https://module-loader.de/imprint.php">Impressum</a></li>
+                <li><a href="/">module-loader.de</a></li>
+                <li><a href="/imprint.php">Impressum</a></li>
             <?php } ?>
         </ul>
-
-        <div></div>
 
         <?php if (DemoMode::isNotDemo()) { ?>
             <div class="menu">
