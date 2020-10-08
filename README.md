@@ -24,6 +24,7 @@ PHP 7.2 or above
 
 ## Authors
 - Robin Wieschendorf | <mail@robinwieschendorf.de> | [robinwieschendorf.de](https://robinwieschendorf.de)
+- Jay Trees | <grandel@posteo.de> | [https://github.com/grandeljay](https://github.com/grandeljay)
 
 ## Contributing
 We would be happy if you would like to take part in the development of this module. If you wish more features or you want to make improvements or to fix errors feel free to contribute. In order to contribute, you just have to fork this repository and make pull requests.
