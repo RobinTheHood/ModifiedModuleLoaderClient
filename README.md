@@ -12,9 +12,12 @@ Der MMLC ist eine Software zur Verwaltung von Modulen in deinem modified eCommer
 
 <img alt="MMLC - Modul Übersichtsseite" src="https://module-loader.de/images/Modul_Uebersichtsseite_mit_Schatten.png">
 
-## Installation und Anleitung
+## Installation und Anleitung für Shopbetreiber
 
 Folge der Installationsanleitung auf [module-loader.de](https://module-loader.de).
+
+## Installationsanleitung für Developer
+
 
 ## Requirements
 PHP 7.2 or above
