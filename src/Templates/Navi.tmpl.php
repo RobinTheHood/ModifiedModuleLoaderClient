@@ -7,15 +7,8 @@
 
 <div class="navi">
     <div class="wrapper">
-        <div class="logo">
-            <picture>
-                <source src="<?php echo App::getUrlRoot();?>/src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo">
-
-                <img src="<?php echo App::getUrlRoot();?>/src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo">
-            </picture>
-        </div>
-
-        <ul class="navi-main row">
+        <ul class="navi-main">
+            <li><img src="<?php echo App::getUrlRoot();?>/src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo"></li>
             <?php if (Mode::isStandard()) { ?>
                 <li><a href="<?php echo App::getUrlRoot();?>?filterModules=all">Alle</a></li>
                 <li><a href="<?php echo App::getUrlRoot();?>?filterModules=loaded">Geladen</a></li>
@@ -31,8 +24,6 @@
                 <li><a href="https://module-loader.de/docs/index.php">Entwickler</a></li>
             <?php } ?>
         </ul>
-
-        <div></div>
 
         <?php if (Mode::isStandard()) { ?>
             <div class="menu">

@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Quicksand';
+  src: url('../Fonts/quicksand.ttf') format('truetype');
+}
+
 :root {
     --gutterDefault: 20px;
     --gutterDefaultHalf: 10px;
@@ -29,7 +34,7 @@
 }
 
 body {
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-family: Quicksand, sans-serif;
     padding: 0px;
     margin: 0px;
 }
@@ -71,7 +76,7 @@ select + p {
 
 select.form-control {
     height: 38px !important;
-} 
+}
 
 h1,
 h2,
@@ -228,7 +233,6 @@ section {
 .navi {
     position: sticky;
     top: 0px;
-    padding: 0.2em var(--paddingDefault);
 
     box-shadow: var(--shadowDefault);
 
@@ -237,29 +241,27 @@ section {
 }
 
 .navi .wrapper {
-    display: grid;
-    grid-template-columns:
-        calc(1em + 40px)
-        max-content
-        auto
-        max-content;
-    grid-template-rows: max-content;
-    align-items: center;
-
     width: 100%;
+    height: 64px;
+    max-height: 64px;
     max-width: 1100px;
     margin: auto;
+    padding: 0.4em;
 
     position: relative;
+    box-sizing: content-box;
 }
 
 .navi .badge {
     display: none;
 }
 
-.navi img {
-    max-width: 100%;
-    max-height: 100%;
+.navi ul.navi-main {
+    display: flex;
+    align-items: center;
+
+    height: inherit;
+    max-height: inherit;
 }
 
 .navi ul {
@@ -362,21 +364,33 @@ section {
 }
 
 .navi ul li {
+    margin: 0 1em;
+    max-height: inherit;
+
+    opacity: 0.8;
     color: white;
+}
+
+.navi ul li:first-of-type {
+    margin-left: 0;
 }
 
 .navi ul li a {
     display: block;
-    padding: var(--paddingNavigation) var(--paddingDefault);
     white-space: nowrap;
 
     color: white;
-    font-weight: bolder;
+    font-weight: 550;
     text-decoration: none;
 }
 
-.navi ul li a:hover {
-    text-decoration: underline;
+.navi ul li:hover {
+    opacity: 1;
+}
+
+.navi img {
+    max-width: 100%;
+    max-height: inherit;
 }
 
 
