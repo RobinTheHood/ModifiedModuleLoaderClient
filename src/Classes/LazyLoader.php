@@ -1,12 +1,14 @@
 <?php
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
+
 class LazyLoader
 {
 
     public static function createUrl($module, $dataField)
     {
-        $url = '?action=lazyModuleInfo&archiveName=' . $module->getArchiveName() . '&version=' . $module->getVersion() . '&data=' . $dataField;
+        $url = App::getUrlRoot() . '?action=lazyModuleInfo&archiveName=' . $module->getArchiveName() . '&version=' . $module->getVersion() . '&data=' . $dataField;
         return $url;
     }
 
@@ -46,19 +48,19 @@ class LazyLoader
 
     public static function loadModuleUpdateCount($target)
     {
-        $url = '?action=lazyModuleUpdateCount';
+        $url = App::getUrlRoot() . '?action=lazyModuleUpdateCount';
         return self::createScript($target, $url, '0');
     }
 
     public static function loadModuleChangeCount($target)
     {
-        $url = '?action=lazyModuleChangeCount';
+        $url = App::getUrlRoot() . '?action=lazyModuleChangeCount';
         return self::createScript($target, $url, '0');
     }
 
     public static function loadSystemUpdateCount($target)
     {
-        $url = '?action=lazySystemUpdateCount';
+        $url = App::getUrlRoot() . '?action=lazySystemUpdateCount';
         return self::createScript($target, $url, '0');
     }
 }

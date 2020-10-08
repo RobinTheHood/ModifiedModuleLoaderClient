@@ -1,16 +1,20 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
 
+<?php use RobinTheHood\ModifiedModuleLoaderClient\App; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\LinkBuilder; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\Mode; ?>
 
 <!DOCTYPE html>
 <html lang="de">
     <head>
         <?php include 'Head.tmpl.php' ?>
-        <link rel="stylesheet" href="src/Templates/Styles/github.css">
-        <script src="src/Templates/Scripts/highlight.pack.js"></script>
+        <link rel="stylesheet" href="<?php echo App::getUrlRoot();?>/src/Templates/Styles/github.css">
+        <script src="<?php echo App::getUrlRoot();?>/src/Templates/Scripts/highlight.pack.js"></script>
+
         <script>hljs.initHighlightingOnLoad();</script>
     </head>
 
@@ -71,11 +75,11 @@
         <div class="content">
             <div class="moduleinfo-buttons">
                 <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-success" href="?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
+                    <a class="button button-success" href="<?php echo App::getUrlRoot();?>/?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
                 <?php } ?>
 
                 <?php if (ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
+                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="<?php echo App::getUrlRoot();?>/?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
                         <?php if (Config::getInstallMode() != 'link') {?>
                             <i class="fas fa-tools fa-fw"></i>
                             Änderungen verwerfen
@@ -91,29 +95,31 @@
                     </a>
                 <?php } ?>
 
-                <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
-                    <a class="button button-default" href="?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">Download & Install</a>
+                <?php if (Mode::isStandard()) { ?>
+                    <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
+                        <a class="button button-default" href="<?php echo App::getUrlRoot();?>/?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">Download & Install</a>
 
-                <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
-                    <a class="button button-default" href="?action=loadRemoteModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Download (inkompatible Version)</a>
+                    <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
+                        <a class="button button-default" href="<?php echo App::getUrlRoot();?>/?action=loadRemoteModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Download (inkompatible Version)</a>
 
-                <?php } elseif (ModuleStatus::isUninstallable($module) && !ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-danger" href="?action=uninstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Deinstallieren</a>
+                    <?php } elseif (ModuleStatus::isUninstallable($module) && !ModuleStatus::isRepairable($module)) { ?>
+                        <a class="button button-danger" href="<?php echo App::getUrlRoot();?>/?action=uninstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Deinstallieren</a>
 
-                <?php } elseif (ModuleStatus::isCompatibleInstallable($module)) { ?>
-                    <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren</a>
+                    <?php } elseif (ModuleStatus::isCompatibleInstallable($module)) { ?>
+                        <a class="button button-success" href="<?php echo App::getUrlRoot();?>/?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren</a>
 
-                <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
-                    <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
+                    <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
+                        <a class="button button-success" href="<?php echo App::getUrlRoot();?>/?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
 
-                <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
-                    <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
-                        <a class="button button-default" href="?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
+                    <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
+                        <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
+                            <a class="button button-default" href="<?php echo App::getUrlRoot();?>/?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
+                        <?php } ?>
                     <?php } ?>
-                <?php } ?>
 
-                <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
+                    <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
+                        <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?php echo App::getUrlRoot();?>/?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
+                    <?php } ?>
                 <?php } ?>
             </div>
 
@@ -279,7 +285,7 @@
                                             <td>Alle Versionen</td>
                                             <td>
                                                 <?php foreach ($module->getVersions() as $moduleVersion) {?>
-                                                    <a href="?action=moduleInfo&archiveName=<?php echo $moduleVersion->getArchiveName() ?>&version=<?php echo $moduleVersion->getVersion()?>"><?php echo $moduleVersion->getVersion(); ?></a>
+                                                    <a href="<?php echo LinkBuilder::getModulUrl($moduleVersion) ?>"><?php echo $moduleVersion->getVersion(); ?></a>
                                                     <?php if ($moduleVersion->isInstalled()) { ?>
                                                         <span>installiert</span>
                                                     <?php } elseif ($moduleVersion->isLoaded()) { ?>
@@ -297,7 +303,7 @@
                                             <td>
                                                 <?php if ($module->getRequire()) { ?>
                                                     <?php foreach ($module->getRequire() as $archiveName => $version) { ?>
-                                                        <a href="?action=moduleInfo&archiveName=<?php echo $archiveName?>"><?php echo $archiveName?></a><span>: <?php echo $version ?></span><br>
+                                                        <a href="<?php echo LinkBuilder::getModulUrlByValue($archiveName) ?>"><?php echo $archiveName?></a><span>: <?php echo $version ?></span><br>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     keine Abhängigkeit vorhanden
@@ -310,7 +316,7 @@
                                             <td>
                                                 <?php if ($module->getUsedBy()) { ?>
                                                     <?php foreach ($module->getUsedBy() as $usedBy) { ?>
-                                                        <a href="?action=moduleInfo&archiveName=<?php echo $usedBy->getArchiveName()?>&version=<?php echo $usedBy->getVersion() ?>"><?php echo $usedBy->getArchiveName()?></a><span>: <?php echo $usedBy->getVersion() ?></span><br>
+                                                        <a href="<?php echo LinkBuilder::getModulUrl($usedBy) ?>"><?php echo $usedBy->getArchiveName()?></a><span>: <?php echo $usedBy->getVersion() ?></span><br>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     wird von keinem Modul verwendet

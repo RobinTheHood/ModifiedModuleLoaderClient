@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteBase /modules
+RewriteRule ^([a-z|-]*)\/([a-z|-]*)\/([\d|.]*)$ ?action=moduleInfo&archiveName=$1/$2&version=$3 [L]
+RewriteRule ^([a-z|-]*)\/([a-z|-]*)$ ?action=moduleInfo&archiveName=$1/$2 [L]

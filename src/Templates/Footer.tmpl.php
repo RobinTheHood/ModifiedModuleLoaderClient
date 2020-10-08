@@ -1,7 +1,9 @@
 <?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
 
-<script src="src/Templates/Scripts/bootstrap.bundle.min.js"></script>
-<script src="src/Templates/Scripts/lightbox.js"></script>
+<?php use RobinTheHood\ModifiedModuleLoaderClient\App; ?>
+
+<script src="<?php echo App::getUrlRoot();?>/src/Templates/Scripts/bootstrap.bundle.min.js"></script>
+<script src="<?php echo App::getUrlRoot();?>/src/Templates/Scripts/lightbox.js"></script>
 
 <script>
     function filterModule(searchString)
