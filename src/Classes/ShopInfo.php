@@ -28,13 +28,31 @@ class ShopInfo
     public static function getModifiedVersion(): string
     {
         $path = self::getAdminPath() .'/includes/version.php';
+
         if (!file_exists($path)) {
-            return '';
+            return 'unbekannt';
         }
 
         $fileStr = file_get_contents($path);
         $pos = strpos($fileStr, 'MOD_');
-        $version = substr($fileStr, (int) $pos + 4, 7);
+
+        if($pos) {
+            /**
+             * DB_VERSION exists in file
+             */
+            $version = substr($fileStr, (int) $pos + 4, 7);
+        }
+        else {
+            /**
+             * DB_VERSION does not exists in file
+             * use PROJECT_MAJOR_VERSION and PROJECT_MINOR_VERSION instead
+             */
+            preg_match('/MAJOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMajor);
+            preg_match('/MINOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMinor);
+
+            $version = $versionMajor[1] . '.' . $versionMinor[1];
+        }
+
         return $version;
     }
 
