@@ -13,7 +13,9 @@ jobs:
       run: composer install
     - name: copy config
       run: cp config/_config.php config/config.php
+    - name: run phpcs for PSR12 coding style checks 
+      run: php7.3 ./vendor/bin/phpcs --standard=PSR2 --ignore=".src/Templates" ./src
     - name: run test - php unit
-      run: php7.3 vendor/bin/phpunit --testdox
+      run: php7.3 ./vendor/bin/phpunit --testdox
     - name: run static code analysis - psalm
       run: php7.3 ./vendor/bin/psalm
