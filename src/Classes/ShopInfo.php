@@ -27,10 +27,10 @@ class ShopInfo
      */
     public static function getModifiedVersion(): string
     {
-        $path = self::getAdminPath() .'/includes/version.php';
+        $path = self::getAdminPath() . '/includes/version.php';
 
         if (!file_exists($path)) {
-            return 'unbekannt';
+            return 'unknown';
         }
 
         $fileStr = file_get_contents($path);
