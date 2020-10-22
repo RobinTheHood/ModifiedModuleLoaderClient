@@ -13,7 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Helpers;
 
 class ArrayHelper
 {
-    public static function getIfSet(Array $array, $index, $default = '')
+    public static function getIfSet(array $array, $index, $default = '')
     {
         return empty($array[$index]) ? $default : $array[$index];
     }

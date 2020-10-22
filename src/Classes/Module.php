@@ -128,9 +128,11 @@ class Module extends ModuleInfo
 
     public function getImageUris()
     {
-        return array_map(function($value) {
+        return array_map(
+            function ($value) {
                 return $this->getUrlRootPath() . $value;
-            }, $this->getImagePaths()
+            },
+            $this->getImagePaths()
         );
     }
 
@@ -226,7 +228,7 @@ class Module extends ModuleInfo
             $localModuleLoader = LocalModuleLoader::getModuleLoader();
             $localModules = $localModuleLoader->loadAllVersions();
 
-            foreach($localModules as $module) {
+            foreach ($localModules as $module) {
                 if ($module->getArchiveName() != $this->getArchiveName()) {
                     continue;
                 }
@@ -243,7 +245,7 @@ class Module extends ModuleInfo
 
     /**
      * Checks whether this module is compatible with the installed version of modified.
-     * 
+     *
      * @return bool Returns true if the module is compatible, otherwise false.
      */
     public function isCompatible(): bool
@@ -251,7 +253,7 @@ class Module extends ModuleInfo
         $installedVersion = ShopInfo::getModifiedVersion();
         $versions = $this->getModifiedCompatibility();
 
-        foreach($versions as $version) {
+        foreach ($versions as $version) {
             if ($installedVersion == $version) {
                 return true;
             }
@@ -307,7 +309,7 @@ class Module extends ModuleInfo
         $images = [];
 
         $fileNames = scandir($path);
-        foreach($fileNames as $fileName) {
+        foreach ($fileNames as $fileName) {
             if (strpos($fileName, '.jpg') || strpos($fileName, '.png')) {
                 $images[] = $path . '/' . $fileName;
             }
@@ -327,7 +329,7 @@ class Module extends ModuleInfo
         $docFiles = [];
 
         $fileNames = scandir($path);
-        foreach($fileNames as $fileName) {
+        foreach ($fileNames as $fileName) {
             if (strpos($fileName, '.md')) {
                 $docFiles[] = $path . '/' . $fileName;
             }
@@ -361,7 +363,7 @@ class Module extends ModuleInfo
         $files = [];
         if (FileInfo::isTemplateFile($file)) {
             $templates = ShopInfo::getTemplates();
-            foreach($templates as $template) {
+            foreach ($templates as $template) {
                 $files[] = str_replace('/templates/tpl_modified/', '/templates/' . $template . '/', $file);
             }
         } else {
@@ -372,7 +374,7 @@ class Module extends ModuleInfo
 
     /**
      * Returns a localy installed version of this module.
-     * 
+     *
      * @return Module|null Returns a localy installed version of this module or null.
      */
     public function getInstalledVersion(): ?Module
@@ -395,7 +397,7 @@ class Module extends ModuleInfo
 
     /**
      * Retruns a array of modules.
-     * 
+     *
      * @return array Returns a array of modules.
      */
     public function getVersions()
@@ -408,7 +410,7 @@ class Module extends ModuleInfo
 
     /**
      * Retruns a array of local modules.
-     * 
+     *
      * @return array Returns a array of local modules.
      */
     public function getLocalVersions()
@@ -426,7 +428,7 @@ class Module extends ModuleInfo
         $usedByEntrys = $dependencyManager->getUsedByEntrys($this, $installedModules);
 
         $usedByModules = [];
-        foreach($usedByEntrys as $usedByEntry) {
+        foreach ($usedByEntrys as $usedByEntry) {
             $usedByModules[] = $usedByEntry['module'];
         }
         return $usedByModules;
@@ -439,7 +441,7 @@ class Module extends ModuleInfo
         return $changedFiles;
     }
 
-    public function loadFromArray(Array $array)
+    public function loadFromArray(array $array)
     {
         parent::loadFromArray($array);
 

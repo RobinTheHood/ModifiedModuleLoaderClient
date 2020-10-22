@@ -81,7 +81,7 @@ class ModuleHasher extends Hasher
         }
 
         $moduleFilePath = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $path;
-        $installedFilePath = App::getShopRoot() . '/' . ModulePathMapper::mmlcToShop($path);;
+        $installedFilePath = App::getShopRoot() . '/' . ModulePathMapper::mmlcToShop($path);
 
         if (file_exists($installedFilePath) && is_link($installedFilePath)) {
             return "No line by line diff available for linked files, because they have always equal content.";
@@ -99,7 +99,7 @@ class ModuleHasher extends Hasher
 
         $builder = new \SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder(
             "--- Original\n+++ New\n",  // custom header
-            true                        // show line numbers 
+            true                        // show line numbers
         );
 
         $differ = new \SebastianBergmann\Diff\Differ($builder);

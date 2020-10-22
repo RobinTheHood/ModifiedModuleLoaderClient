@@ -1,4 +1,5 @@
 <?php
+
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class LazyLoader

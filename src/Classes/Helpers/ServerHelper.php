@@ -25,7 +25,7 @@ class ServerHelper
     {
         $headers = @get_headers($url);
 
-        if(strpos($headers[0], '200')) {
+        if (strpos($headers[0], '200')) {
             return true;
         }
 

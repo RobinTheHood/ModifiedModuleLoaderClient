@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -99,7 +100,9 @@ class Parser
         try {
             $version = $this->parse($string);
             return true;
-        } catch(ParseErrorException $e) {}
+        } catch (ParseErrorException $e) {
+            // do nothing
+        }
         return false;
     }
 }

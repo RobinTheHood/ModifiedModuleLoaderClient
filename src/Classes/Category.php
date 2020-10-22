@@ -11,7 +11,6 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-
 class Category
 {
     const DEFAULT_CATEGORY = 'nocategory';
@@ -35,7 +34,7 @@ class Category
     public static function groupByCategory(array $modules): array
     {
         $groupedModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $category = $module->getCategory();
             $category = self::getCategory($category);
             $groupedModules[$category][] = $module;

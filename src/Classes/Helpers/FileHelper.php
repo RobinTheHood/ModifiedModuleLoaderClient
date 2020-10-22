@@ -15,9 +15,9 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ServerHelper;
 
 class FileHelper
 {
-    const FILES_AND_DIRS = 0;
-    const FILES_ONLY = 1;
-    const DIRS_ONLY = 2;
+    public const FILES_AND_DIRS = 0;
+    public const FILES_ONLY = 1;
+    public const DIRS_ONLY = 2;
 
     protected static $ignoreList = [
         '.DS_Store', '.git'
@@ -43,7 +43,7 @@ class FileHelper
 
         $fileNames = scandir($rootPath);
 
-        foreach($fileNames as $fileName) {
+        foreach ($fileNames as $fileName) {
             if ($fileName == '.' || $fileName == '..') {
                 continue;
             }
@@ -86,7 +86,7 @@ class FileHelper
     public static function stripAllBasePaths($basePath, $paths)
     {
         $newPaths = [];
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             $newPaths[] = self::stripBasePath($basePath, $path);
         }
         return $newPaths;
@@ -108,7 +108,7 @@ class FileHelper
 
     public static function moveFilesTo($filePaths, $oldBasePath, $newBasePath, $exclude = [])
     {
-        foreach($filePaths as $filePath) {
+        foreach ($filePaths as $filePath) {
             $relativeFilePath = FileHelper::stripBasePath($oldBasePath, $filePath);
             $newFilePath = $newBasePath . $relativeFilePath;
 

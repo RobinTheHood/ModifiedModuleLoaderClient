@@ -41,7 +41,7 @@ class Hasher
     {
         $hashes = [];
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $src = $root . $file;
             if (file_exists($src)) {
                 $hashes[$file] = md5_file($src);
@@ -54,7 +54,7 @@ class Hasher
     public function getChanges($hashesLoaded, $hashesCreatedA, $hashesCreatedB)
     {
         $changedFiles = [];
-        foreach($hashesLoaded as $file => $hashLoaded) {
+        foreach ($hashesLoaded as $file => $hashLoaded) {
             if (!isset($hashesCreatedA[$file])) {
                 $changedFiles[$file] = 'deleted';
                 continue;
@@ -67,7 +67,7 @@ class Hasher
             }
         }
 
-        foreach($hashesCreatedB as $file => $hashCreated) {
+        foreach ($hashesCreatedB as $file => $hashCreated) {
             if (!isset($hashesLoaded[$file])) {
                 $changedFiles[$file] = 'new';
                 continue;
@@ -82,5 +82,4 @@ class Hasher
 
         return $changedFiles;
     }
-
 }

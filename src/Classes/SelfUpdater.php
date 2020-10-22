@@ -46,7 +46,7 @@ class SelfUpdater
         $remoteAddress = Config::getRemoteAddress() ?? '';
 
         if (empty(Config::getRemoteAddress())) {
-           throw new \RuntimeException('Unable to connect. RemoteAddress is empty or not set.');
+            throw new \RuntimeException('Unable to connect. RemoteAddress is empty or not set.');
         }
 
         $this->remoteUpdateServer = str_replace('/api.php', '/Downloads/', $remoteAddress);
@@ -64,7 +64,9 @@ class SelfUpdater
             if ($this->comparator->greaterThan($newestVersionInfo['version'], $installedVersion)) {
                 return true;
             }
-        } catch (ParseErrorException $e) {}
+        } catch (ParseErrorException $e) {
+            // do nothing
+        }
 
         return false;
     }
@@ -102,7 +104,7 @@ class SelfUpdater
 
         foreach ($versionInfos as $versionInfo) {
             try {
-                $version = (new Parser)->parse($versionInfo['version']);
+                $version = (new Parser())->parse($versionInfo['version']);
 
                 if (Config::getSelfUpdate() != 'latest' && $version->getTag()) {
                     continue;
@@ -111,7 +113,9 @@ class SelfUpdater
                 if ($this->comparator->greaterThan($versionInfo['version'], $newestVersionInfo['version'])) {
                     $newestVersionInfo = $versionInfo;
                 }
-            } catch (ParseErrorException $e) {}
+            } catch (ParseErrorException $e) {
+                // do nothing
+            }
         }
 
         return $newestVersionInfo;
@@ -121,7 +125,7 @@ class SelfUpdater
     {
         $versionInfos = $this->getVersionInfos();
         $installFileName = '';
-        foreach($versionInfos as $versionInfo) {
+        foreach ($versionInfos as $versionInfo) {
             if ($versionInfo['version'] == $version) {
                 return $versionInfo['fileName'];
             }

@@ -43,7 +43,7 @@ class DependencyManager
         $requireModules = $this->getUniqueRequireModules($requireModules);
 
         $modules = [];
-        foreach($requireModules as $requireModule) {
+        foreach ($requireModules as $requireModule) {
             $modules[] = $requireModule['module'];
         }
 
@@ -54,7 +54,7 @@ class DependencyManager
     {
         $modules = $this->getAllModules($module);
         $modules[] = $module;
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $this->canBeInstalledTestRequiers($module, $modules);
             $this->canBeInstalledTestSelected($module, $modules);
             $this->canBeInstalledTestInstalled($module);
@@ -70,7 +70,7 @@ class DependencyManager
     public function canBeInstalledTestSelected($module, $modules)
     {
         $usedByEntrys = $this->getUsedByEntrys($module, $modules);
-        foreach($usedByEntrys as $usedByEntry) {
+        foreach ($usedByEntrys as $usedByEntry) {
             if (!$this->comparator->satisfies($module->getVersion(), $usedByEntry['requiredVersion'])) {
                 $a = $module->getArchiveName();
                 $av = $module->getVersion();
@@ -83,9 +83,9 @@ class DependencyManager
 
     public function canBeInstalledTestRequiers($module, $modules)
     {
-        foreach($module->getRequire() as $archiveName => $version) {
+        foreach ($module->getRequire() as $archiveName => $version) {
             $moduleFound = false;
-            foreach($modules as $selectedModule) {
+            foreach ($modules as $selectedModule) {
                 if ($selectedModule->getArchiveName() != $archiveName) {
                     continue;
                 }
@@ -109,7 +109,7 @@ class DependencyManager
     public function getUsedByEntrys($module, $selectedModules)
     {
         $usedByEntrys = [];
-        foreach($selectedModules as $selectedModule) {
+        foreach ($selectedModules as $selectedModule) {
             foreach ($selectedModule->getRequire() as $archiveName => $version) {
                 if ($archiveName == $module->getArchiveName()) {
                     $usedByEntrys[] = [
@@ -128,7 +128,7 @@ class DependencyManager
             return;
         }
 
-        foreach($moduleTree as $entry) {
+        foreach ($moduleTree as $entry) {
             $modules[] = [
                 'module' => $entry['module'],
                 'requestedVersion' => $entry['requestedVersion'],
@@ -141,7 +141,7 @@ class DependencyManager
     public function getUniqueRequireModules($requireModules)
     {
         $uniqueModules = [];
-        foreach($requireModules as $requireModule) {
+        foreach ($requireModules as $requireModule) {
             $index = $requireModule['module']->getArchiveName() . ':' . $requireModule['selectedVersion'];
             $uniqueModules[$index] = [
                 'module' => $requireModule['module'],

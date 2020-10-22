@@ -60,7 +60,7 @@ class HttpRequest
     public static function createQuery($queryValues)
     {
         $query = '';
-        foreach($queryValues as $name => $value) {
+        foreach ($queryValues as $name => $value) {
             $query .= $name . '=' . urlencode($value) . '&';
         }
         return $query;

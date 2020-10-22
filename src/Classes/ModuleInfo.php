@@ -195,7 +195,7 @@ class ModuleInfo
         return ModuleInfo::loadFromArray($array);
     }
 
-    public function loadFromArray(Array $array)
+    public function loadFromArray(array $array)
     {
         $this->name = ArrayHelper::getIfSet($array, 'name');
         $this->archiveName = ArrayHelper::getIfSet($array, 'archiveName');

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -17,7 +18,7 @@ class TemplateHelper
     public static function loadStyleSheet(string $stylesheetPath): string
     {
         $absPath = App::getRoot() . '/' . $stylesheetPath;
-        if (!file_exists($absPath) ) {
+        if (!file_exists($absPath)) {
             return '';
         }
 

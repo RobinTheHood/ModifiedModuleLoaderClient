@@ -73,7 +73,7 @@ class ModuleCreator
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer/' . $vendorName);
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer/' . $vendorName . '/' . $moduleNameCamelCase);
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer/' . $vendorName . '/' . $moduleNameCamelCase .'/Classes');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer/' . $vendorName . '/' . $moduleNameCamelCase . '/Classes');
     }
 
     public function createModuleInfoJsonFile($archiveName, $moduleName)
@@ -141,25 +141,25 @@ class ' . $className . ' extends StdModule
     }
 }';
 
-        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/modules/system/'. $fileName, $content);
+        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/modules/system/' . $fileName, $content);
     }
 
     public function createSystemModuleLanguageDeFile($archiveName, $fileName, $moduleConstName, $vendorName)
     {
         $content = '<?php
-define(\'' . $moduleConstName . '_TITLE\', \'' . $archiveName . ' © by <a href="#" target="_blank" style="color: #e67e22; font-weight: bold;">' . $vendorName .'</a>\');
+define(\'' . $moduleConstName . '_TITLE\', \'' . $archiveName . ' © by <a href="#" target="_blank" style="color: #e67e22; font-weight: bold;">' . $vendorName . '</a>\');
 define(\'' . $moduleConstName . '_LONG_DESCRIPTION\', \'Lange Beschreibung für ' . $archiveName . '\');
 define(\'' . $moduleConstName . '_STATUS_TITLE\', \'' . $archiveName . ' Modul aktivieren?\');
 define(\'' . $moduleConstName . '_STATUS_DESC\', \'\');
 ';
 
-        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/german/modules/system/'. $fileName, $content);
+        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/german/modules/system/' . $fileName, $content);
     }
 
     public function createSystemModuleLanguageEnFile($archiveName, $fileName, $moduleConstName, $vendorName)
     {
         $content = '<?php
-define(\'' . $moduleConstName . '_TITLE\', \'' . $archiveName . ' © by <a href="#" target="_blank" style="color: #e67e22; font-weight: bold;">' . $vendorName .'</a>\');
+define(\'' . $moduleConstName . '_TITLE\', \'' . $archiveName . ' © by <a href="#" target="_blank" style="color: #e67e22; font-weight: bold;">' . $vendorName . '</a>\');
 define(\'' . $moduleConstName . '_LONG_DESCRIPTION\', \'Long description for ' . $archiveName . '\');
 define(\'' . $moduleConstName . '_STATUS_TITLE\', \'' . $archiveName . ' Modul active?\');
 define(\'' . $moduleConstName . '_STATUS_DESC\', \'\');

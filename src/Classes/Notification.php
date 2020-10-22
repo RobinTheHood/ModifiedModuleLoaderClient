@@ -19,7 +19,7 @@ class Notification
         $flashMessages = self::pullAllFlashMessages();
         $html = '';
         foreach ($flashMessages as $flashMessage) {
-            $html .=self::renderFlashMessage($flashMessage['text'], $flashMessage['type']) . "\n";
+            $html .= self::renderFlashMessage($flashMessage['text'], $flashMessage['type']) . "\n";
         }
         return $html;
     }

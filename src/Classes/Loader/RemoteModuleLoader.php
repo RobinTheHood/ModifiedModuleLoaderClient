@@ -33,7 +33,7 @@ class RemoteModuleLoader
 
     /**
      * Loads all remote module versions.
-     * 
+     *
      * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersions(): array
@@ -46,7 +46,7 @@ class RemoteModuleLoader
 
     /**
      * Loads all latest remote module versions.
-     * 
+     *
      * @return Module[] Returns a array of module versions.
      */
     public function loadAllLatestVersions(): array
@@ -65,7 +65,7 @@ class RemoteModuleLoader
 
     /**
      * Loads all module versions by a given archiveName.
-     * 
+     *
      * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersionsByArchiveName(string $archiveName): array
@@ -78,7 +78,7 @@ class RemoteModuleLoader
 
     /**
      * Loads the latest remote module version by a given archiveName.
-     * 
+     *
      * @return Module|null Returns a module version or null.
      */
     public function loadLatestVersionByArchiveName(string $archiveName): ?Module
@@ -92,7 +92,7 @@ class RemoteModuleLoader
 
     /**
      * Loads a remote module version by a given archiveName and version.
-     * 
+     *
      * @return Module|null Returns a module version or null.
      */
     public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
@@ -111,7 +111,7 @@ class RemoteModuleLoader
         }
 
         $modules = [];
-        foreach($result['content'] as $moduleArray) {
+        foreach ($result['content'] as $moduleArray) {
             $module = new Module();
             $module->loadFromArray($moduleArray);
             $modules[] = $module;

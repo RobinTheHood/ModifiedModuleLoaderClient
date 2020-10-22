@@ -68,7 +68,7 @@ class ShopInfo
         }
 
         $files = FileHelper::scanDir($path, FileHelper::DIRS_ONLY, false);
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $templates[] = basename($file);
         }
 

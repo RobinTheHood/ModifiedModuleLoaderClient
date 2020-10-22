@@ -42,8 +42,7 @@ class AccessFileCreator
     {
         $suffixes = '';
         $count = 1;
-        foreach($fileSuffixes as $fileSuffix)
-        {
+        foreach ($fileSuffixes as $fileSuffix) {
             $suffixes .= $fileSuffix;
             if ($count++ < count($fileSuffixes)) {
                 $suffixes .= '|';

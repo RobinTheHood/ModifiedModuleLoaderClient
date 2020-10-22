@@ -22,7 +22,7 @@ class ModuleSorter
      */
     public static function sortByArchiveName(array $modules): array
     {
-        usort($modules, function(Module $moduleA, Module $moduleB):int {
+        usort($modules, function (Module $moduleA, Module $moduleB): int {
             if ($moduleA->getArchiveName() < $moduleB->getArchiveName()) {
                 return -1;
             } else {
@@ -38,7 +38,7 @@ class ModuleSorter
      */
     public static function sortByIsInstalled($modules): array
     {
-        usort($modules, function(Module $moduleA, Module $moduleB): int {
+        usort($modules, function (Module $moduleA, Module $moduleB): int {
             if ($moduleA->isInstalled()) {
                 return -1;
             } else {
@@ -54,7 +54,7 @@ class ModuleSorter
      */
     public static function sortByCategory($modules): array
     {
-        usort($modules, function(Module $moduleA, Module $moduleB): int {
+        usort($modules, function (Module $moduleA, Module $moduleB): int {
             if ($moduleA->getCategory() < $moduleB->getCategory()) {
                 return 1;
             } else {
@@ -70,7 +70,7 @@ class ModuleSorter
      */
     public static function sortByVersion(array $modules): array
     {
-        usort($modules, function(Module $moduleA, Module $moduleB): int {
+        usort($modules, function (Module $moduleA, Module $moduleB): int {
             $comparator = new Comparator(new Parser());
             if ($comparator->lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
                 return 1;

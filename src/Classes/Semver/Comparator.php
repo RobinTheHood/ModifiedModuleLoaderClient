@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -41,21 +42,27 @@ class Comparator
             return true;
         }
 
-        if ($version1->getMajor() == $version2->getMajor() &&
-            $version1->getMinor() > $version2->getMinor() ) {
+        if (
+            $version1->getMajor() == $version2->getMajor() &&
+            $version1->getMinor() > $version2->getMinor()
+        ) {
             return true;
         }
 
-        if ($version1->getMajor() == $version2->getMajor() &&
+        if (
+            $version1->getMajor() == $version2->getMajor() &&
             $version1->getMinor() == $version2->getMinor() &&
-            $version1->getPatch() > $version2->getPatch() ) {
+            $version1->getPatch() > $version2->getPatch()
+        ) {
             return true;
         }
 
-        if ($version1->getMajor() == $version2->getMajor() &&
+        if (
+            $version1->getMajor() == $version2->getMajor() &&
             $version1->getMinor() == $version2->getMinor() &&
             $version1->getPatch() == $version2->getPatch() &&
-            (new TagComparator)->greaterThan($version1->getTag(), $version2->getTag())) {
+            (new TagComparator())->greaterThan($version1->getTag(), $version2->getTag())
+        ) {
             return true;
         }
 
@@ -79,15 +86,15 @@ class Comparator
             return false;
         }
 
-        if ($version1->getMinor() !== $version2->getMinor() ) {
+        if ($version1->getMinor() !== $version2->getMinor()) {
             return false;
         }
 
-        if ($version1->getPatch() !== $version2->getPatch() ) {
+        if ($version1->getPatch() !== $version2->getPatch()) {
             return false;
         }
 
-        if ($version1->getTag() !== $version2->getTag() ) {
+        if ($version1->getTag() !== $version2->getTag()) {
             return false;
         }
 

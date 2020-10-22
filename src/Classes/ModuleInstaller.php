@@ -81,11 +81,11 @@ class ModuleInstaller
 
         $files = $module->getSrcFilePaths();
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $file;
 
             $files = $module->getTemplateFiles($file);
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 $overwrite = false;
                 if (!FileInfo::isTemplateFile($file)) {
                     $overwrite = true;
@@ -109,14 +109,14 @@ class ModuleInstaller
         $dependencyManager = new DependencyManager();
         $modules = $dependencyManager->getAllModules($module);
 
-        foreach($modules as $depModule) {
+        foreach ($modules as $depModule) {
             if (!$depModule->isLoaded()) {
                 $this->pull($depModule);
             }
         }
 
         $modules = $dependencyManager->getAllModules($module);
-        foreach($modules as $depModule) {
+        foreach ($modules as $depModule) {
             $this->uninstall($depModule);
             if ($depModule->isLoaded() && !$depModule->isInstalled()) {
                 $this->install($depModule);
@@ -143,7 +143,7 @@ class ModuleInstaller
         $installedLocalModules = ModuleFilter::filterInstalled($localModules);
 
         $namespaceEntrys = [];
-        foreach($installedLocalModules as $module) {
+        foreach ($installedLocalModules as $module) {
             $autoload = $module->getAutoload();
 
             if (!$autoload) {
@@ -154,7 +154,7 @@ class ModuleInstaller
                 continue;
             }
 
-            foreach($autoload['psr-4'] as $namespace => $path) {
+            foreach ($autoload['psr-4'] as $namespace => $path) {
                 $namespaceEntrys[] = '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
             }
         }
@@ -183,7 +183,7 @@ class ModuleInstaller
 
         $files = $module->getSrcFilePaths();
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $file = ModulePathMapper::mmlcToShop($file);
             $dest = App::getShopRoot() . $file;
             $this->uninstallFile($dest);

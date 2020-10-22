@@ -16,13 +16,13 @@ use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 
 class ModulePathMapper
 {
-    const DEFAULT_ADMIN_DIR = 'admin';
+    private const DEFAULT_ADMIN_DIR = 'admin';
 
     public static function mmlcToShop(string $mmlcPath): string
     {
         $adminDir = ShopInfo::getAdminDir();
         // Replace string that starts with "/DEFAULT_ADMIN_DIR/"
-        $shopPath = preg_replace('/^\/' . self::DEFAULT_ADMIN_DIR .'\//', '/' . $adminDir . '/', $mmlcPath);
+        $shopPath = preg_replace('/^\/' . self::DEFAULT_ADMIN_DIR . '\//', '/' . $adminDir . '/', $mmlcPath);
         return $shopPath;
     }
 
@@ -37,7 +37,7 @@ class ModulePathMapper
     /**
      * Converts multible mmlc-paths to shop-paths. For example this method
      * renames all custome admin-directory-names like admin to admin_123456.
-     * 
+     *
      * @param string[] $shopPaths A Array of path in shop-path-scope
      * @return string[] Returns a array of mapped strings
      */
@@ -53,7 +53,7 @@ class ModulePathMapper
     /**
      * Converts multible shop-paths to mmlc-paths. For example this method
      * renames all custome admin-directory-names like admin_123456 to admin.
-     * 
+     *
      * @param string[] $shopPaths A Array of path in shop-path-scope
      * @return string[] Returns a array of mapped strings
      */

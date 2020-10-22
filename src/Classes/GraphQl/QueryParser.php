@@ -91,7 +91,7 @@ class QueryParser
             return false;
         }
 
-        while($condition = $this->expectsCondition()) {
+        while ($condition = $this->expectsCondition()) {
             $conditions[] = $condition;
         }
         // if($token = $this->expectsToken('T_IDENT')) {
@@ -126,23 +126,23 @@ class QueryParser
     {
         $condition = [];
 
-        if($token = $this->expectsToken('T_IDENT')) {
+        if ($token = $this->expectsToken('T_IDENT')) {
             $condition['name'] = $token->value;
         }
 
-        if(!$token = $this->expectsToken('T_ASSIGN')) {
+        if (!$token = $this->expectsToken('T_ASSIGN')) {
             return false;
         }
 
-        if(!$token = $this->expectsToken('T_STRING_START')) {
+        if (!$token = $this->expectsToken('T_STRING_START')) {
             return false;
         }
 
-        if($token = $this->expectsToken('T_STRING')) {
+        if ($token = $this->expectsToken('T_STRING')) {
             $condition['value'] = $token->value;
         }
 
-        if(!$token = $this->expectsToken('T_STRING_END')) {
+        if (!$token = $this->expectsToken('T_STRING_END')) {
             return false;
         }
 
@@ -157,7 +157,7 @@ class QueryParser
             return false;
         }
 
-        while($token = $this->expectsToken('T_IDENT')) {
+        while ($token = $this->expectsToken('T_IDENT')) {
             $variables[] = [
                 'name' => $token->value
             ];
@@ -185,7 +185,7 @@ class QueryParser
     public function getNextKnownToken()
     {
         $token = $this->getNextToken();
-        while(!$this->isEndOfTokens() && $token->type == 'T_UNKNOWN') {
+        while (!$this->isEndOfTokens() && $token->type == 'T_UNKNOWN') {
             $token = $this->getNextToken();
         }
         return $token;

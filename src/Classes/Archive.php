@@ -102,7 +102,7 @@ class Archive
 
         set_time_limit(60 * 10);
         $tarBall = new \PharData($dest);
-        foreach($filePaths as $filePath) {
+        foreach ($filePaths as $filePath) {
             if (file_exists($filePath)) {
                 $tarPath = FileHelper::stripBasePath(App::getModulesRoot(), $filePath);
                 $tarBall->addFile($filePath, $tarPath);
@@ -153,5 +153,4 @@ class Archive
 
         return $archive;
     }
-
 }

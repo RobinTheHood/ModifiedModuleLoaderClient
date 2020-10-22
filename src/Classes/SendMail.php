@@ -18,7 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class SendMail
 {
-    public static function sendIssue() 
+    public static function sendIssue()
     {
         $fromEmail = ArrayHelper::getIfSet($_POST, 'email', '');
         $from = ArrayHelper::getIfSet($_POST, 'name', '');
@@ -27,7 +27,7 @@ class SendMail
         if ($fromEmail == '' || $from == '' || $message == '') {
             Notification::pushFlashMessage(
                 [
-                  'text' => 'Warnung: Felder können nicht leer gelassen werden.', 
+                  'text' => 'Warnung: Felder können nicht leer gelassen werden.',
                   'type' => 'error'
                 ]
             );
@@ -43,8 +43,8 @@ class SendMail
 
         $message .=
             '<hr />Message sent from: ' . $_SERVER['HTTP_HOST'] .
-            '<br />Modified version: ' . $shopVersion . 
-            '<br />MMLC version: ' . $mmlcVersion . 
+            '<br />Modified version: ' . $shopVersion .
+            '<br />MMLC version: ' . $mmlcVersion .
             '<br />Browser: ' . $_SERVER['HTTP_USER_AGENT'] .
             '<br />PHP version: ' . phpversion();
         
@@ -57,7 +57,7 @@ class SendMail
         if (mail($to, $subject, $message, implode("\r\n", $headers))) {
             Notification::pushFlashMessage(
                 [
-                  'text' => 'Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie möglich antworten.', 
+                  'text' => 'Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie möglich antworten.',
                   'type' => 'info'
                 ]
             );

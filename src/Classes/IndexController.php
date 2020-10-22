@@ -26,7 +26,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
 class IndexController
 {
-    const REQUIRED_PHP_VERSION = '7.1.12';
+    private const REQUIRED_PHP_VERSION = '7.1.12';
 
     public function invoke()
     {
@@ -144,7 +144,7 @@ class IndexController
 
             if ($_POST['username'] != Config::getUsername()) {
                 $error = 'Unbekannter Benutzername';
-            } elseif (!password_verify($_POST['password'], Config::getPassword() ?? '' )) {
+            } elseif (!password_verify($_POST['password'], Config::getPassword() ?? '')) {
                 $error = 'Falsches passwort';
             }
 
@@ -154,7 +154,6 @@ class IndexController
             } else {
                 $_SESSION['accessRight'] = false;
             }
-
         }
 
         include App::getTemplatesRoot() . '/SignIn.tmpl.php';
@@ -195,7 +194,7 @@ class IndexController
 
         $checkUpdate = $selfUpdater->checkUpdate();
 
-        $comparator = new Comparator(new Parser);
+        $comparator = new Comparator(new Parser());
         include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
 
@@ -210,13 +209,13 @@ class IndexController
         $filterModules = ArrayHelper::getIfSet($_GET, 'filterModules', '');
         if ($filterModules == 'loaded') {
             $modules = ModuleFilter::filterLoaded($modules);
-        } elseif($filterModules == 'installed') {
+        } elseif ($filterModules == 'installed') {
             $modules = ModuleFilter::filterInstalled($modules);
-        } elseif($filterModules == 'updatable') {
+        } elseif ($filterModules == 'updatable') {
             $modules = ModuleFilter::filterUpdatable($modules);
-        } elseif($filterModules == 'changed') {
+        } elseif ($filterModules == 'changed') {
             $modules = ModuleFilter::filterRepairable($modules);
-        } elseif($filterModules == 'notloaded') {
+        } elseif ($filterModules == 'notloaded') {
             $modules = ModuleFilter::filterNotLoaded($modules);
         }
 
@@ -524,7 +523,7 @@ class IndexController
             ]);
             
             $section = $_GET['section'] ?? 'general';
-            Redirect::redirect('/?action=settings&section=' . $section); 
+            Redirect::redirect('/?action=settings&section=' . $section);
         }
 
         include App::getTemplatesRoot() . '/Settings.tmpl.php';

@@ -20,7 +20,7 @@ class ModuleFilter
     public static function filterLoaded($modules)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if ($module->isLoaded()) {
                 $filteredModules[] = $module;
             }
@@ -31,7 +31,7 @@ class ModuleFilter
     public static function filterInstalled($modules)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if ($module->isInstalled()) {
                 $filteredModules[] = $module;
             }
@@ -42,7 +42,7 @@ class ModuleFilter
     public static function filterUpdatable(array $modules): array
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if (ModuleStatus::isUpdatable($module)) {
                 $filteredModules[] = $module;
             }
@@ -53,7 +53,7 @@ class ModuleFilter
     public static function filterRepairable(array $modules): array
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if (ModuleStatus::isRepairable($module)) {
                 $filteredModules[] = $module;
             }
@@ -64,7 +64,7 @@ class ModuleFilter
     public static function filterNotLoaded($modules)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if (!$module->isLoaded()) {
                 $filteredModules[] = $module;
             }
@@ -75,7 +75,7 @@ class ModuleFilter
     public static function filterValid($modules)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if (ModuleStatus::isValid($module)) {
                 $filteredModules[] = $module;
             }
@@ -86,7 +86,7 @@ class ModuleFilter
     public static function filterNewestVersion($modules)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $insertOrReplace = true;
             foreach ($filteredModules as $filteredModule) {
                 if ($module->getArchiveName() != $filteredModule->getArchiveName()) {
@@ -111,7 +111,7 @@ class ModuleFilter
     public static function filterNewestOrInstalledVersion($modules)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $insertOrReplace = true;
             foreach ($filteredModules as $filteredModule) {
                 if ($module->getArchiveName() != $filteredModule->getArchiveName()) {
@@ -145,7 +145,7 @@ class ModuleFilter
     public static function filterByArchiveName($modules, $archiveName)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if ($module->getArchiveName() == $archiveName) {
                 $filteredModules[] = $module;
             }
@@ -156,7 +156,7 @@ class ModuleFilter
     public static function filterByVersion($modules, $version)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             if ($module->getVersion() == $version) {
                 $filteredModules[] = $module;
             }
@@ -180,7 +180,7 @@ class ModuleFilter
     public static function filterByVersionConstrain($modules, $constrain)
     {
         $filteredModules = [];
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $comparator = new Comparator(new Parser());
             if ($comparator->satisfies($module->getVersion(), $constrain)) {
                 $filteredModules[] = $module;
@@ -192,7 +192,7 @@ class ModuleFilter
     public static function getLatestVersion($modules)
     {
         $selectedModule = null;
-        foreach($modules as $module) {
+        foreach ($modules as $module) {
             $comparator = new Comparator(new Parser());
             if (!$selectedModule || $comparator->greaterThan($module->getVersion(), $selectedModule->getVersion())) {
                 $selectedModule = $module;

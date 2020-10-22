@@ -42,7 +42,7 @@ class LocalModuleLoader
 
     /**
      * Loads all local module versions.
-     * 
+     *
      * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersions(): array
@@ -54,7 +54,7 @@ class LocalModuleLoader
         $moduleDirs = $this->getModuleDirs();
 
         $modules = [];
-        foreach($moduleDirs as $moduleDir) {
+        foreach ($moduleDirs as $moduleDir) {
             $module = new Module();
             if ($module->load($moduleDir)) {
                 $modules[] = $module;
@@ -67,7 +67,7 @@ class LocalModuleLoader
 
     /**
      * Loads all local module versions by a given archiveName.
-     * 
+     *
      * @return Module[] Returns a array of module versions.
      */
     public function loadAllVersionsByArchiveName(string $archiveName): array
@@ -79,7 +79,7 @@ class LocalModuleLoader
 
     /**
      * Loads a local module version by a given archiveName and version.
-     * 
+     *
      * @return Module|null Returns a module version or null.
      */
     public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
