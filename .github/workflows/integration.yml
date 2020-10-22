@@ -14,7 +14,7 @@ jobs:
     - name: copy config
       run: cp config/_config.php config/config.php
     - name: run phpcs for PSR12 coding style checks 
-      run: php7.3 ./vendor/bin/phpcs --standard=PSR12 --ignore=".src/Templates" ./src
+      run: php7.3 ./vendor/bin/phpcs -np --standard=PSR12 --ignore=".src/Templates" ./src
     - name: run test - php unit
       run: php7.3 ./vendor/bin/phpunit --testdox
     - name: run static code analysis - psalm
