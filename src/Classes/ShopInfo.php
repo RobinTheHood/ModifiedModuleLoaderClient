@@ -36,13 +36,12 @@ class ShopInfo
         $fileStr = file_get_contents($path);
         $pos = strpos($fileStr, 'MOD_');
 
-        if($pos) {
+        if ($pos) {
             /**
              * DB_VERSION exists in file
              */
             $version = substr($fileStr, (int) $pos + 4, 7);
-        }
-        else {
+        } else {
             /**
              * DB_VERSION does not exists in file
              * use PROJECT_MAJOR_VERSION and PROJECT_MINOR_VERSION instead
