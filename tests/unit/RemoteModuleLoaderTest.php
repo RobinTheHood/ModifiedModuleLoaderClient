@@ -30,7 +30,7 @@ class RemoteModuleLoaderTest extends TestCase
     {
         $apiRequest = new ApiRequest();
         $modules = $this->loader->loadAllVersions();
-        
+
         $this->assertContainsOnlyInstancesOf(Module::class, $modules);
         $this->assertGreaterThan(150, count($modules));
 
@@ -72,15 +72,15 @@ class RemoteModuleLoaderTest extends TestCase
         $module = $this->loader->loadLatestVersionByArchiveName('composer/autoload');
 
         $this->assertEquals('composer/autoload', $module->getArchiveName());
-        $this->assertEquals('1.1.0', $module->getVersion());
+        $this->assertEquals('1.2.0', $module->getVersion());
     }
 
     public function testCanLoadByArchiveNameAndVersion()
     {
         $apiRequest = new ApiRequest();
         $module = $this->loader->loadLatestVersionByArchiveName('composer/autoload', '1.1.0');
-        
+
         $this->assertEquals('composer/autoload', $module->getArchiveName());
-        $this->assertEquals('1.1.0', $module->getVersion());
+        $this->assertEquals('1.2.0', $module->getVersion());
     }
 }
