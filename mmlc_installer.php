@@ -56,7 +56,7 @@ class Installer
         }
 
         if (!file_exists('/includes/classes/modified_api.php')) {
-            $errors[] = __DIR__ . 'is the wrong installation directory. Please use the shop root.';
+            $errors[] = '<code style="display: inline; padding: 2px 4px;">' . __DIR__ . '</code> is the wrong installation directory. Please use the shop root.';
         }
 
         return $errors;
