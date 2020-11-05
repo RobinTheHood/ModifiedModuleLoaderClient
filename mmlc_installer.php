@@ -55,7 +55,7 @@ class Installer
             $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
         }
 
-        if (!file_exists('/includes/classes/modified_api.php')) {
+        if (!file_exists(__DIR__ . '/includes/classes/modified_api.php')) {
             $errors[] = '<code style="display: inline; padding: 2px 4px;">' . __DIR__ . '</code> is the wrong installation directory. Please use the shop root.';
         }
 
