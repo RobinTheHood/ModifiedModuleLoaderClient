@@ -37,10 +37,6 @@ class Installer
         if ($errors) {
             echo Template::showSystemCheck($errors);
         } else if (!$this->isInstalled()) {
-            if (!$this->isInShopRoot()) {
-                echo Template::showInvalidRoot();
-            }
-
             echo Template::showInstall();
         } else {
             echo Template::showInstalled();
@@ -50,12 +46,17 @@ class Installer
     public function doSystemCheck()
     {
         $errors = [];
+
         if (!ini_get('allow_url_fopen')) {
             $errors[] = 'No connection to server. <strong>allow_url_fopen</strong> has to be activated in php.ini.';
         }
 
         if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
             $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
+        }
+
+        if (!file_exists('/includes/classes/modified_api.php')) {
+            $errors[] = __DIR__ . 'is the wrong installation directory. Please use the shop root.';
         }
 
         return $errors;
@@ -95,33 +96,6 @@ class Installer
             return true;
         }
         return false;
-    }
-
-    public function isInShopRoot()
-    {
-        /**
-         * Check whether the installer is in the root directory
-         */
-        $shopRoot = [
-            'api',
-            'callback',
-            'images',
-            'inc',
-            'includes',
-            'lang',
-            'templates',
-            'templates_c',
-        ];
-        $installerIsInShopRoot = true;
-
-        foreach ($shopRoot as $shopDirectory) {
-            if (!is_dir($shopDirectory)) {
-                $installerIsInShopRoot = false;
-                break;
-            }
-        }
-
-        return $installerIsInShopRoot;
     }
 
     public function download()
@@ -330,16 +304,6 @@ class Template
                 </div>
             </div>
         ';
-    }
-
-    public static function showInvalidRoot()
-    {
-        return
-            self::style() . '
-            <div style="color: red; text-align: center;">
-                <h2>Warning: Invalid Install-Directory!</h2>
-            </div>
-            ';
     }
 
     public static function style()
