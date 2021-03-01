@@ -14,6 +14,7 @@ jobs:
       with:
         progress: yes
         version: 1
+        php_version: 7.2
     #- name: composer install missing files
     #  run: composer1 install
     - name: copy config
