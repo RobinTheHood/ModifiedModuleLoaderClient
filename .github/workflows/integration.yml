@@ -7,16 +7,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: install composer version1
-      run: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-      run: php -r "if (hash_file('sha384', 'composer-setup.php') === file_get_contents('https://composer.github.io/installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-      run: php composer-setup.php --1
-      run: sudo mv composer.phar /usr/bin/composer1
-      run: php -r "unlink('composer-setup.php');"
     - name: checkout project
       uses: actions/checkout@v1
-    - name: composer install missing files
-      run: composer1 install
+    - name: install composer version1
+      uses: php-actions/composer@v5
+      with:
+        progress: yes
+        version: 1
+    #- name: composer install missing files
+    #  run: composer1 install
     - name: copy config
       run: cp config/_config.php config/config.php
     - name: run phpcs for PSR12 coding style checks 
