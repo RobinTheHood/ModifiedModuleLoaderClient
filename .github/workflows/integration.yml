@@ -9,8 +9,14 @@ jobs:
     steps:
     - name: checkout project
       uses: actions/checkout@v1
-    - name: composer install missing files
-      run: composer install
+    - name: install composer version1
+      uses: php-actions/composer@v5
+      with:
+        progress: yes
+        version: 1
+        php_version: 7.2
+    #- name: composer install missing files
+    #  run: composer1 install
     - name: copy config
       run: cp config/_config.php config/config.php
     - name: run phpcs for PSR12 coding style checks 
