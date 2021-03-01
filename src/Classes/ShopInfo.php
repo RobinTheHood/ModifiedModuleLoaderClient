@@ -22,6 +22,17 @@ class ShopInfo
         return App::getShopRoot() . '/' . self::getAdminDir();
     }
 
+    public static function getAdminUrl(): string
+    {
+        $httpHost = $_SERVER['HTTP_HOST'] ?? '';
+        $documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+
+        $host = rtrim($httpHost, '/');
+        $path = str_replace($documentRoot, '', ShopInfo::getAdminPath());
+        $path = ltrim($path, '/');
+        return '//' . $host . '/' . $path;
+    }
+
     /**
      * @return string Returns the installed modified version as string.
      */
