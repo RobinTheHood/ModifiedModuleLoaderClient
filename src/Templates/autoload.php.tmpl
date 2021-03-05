@@ -1,5 +1,10 @@
 <?php
-require_once DIR_FS_DOCUMENT_ROOT . '/vendor/composer/ClassLoader.php';
+
+$class = '\Composer\Autoload\ClassLoader';
+
+if (!class_exists($class, false)) {
+    require_once DIR_FS_DOCUMENT_ROOT . '/vendor/composer/ClassLoader.php';
+}
 
 $loader = new \Composer\Autoload\ClassLoader();
 {VENDOR_PSR4_NAMESPACE_MAPPINGS}
