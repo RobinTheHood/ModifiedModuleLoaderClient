@@ -1,4 +1,4 @@
-<?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
+<?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); } ?>
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
 
@@ -35,11 +35,11 @@
                 <?php } ?>
 
                 <div class="modules">
-                    <?php foreach($groupedModules as $category => $modules) { ?>
+                    <?php foreach ($groupedModules as $category => $modules) { ?>
                         <h2><?php echo RobinTheHood\ModifiedModuleLoaderClient\Category::getCategoryName($category); ?></h2>
 
                         <div class="category">
-                            <?php foreach($modules as $module) { ?>
+                            <?php foreach ($modules as $module) { ?>
                                 <?php if ($module->getVisibility() == 'hidden') { continue; } ?>
 
                                 <div class="card module-serach-box <?php echo $module->isCompatible() ? 'compatible' : 'incompatible'; ?>" data-tags="<?php echo $module->getName(); ?> <?php echo $module->getArchiveName()?> <?php echo str_replace(',', ' ', $module->getTags())?>">
@@ -54,13 +54,11 @@
                                         </h5>
 
                                         <div class="module-price">
-                                            <?php
-                                                if ($module->isInstalled()) {
-                                                    echo 'installiert';
-                                                } else {
-                                                    echo $module->getPriceFormated();
-                                                }
-                                            ?>
+                                            <?php if ($module->isInstalled()) {
+                                                echo 'installiert';
+                                            } else {
+                                                echo $module->getPriceFormated();
+                                            } ?>
                                         </div>
 
                                         <?php
