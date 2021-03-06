@@ -32,11 +32,10 @@ class ModuleViewModel
         return $this->getUrl('install', $ref);
     }
 
-    public function getLoadAndIntallUrl(string $ref = ''): string
+    public function getLoadAndInstallUrl(string $ref = ''): string
     {
         return $this->getUrl('loadAndInstall', $ref);
     }
-
 
     public function getUninstallUrl(string $ref = ''): string
     {

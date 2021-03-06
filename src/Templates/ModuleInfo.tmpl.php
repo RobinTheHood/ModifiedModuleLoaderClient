@@ -101,7 +101,6 @@ $moduleView = new ModuleViewModel($module);
                 <?php } ?>
 
                 <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
-                    <?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>
                     <a class="button button-default" href="<?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>">Download & Install</a>
 
                 <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
