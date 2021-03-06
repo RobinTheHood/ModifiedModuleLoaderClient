@@ -80,7 +80,6 @@ class App
         $indexController = new IndexController($serverRequest);
         $viewResult = $indexController->invoke();
         echo $viewResult['content'];
-
     }
 
     private static function getServerRequest(): ServerRequestInterface
