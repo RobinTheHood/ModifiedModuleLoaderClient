@@ -59,7 +59,4 @@ function debugLog($value)
 }
 
 App::setModulesDir(Config::getModulesLocalDir());
-
-$indexController = new IndexController();
-$viewResult = $indexController->invoke();
-echo $viewResult['content'];
+App::start();

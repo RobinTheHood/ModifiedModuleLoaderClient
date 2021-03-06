@@ -12,9 +12,28 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use Psr\Http\Message\ServerRequestInterface;
 
 abstract class Controller
 {
+    protected $serverRequest;
+
+    public function __construct(ServerRequestInterface $serverRequest)
+    {
+        $this->serverRequest = $serverRequest;
+    }
+
+    protected function isPostRequest(): bool
+    {
+        return $this->serverRequest->getMethod() == 'POST';
+    }
+
+    protected function getAction(): string
+    {
+        $queryParams = $this->serverRequest->getQueryParams();
+        return $queryParams['action'] ?? '';
+    }
+
     protected function render(string $templateName, array $data = []): array
     {
         $path = App::getTemplatesRoot() . '/' . $templateName . '.tmpl.php';

@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7Server\ServerRequestCreator;
+
 class App
 {
     protected static $modulesDir = 'Modules';
@@ -67,5 +71,31 @@ class App
     public static function getModulesDirName()
     {
         return self::$modulesDir;
+    }
+
+    public static function start()
+    {
+        $serverRequest = self::getServerRequest();
+
+        $indexController = new IndexController($serverRequest);
+        $viewResult = $indexController->invoke();
+        echo $viewResult['content'];
+
+    }
+
+    private static function getServerRequest(): ServerRequestInterface
+    {
+        $psr17Factory = new Psr17Factory();
+
+        $creator = new ServerRequestCreator(
+            $psr17Factory, // ServerRequestFactory
+            $psr17Factory, // UriFactory
+            $psr17Factory, // UploadedFileFactory
+            $psr17Factory  // StreamFactory
+        );
+        
+        $serverRequest = $creator->fromGlobals();
+
+        return $serverRequest;
     }
 }

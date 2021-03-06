@@ -14,7 +14,9 @@
         "robinthehood/exception-monitor": "^0.1.6",
         "robinthehood/debug": "^0.1.3",
         "erusev/parsedown": "^1.7",
-        "sebastian/diff": "^3.0"
+        "sebastian/diff": "^3.0",
+        "nyholm/psr7": "^1.4",
+        "nyholm/psr7-server": "^1.0"
     },
 
     "require-dev": {

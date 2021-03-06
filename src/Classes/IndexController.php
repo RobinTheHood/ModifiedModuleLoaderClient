@@ -11,7 +11,6 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
@@ -32,9 +31,7 @@ class IndexController extends Controller
     {
         $this->invokeDefault();
 
-        $action = ArrayHelper::getIfSet($_GET, 'action', '');
-
-        switch ($action) {
+        switch ($this->getAction()) {
             case 'moduleInfo':
                 return $this->invokeModuleInfo();
             case 'lazyModuleInfo':
@@ -104,12 +101,16 @@ class IndexController extends Controller
             session_start();
         }
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($this->isPostRequest()) {
             $error = '';
 
-            if ($_POST['username'] != Config::getUsername()) {
+            $parsedBody = $this->serverRequest->getParsedBody();
+            $username = $parsedBody['username'] ?? '';
+            $password = $parsedBody['password'] ?? '';
+
+            if ($username != Config::getUsername()) {
                 $error = 'Unbekannter Benutzername';
-            } elseif (!password_verify($_POST['password'], Config::getPassword() ?? '')) {
+            } elseif (!password_verify($password, Config::getPassword() ?? '')) {
                 $error = 'Falsches passwort';
             }
 
@@ -122,8 +123,6 @@ class IndexController extends Controller
         }
 
         return $this->render('SignIn');
-
-        //include App::getTemplatesRoot() . '/SignIn.tmpl.php';
     }
 
     public function invokeSignOut()
@@ -144,7 +143,9 @@ class IndexController extends Controller
         $installedVersion = $selfUpdater->getInstalledVersion();
         $version = $selfUpdater->getNewestVersionInfo();
 
-        $installVersion = ArrayHelper::getIfSet($_GET, 'install', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $installVersion = $queryParams['install'] ?? '';
+        
         if ($installVersion) {
             $selfUpdater->update($installVersion);
             Redirect::redirect('/?action=selfUpdate');
@@ -169,8 +170,6 @@ class IndexController extends Controller
             'installedVersion' => $installedVersion,
             'serverName' => $_SERVER['SERVER_NAME'] ?? 'unknown Server Name'
         ]);
-
-        // include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
 
     public function invokeIndex()
@@ -183,7 +182,9 @@ class IndexController extends Controller
 
         $heading = 'Alle Module';
         
-        $filterModules = ArrayHelper::getIfSet($_GET, 'filterModules', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $filterModules = $queryParams['filterModules'] ?? '';
+
         if ($filterModules == 'loaded') {
             $modules = ModuleFilter::filterLoaded($modules);
             $heading = 'Geladene Module';
@@ -209,16 +210,15 @@ class IndexController extends Controller
             'modules' => $modules,
             'groupedModules' => $groupedModules
         ]);
-        
-        //include App::getTemplatesRoot() . '/ModuleListing.tmpl.php';
     }
 
     public function invokeModuleInfo()
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', null);
-        $version = ArrayHelper::getIfSet($_GET, 'version', null);
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
 
         if ($version) {
             $moduleLoader = ModuleLoader::getModuleLoader();
@@ -237,17 +237,16 @@ class IndexController extends Controller
         return $this->render('ModuleInfo', [
             'module' => $module
         ]);
-
-        // include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
     }
 
     public function invokeLazyModuleInfo()
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', null);
-        $version = ArrayHelper::getIfSet($_GET, 'version', null);
-        $data = ArrayHelper::getIfSet($_GET, 'data', null);
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
+        $data = $queryParams['data'] ?? '';
 
         $moduleLoader = ModuleLoader::getModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
@@ -295,8 +294,9 @@ class IndexController extends Controller
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
-        $version = ArrayHelper::getIfSet($_GET, 'version', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
 
         $moduleLoader = new LocalModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
@@ -319,8 +319,9 @@ class IndexController extends Controller
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
-        $version = ArrayHelper::getIfSet($_GET, 'version', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
 
         $moduleLoader = new LocalModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
@@ -341,8 +342,9 @@ class IndexController extends Controller
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
-        $version = ArrayHelper::getIfSet($_GET, 'version', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
 
         $moduleLoader = new LocalModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
@@ -370,8 +372,9 @@ class IndexController extends Controller
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
-        $version = ArrayHelper::getIfSet($_GET, 'version', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
 
         $moduleLoader = RemoteModuleLoader::getModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
@@ -397,8 +400,9 @@ class IndexController extends Controller
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
-        $version = ArrayHelper::getIfSet($_GET, 'version', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
 
         $moduleLoader = RemoteModuleLoader::getModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
@@ -438,8 +442,9 @@ class IndexController extends Controller
     {
         $this->checkAccessRight();
 
-        $archiveName = ArrayHelper::getIfSet($_GET, 'archiveName', '');
-        $version = ArrayHelper::getIfSet($_GET, 'version', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
 
         $moduleLoader = new LocalModuleLoader();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
@@ -460,13 +465,12 @@ class IndexController extends Controller
     {
         $this->checkAccessRight();
 
-        if (isset($_POST['send_mail'])) {
+        $parsedBody = $this->serverRequest->getParsedBody();
+        if (isset($parsedBody['send_mail'])) {
             SendMail::sendIssue();
         }
 
         return $this->render('ReportIssue');
-
-        // include App::getTemplatesRoot() . '/ReportIssue.tmpl.php';
     }
 
     public function invokeSupport()
@@ -474,8 +478,6 @@ class IndexController extends Controller
         $this->checkAccessRight();
 
         return $this->render('Support');
-
-        // include App::getTemplatesRoot() . '/Support.tmpl.php';
     }
 
     public function invokeSettings()
@@ -485,29 +487,31 @@ class IndexController extends Controller
         /**
          * Save submitted form input to config.
          */
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (isset($_POST['username'])) {
-                Config::setUsername($_POST['username']);
+        if ($this->isPostRequest()) {
+            $parsedBody = $this->serverRequest->getParsedBody();
+            
+            if (isset($parsedBody['username'])) {
+                Config::setUsername($parsedBody['username']);
             }
 
             /**
              * Don't overwrite the password
              * if the user doesn't want to change it.
              */
-            if (!empty($_POST['password'])) {
-                Config::setPassword($_POST['password']);
+            if (!empty($parsedBody['password'])) {
+                Config::setPassword($parsedBody['password']);
             }
 
-            if (isset($_POST['accessToken'])) {
-                Config::setAccessToken($_POST['accessToken']);
+            if (isset($parsedBody['accessToken'])) {
+                Config::setAccessToken($parsedBody['accessToken']);
             }
 
-            if (isset($_POST['modulesLocalDir'])) {
-                Config::setModulesLocalDir($_POST['modulesLocalDir']);
+            if (isset($parsedBody['modulesLocalDir'])) {
+                Config::setModulesLocalDir($parsedBody['modulesLocalDir']);
             }
             
-            if (isset($_POST['installMode'])) {
-                Config::setInstallMode($_POST['installMode']);
+            if (isset($parsedBody['installMode'])) {
+                Config::setInstallMode($parsedBody['installMode']);
             }
 
             Notification::pushFlashMessage([
@@ -515,13 +519,13 @@ class IndexController extends Controller
                 'type' => 'success'
             ]);
             
-            $section = $_GET['section'] ?? 'general';
+            $queryParams = $this->serverRequest->getQueryParams();
+            $section = $queryParams['section'] ?? '';
+
             Redirect::redirect('/?action=settings&section=' . $section);
         }
 
         return $this->render('Settings');
-        
-        //include App::getTemplatesRoot() . '/Settings.tmpl.php';
     }
 
     public function calcModuleUpdateCount()
@@ -562,7 +566,8 @@ class IndexController extends Controller
 
     public function redirectRef($archiveName, $version = '')
     {
-        $ref = ArrayHelper::getIfSet($_GET, 'ref', '');
+        $queryParams = $this->serverRequest->getQueryParams();
+        $ref = $queryParams['ref'] ?? '';
 
         if ($ref == 'moduleInfo') {
             $url = '/?action=moduleInfo&archiveName=' . $archiveName;
