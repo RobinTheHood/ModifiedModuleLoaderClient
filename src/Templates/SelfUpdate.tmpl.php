@@ -17,11 +17,13 @@ use RobinTheHood\ModifiedModuleLoaderClient\Config;
         <div class="content" style="text-align: center">
             <div class="self-update">
                 <h2>MMLC - Modified Module Loader Client</h2>
-                <?php echo $installedVersion ?><br><br>
+                <?= $installedVersion ?><br><br>
 
                 <?php if ($comparator->greaterThan($version['version'], $installedVersion)) { ?>
-                    Version <?php echo $version['version'] ?> verfügbar<br><br>
-                    <a class="button button-success" href="?action=selfUpdate&install=<?php echo $version['version']?>">Update installieren</a>
+                    Version <?= $version['version'] ?> verfügbar<br><br>
+                    <a class="button button-success" href="?action=selfUpdate&install=<?= $version['version'] ?>">
+                        Update installieren
+                    </a>
                 <?php } else { ?>
                     Diese Version ist aktuell.
                 <?php } ?>
@@ -29,13 +31,13 @@ use RobinTheHood\ModifiedModuleLoaderClient\Config;
                 <br><br>
                 <small>
                     <?php if (Config::getAccessToken()) { ?>
-                        AccessToken: <?php echo Config::getAccessToken(); ?>
+                        AccessToken: <?= Config::getAccessToken(); ?>
                     <?php } else {?>
                         AccessToken eintragen unter:<br>
                         <i>/ModifiedModuleLoaderClient/config/config.php</i><br>
                     <?php } ?>
                     <br>
-                    Domain: <?php echo $_SERVER['SERVER_NAME']; ?>
+                    Domain: <?= $serverName ?>
                 </small>
             </div>
         </div>
