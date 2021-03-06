@@ -24,7 +24,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
-class IndexController
+class IndexController extends Controller
 {
     private const REQUIRED_PHP_VERSION = '7.1.12';
 
@@ -36,76 +36,41 @@ class IndexController
 
         switch ($action) {
             case 'moduleInfo':
-                $this->invokeModuleInfo();
-                break;
-
+                return $this->invokeModuleInfo();
             case 'lazyModuleInfo':
-                $this->invokeLazyModuleInfo();
-                break;
-
+                return $this->invokeLazyModuleInfo();
             case 'lazyModuleUpdateCount':
-                $this->invokeLazyModuleUpdateCount();
-                break;
-
+                return $this->invokeLazyModuleUpdateCount();
             case 'lazyModuleChangeCount':
-                $this->invokeLazyModuleChangeCount();
-                break;
-
+                return $this->invokeLazyModuleChangeCount();
             case 'lazySystemUpdateCount':
-                $this->invokeLazySystemUpdateCount();
-                break;
-
+                return $this->invokeLazySystemUpdateCount();
             case 'install':
-                $this->invokeInstall();
-                break;
-
+                return $this->invokeInstall();
             case 'update':
-                $this->invokeUpdate();
-                break;
-
+                return $this->invokeUpdate();
             case 'uninstall':
-                $this->invokeUninstall();
-                break;
-
+                return $this->invokeUninstall();
             case 'loadRemoteModule':
-                $this->invokeLoadRemoteModule();
-                break;
-
+                return $this->invokeLoadRemoteModule();
             case 'loadAndInstall':
-                $this->invokeLoadAndInstall();
-                break;
-
+                return $this->invokeLoadAndInstall();
             case 'unloadLocalModule':
-                $this->invokeUnloadLocalModule();
-                break;
-
+                return $this->invokeUnloadLocalModule();
             case 'signIn':
-                $this->invokeSignIn();
-                break;
-
+                return $this->invokeSignIn();
             case 'signOut':
-                $this->invokeSignOut();
-                break;
-
+                return $this->invokeSignOut();
             case 'selfUpdate':
-                $this->invokeSelfUpdate();
-                break;
-
+                return $this->invokeSelfUpdate();
             case 'reportIssue':
-                $this->invokeReportIssue();
-                break;
-
+                return $this->invokeReportIssue();
             case 'support':
-                $this->invokeSupport();
-                break;
-
+                return $this->invokeSupport();
             case 'settings':
-                $this->invokeSettings();
-                break;
-
+                return $this->invokeSettings();
             default:
-                $this->invokeIndex();
-                break;
+                return $this->invokeIndex();
         }
     }
 
@@ -156,7 +121,9 @@ class IndexController
             }
         }
 
-        include App::getTemplatesRoot() . '/SignIn.tmpl.php';
+        return $this->render('SignIn');
+
+        //include App::getTemplatesRoot() . '/SignIn.tmpl.php';
     }
 
     public function invokeSignOut()
@@ -195,7 +162,15 @@ class IndexController
         $checkUpdate = $selfUpdater->checkUpdate();
 
         $comparator = new Comparator(new Parser());
-        include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
+
+        return $this->render('SelfUpdate', [
+            'comparator' => $comparator,
+            'version' => $version,
+            'installedVersion' => $installedVersion,
+            'serverName' => $_SERVER['SERVER_NAME'] ?? 'unknown Server Name'
+        ]);
+
+        // include App::getTemplatesRoot() . '/SelfUpdate.tmpl.php';
     }
 
     public function invokeIndex()
@@ -206,23 +181,36 @@ class IndexController
         $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
         $modules = ModuleFilter::filterNewestOrInstalledVersion($modules);
 
+        $heading = 'Alle Module';
+        
         $filterModules = ArrayHelper::getIfSet($_GET, 'filterModules', '');
         if ($filterModules == 'loaded') {
             $modules = ModuleFilter::filterLoaded($modules);
+            $heading = 'Geladene Module';
         } elseif ($filterModules == 'installed') {
             $modules = ModuleFilter::filterInstalled($modules);
+            $heading = 'Installierte Module';
         } elseif ($filterModules == 'updatable') {
             $modules = ModuleFilter::filterUpdatable($modules);
+            $heading = 'Aktualisierbare Module';
         } elseif ($filterModules == 'changed') {
             $modules = ModuleFilter::filterRepairable($modules);
+            $heading = 'Geänderte Module';
         } elseif ($filterModules == 'notloaded') {
             $modules = ModuleFilter::filterNotLoaded($modules);
+            $heading = 'Nicht geladene Module';
         }
 
         $modules = ModuleSorter::sortByArchiveName($modules);
         $groupedModules = Category::groupByCategory($modules);
 
-        include App::getTemplatesRoot() . '/ModuleListing.tmpl.php';
+        return $this->render('ModuleListing', [
+            'heading' => $heading,
+            'modules' => $modules,
+            'groupedModules' => $groupedModules
+        ]);
+        
+        //include App::getTemplatesRoot() . '/ModuleListing.tmpl.php';
     }
 
     public function invokeModuleInfo()
@@ -246,7 +234,11 @@ class IndexController
             Redirect::redirect('/');
         }
 
-        include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
+        return $this->render('ModuleInfo', [
+            'module' => $module
+        ]);
+
+        // include App::getTemplatesRoot() . '/ModuleInfo.tmpl.php';
     }
 
     public function invokeLazyModuleInfo()
@@ -261,11 +253,11 @@ class IndexController
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if ($data == 'installationMd') {
-            echo $module->getInstallationMd();
+            return ['content' => $module->getInstallationMd()];
         } elseif ($data == 'usageMd') {
-            echo $module->getUsageMd();
+            return ['content' => $module->getUsageMd()];
         } elseif ($data == 'changelogMd') {
-            echo $module->getChangeLogMd();
+            return ['content' => $module->getChangeLogMd()];
         }
     }
 
@@ -275,9 +267,8 @@ class IndexController
 
         $value = $this->calcModuleUpdateCount();
         if ($value) {
-            echo $value;
+            return ['content' => $value];
         }
-        die();
     }
 
     public function invokeLazyModuleChangeCount()
@@ -286,9 +277,8 @@ class IndexController
 
         $value = $this->calcModuleChangeCount();
         if ($value) {
-            echo $value;
+            return ['content' => $value];
         }
-        die();
     }
 
     public function invokeLazySystemUpdateCount()
@@ -297,9 +287,8 @@ class IndexController
 
         $value = $this->calcSystemUpdateCount();
         if ($value) {
-            echo $value;
+            return ['content' => $value];
         }
-        die();
     }
 
     public function invokeInstall()
@@ -475,14 +464,18 @@ class IndexController
             SendMail::sendIssue();
         }
 
-        include App::getTemplatesRoot() . '/ReportIssue.tmpl.php';
+        return $this->render('ReportIssue');
+
+        // include App::getTemplatesRoot() . '/ReportIssue.tmpl.php';
     }
 
     public function invokeSupport()
     {
         $this->checkAccessRight();
 
-        include App::getTemplatesRoot() . '/Support.tmpl.php';
+        return $this->render('Support');
+
+        // include App::getTemplatesRoot() . '/Support.tmpl.php';
     }
 
     public function invokeSettings()
@@ -526,7 +519,9 @@ class IndexController
             Redirect::redirect('/?action=settings&section=' . $section);
         }
 
-        include App::getTemplatesRoot() . '/Settings.tmpl.php';
+        return $this->render('Settings');
+        
+        //include App::getTemplatesRoot() . '/Settings.tmpl.php';
     }
 
     public function calcModuleUpdateCount()

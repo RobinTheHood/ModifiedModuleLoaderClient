@@ -61,4 +61,5 @@ function debugLog($value)
 App::setModulesDir(Config::getModulesLocalDir());
 
 $indexController = new IndexController();
-$indexController->invoke();
+$viewResult = $indexController->invoke();
+echo $viewResult['content'];
