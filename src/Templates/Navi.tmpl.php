@@ -1,4 +1,4 @@
-<?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
+<?php defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.'); ?>
 
 <?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>

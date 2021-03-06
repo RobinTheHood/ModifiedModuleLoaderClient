@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-define('LOADED_FROM_INDEX', 'true');
+define('LOADED_FROM_INDEX', true);
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
