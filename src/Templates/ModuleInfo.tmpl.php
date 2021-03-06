@@ -1,9 +1,17 @@
-<?php if (!defined('LOADED_FROM_INDEX') || LOADED_FROM_INDEX != 'true') { die('Access denied.'); }?>
+<?php
+defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
-<?php use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus; ?>
-<?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
-<?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
-<?php use RobinTheHood\ModifiedModuleLoaderClient\Config; ?>
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
+use RobinTheHood\ModifiedModuleLoaderClient\Category;
+use RobinTheHood\ModifiedModuleLoaderClient\Notification;
+use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
+
+$moduleView = new ModuleViewModel($module);
+?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -19,22 +27,22 @@
 
         <div class="block">
             <div class="content">
-                <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
+                <?= Notification::renderFlashMessages() ?>
 
                 <div class="row">
                     <div class="col">
                         <div class="module-title">
-                            <img src="<?php echo $module->getIconUri(); ?>">
+                            <img src="<?= $module->getIconUri(); ?>">
 
-                            <h1><?php echo $module->getName() ?></h1>
+                            <h1><?= $module->getName() ?></h1>
                         </div>
 
                         <?php if ($module->getImageUris()) { ?>
                             <div class="module-previews">
-                            <?php foreach($module->getImageUris() as $image) { ?>
+                            <?php foreach ($module->getImageUris() as $image) { ?>
                                 <div class="preview">
-                                    <a href="<?php echo $image ?>" data-lightbox="show-1" data-title="<?php echo $module->getName() ?>">
-                                        <img src="<?php echo $image ?>">
+                                    <a href="<?= $image ?>" data-lightbox="show-1" data-title="<?= $module->getName() ?>">
+                                        <img src="<?= $image ?>">
                                     </a>
                                 </div>
                             <?php } ?>
@@ -60,7 +68,7 @@
                         <?php if (!$module->isCompatible()) { ?>
                             <div class="alert alert-warning" role="alert">
                                 <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?php echo ShopInfo::getModifiedVersion()?></strong> installiert.
+                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?= ShopInfo::getModifiedVersion()?></strong> installiert.
                             </div>
                         <?php } ?>
                     </div>
@@ -71,11 +79,12 @@
         <div class="content">
             <div class="moduleinfo-buttons">
                 <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-success" href="?action=update&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Update installieren</a>
+                    <a class="button button-success" href="<?= $moduleView->getUpdateUrl('moduleInfo') ?>">Update installieren</a>
                 <?php } ?>
 
                 <?php if (ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="?action=install&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">
+                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="
+                    <?= $moduleView->getInstallUrl('moduleInfo') ?> ">
                         <?php if (Config::getInstallMode() != 'link') {?>
                             <i class="fas fa-tools fa-fw"></i>
                             Änderungen verwerfen
@@ -92,28 +101,29 @@
                 <?php } ?>
 
                 <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
-                    <a class="button button-default" href="?action=loadAndInstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion()?>&ref=moduleInfo">Download & Install</a>
+                    <?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>
+                    <a class="button button-default" href="<?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>">Download & Install</a>
 
                 <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
-                    <a class="button button-default" href="?action=loadRemoteModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Download (inkompatible Version)</a>
+                    <a class="button button-default" href="<?= $moduleView->getLoadModulelUrl('moduleInfo') ?>">Download (inkompatible Version)</a>
 
                 <?php } elseif (ModuleStatus::isUninstallable($module) && !ModuleStatus::isRepairable($module)) { ?>
-                    <a class="button button-danger" href="?action=uninstall&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Deinstallieren</a>
+                    <a class="button button-danger" href="<?= $moduleView->getUninstallUrl('moduleInfo') ?>">Deinstallieren</a>
 
                 <?php } elseif (ModuleStatus::isCompatibleInstallable($module)) { ?>
-                    <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren</a>
+                    <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren</a>
 
                 <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
-                    <a class="button button-success" href="?action=install&archiveName=<?php echo $module->getArchiveName() ?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Installieren (inkompatible Version)</a>
+                    <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
                 <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
                     <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
-                        <a class="button button-default" href="?action=moduleInfo&archiveName=<?php echo $installedModule->getArchiveName() ?>&version=<?php echo $installedModule->getVersion() ?>&ref=moduleInfo">Zur installierten Version</a>
+                        <a class="button button-default" href="<?= $moduleView->getModuleInfoUrl('moduleInfo') ?>">Zur installierten Version</a>
                     <?php } ?>
                 <?php } ?>
 
                 <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="?action=unloadLocalModule&archiveName=<?php echo $module->getArchiveName()?>&version=<?php echo $module->getVersion() ?>&ref=moduleInfo">Modul löschen</a>
+                    <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?= $moduleView->getUnloadModuleUrl('moduleInfo') ?>">Modul löschen</a>
                 <?php } ?>
             </div>
 
@@ -139,12 +149,12 @@
                                     <tbody>
                                         <tr>
                                             <td>Version</td>
-                                            <td><?php echo $module->getVersion(); ?></td>
+                                            <td><?= $module->getVersion(); ?></td>
                                         </tr>
 
                                         <tr>
                                             <td>Preis</td>
-                                            <td><?php echo $module->getPriceFormated(); ?></td>
+                                            <td><?= $module->getPriceFormated(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -167,7 +177,7 @@
                                                         }
                                                         ?>
 
-                                                        <span class="<?php echo implode(' ', $badgeClasses); ?>"><?php echo $badgeInnerHTML; ?></span>
+                                                        <span class="<?= implode(' ', $badgeClasses); ?>"><?= $badgeInnerHTML; ?></span>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     unbekannt
@@ -179,9 +189,9 @@
                                             <td>Entwickler</td>
                                             <td>
                                                 <?php if ($module->getDeveloper() && $module->getDeveloperWebsite()) { ?>
-                                                    <a target="_blank" href="<?php echo $module->getDeveloperWebsite() ?>"><?php echo $module->getDeveloper() ?></a>
+                                                    <a target="_blank" href="<?= $module->getDeveloperWebsite() ?>"><?= $module->getDeveloper() ?></a>
                                                 <?php } elseif ($module->getDeveloper()) { ?>
-                                                    <?php echo $module->getDeveloper() ?>
+                                                    <?= $module->getDeveloper() ?>
                                                 <?php } else { ?>
                                                     unbekannter Entwickler
                                                 <?php } ?>
@@ -195,7 +205,7 @@
                                 <h2>Beschreibung</h2>
                                 <p>
                                     <?php if ($module->getDescription()) { ?>
-                                        <?php echo $module->getDescription() ?>
+                                        <?= $module->getDescription() ?>
                                     <?php } else { ?>
                                         Keine Beschreibung vorhanden.
                                     <?php } ?>
@@ -208,21 +218,21 @@
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        <?php echo LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'keine manuelle Installation notwendig'); ?>
+                        <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'keine manuelle Installation notwendig'); ?>
 
                         <div class="tab-pane fade" id="v-pills-usage" role="tabpanel" aria-labelledby="v-pills-usage-tab">
                             <div class="markdown">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        <?php echo LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'keine Bedienungsanleitung vorhanden'); ?>
+                        <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'keine Bedienungsanleitung vorhanden'); ?>
 
                         <div class="tab-pane fade" id="v-pills-changes" role="tabpanel" aria-labelledby="v-pills-changes-tab">
                             <div class="markdown changelog">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        <?php echo LazyLoader::loadModuleChangelog($module, '#v-pills-changes .markdown', 'kein Änderungsprotokoll vorhanden'); ?>
+                        <?= LazyLoader::loadModuleChangelog($module, '#v-pills-changes .markdown', 'kein Änderungsprotokoll vorhanden'); ?>
 
                         <div class="tab-pane fade" id="v-pills-details" role="tabpanel" aria-labelledby="v-pills-details-tab">
                             <div class="infos">
@@ -230,12 +240,12 @@
                                     <tbody>
                                         <tr>
                                             <td>Archivname</td>
-                                            <td><?php echo $module->getArchiveName(); ?></td>
+                                            <td><?= $module->getArchiveName(); ?></td>
                                         </tr>
 
                                         <tr>
                                             <td>Version</td>
-                                            <td><?php echo $module->getVersion(); ?></td>
+                                            <td><?= $module->getVersion(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -243,7 +253,7 @@
                                             <td>
                                                 <?php if ($module->getModifiedCompatibility()) { ?>
                                                     <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
-                                                        <span class="badge badge-secondary"><?php echo $version; ?></span>
+                                                        <span class="badge badge-secondary"><?= $version; ?></span>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     unbekannt
@@ -251,12 +261,12 @@
                                             </td>
                                         </tr>
 
-                                        <?php if($module->getTags()) { ?>
+                                        <?php if ($module->getTags()) { ?>
                                             <tr>
                                                 <td>Tags</td>
                                                 <td>
                                                     <?php foreach (explode(',', $module->getTags()) as $tag) { ?>
-                                                        <span class="badge badge-secondary"><?php echo trim($tag); ?></span>
+                                                        <span class="badge badge-secondary"><?= trim($tag); ?></span>
                                                     <?php } ?>
                                                 </td>
                                             </tr>
@@ -266,9 +276,9 @@
                                             <td>Entwickler</td>
                                             <td>
                                                 <?php if ($module->getDeveloper() && $module->getDeveloperWebsite()) { ?>
-                                                    <a target="_blank" href="<?php echo $module->getDeveloperWebsite() ?>"><?php echo $module->getDeveloper() ?></a>
+                                                    <a target="_blank" href="<?= $module->getDeveloperWebsite() ?>"><?= $module->getDeveloper() ?></a>
                                                 <?php } elseif ($module->getDeveloper()) { ?>
-                                                    <?php echo $module->getDeveloper() ?>
+                                                    <?= $module->getDeveloper() ?>
                                                 <?php } else { ?>
                                                     unbekannter Entwickler
                                                 <?php } ?>
@@ -279,7 +289,7 @@
                                             <td>Alle Versionen</td>
                                             <td>
                                                 <?php foreach ($module->getVersions() as $moduleVersion) {?>
-                                                    <a href="?action=moduleInfo&archiveName=<?php echo $moduleVersion->getArchiveName() ?>&version=<?php echo $moduleVersion->getVersion()?>"><?php echo $moduleVersion->getVersion(); ?></a>
+                                                    <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>"><?= $moduleVersion->getVersion(); ?></a>
                                                     <?php if ($moduleVersion->isInstalled()) { ?>
                                                         <span>installiert</span>
                                                     <?php } elseif ($moduleVersion->isLoaded()) { ?>
@@ -297,7 +307,7 @@
                                             <td>
                                                 <?php if ($module->getRequire()) { ?>
                                                     <?php foreach ($module->getRequire() as $archiveName => $version) { ?>
-                                                        <a href="?action=moduleInfo&archiveName=<?php echo $archiveName?>"><?php echo $archiveName?></a><span>: <?php echo $version ?></span><br>
+                                                        <a href="?action=moduleInfo&archiveName=<?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     keine Abhängigkeit vorhanden
@@ -310,7 +320,7 @@
                                             <td>
                                                 <?php if ($module->getUsedBy()) { ?>
                                                     <?php foreach ($module->getUsedBy() as $usedBy) { ?>
-                                                        <a href="?action=moduleInfo&archiveName=<?php echo $usedBy->getArchiveName()?>&version=<?php echo $usedBy->getVersion() ?>"><?php echo $usedBy->getArchiveName()?></a><span>: <?php echo $usedBy->getVersion() ?></span><br>
+                                                        <a href="?action=moduleInfo&archiveName=<?= $usedBy->getArchiveName()?>&version=<?= $usedBy->getVersion() ?>"><?= $usedBy->getArchiveName()?></a><span>: <?= $usedBy->getVersion() ?></span><br>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     wird von keinem Modul verwendet
@@ -326,12 +336,11 @@
                             <h3>Geänderte Dateien</h3>
 
                             <?php if ($module->isInstalled() && $module->isChanged()) { ?>
-
                                     <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
-                                        <?php $changes = htmlentities(RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher::getFileChanges($module, $file, $mode)); ?>
+                                        <?php $changes = htmlentities(ModuleHasher::getFileChanges($module, $file, $mode)); ?>
 
-                                        <div><?php echo $file ?><span>: <?php echo $mode ?></span></div>
-                                        <?php if ($changes) {?><pre><code class="diff"><?php echo $changes ?></code></pre><?php }?>
+                                        <div><?= $file ?><span>: <?= $mode ?></span></div>
+                                        <?php if ($changes) { ?><pre><code class="diff"><?= $changes ?></code></pre><?php } ?>
                                     <?php } ?>
                             <?php } else { ?>
                                 keine Änderungen vorhanden
