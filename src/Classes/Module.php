@@ -33,6 +33,7 @@ class Module extends ModuleInfo
     private $imagePaths;
     private $docFilePaths;
     private $changelogPath;
+    private $readmePath;
     private $srcFilePaths;
     private $isRemote;
     private $isLoadable;
@@ -108,6 +109,17 @@ class Module extends ModuleInfo
         $this->changelogPath = $changelogPath;
     }
 
+    // /Modules/VENDOR-NAME/MODULE-NAME/readme.md
+    public function getReadmePath()
+    {
+        return $this->readmePath;
+    }
+
+    public function setReadmePath($readmePath)
+    {
+        $this->readmePath = $readmePath;
+    }
+
     // /admin/includes/...
     public function getSrcFilePaths()
     {
@@ -168,6 +180,16 @@ class Module extends ModuleInfo
     public function getChangeLogMd()
     {
         $path = $this->getChangelogPath();
+        if (!$path) {
+            return;
+        }
+        $path = $this->getUrlOrLocalRootPath() . $path;
+        return FileHelper::readMarkdown($path);
+    }
+
+    public function getReadmeMd()
+    {
+        $path = $this->getReadmePath();
         if (!$path) {
             return;
         }
@@ -278,6 +300,7 @@ class Module extends ModuleInfo
         $this->imagePaths = $this->loadImagePaths($path . '/images');
         $this->docFilePaths = $this->loadDocFilePaths($path . '/docs');
         $this->changelogPath = $this->loadChangelogPath($path);
+        $this->readmePath = $this->loadReadmePath($path);
         $this->srcFilePaths = $this->loadSrcFilePaths($this->getLocalRootPath() . $this->getSrcRootPath());
 
         return true;
@@ -349,6 +372,19 @@ class Module extends ModuleInfo
         }
 
         return $changelogPath;
+    }
+
+    public function loadReadmePath($path)
+    {
+        $readmePath = '';
+
+        if (file_exists($path . '/README.md')) {
+            $readmePath = $this->getModulePath() . '/README.md';
+        } elseif (file_exists($path . '/readme.md')) {
+            $readmePath = $this->getModulePath() . '/readme.md';
+        }
+
+        return $readmePath;
     }
 
     public function loadSrcFilePaths($path)
@@ -452,6 +488,7 @@ class Module extends ModuleInfo
         $this->imagePaths = ArrayHelper::getIfSet($array, 'imagePaths', []);
         $this->docFilePaths = ArrayHelper::getIfSet($array, 'docFilePaths', []);
         $this->changelogPath = ArrayHelper::getIfSet($array, 'changelogPath');
+        $this->readmePath = ArrayHelper::getIfSet($array, 'readmePath');
         $this->srcFilePaths = ArrayHelper::getIfSet($array, 'rootPath');
         $this->isRemote = ArrayHelper::getIfSet($array, 'isRemote');
         $this->isLoadable = ArrayHelper::getIfSet($array, 'isLoadable');
@@ -471,6 +508,7 @@ class Module extends ModuleInfo
             'imagePaths' => $this->getImagePaths(),
             'docFilePaths' => $this->getDocFilePaths(),
             'changelogPath' => $this->getChangelogPath(),
+            'readmePath' => $this->getChangelogPath(),
             'srcFilePaths' => $this->getSrcFilePaths(),
             'isRemote' => $this->isRemote(),
             'isLoadable' => $this->isLoadable()
