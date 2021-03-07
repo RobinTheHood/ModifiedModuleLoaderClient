@@ -33,7 +33,7 @@ class ConfigControllerTest extends TestCase
     
         $controller = new IndexController($serverRequest, $session);
         $result = $controller->invoke();
-        Config::reloadConfiguration();
+        //Config::reloadConfiguration();
         $this->assertEquals($newUserName, Config::getUserName());
 
         $serverRequest = $serverRequest->withParsedBody(['username' => $originalUserName]);
