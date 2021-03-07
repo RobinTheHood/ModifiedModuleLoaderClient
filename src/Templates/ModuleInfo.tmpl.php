@@ -210,28 +210,27 @@ $moduleView = new ModuleViewModel($module);
                                     <?php } ?>
                                 </p>
                             </div>
-                        </div>
+                        </div>                        
 
                         <div class="tab-pane fade" id="v-pills-install" role="tabpanel" aria-labelledby="v-pills-install-tab">
                             <div class="markdown">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'keine manuelle Installation notwendig'); ?>
+                        
 
                         <div class="tab-pane fade" id="v-pills-usage" role="tabpanel" aria-labelledby="v-pills-usage-tab">
                             <div class="markdown">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'keine Bedienungsanleitung vorhanden'); ?>
+                        
 
                         <div class="tab-pane fade" id="v-pills-changes" role="tabpanel" aria-labelledby="v-pills-changes-tab">
                             <div class="markdown changelog">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        <?= LazyLoader::loadModuleChangelog($module, '#v-pills-changes .markdown', 'kein Änderungsprotokoll vorhanden'); ?>
 
                         <div class="tab-pane fade" id="v-pills-details" role="tabpanel" aria-labelledby="v-pills-details-tab">
                             <div class="infos">
@@ -328,6 +327,14 @@ $moduleView = new ModuleViewModel($module);
                                         </tr>
                                     </tbody>
                                 </table>
+
+                                <hr>
+                                
+                                <div id="readme">
+                                    <div class="markdown">
+                                        README.md Wird geladen. Bitte warten...
+                                    </div>
+                                 </div>
                             </div>
                         </div>
 
@@ -349,6 +356,11 @@ $moduleView = new ModuleViewModel($module);
                 </div>
             </div>
         </div>
+
+        <?= LazyLoader::loadModuleReadme($module, '#readme .markdown', 'keine README.md vorhanden'); ?>
+        <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'keine manuelle Installation notwendig'); ?>
+        <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'keine Bedienungsanleitung vorhanden'); ?>
+        <?= LazyLoader::loadModuleChangelog($module, '#v-pills-changes .markdown', 'kein Änderungsprotokoll vorhanden'); ?>
 
         <?php include 'Footer.tmpl.php' ?>
     </body>

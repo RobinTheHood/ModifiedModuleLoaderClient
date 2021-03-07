@@ -27,6 +27,12 @@ class LazyLoader
         ';
     }
 
+    public static function loadModuleReadme($module, $target, $default = '')
+    {
+        $url = self::createUrl($module, 'readmeMd');
+        return self::createScript($target, $url, $default);
+    }
+
     public static function loadModuleInstallation($module, $target, $default = '')
     {
         $url = self::createUrl($module, 'installationMd');

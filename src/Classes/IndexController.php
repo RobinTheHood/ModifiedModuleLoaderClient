@@ -245,6 +245,8 @@ class IndexController extends Controller
             return ['content' => $module->getUsageMd()];
         } elseif ($data == 'changelogMd') {
             return ['content' => $module->getChangeLogMd()];
+        } elseif ($data == 'readmeMd') {
+            return ['content' => $module->getReadmeMd()];
         }
     }
 
