@@ -2,7 +2,7 @@
 
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
-$dataTags = $module->getName() . ' ' . str_replace(',', ' ', $module->getTags());
+$dataTags = $module->getName() . ' ' . $module->getArchiveName() . ' ' . str_replace(',', ' ', $module->getTags());
                                 
 if ($module->isCompatible()) {
     $compatibility = 'kompatibel';
