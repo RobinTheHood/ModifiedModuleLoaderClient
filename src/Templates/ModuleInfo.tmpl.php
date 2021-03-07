@@ -329,8 +329,8 @@ $moduleView = new ModuleViewModel($module);
                                 </table>
 
                                 <hr>
-                                
-                                <div id="readme">
+
+                                <div id="readme" style="padding-bottom: 30px">
                                     <div class="markdown">
                                         README.md Wird geladen. Bitte warten...
                                     </div>
