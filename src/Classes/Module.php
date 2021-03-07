@@ -508,7 +508,7 @@ class Module extends ModuleInfo
             'imagePaths' => $this->getImagePaths(),
             'docFilePaths' => $this->getDocFilePaths(),
             'changelogPath' => $this->getChangelogPath(),
-            'readmePath' => $this->getChangelogPath(),
+            'readmePath' => $this->getReadmePath(),
             'srcFilePaths' => $this->getSrcFilePaths(),
             'isRemote' => $this->isRemote(),
             'isLoadable' => $this->isLoadable()
