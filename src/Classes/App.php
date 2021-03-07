@@ -78,8 +78,14 @@ class App
         $serverRequest = self::getServerRequest();
 
         $indexController = new IndexController($serverRequest);
-        $viewResult = $indexController->invoke();
-        echo $viewResult['content'];
+        $result = $indexController->invoke();
+
+        if (isset($result['redirect'])) {
+            Redirect::redirect($result['redirect']);
+            die();
+        }
+        
+        echo $result['content'];
     }
 
     private static function getServerRequest(): ServerRequestInterface

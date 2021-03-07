@@ -108,7 +108,7 @@ class IndexController extends Controller
 
             if (!$error) {
                 $_SESSION['accessRight'] = true;
-                Redirect::redirect('/');
+                return $this->redirect('/');
             } else {
                 $_SESSION['accessRight'] = false;
             }
@@ -120,7 +120,7 @@ class IndexController extends Controller
     public function invokeSignOut()
     {
         $_SESSION['accessRight'] = false;
-        Redirect::redirect('/?action=signIn');
+        return $this->redirect('/?action=signIn');
     }
 
     public function invokeSelfUpdate()
@@ -136,7 +136,7 @@ class IndexController extends Controller
         
         if ($installVersion) {
             $selfUpdater->update($installVersion);
-            Redirect::redirect('/?action=selfUpdate');
+            return $this->redirect('/?action=selfUpdate');
         }
 
         // Postupdate ausführen, falls erforderlich
@@ -145,7 +145,7 @@ class IndexController extends Controller
         // Wenn der Postupdate durchgeführt werden musste, die Seite noch einmal
         // automatisch neu laden
         if ($executed) {
-            Redirect::redirect('/?action=selfUpdate');
+            return $this->redirect('/?action=selfUpdate');
         }
 
         $checkUpdate = $selfUpdater->checkUpdate();
@@ -219,7 +219,7 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
+            return $this->redirect('/');
         }
 
         return $this->render('ModuleInfo', [
@@ -291,8 +291,7 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -300,7 +299,7 @@ class IndexController extends Controller
         //$moduleInstaller->installDependencies($module);
         $moduleInstaller->installWithDependencies($module);
 
-        $this->redirectRef($archiveName, $module->getVersion());
+        return $this->redirectRef($archiveName, $module->getVersion());
     }
 
     public function invokeUninstall()
@@ -316,14 +315,13 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
         $moduleInstaller = new ModuleInstaller();
         $moduleInstaller->uninstall($module);
 
-        $this->redirectRef($archiveName, $module->getVersion());
+        return $this->redirectRef($archiveName, $module->getVersion());
     }
 
     public function invokeUpdate()
@@ -339,8 +337,7 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -349,11 +346,10 @@ class IndexController extends Controller
         if (!$newModule) {
             $newestModule = $module->getNewestVersion();
             $this->addModuleNotFoundNotification($archiveName, $newestModule->getVersion());
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
-        $this->redirectRef($archiveName, $newModule->getVersion());
+        return $this->redirectRef($archiveName, $newModule->getVersion());
     }
 
     public function invokeLoadRemoteModule()
@@ -369,8 +365,7 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -381,7 +376,7 @@ class IndexController extends Controller
             ]);
         }
 
-        $this->redirectRef($archiveName, $module->getVersion());
+        return $this->redirectRef($archiveName, $module->getVersion());
     }
 
     public function invokeLoadAndInstall()
@@ -397,8 +392,7 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
         $moduleInstaller = new ModuleInstaller();
@@ -407,7 +401,7 @@ class IndexController extends Controller
                 'text' => "Fehler: Das Module <strong>$archiveName - $version</strong> konnte nicht geladen werden.",
                 'type' => 'error'
             ]);
-            Redirect::redirect('/');
+            return $this->redirect('/');
         }
 
         $moduleLoader = new LocalModuleLoader();
@@ -415,15 +409,14 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
         $moduleInstaller = new ModuleInstaller();
         $moduleInstaller->install($module);
         $moduleInstaller->installDependencies($module);
 
-        $this->redirectRef($archiveName, $module->getVersion());
+        return $this->redirectRef($archiveName, $module->getVersion());
     }
 
     public function invokeUnloadLocalModule()
@@ -439,14 +432,13 @@ class IndexController extends Controller
 
         if (!$module) {
             $this->addModuleNotFoundNotification($archiveName, $version);
-            Redirect::redirect('/');
-            return;
+            return $this->redirect('/');
         }
 
         $moduleInstaller = new ModuleInstaller();
         $moduleInstaller->delete($module);
 
-        Redirect::redirect('/');
+        return $this->redirect('/');
     }
 
     public function invokeReportIssue()
@@ -510,7 +502,7 @@ class IndexController extends Controller
             $queryParams = $this->serverRequest->getQueryParams();
             $section = $queryParams['section'] ?? '';
 
-            Redirect::redirect('/?action=settings&section=' . $section);
+            return $this->redirect('/?action=settings&section=' . $section);
         }
 
         return $this->render('Settings');
@@ -544,8 +536,16 @@ class IndexController extends Controller
     public function checkAccessRight()
     {
         if (empty($_SESSION['accessRight']) || $_SESSION['accessRight'] !== true) {
-            Redirect::redirect('/?action=signIn');
+            return $this->redirect('/?action=signIn');
         }
+    }
+
+    private function redirect($url)
+    {
+        return [
+            'content' => '',
+            'redirect' => $url
+        ];
     }
 
     public function redirectRef($archiveName, $version = '')
@@ -562,7 +562,7 @@ class IndexController extends Controller
             $url = '/';
         }
 
-        Redirect::redirect($url);
+        return $this->redirect($url);
     }
 
     private function addModuleNotFoundNotification($archiveName, $version = '')
