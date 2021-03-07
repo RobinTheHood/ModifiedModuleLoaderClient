@@ -73,10 +73,6 @@ class IndexController extends Controller
 
     public function invokeDefault()
     {
-        if (session_status() != PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
         $accessFileCreator = new AccessFileCreator();
         $accessFileCreator->renewAccessFiles();
 
@@ -97,10 +93,6 @@ class IndexController extends Controller
 
     public function invokeSignIn()
     {
-        if (session_status() != PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
         if ($this->isPostRequest()) {
             $error = '';
 
@@ -127,10 +119,6 @@ class IndexController extends Controller
 
     public function invokeSignOut()
     {
-        if (session_status() != PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
         $_SESSION['accessRight'] = false;
         Redirect::redirect('/?action=signIn');
     }
@@ -555,10 +543,6 @@ class IndexController extends Controller
 
     public function checkAccessRight()
     {
-        if (session_status() != PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
         if (empty($_SESSION['accessRight']) || $_SESSION['accessRight'] !== true) {
             Redirect::redirect('/?action=signIn');
         }

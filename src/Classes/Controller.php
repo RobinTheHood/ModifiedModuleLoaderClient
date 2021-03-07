@@ -18,9 +18,17 @@ abstract class Controller
 {
     protected $serverRequest;
 
-    public function __construct(ServerRequestInterface $serverRequest)
+    public function __construct(ServerRequestInterface $serverRequest, array $session = [])
     {
         $this->serverRequest = $serverRequest;
+
+        if ($session) {
+            $_SESSION = $session;
+        } else {
+            if (session_status() != PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+        }
     }
 
     protected function isPostRequest(): bool
