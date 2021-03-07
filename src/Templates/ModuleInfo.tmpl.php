@@ -104,7 +104,7 @@ $moduleView = new ModuleViewModel($module);
                     <a class="button button-default" href="<?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>">Download & Install</a>
 
                 <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
-                    <a class="button button-default" href="<?= $moduleView->getLoadModulelUrl('moduleInfo') ?>">Download (inkompatible Version)</a>
+                    <a class="button button-default" href="<?= $moduleView->getLoadModuleUrl('moduleInfo') ?>">Download (inkompatible Version)</a>
 
                 <?php } elseif (ModuleStatus::isUninstallable($module) && !ModuleStatus::isRepairable($module)) { ?>
                     <a class="button button-danger" href="<?= $moduleView->getUninstallUrl('moduleInfo') ?>">Deinstallieren</a>
