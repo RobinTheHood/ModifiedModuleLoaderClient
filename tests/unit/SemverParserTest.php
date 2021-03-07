@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -8,6 +10,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;

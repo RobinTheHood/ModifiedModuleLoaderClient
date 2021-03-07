@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -9,6 +10,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
@@ -65,5 +68,4 @@ class AppTest extends TestCase
     {
         $this->assertStringEndsNotWith('ModifiedModuleLoaderClient/Modules/', App::getModulesRoot());
     }
-
 }

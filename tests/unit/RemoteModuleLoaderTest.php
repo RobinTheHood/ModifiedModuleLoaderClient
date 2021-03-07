@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -10,19 +11,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 
-require_once 'config/config.php';
-
 class RemoteModuleLoaderTest extends TestCase
 {
     public function setUp()
     {
+        //require_once 'config/config.php';
         $this->loader = new RemoteModuleLoader();
     }
 

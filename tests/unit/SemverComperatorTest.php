@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -9,6 +10,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
@@ -95,7 +98,6 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->lessThanOrEqualTo('1.2.10', '1.2.9'));
         $this->assertFalse($this->comparator->lessThanOrEqualTo('1.10.3', '1.9.3'));
         $this->assertFalse($this->comparator->lessThanOrEqualTo('10.2.3', '9.2.3'));
-       
     }
 
     public function testSemverCanHandleNotEqualTo()
