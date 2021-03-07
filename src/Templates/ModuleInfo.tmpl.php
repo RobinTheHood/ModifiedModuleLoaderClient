@@ -357,10 +357,10 @@ $moduleView = new ModuleViewModel($module);
             </div>
         </div>
 
-        <?= LazyLoader::loadModuleReadme($module, '#readme .markdown', 'keine README.md vorhanden'); ?>
-        <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'keine manuelle Installation notwendig'); ?>
-        <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'keine Bedienungsanleitung vorhanden'); ?>
-        <?= LazyLoader::loadModuleChangelog($module, '#v-pills-changes .markdown', 'kein Änderungsprotokoll vorhanden'); ?>
+        <?= LazyLoader::loadModuleReadme($module, '#readme .markdown', 'Es ist keine README.md vorhanden.'); ?>
+        <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'Es ist keine manuelle Installationanleitung vorhanden.'); ?>
+        <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'Es ist keine Bedienungsanleitung vorhanden.'); ?>
+        <?= LazyLoader::loadModuleChangelog($module->getNewestVersion(), '#v-pills-changes .markdown', 'Es ist kein Änderungsprotokoll vorhanden.'); ?>
 
         <?php include 'Footer.tmpl.php' ?>
     </body>
