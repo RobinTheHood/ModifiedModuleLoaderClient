@@ -1,6 +1,5 @@
 <?php defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.'); ?>
 
-<?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
 <?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
 
 <div class="navi">
@@ -42,7 +41,3 @@
         </div>
     </div>
 </div>
-
-<?php echo LazyLoader::loadModuleUpdateCount('#moduleUpdateCount') ?>
-<?php echo LazyLoader::loadModuleChangeCount('#moduleChangeCount') ?>
-<?php echo LazyLoader::loadSystemUpdateCount('#systemUpdateCount') ?>

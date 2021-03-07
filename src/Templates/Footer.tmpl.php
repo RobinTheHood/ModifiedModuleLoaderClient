@@ -62,3 +62,9 @@
         document.execCommand('copy');
     }
 </script>
+
+<?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
+
+<?= LazyLoader::loadModuleChangeCount('#moduleChangeCount') ?>
+<?= LazyLoader::loadSystemUpdateCount('#systemUpdateCount') ?>
+<?= LazyLoader::loadModuleUpdateCount('#moduleUpdateCount') ?>

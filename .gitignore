@@ -7,3 +7,4 @@
 /build
 /scripts/uploadClient.sh
 .vscode
+cache

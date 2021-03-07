@@ -6,15 +6,10 @@
     </PossiblyNullReference>
   </file>
   <file src="src/Classes/IndexController.php">
-    <PossiblyNullReference occurrences="8">
+    <PossiblyNullReference occurrences="4">
       <code>getInstallationMd</code>
       <code>getUsageMd</code>
       <code>getChangeLogMd</code>
-      <code>getVersion</code>
-      <code>getVersion</code>
-      <code>getNewestVersion</code>
-      <code>getVersion</code>
-      <code>getVersion</code>
     </PossiblyNullReference>
   </file>
 </files>
