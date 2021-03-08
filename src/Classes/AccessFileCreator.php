@@ -19,6 +19,8 @@ class AccessFileCreator
         $this->checkAndCreateAccess(App::getArchivesRoot(), []);
         $this->checkAndCreateAccess(App::getSrcRoot() . '/Classes', []);
         $this->checkAndCreateAccess(App::getModulesRoot(), ['png', 'jpg', 'gif']);
+        $this->checkAndCreateAccess(App::getShopRoot() . '/vendor', ['png', 'jpg', 'gif']);
+        $this->checkAndCreateAccess(App::getShopRoot() . '/vendor-no-composer', ['png', 'jpg', 'gif']);
     }
 
     public function checkAndCreateAccess($path, $fileSuffixes)
