@@ -34,6 +34,9 @@ class Comparator
             return false;
         }
 
+        if ($versionString1 == 'auto' && $versionString2 == 'auto') {
+            return true;
+        }
 
         $version1 = $this->parser->parse($versionString1);
         $version2 = $this->parser->parse($versionString2);
