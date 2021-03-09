@@ -89,6 +89,11 @@ class IndexController extends Controller
                 'type' => 'warning'
             ]);
         }
+
+        if (!Config::getAccessToken()) {
+            $accessToken = md5($accessToken = uniqid('mmlcAccessToken', true));
+            Config::setAccessToken($accessToken);
+        }
     }
 
     public function invokeSignIn()
