@@ -113,6 +113,30 @@ class ModuleLoader
     }
 
     /**
+     * Loads the latest local or remote version of an Module by a given archiveName.
+     *
+     * @return Module|null Returns a module version or null.
+     */
+    public function loadLatestVersionByArchiveName(string $archiveName): ?Module
+    {
+        $modules = [];
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $module = $localModuleLoader->loadLatestVersionByArchiveName($archiveName);
+        if ($module) {
+            $modules[] = $module;
+        }
+
+        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
+        $module = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
+        if ($module) {
+            $modules[] = $module;
+        }
+        
+        $latestVersion = ModuleFilter::getLatestVersion($modules);
+        return $latestVersion;
+    }
+
+    /**
      * Loads the latest local or remote versions by a given archiveName and version constraint.
      *
      * @return Module[] Returns a array of module versions.
