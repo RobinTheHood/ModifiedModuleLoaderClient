@@ -33,7 +33,13 @@ class DependencyManager
         return $installedModules;
     }
 
-    public function getAllModules($module)
+    /**
+     * Liefert eine Mögichkeit von Modulen/Versionen von denen das Modul $module
+     * abhängt. Zur Info. Es kann ganz viele Versions-Komkombintionen geben, von
+     * denen ein Modul habhängig ist. Die Methode liefert nur eine Möglichkeit an
+     * kombinationen.
+     */
+    public function getAllModules($module): array
     {
         $requireModulesTree = $this->buildTreeByModule($module);
 
@@ -50,7 +56,7 @@ class DependencyManager
         return $modules;
     }
 
-    public function canBeInstalled($module)
+    public function canBeInstalled(Module $module): void
     {
         $modules = $this->getAllModules($module);
         $modules[] = $module;
@@ -58,34 +64,75 @@ class DependencyManager
             $this->canBeInstalledTestRequiers($module, $modules);
             $this->canBeInstalledTestSelected($module, $modules);
             $this->canBeInstalledTestInstalled($module);
+            $this->canBeInstalledTestChanged($module, $modules);
         }
     }
 
-    public function canBeInstalledTestInstalled($module)
+    /**
+     * Test ob das Modul in $module installiert werden kann, ob das Modul $module
+     * selbst oder eine Abhängigkeit in $modules im Status 'changed' ist.
+     */
+    private function canBeInstalledTestChanged(Module $module, $modules): void
+    {
+        $module = $module->getInstalledVersion();
+        if ($module && $module->isInstalled() && $module->isChanged()) {
+            $a = $module->getArchiveName();
+            throw new DependencyException("Module $a can not be installed because the Module has changes");
+        }
+
+        foreach ($modules as $module) {
+            if ($module && $module->isInstalled() && $module->isChanged()) {
+                $a = $module->getArchiveName();
+                throw new DependencyException("Required Module $a can not be installed because the Module has changes");
+            }
+        }
+    }
+
+    /**
+     * Test Installed
+     *
+     * Überprüft ob das Module in $module installiert werden kann, ober ob es ein
+     * bereits installites Modul gibt, das von dem Modul in $module in einer anderern Version
+     * abhängig ist.
+     */
+    public function canBeInstalledTestInstalled(Module $module): void
     {
         $installedModules = $this->getInstalledModules();
         $this->canBeInstalledTestSelected($module, $installedModules);
     }
 
-    public function canBeInstalledTestSelected($module, $modules)
+    /**
+     * Test Selected
+     *
+     * Überprüft ob das Module in $module installiert werden kann, oder ob es ein Modul
+     * in $selectedModules gibt, dass von dem Modul in $module in einer anderen Version abhängig ist.
+     */
+    public function canBeInstalledTestSelected(Module $module, array $selectedModules): void
     {
-        $usedByEntrys = $this->getUsedByEntrys($module, $modules);
+        $usedByEntrys = $this->getUsedByEntrys($module, $selectedModules);
         foreach ($usedByEntrys as $usedByEntry) {
             if (!$this->comparator->satisfies($module->getVersion(), $usedByEntry['requiredVersion'])) {
                 $a = $module->getArchiveName();
                 $av = $module->getVersion();
                 $b = $usedByEntry['module']->getArchiveName();
                 $bv = $usedByEntry['requiredVersion'];
-                die("Module $a version $av can not be installed because module $b requires version $bv");
+                throw new DependencyException("Module $a version $av can not be installed because module $b requires version $bv");
             }
         }
     }
 
-    public function canBeInstalledTestRequiers($module, $modules)
+    /**
+     * Test Requiers
+     *
+     * Diese Methode überprüft, ob das Module in $module unter einigen Voraussetzungen
+     * installiert werden kann. Es wird verglichen, ob die Module/Versionen in $selectedModules
+     * ausreichen, um die Abhängigkeiten zu erfüllen, die $module benötigt.
+     */
+    public function canBeInstalledTestRequiers(Module $module, array $selectedModules): void
     {
         foreach ($module->getRequire() as $archiveName => $version) {
             $moduleFound = false;
-            foreach ($modules as $selectedModule) {
+            foreach ($selectedModules as $selectedModule) {
                 if ($selectedModule->getArchiveName() != $archiveName) {
                     continue;
                 }
@@ -94,19 +141,23 @@ class DependencyManager
                 if (!$this->comparator->satisfies($selectedModule->getVersion(), $version)) {
                     $a = $selectedModule->getArchiveName();
                     $av = $module->getVersion();
-                    die("Module $a version $av can not be installed because module $archiveName version $version is required");
+                    throw new DependencyException("Module $a version $av can not be installed because module $archiveName version $version is required");
                 }
             }
 
             if (!$moduleFound) {
-                die("Module $archiveName version $version can not be installed because module was not found.");
+                throw new DependencyException("Module $archiveName version $version can not be installed because module was not found.");
             }
         }
     }
 
-    // Liefert alle Module aus $selectedModules die das Modul $module verwenden
-    // inkl. die benötigte Versionsnummer.
-    public function getUsedByEntrys($module, $selectedModules)
+
+
+    /**
+     * Liefert eine Liste mit allen Modulen aus $selectedModules, die das Modul
+     * $module verwenden.
+    */
+    public function getUsedByEntrys(Module $module, array $selectedModules): array
     {
         $usedByEntrys = [];
         foreach ($selectedModules as $selectedModule) {
