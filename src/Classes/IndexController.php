@@ -296,10 +296,17 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleInstaller = new ModuleInstaller();
-        //$moduleInstaller->install($module);
-        //$moduleInstaller->installDependencies($module);
-        $moduleInstaller->installWithDependencies($module);
+        try {
+            $moduleInstaller = new ModuleInstaller();
+            //$moduleInstaller->install($module);
+            //$moduleInstaller->installDependencies($module);
+            $moduleInstaller->installWithDependencies($module);
+        } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
 
         return $this->redirectRef($archiveName, $module->getVersion());
     }
@@ -320,8 +327,15 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleInstaller = new ModuleInstaller();
-        $moduleInstaller->uninstall($module);
+        try {
+            $moduleInstaller = new ModuleInstaller();
+            $moduleInstaller->uninstall($module);
+        } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
 
         return $this->redirectRef($archiveName, $module->getVersion());
     }
@@ -342,8 +356,17 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleInstaller = new ModuleInstaller();
-        $newModule = $moduleInstaller->updateWithDependencies($module);
+        $newModule = $module;
+
+        try {
+            $moduleInstaller = new ModuleInstaller();
+            $newModule = $moduleInstaller->updateWithDependencies($module);
+        } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
 
         if (!$newModule) {
             $newestModule = $module->getNewestVersion();
@@ -414,9 +437,16 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleInstaller = new ModuleInstaller();
-        $moduleInstaller->install($module);
-        $moduleInstaller->installDependencies($module);
+        try {
+            $moduleInstaller = new ModuleInstaller();
+            $moduleInstaller->install($module);
+            $moduleInstaller->installDependencies($module);
+        } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
 
         return $this->redirectRef($archiveName, $module->getVersion());
     }
@@ -437,8 +467,15 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleInstaller = new ModuleInstaller();
-        $moduleInstaller->delete($module);
+        try {
+            $moduleInstaller = new ModuleInstaller();
+            $moduleInstaller->delete($module);
+        } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
 
         return $this->redirect('/');
     }
