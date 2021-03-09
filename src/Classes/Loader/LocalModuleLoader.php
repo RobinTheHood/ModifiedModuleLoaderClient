@@ -89,6 +89,18 @@ class LocalModuleLoader
         return $module;
     }
 
+    /**
+     * Loads the latest local module version by a given archiveName.
+     *
+     * @return Module|null Returns a module version or null.
+     */
+    public function loadLatestVersionByArchiveName(string $archiveName): ?Module
+    {
+        $modules = $this->loadAllVersionsByArchiveName($archiveName);
+        $module = ModuleFilter::getLatestVersion($modules);
+        return $module;
+    }
+
     public function getVendorDirs()
     {
         return FileHelper::scanDir(App::getModulesRoot(), FileHelper::DIRS_ONLY);
