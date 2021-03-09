@@ -111,4 +111,16 @@ class ModuleLoader
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
         return $module;
     }
+
+    /**
+     * Loads the latest local or remote versions by a given archiveName and version constraint.
+     *
+     * @return Module[] Returns a array of module versions.
+     */
+    public function loadByArchiveNameAndVersionContraint(string $archiveName, string $versionConstraint): array
+    {
+        $modules = $this->loadAllVersionsByArchiveName($archiveName);
+        $modules = ModuleFilter::filterByVersionConstrain($modules, $versionConstraint);
+        return $modules;
+    }
 }
