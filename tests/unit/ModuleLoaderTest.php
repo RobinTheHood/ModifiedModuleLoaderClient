@@ -59,7 +59,7 @@ class ModuleLoaderTest extends TestCase
             return;
         }
 
-        $this->assertEquals(1, count($modules)); // Lokale Version mit 'auto';
+        $this->assertEquals(0, count($modules)); // Lokale Version mit 'auto';
 
         $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '^0.2.0');
         $this->assertEquals('0.2.0', $modules[0]->getVersion());
