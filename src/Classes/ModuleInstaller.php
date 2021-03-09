@@ -155,7 +155,8 @@ class ModuleInstaller
             }
 
             foreach ($autoload['psr-4'] as $namespace => $path) {
-                $namespaceEntrys[] = '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
+                $namespaceEntrys[] =
+                    '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
             }
         }
 
