@@ -360,23 +360,21 @@ class Module extends ModuleInfo
      */
     public function isLoaded(): bool
     {
-        if ($this->isRemote()) {
-            $localModuleLoader = LocalModuleLoader::getModuleLoader();
-            $localModules = $localModuleLoader->loadAllVersions();
-
-            foreach ($localModules as $module) {
-                if ($module->getArchiveName() != $this->getArchiveName()) {
-                    continue;
-                }
-
-                if ($module->getVersion() != $this->getVersion()) {
-                    continue;
-                }
-                return true;
-            }
-            return false;
+        if (!$this->isRemote()) {
+            return true;
         }
-        return true;
+
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $localModule = $localModuleLoader->loadByArchiveNameAndVersion(
+            $this->getArchiveName(),
+            $this->getVersion()
+        );
+
+        if ($localModule) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
