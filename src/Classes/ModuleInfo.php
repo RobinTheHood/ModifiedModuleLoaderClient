@@ -11,8 +11,6 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
-
 /**
  * Die Klasse ModuleInfo repräsentiert die Daten einer moduleinfo.json
  */
@@ -344,46 +342,6 @@ class ModuleInfo
     {
         $this->tags = $value;
     }
-
-    // public function loadFromJson($path)
-    // {
-    //     if (!file_exists($path)) {
-    //         return false;
-    //     }
-
-    //     $json = file_get_contents($path);
-    //     $array = json_decode($json, true);
-
-    //     if (!$array) {
-    //         return false;
-    //     }
-
-    //     return ModuleInfo::loadFromArray($array);
-    // }
-
-    // public function loadFromArray(array $array)
-    // {
-    //     $this->name = ArrayHelper::getIfSet($array, 'name');
-    //     $this->archiveName = ArrayHelper::getIfSet($array, 'archiveName');
-    //     $this->sourceDir = ArrayHelper::getIfSet($array, 'sourceDir', 'src');
-    //     $this->version = ArrayHelper::getIfSet($array, 'version');
-    //     $this->shortDescription = ArrayHelper::getIfSet($array, 'shortDescription');
-    //     $this->description = ArrayHelper::getIfSet($array, 'description');
-    //     $this->developer = ArrayHelper::getIfSet($array, 'developer');
-    //     $this->developerWebsite = ArrayHelper::getIfSet($array, 'developerWebsite');
-    //     $this->website = ArrayHelper::getIfSet($array, 'website');
-    //     $this->require = ArrayHelper::getIfSet($array, 'require', []);
-    //     $this->category = ArrayHelper::getIfSet($array, 'category');
-    //     $this->type = ArrayHelper::getIfSet($array, 'type');
-    //     $this->modifiedCompatibility = ArrayHelper::getIfSet($array, 'modifiedCompatibility', []);
-    //     $this->installation = ArrayHelper::getIfSet($array, 'installation');
-    //     $this->visibility = ArrayHelper::getIfSet($array, 'visibility');
-    //     $this->price = ArrayHelper::getIfSet($array, 'price');
-    //     $this->autoload = ArrayHelper::getIfSet($array, 'autoload');
-    //     $this->tags = ArrayHelper::getIfSet($array, 'tags');
-
-    //     return true;
-    // }
 
     public function toArray()
     {

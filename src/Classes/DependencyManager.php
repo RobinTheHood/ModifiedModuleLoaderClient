@@ -245,7 +245,6 @@ class DependencyManager
                 $requireModulesTree[] = $entry;
             }
         }
-
         return $requireModulesTree;
     }
 
@@ -263,7 +262,6 @@ class DependencyManager
         }
 
         if (!$localModule && $remoteModule) {
-            //debugDie($remoteModule);
             return $remoteModule;
         }
 

@@ -17,12 +17,10 @@ use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFiler;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ServerHelper;
 
 class Module extends ModuleInfo
 {
@@ -399,116 +397,6 @@ class Module extends ModuleInfo
         return false;
     }
 
-    public function load($path)
-    {
-        $result = $this->loadFromJson($path . '/moduleinfo.json');
-
-        if (!$result) {
-            return false;
-        }
-
-        $this->localRootPath = App::getRoot();
-        $this->urlRootPath = ServerHelper::getUri();
-        $this->modulePath = FileHelper::stripBasePath(App::getRoot(), $path);
-
-        $this->iconPath = $this->loadIconPath($path);
-        $this->imagePaths = $this->loadImagePaths($path . '/images');
-        $this->docFilePaths = $this->loadDocFilePaths($path . '/docs');
-        $this->changelogPath = $this->loadChangelogPath($path);
-        $this->readmePath = $this->loadReadmePath($path);
-        $this->srcFilePaths = $this->loadSrcFilePaths($this->getLocalRootPath() . $this->getSrcRootPath());
-
-        return true;
-    }
-
-    public function loadIconPath($path)
-    {
-        if (file_exists($path . '/icon.jpg')) {
-            $iconPath = $this->getModulePath() . '/icon.jpg';
-        } elseif (file_exists($path . '/icon.png')) {
-            $iconPath = $this->getModulePath() . '/icon.png';
-        } else {
-            if ($this->getCategory() == 'library') {
-                $iconPath = '/src/Templates/Images/icon_library.png';
-            } else {
-                $iconPath = '/src/Templates/Images/icon_module.png';
-            }
-        }
-
-        return $iconPath;
-    }
-
-    public function loadImagePaths($path)
-    {
-        if (!is_dir($path)) {
-            return [];
-        }
-
-        $images = [];
-
-        $fileNames = scandir($path);
-        foreach ($fileNames as $fileName) {
-            if (strpos($fileName, '.jpg') || strpos($fileName, '.png')) {
-                $images[] = $path . '/' . $fileName;
-            }
-        }
-
-        $images = FileHelper::stripAllBasePaths(App::getRoot(), $images);
-
-        return $images;
-    }
-
-    public function loadDocFilePaths($path)
-    {
-        if (!is_dir($path)) {
-            return [];
-        }
-
-        $docFiles = [];
-
-        $fileNames = scandir($path);
-        foreach ($fileNames as $fileName) {
-            if (strpos($fileName, '.md')) {
-                $docFiles[] = $path . '/' . $fileName;
-            }
-        }
-
-        $docFiles = FileHelper::stripAllBasePaths(App::getRoot(), $docFiles);
-
-        return $docFiles;
-    }
-
-    public function loadChangeLogPath($path)
-    {
-        $changelogPath = '';
-
-        if (file_exists($path . '/changelog.md')) {
-            $changelogPath = $this->getModulePath() . '/changelog.md';
-        }
-
-        return $changelogPath;
-    }
-
-    public function loadReadmePath($path)
-    {
-        $readmePath = '';
-
-        if (file_exists($path . '/README.md')) {
-            $readmePath = $this->getModulePath() . '/README.md';
-        } elseif (file_exists($path . '/readme.md')) {
-            $readmePath = $this->getModulePath() . '/readme.md';
-        }
-
-        return $readmePath;
-    }
-
-    public function loadSrcFilePaths($path)
-    {
-        $filePaths = FileHelper::scanDirRecursive($path, FileHelper::FILES_ONLY, true);
-        $filePaths = FileHelper::stripAllBasePaths($path, $filePaths);
-        return $filePaths;
-    }
-
     public function getTemplateFiles($file): array
     {
         $files = [];
@@ -603,25 +491,6 @@ class Module extends ModuleInfo
         $moduleHasher = new ModuleHasher();
         $changedFiles = $moduleHasher->getModuleChanges($this);
         return $changedFiles;
-    }
-
-    public function loadFromArray(array $array)
-    {
-        parent::loadFromArray($array);
-
-        $this->localRootPath = ArrayHelper::getIfSet($array, 'localRootPath');
-        $this->urlRootPath = ArrayHelper::getIfSet($array, 'urlRootPath');
-        $this->modulePath = ArrayHelper::getIfSet($array, 'modulePath');
-        $this->iconPath = ArrayHelper::getIfSet($array, 'iconPath');
-        $this->imagePaths = ArrayHelper::getIfSet($array, 'imagePaths', []);
-        $this->docFilePaths = ArrayHelper::getIfSet($array, 'docFilePaths', []);
-        $this->changelogPath = ArrayHelper::getIfSet($array, 'changelogPath');
-        $this->readmePath = ArrayHelper::getIfSet($array, 'readmePath');
-        $this->srcFilePaths = ArrayHelper::getIfSet($array, 'rootPath');
-        $this->isRemote = ArrayHelper::getIfSet($array, 'isRemote');
-        $this->isLoadable = ArrayHelper::getIfSet($array, 'isLoadable');
-
-        return true;
     }
 
     public function toArray()
