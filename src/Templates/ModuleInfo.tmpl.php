@@ -153,7 +153,7 @@ $moduleView = new ModuleViewModel($module);
 
                                         <tr>
                                             <td>Preis</td>
-                                            <td><?= $module->getPriceFormated(); ?></td>
+                                            <td><?= $moduleView->getPriceFormated(); ?></td>
                                         </tr>
 
                                         <tr>

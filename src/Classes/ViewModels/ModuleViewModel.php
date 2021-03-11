@@ -57,6 +57,20 @@ class ModuleViewModel
         return $this->getUrl('unloadLocalModule', $ref);
     }
 
+    public function getPriceFormated(): string
+    {
+        if ($this->module->getPrice() === 'free') {
+            return '<span class="price-free">kostenlos</span>';
+        } elseif (!$this->module->getPrice()) {
+            return '<span class="price-request">Preis auf Anfrage</span>';
+        } else {
+            return
+                '<span class="price-normal">' .
+                    number_format((float) $this->module->getPrice(), 2, ',', '.') . ' € ' .
+                '</span>';
+        }
+    }
+
     private function getUrl(string $action, string $ref): string
     {
         return

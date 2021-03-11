@@ -2,6 +2,10 @@
 
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
+
+$moduleView = new ModuleViewModel($module);
+
 $dataTags = $module->getName() . ' ' . $module->getArchiveName() . ' ' . str_replace(',', ' ', $module->getTags());
                                 
 if ($module->isCompatible()) {
@@ -12,7 +16,7 @@ if ($module->isCompatible()) {
     $tooltip = 'Dieses Modul wurde noch nicht mit deiner Version von modified getestet.';
 }
 
-$modulePrice = $module->isInstalled() ? 'installiert' : $module->getPriceFormated();
+$modulePrice = $module->isInstalled() ? 'installiert' : $moduleView->getPriceFormated();
 $moduleLink = '?action=moduleInfo&archiveName=' . $module->getArchiveName() . '&version=' . $module->getVersion();
 
 ?>

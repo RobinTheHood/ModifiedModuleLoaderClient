@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -548,16 +550,5 @@ class Module extends ModuleInfo
         $moduleHasher = new ModuleHasher();
         $changedFiles = $moduleHasher->getModuleChanges($this);
         return $changedFiles;
-    }
-
-    public function getPriceFormated(): string
-    {
-        if ($this->getPrice() === 'free') {
-            return '<span class="price-free">kostenlos</span>';
-        } elseif (!$this->getPrice()) {
-            return '<span class="price-request">Preis auf Anfrage</span>';
-        } else {
-            return '<span class="price-normal">' . number_format((float) $this->getPrice(), 2, ',', '.') . ' € </span>';
-        }
     }
 }
