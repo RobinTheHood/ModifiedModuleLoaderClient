@@ -297,11 +297,6 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
-    // public function getHashFileName()
-    // {
-    //     return 'modulehash.json';
-    // }
-
     /**
      * Liefert den absoluten Pfad zur modulehash.json
      *
