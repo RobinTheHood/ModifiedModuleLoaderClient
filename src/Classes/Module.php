@@ -65,19 +65,6 @@ class Module extends ModuleInfo
     }
 
     /**
-     * HIER FEHLT EINE BESCHREIBUNG
-     *
-     */
-    public function getUrlOrLocalRootPath(): string
-    {
-        if ($this->isRemote()) {
-            return $this->getUrlRootPath();
-        } else {
-            return $this->getLocalRootPath();
-        }
-    }
-
-    /**
      * Liefert den Pfad zum Module relativ zum
      * MMLC-Root Verzeichnis.
      *
@@ -215,6 +202,45 @@ class Module extends ModuleInfo
         $this->srcFilePaths = $value;
     }
 
+    /**
+     * Liefert true, wenn es sich um ein Remote Modul handelt.
+     */
+    public function isRemote(): bool
+    {
+        return $this->isRemote;
+    }
+
+    public function setRemote(bool $value): void
+    {
+        $this->isRemote = $value;
+    }
+
+    /**
+     * Liefert true, wenn das Module geladen werden darf/kann.
+     */
+    public function isLoadable()
+    {
+        return $this->isLoadable;
+    }
+
+    public function setLoadable($value)
+    {
+        $this->isLoadable = $value;
+    }
+    
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     */
+    public function getUrlOrLocalRootPath(): string
+    {
+        if ($this->isRemote()) {
+            return $this->getUrlRootPath();
+        } else {
+            return $this->getLocalRootPath();
+        }
+    }
+
     // /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
     public function getSrcRootPath(): string
     {
@@ -307,32 +333,6 @@ class Module extends ModuleInfo
     public function getHashPath(): string
     {
         return App::getRoot() . $this->getModulePath() . '/modulehash.json';
-    }
-
-    public function setRemote(bool $value): void
-    {
-        $this->isRemote = $value;
-    }
-
-    /**
-     * Liefert true, wenn es sich um ein Remote Modul handelt.
-     */
-    public function isRemote(): bool
-    {
-        return $this->isRemote;
-    }
-
-    /**
-     * Liefert true, wenn das Module geladen werden darf/kann.
-     */
-    public function setLoadable($value)
-    {
-        $this->isLoadable = $value;
-    }
-
-    public function isLoadable()
-    {
-        return $this->isLoadable;
     }
 
     public function isInstalled(): bool
