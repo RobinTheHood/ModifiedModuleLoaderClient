@@ -252,7 +252,7 @@ class Module extends ModuleInfo
     {
         $docFilePath = $this->getDocFilePath('install.md');
         if (!$docFilePath) {
-            return;
+            return '';
         }
         $path = $this->getUrlOrLocalRootPath() . $docFilePath;
         return FileHelper::readMarkdown($path);
@@ -265,7 +265,7 @@ class Module extends ModuleInfo
     {
         $docFilePath = $this->getDocFilePath('usage.md');
         if (!$docFilePath) {
-            return;
+            return '';
         }
         $path = $this->getUrlOrLocalRootPath() . $docFilePath;
         return FileHelper::readMarkdown($path);
@@ -278,7 +278,7 @@ class Module extends ModuleInfo
     {
         $path = $this->getChangelogPath();
         if (!$path) {
-            return;
+            return '';
         }
         $path = $this->getUrlOrLocalRootPath() . $path;
         return FileHelper::readMarkdown($path);
@@ -291,7 +291,7 @@ class Module extends ModuleInfo
     {
         $path = $this->getReadmePath();
         if (!$path) {
-            return;
+            return '';
         }
         $path = $this->getUrlOrLocalRootPath() . $path;
         return FileHelper::readMarkdown($path);
