@@ -50,10 +50,20 @@ class Module extends ModuleInfo
         return $this->localRootPath;
     }
 
+    public function setLocalRootPath(string $value): void
+    {
+        $this->localRootPath = $value;
+    }
+
     // ...shop.de
     public function getUrlRootPath(): string
     {
         return $this->urlRootPath;
+    }
+
+    public function setUrlRootPath(string $value): void
+    {
+        $this->urlRootPath = $value;
     }
 
     /**
@@ -79,6 +89,11 @@ class Module extends ModuleInfo
     public function getModulePath(): string
     {
         return $this->modulePath;
+    }
+
+    public function setModulePath(string $value): void
+    {
+        $this->modulePath = $value;
     }
 
     /**
@@ -192,6 +207,11 @@ class Module extends ModuleInfo
     public function getSrcFilePaths(): array
     {
         return $this->srcFilePaths;
+    }
+
+    public function setSrcFilePaths(array $value): void
+    {
+        $this->srcFilePaths = $value;
     }
 
     // /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
