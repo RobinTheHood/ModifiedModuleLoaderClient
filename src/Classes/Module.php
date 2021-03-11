@@ -97,9 +97,12 @@ class Module extends ModuleInfo
     }
 
     /**
-     * HIER FEHLT EINE BESCHREIBUNG
+     * Wenn es sich um ein Remot - Modul handelt, wird die
+     * URL des Servers zurückgeliefert, unter der Server
+     * erreichbar ist.
      *
-     * ...shop.de
+     * Beispiel:
+     * http://app.module-loader.localhost
      */
     public function getUrlRootPath(): string
     {
