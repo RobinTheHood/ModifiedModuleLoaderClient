@@ -38,7 +38,13 @@ class Module extends ModuleInfo
     private $isRemote;
     private $isLoadable;
 
-    // .../ModifiedModuleLoaderClient
+    /**
+     * Liefert den absoluten Pfad zum MMLC
+     * MMLC-Root Verzeichnis.
+     *
+     * Beispiel:
+     * /root/dir1/dir2/.../ModifiedModuleLoaderClient
+     */
     public function getLocalRootPath(): string
     {
         return $this->localRootPath;
@@ -50,6 +56,10 @@ class Module extends ModuleInfo
         return $this->urlRootPath;
     }
 
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     */
     public function getUrlOrLocalRootPath(): string
     {
         if ($this->isRemote()) {
@@ -59,13 +69,25 @@ class Module extends ModuleInfo
         }
     }
 
-    // /Modules/vendor/module
+    /**
+     * Liefert den Pfad zum Module relativ zum
+     * MMLC-Root Verzeichnis.
+     *
+     * Beispiel:
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}
+     */
     public function getModulePath(): string
     {
         return $this->modulePath;
     }
 
-    // /Modules/vendor/module/icon.png
+    /**
+     * Liefert den Pfad zum Module-Icon relativ zum
+     * MMLC-Root Verzeichnis.
+     *
+     * Beispiel:
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/icon.png
+     */
     public function getIconPath(): string
     {
         return $this->iconPath;
@@ -76,7 +98,17 @@ class Module extends ModuleInfo
         $this->iconPath = $iconPath;
     }
 
-    // /Modules/VENDOR-NAME/MODULE-NAME/images/image1.jpg
+    /**
+     * Liefert Imagepfade relativ zum
+     * MMLC-Root Verzeichnis.
+     *
+     * Beispiel: [
+     *  /Modules/{VENDOR-NAME}/{MODULE-NAME}/images/image1.jpg
+     *  /Modules/{VENDOR-NAME}/{MODULE-NAME}/images/image2.jpg
+     * ]
+     *
+     * @return string[]
+     */
     public function getImagePaths(): array
     {
         return $this->imagePaths;
@@ -87,18 +119,39 @@ class Module extends ModuleInfo
         $this->imagePaths = $imagePaths;
     }
 
-    // /Modules/VENDOR-NAME/MODULE-NAME/docs/install.md
+    /**
+     * Liefert Imagepfade relativ zum
+     * MMLC-Root Verzeichnis.
+     *
+     * Beispiel: [
+     *  /Modules/{VENDOR-NAME}/{MODULE-NAME}/docs/install.md
+     *  /Modules/{VENDOR-NAME}/{MODULE-NAME}/docs/usage.md
+     * ]
+     *
+     * @return string[]
+     */
     public function getDocFilePaths(): array
     {
         return $this->docFilePaths;
     }
 
+    /**
+     * @param string[] $docFilePaths
+     */
     public function setDocFilePaths(array $docFilePaths): void
     {
         $this->docFilePaths = $docFilePaths;
     }
 
-    // /Modules/VENDOR-NAME/MODULE-NAME/changelog.md
+    /**
+     * Liefert den Pfad zur changelog.md relativ zum
+     * MMLC-Root Verzeichnis.
+     *
+     * Beispiel:
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/changelog.md
+     *
+     * @return string
+     */
     public function getChangelogPath(): string
     {
         return $this->changelogPath;
@@ -109,7 +162,13 @@ class Module extends ModuleInfo
         $this->changelogPath = $changelogPath;
     }
 
-    // /Modules/VENDOR-NAME/MODULE-NAME/readme.md
+    /**
+     * Liefert den Pfad zur readme.md relativ zum
+     * MMLC-Root Verzeichnis.
+     *
+     * Beispiel:
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/readme.md
+     */
     public function getReadmePath(): string
     {
         return $this->readmePath;
@@ -120,19 +179,28 @@ class Module extends ModuleInfo
         $this->readmePath = $readmePath;
     }
 
-    // /admin/includes/...
+    /**
+     * Liefert ein Array mit Dateienpfaden, die sich in 'new_files'
+     * befinden.
+     *
+     * Beispiel: [
+     *  /admin/includes/rth_file1.php
+     *  /includes/rth_file1.php
+     *  /includes/extra/rth_file1.php
+     * ]
+     */
     public function getSrcFilePaths(): array
     {
         return $this->srcFilePaths;
     }
 
-    // /Modules/VENDOR-NAME/MODULE-NAME/new_files
+    // /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
     public function getSrcRootPath(): string
     {
         return $this->getModulePath() . '/' . $this->getSourceDir();
     }
 
-    // ...shop.de/Modules/VENDOR-NAME/MODULE-NAME/icon.xxx
+    // ...shop.de/Modules/{VENDOR-NAME}/{MODULE-NAME}/icon.xxx
     public function getIconUri(): string
     {
         return $this->getUrlRootPath() . $this->getIconPath();
@@ -157,6 +225,9 @@ class Module extends ModuleInfo
         }
     }
 
+    /**
+     * Liefert die install.md als HTML.
+     */
     public function getInstallationMd(): string
     {
         $docFilePath = $this->getDocFilePath('install.md');
@@ -167,6 +238,9 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
+    /**
+     * Liefert die usage.md als HTML.
+     */
     public function getUsageMd(): string
     {
         $docFilePath = $this->getDocFilePath('usage.md');
@@ -177,6 +251,9 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
+    /**
+     * Liefert die changelog.md als HTML.
+     */
     public function getChangeLogMd(): string
     {
         $path = $this->getChangelogPath();
@@ -187,6 +264,9 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
+    /**
+     * Liefert die README.md als HTML.
+     */
     public function getReadmeMd(): string
     {
         $path = $this->getReadmePath();
@@ -202,6 +282,12 @@ class Module extends ModuleInfo
         return 'modulehash.json';
     }
 
+    /**
+     * Liefert den absoluten Pfad zur modulehash.json
+     *
+     * Beispiel:
+     * /root/.../ModifiedModuleLoaderClient/{VENDOR-NAME}/{MODULE-NAME}/modulehash.json
+     */
     public function getHashPath(): string
     {
         return App::getRoot() . $this->getModulePath() . '/' . $this->getHashFileName();
@@ -212,11 +298,17 @@ class Module extends ModuleInfo
         $this->isRemote = $value;
     }
 
+    /**
+     * Liefert true, wenn es sich um ein Remote Modul handelt.
+     */
     public function isRemote(): bool
     {
         return $this->isRemote;
     }
 
+    /**
+     * Liefert true, wenn das Module geladen werden darf/kann.
+     */
     public function setLoadable($value)
     {
         $this->isLoadable = $value;
@@ -244,6 +336,13 @@ class Module extends ModuleInfo
         }
     }
 
+    /**
+     * Liefert true zurück, wenn das Modul geladen ist.
+     * Wenn es sich um ein Remote Modul handelt, wird geschaut,
+     * ob es das das gleiche Modul (arichveName:Version) auch lokal
+     * gibt, ist das der Fall wird auch true zurück gegebn.
+     * Ist das nicht der Fall wird false geliefert.
+     */
     public function isLoaded(): bool
     {
         if ($this->isRemote()) {
@@ -422,6 +521,7 @@ class Module extends ModuleInfo
 
     /**
      * Returns the latest version of this module.
+     *
      */
     public function getNewestVersion(): Module
     {
@@ -434,7 +534,7 @@ class Module extends ModuleInfo
     /**
      * Retruns a array of modules.
      *
-     * @return array Returns a array of modules.
+     * @return Module[] Returns a array of modules.
      */
     public function getVersions(): array
     {
@@ -447,7 +547,7 @@ class Module extends ModuleInfo
     /**
      * Retruns a array of local modules.
      *
-     * @return array Returns a array of local modules.
+     * @return Module[] Returns a array of local modules.
      */
     public function getLocalVersions(): array
     {
@@ -457,6 +557,11 @@ class Module extends ModuleInfo
         return $modules;
     }
 
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * @return Module[]
+     */
     public function getUsedBy(): array
     {
         $dependencyManager = new DependencyManager();
@@ -470,6 +575,11 @@ class Module extends ModuleInfo
         return $usedByModules;
     }
 
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * @return string[]
+     */
     public function getChancedFiles(): array
     {
         $moduleHasher = new ModuleHasher();
