@@ -39,18 +39,18 @@ class Module extends ModuleInfo
     private $isLoadable;
 
     // .../ModifiedModuleLoaderClient
-    public function getLocalRootPath()
+    public function getLocalRootPath(): string
     {
         return $this->localRootPath;
     }
 
     // ...shop.de
-    public function getUrlRootPath()
+    public function getUrlRootPath(): string
     {
         return $this->urlRootPath;
     }
 
-    public function getUrlOrLocalRootPath()
+    public function getUrlOrLocalRootPath(): string
     {
         if ($this->isRemote()) {
             return $this->getUrlRootPath();
@@ -60,80 +60,80 @@ class Module extends ModuleInfo
     }
 
     // /Modules/vendor/module
-    public function getModulePath()
+    public function getModulePath(): string
     {
         return $this->modulePath;
     }
 
     // /Modules/vendor/module/icon.png
-    public function getIconPath()
+    public function getIconPath(): string
     {
         return $this->iconPath;
     }
 
-    public function setIconPath($iconPath)
+    public function setIconPath(string $iconPath): void
     {
         $this->iconPath = $iconPath;
     }
 
     // /Modules/VENDOR-NAME/MODULE-NAME/images/image1.jpg
-    public function getImagePaths()
+    public function getImagePaths(): array
     {
         return $this->imagePaths;
     }
 
-    public function setImagePaths($imagePaths)
+    public function setImagePaths(array $imagePaths): void
     {
         $this->imagePaths = $imagePaths;
     }
 
     // /Modules/VENDOR-NAME/MODULE-NAME/docs/install.md
-    public function getDocFilePaths()
+    public function getDocFilePaths(): array
     {
         return $this->docFilePaths;
     }
 
-    public function setDocFilePaths($docFilePaths)
+    public function setDocFilePaths(array $docFilePaths): void
     {
         $this->docFilePaths = $docFilePaths;
     }
 
     // /Modules/VENDOR-NAME/MODULE-NAME/changelog.md
-    public function getChangelogPath()
+    public function getChangelogPath(): string
     {
         return $this->changelogPath;
     }
 
-    public function setChangelogPath($changelogPath)
+    public function setChangelogPath(string $changelogPath): void
     {
         $this->changelogPath = $changelogPath;
     }
 
     // /Modules/VENDOR-NAME/MODULE-NAME/readme.md
-    public function getReadmePath()
+    public function getReadmePath(): string
     {
         return $this->readmePath;
     }
 
-    public function setReadmePath($readmePath)
+    public function setReadmePath(string $readmePath): void
     {
         $this->readmePath = $readmePath;
     }
 
     // /admin/includes/...
-    public function getSrcFilePaths()
+    public function getSrcFilePaths(): array
     {
         return $this->srcFilePaths;
     }
 
     // /Modules/VENDOR-NAME/MODULE-NAME/new_files
-    public function getSrcRootPath()
+    public function getSrcRootPath(): string
     {
         return $this->getModulePath() . '/' . $this->getSourceDir();
     }
 
     // ...shop.de/Modules/VENDOR-NAME/MODULE-NAME/icon.xxx
-    public function getIconUri()
+    public function getIconUri(): string
     {
         return $this->getUrlRootPath() . $this->getIconPath();
     }
@@ -157,7 +157,7 @@ class Module extends ModuleInfo
         }
     }
 
-    public function getInstallationMd()
+    public function getInstallationMd(): string
     {
         $docFilePath = $this->getDocFilePath('install.md');
         if (!$docFilePath) {
@@ -167,7 +167,7 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
-    public function getUsageMd()
+    public function getUsageMd(): string
     {
         $docFilePath = $this->getDocFilePath('usage.md');
         if (!$docFilePath) {
@@ -177,7 +177,7 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
-    public function getChangeLogMd()
+    public function getChangeLogMd(): string
     {
         $path = $this->getChangelogPath();
         if (!$path) {
@@ -187,7 +187,7 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
-    public function getReadmeMd()
+    public function getReadmeMd(): string
     {
         $path = $this->getReadmePath();
         if (!$path) {
@@ -202,17 +202,17 @@ class Module extends ModuleInfo
         return 'modulehash.json';
     }
 
-    public function getHashPath()
+    public function getHashPath(): string
     {
         return App::getRoot() . $this->getModulePath() . '/' . $this->getHashFileName();
     }
 
-    public function setRemote($value)
+    public function setRemote(bool $value): void
     {
         $this->isRemote = $value;
     }
 
-    public function isRemote()
+    public function isRemote(): bool
     {
         return $this->isRemote;
     }
@@ -227,7 +227,7 @@ class Module extends ModuleInfo
         return $this->isLoadable;
     }
 
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         if (file_exists($this->getHashPath())) {
             return true;
@@ -235,7 +235,7 @@ class Module extends ModuleInfo
         return false;
     }
 
-    public function isChanged()
+    public function isChanged(): bool
     {
         if ($this->getChancedFiles()) {
             return true;
@@ -244,7 +244,7 @@ class Module extends ModuleInfo
         }
     }
 
-    public function isLoaded()
+    public function isLoaded(): bool
     {
         if ($this->isRemote()) {
             $localModuleLoader = LocalModuleLoader::getModuleLoader();
@@ -394,7 +394,7 @@ class Module extends ModuleInfo
         return $filePaths;
     }
 
-    public function getTemplateFiles($file)
+    public function getTemplateFiles($file): array
     {
         $files = [];
         if (FileInfo::isTemplateFile($file)) {
@@ -423,7 +423,7 @@ class Module extends ModuleInfo
     /**
      * Returns the latest version of this module.
      */
-    public function getNewestVersion()
+    public function getNewestVersion(): Module
     {
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($this->getArchiveName());
@@ -436,7 +436,7 @@ class Module extends ModuleInfo
      *
      * @return array Returns a array of modules.
      */
-    public function getVersions()
+    public function getVersions(): array
     {
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllVersionsByArchiveName($this->getArchiveName());
@@ -449,7 +449,7 @@ class Module extends ModuleInfo
      *
      * @return array Returns a array of local modules.
      */
-    public function getLocalVersions()
+    public function getLocalVersions(): array
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
         $modules = $localModuleLoader->loadAllVersionsByArchiveName($this->getArchiveName());
@@ -457,7 +457,7 @@ class Module extends ModuleInfo
         return $modules;
     }
 
-    public function getUsedBy()
+    public function getUsedBy(): array
     {
         $dependencyManager = new DependencyManager();
         $installedModules = $dependencyManager->getInstalledModules();
@@ -470,7 +470,7 @@ class Module extends ModuleInfo
         return $usedByModules;
     }
 
-    public function getChancedFiles()
+    public function getChancedFiles(): array
     {
         $moduleHasher = new ModuleHasher();
         $changedFiles = $moduleHasher->getModuleChanges($this);
@@ -517,7 +517,7 @@ class Module extends ModuleInfo
         return array_merge($moduleInfoArray, $moduleArray);
     }
 
-    public function getPriceFormated()
+    public function getPriceFormated(): string
     {
         if ($this->getPrice() === 'free') {
             return '<span class="price-free">kostenlos</span>';
