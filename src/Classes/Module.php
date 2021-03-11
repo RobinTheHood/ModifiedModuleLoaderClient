@@ -551,27 +551,6 @@ class Module extends ModuleInfo
         return $changedFiles;
     }
 
-    public function toArray()
-    {
-        $moduleInfoArray = parent::toArray();
-
-        $moduleArray = [
-            'localRootPath' => $this->getLocalRootPath(),
-            'urlRootPath' => $this->getUrlRootPath(),
-            'modulePath' => $this->getModulePath(),
-            'iconPath' => $this->getIconPath(),
-            'imagePaths' => $this->getImagePaths(),
-            'docFilePaths' => $this->getDocFilePaths(),
-            'changelogPath' => $this->getChangelogPath(),
-            'readmePath' => $this->getReadmePath(),
-            'srcFilePaths' => $this->getSrcFilePaths(),
-            'isRemote' => $this->isRemote(),
-            'isLoadable' => $this->isLoadable()
-        ];
-
-        return array_merge($moduleInfoArray, $moduleArray);
-    }
-
     public function getPriceFormated(): string
     {
         if ($this->getPrice() === 'free') {

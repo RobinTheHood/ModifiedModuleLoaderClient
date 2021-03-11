@@ -348,28 +348,4 @@ class ModuleInfo
     {
         $this->tags = $value;
     }
-
-    public function toArray()
-    {
-        return [
-            'name' => $this->name,
-            'archiveName' => $this->archiveName,
-            'sourceDir' => $this->sourceDir,
-            'version' => $this->version,
-            'shortDescription' => $this->shortDescription,
-            'description' => $this->description,
-            'developer' => $this->developer,
-            'developerWebsite' => $this->developerWebsite,
-            'website' => $this->website,
-            'require' => $this->require,
-            'category' => $this->category,
-            'type' => $this->type,
-            'modifiedCompatibility' => $this->modifiedCompatibility,
-            'installation' => $this->installation,
-            'visibility' => $this->visibility,
-            'price' => $this->price,
-            'autoload' => $this->autoload,
-            'tags' => $this->tags
-        ];
-    }
 }
