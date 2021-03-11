@@ -24,16 +24,59 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 
 class Module extends ModuleInfo
 {
+    /**
+     * @var string
+     */
     private $localRootPath;
+
+    /**
+     * @var string
+     */
     private $urlRootPath;
+
+    /**
+     * @var string
+     */
     private $modulePath;
+
+    /**
+     * @var string
+     */
     private $iconPath;
+
+    /**
+     * @var string[]
+     */
     private $imagePaths;
+
+    /**
+     * @var string[]
+     */
     private $docFilePaths;
+
+    /**
+     * @var string
+     */
     private $changelogPath;
+
+    /**
+     * @var string
+     */
     private $readmePath;
+
+    /**
+     * @var string[]
+     */
     private $srcFilePaths;
+
+    /**
+     * @var bool
+     */
     private $isRemote;
+
+    /**
+     * @var bool
+     */
     private $isLoadable;
 
     /**
