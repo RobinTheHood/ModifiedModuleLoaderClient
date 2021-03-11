@@ -129,6 +129,9 @@ class Module extends ModuleInfo
         return $this->imagePaths;
     }
 
+    /**
+     * @param string[] $imagePaths
+     */
     public function setImagePaths(array $imagePaths): void
     {
         $this->imagePaths = $imagePaths;
