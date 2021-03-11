@@ -543,8 +543,10 @@ class Module extends ModuleInfo
     {
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($this->getArchiveName());
-        $module = ModuleFilter::getLatestVersion($modules);
-        return $module;
+        if ($module = ModuleFilter::getLatestVersion($modules)) {
+            return $module;
+        }
+        return $this;
     }
 
     /**
