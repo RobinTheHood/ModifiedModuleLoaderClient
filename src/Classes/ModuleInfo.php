@@ -143,7 +143,7 @@ class ModuleInfo
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
-     * @var string
+     * @var string|float
      */
     protected $price;
 
@@ -313,12 +313,18 @@ class ModuleInfo
         $this->visibility = $value;
     }
 
-    public function getPrice(): string
+    /**
+     * @return string|float
+     */
+    public function getPrice()
     {
         return $this->price;
     }
 
-    public function setPrice(string $value): void
+    /**
+     * @param string|float $value
+     */
+    public function setPrice($value): void
     {
         $this->price = $value;
     }
