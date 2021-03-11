@@ -249,7 +249,7 @@ class DependencyManager
         return $requireModulesTree;
     }
 
-    public function loadModuleByArchiveName($archiveName, $versionConstraint)
+    public function loadModuleByArchiveName(string $archiveName, $versionConstraint): ?Module
     {
         $localModuleLoader = new LocalModuleLoader();
         $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);

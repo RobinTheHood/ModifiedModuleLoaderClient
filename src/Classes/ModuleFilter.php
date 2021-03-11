@@ -189,7 +189,10 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function getLatestVersion($modules)
+    /**
+     * @param Module[] $modules
+     */
+    public static function getLatestVersion(array $modules): ?Module
     {
         $selectedModule = null;
         foreach ($modules as $module) {
