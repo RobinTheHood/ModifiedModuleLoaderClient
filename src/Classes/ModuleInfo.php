@@ -170,9 +170,19 @@ class ModuleInfo
         return $this->name;
     }
 
+    public function setName(string $value): void
+    {
+        $this->name = $value;
+    }
+
     public function getArchiveName(): string
     {
         return $this->archiveName;
+    }
+
+    public function setArchiveName(string $value): void
+    {
+        $this->archiveName = $value;
     }
 
     public function getSourceDir(): string
@@ -180,9 +190,19 @@ class ModuleInfo
         return $this->sourceDir;
     }
 
+    public function setSourceDir(string $value): void
+    {
+        $this->sourceDir = $value;
+    }
+
     public function getVersion(): string
     {
         return $this->version;
+    }
+
+    public function setVersion(string $value): void
+    {
+        $this->version = $value;
     }
 
     public function getShortDescription(): string
@@ -190,9 +210,19 @@ class ModuleInfo
         return $this->shortDescription;
     }
 
+    public function setShortDescription(string $value): void
+    {
+        $this->shortDescription = $value;
+    }
+
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    public function setDescription(string $value): void
+    {
+        $this->description = $value;
     }
 
     public function getDeveloper(): string
@@ -200,9 +230,19 @@ class ModuleInfo
         return $this->developer;
     }
 
+    public function setDeveloper(string $value): void
+    {
+        $this->developer = $value;
+    }
+
     public function getDeveloperWebsite(): string
     {
         return $this->developerWebsite;
+    }
+
+    public function setDeveloperWebsite(string $value): void
+    {
+        $this->developerWebsite = $value;
     }
 
     public function getWebsite(): string
@@ -210,9 +250,19 @@ class ModuleInfo
         return $this->website;
     }
 
-    public function getRequire()
+    public function setWebsite(string $value): void
+    {
+        $this->website = $value;
+    }
+
+    public function getRequire(): array
     {
         return $this->require;
+    }
+
+    public function setRequire(array $value): void
+    {
+        $this->require = $value;
     }
 
     public function getCategory(): string
@@ -220,19 +270,39 @@ class ModuleInfo
         return $this->category;
     }
 
+    public function setCategory(string $value): void
+    {
+        $this->category = $value;
+    }
+
     public function getType(): string
     {
         return $this->type;
     }
 
-    public function getModifiedCompatibility()
+    public function setType(string $value): void
+    {
+        $this->type = $value;
+    }
+
+    public function getModifiedCompatibility(): array
     {
         return $this->modifiedCompatibility;
     }
 
-    public function getInstallation()
+    public function setModifiedCompatibility(array $value): void
+    {
+        $this->modifiedCompatibility = $value;
+    }
+
+    public function getInstallation(): string
     {
         return $this->installation;
+    }
+
+    public function setInstallation(string $value): void
+    {
+        $this->installation = $value;
     }
 
     public function getVisibility()
@@ -240,14 +310,29 @@ class ModuleInfo
         return $this->visibility;
     }
 
-    public function getPrice()
+    public function setVisibility(string $value): void
+    {
+        $this->visibility = $value;
+    }
+
+    public function getPrice(): string
     {
         return $this->price;
     }
 
-    public function getAutoload()
+    public function setPrice(string $value): void
+    {
+        $this->price = $value;
+    }
+
+    public function getAutoload(): array
     {
         return $this->autoload;
+    }
+
+    public function setAutoload(array $value): void
+    {
+        $this->autoload = $value;
     }
 
     public function getTags(): string
@@ -255,45 +340,50 @@ class ModuleInfo
         return $this->tags;
     }
 
-    public function loadFromJson($path)
+    public function setTags(string $value): void
     {
-        if (!file_exists($path)) {
-            return false;
-        }
-
-        $json = file_get_contents($path);
-        $array = json_decode($json, true);
-
-        if (!$array) {
-            return false;
-        }
-
-        return ModuleInfo::loadFromArray($array);
+        $this->tags = $value;
     }
 
-    public function loadFromArray(array $array)
-    {
-        $this->name = ArrayHelper::getIfSet($array, 'name');
-        $this->archiveName = ArrayHelper::getIfSet($array, 'archiveName');
-        $this->sourceDir = ArrayHelper::getIfSet($array, 'sourceDir', 'src');
-        $this->version = ArrayHelper::getIfSet($array, 'version');
-        $this->shortDescription = ArrayHelper::getIfSet($array, 'shortDescription');
-        $this->description = ArrayHelper::getIfSet($array, 'description');
-        $this->developer = ArrayHelper::getIfSet($array, 'developer');
-        $this->developerWebsite = ArrayHelper::getIfSet($array, 'developerWebsite');
-        $this->website = ArrayHelper::getIfSet($array, 'website');
-        $this->require = ArrayHelper::getIfSet($array, 'require', []);
-        $this->category = ArrayHelper::getIfSet($array, 'category');
-        $this->type = ArrayHelper::getIfSet($array, 'type');
-        $this->modifiedCompatibility = ArrayHelper::getIfSet($array, 'modifiedCompatibility', []);
-        $this->installation = ArrayHelper::getIfSet($array, 'installation');
-        $this->visibility = ArrayHelper::getIfSet($array, 'visibility');
-        $this->price = ArrayHelper::getIfSet($array, 'price');
-        $this->autoload = ArrayHelper::getIfSet($array, 'autoload');
-        $this->tags = ArrayHelper::getIfSet($array, 'tags');
+    // public function loadFromJson($path)
+    // {
+    //     if (!file_exists($path)) {
+    //         return false;
+    //     }
 
-        return true;
-    }
+    //     $json = file_get_contents($path);
+    //     $array = json_decode($json, true);
+
+    //     if (!$array) {
+    //         return false;
+    //     }
+
+    //     return ModuleInfo::loadFromArray($array);
+    // }
+
+    // public function loadFromArray(array $array)
+    // {
+    //     $this->name = ArrayHelper::getIfSet($array, 'name');
+    //     $this->archiveName = ArrayHelper::getIfSet($array, 'archiveName');
+    //     $this->sourceDir = ArrayHelper::getIfSet($array, 'sourceDir', 'src');
+    //     $this->version = ArrayHelper::getIfSet($array, 'version');
+    //     $this->shortDescription = ArrayHelper::getIfSet($array, 'shortDescription');
+    //     $this->description = ArrayHelper::getIfSet($array, 'description');
+    //     $this->developer = ArrayHelper::getIfSet($array, 'developer');
+    //     $this->developerWebsite = ArrayHelper::getIfSet($array, 'developerWebsite');
+    //     $this->website = ArrayHelper::getIfSet($array, 'website');
+    //     $this->require = ArrayHelper::getIfSet($array, 'require', []);
+    //     $this->category = ArrayHelper::getIfSet($array, 'category');
+    //     $this->type = ArrayHelper::getIfSet($array, 'type');
+    //     $this->modifiedCompatibility = ArrayHelper::getIfSet($array, 'modifiedCompatibility', []);
+    //     $this->installation = ArrayHelper::getIfSet($array, 'installation');
+    //     $this->visibility = ArrayHelper::getIfSet($array, 'visibility');
+    //     $this->price = ArrayHelper::getIfSet($array, 'price');
+    //     $this->autoload = ArrayHelper::getIfSet($array, 'autoload');
+    //     $this->tags = ArrayHelper::getIfSet($array, 'tags');
+
+    //     return true;
+    // }
 
     public function toArray()
     {
