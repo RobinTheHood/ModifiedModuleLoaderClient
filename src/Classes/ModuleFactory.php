@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -48,7 +50,8 @@ class ModuleFactory
         $array['changelogPath'] = self::createChangelogPath($modulePath, $path);
         $array['readmePath'] = self::createReadmePath($modulePath, $path);
         $array['srcFilePaths'] = self::createSrcFilePaths($absSrcRootPath);
-
+        $array['isRemote'] = false;
+        
         $module = self::createFromArray($array);
 
         return $module;
@@ -64,7 +67,7 @@ class ModuleFactory
         $module->setName($array['name'] ?? '');
         $module->setArchiveName($array['archiveName'] ?? '');
         $module->setSourceDir($array['sourceDir'] ?? 'new_files');
-        $module->setVersion($array['version'] ?? '');
+        $module->setVersion($array['version'] ?? 'auto');
         $module->setShortDescription($array['shortDescription'] ?? '');
         $module->setDescription($array['description'] ?? '');
         $module->setDeveloper($array['developer'] ?? '');
@@ -91,7 +94,7 @@ class ModuleFactory
         $module->setReadmePath($array['readmePath'] ?? '');
         $module->setSrcFilePaths($array['srcFilePaths'] ?? []);
         $module->setRemote($array['isRemote'] ?? false);
-        $module->setLoadable($array['isLoadable'] ?? '');
+        $module->setLoadable($array['isLoadable'] ?? false);
 
         return $module;
     }
