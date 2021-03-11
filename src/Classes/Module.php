@@ -53,7 +53,11 @@ class Module extends ModuleInfo
         $this->localRootPath = $value;
     }
 
-    // ...shop.de
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * ...shop.de
+     */
     public function getUrlRootPath(): string
     {
         return $this->urlRootPath;
@@ -227,7 +231,7 @@ class Module extends ModuleInfo
     {
         $this->isLoadable = $value;
     }
-    
+
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
@@ -241,13 +245,21 @@ class Module extends ModuleInfo
         }
     }
 
-    // /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
+     */
     public function getSrcRootPath(): string
     {
         return $this->getModulePath() . '/' . $this->getSourceDir();
     }
 
-    // ...shop.de/Modules/{VENDOR-NAME}/{MODULE-NAME}/icon.xxx
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * ...shop.de/Modules/{VENDOR-NAME}/{MODULE-NAME}/icon.xxx
+     */
     public function getIconUri(): string
     {
         return $this->getUrlRootPath() . $this->getIconPath();
