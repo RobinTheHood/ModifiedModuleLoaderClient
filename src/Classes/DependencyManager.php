@@ -267,7 +267,7 @@ class DependencyManager
             return $remoteModule;
         }
 
-        if (!$localModule && !$remoteModule) {
+        if (!$localModule || !$remoteModule) {
             return null;
         }
 
