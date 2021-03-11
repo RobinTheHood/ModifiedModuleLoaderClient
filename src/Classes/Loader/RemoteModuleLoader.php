@@ -13,6 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\Exceptions\UrlNotExistsApiException;
@@ -112,9 +113,16 @@ class RemoteModuleLoader
 
         $modules = [];
         foreach ($result['content'] as $moduleArray) {
-            $module = new Module();
-            $module->loadFromArray($moduleArray);
-            $modules[] = $module;
+            // $module = new Module();
+            // $module->loadFromArray($moduleArray);
+            // $modules[] = $module;
+
+            try {
+                $module = ModuleFactory::createFromArray($moduleArray);
+                $modules[] = $module;
+            } catch (\RuntimeException $e) {
+                // do nothing
+            }
         }
 
         return $modules;

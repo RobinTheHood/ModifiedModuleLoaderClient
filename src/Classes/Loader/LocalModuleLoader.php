@@ -13,6 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 
@@ -55,9 +56,16 @@ class LocalModuleLoader
 
         $modules = [];
         foreach ($moduleDirs as $moduleDir) {
-            $module = new Module();
-            if ($module->load($moduleDir)) {
+            // $module = new Module();
+            // if ($module->load($moduleDir)) {
+            //     $modules[] = $module;
+            // }
+
+            try {
+                $module = ModuleFactory::createFromPath($moduleDir);
                 $modules[] = $module;
+            } catch (\RuntimeException $e) {
+                // do nothing
             }
         }
 
