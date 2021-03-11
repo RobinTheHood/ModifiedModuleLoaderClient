@@ -14,7 +14,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleFiler;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
