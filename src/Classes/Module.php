@@ -19,7 +19,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 
 class Module extends ModuleInfo
@@ -478,7 +477,7 @@ class Module extends ModuleInfo
     {
         $modules = $this->getLocalVersions();
         $modules = ModuleFilter::filterInstalled($modules);
-        return ArrayHelper::getIfSet($modules, 0, null);
+        return $modules[0] ?? null;
     }
 
     /**
