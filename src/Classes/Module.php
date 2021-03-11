@@ -297,10 +297,10 @@ class Module extends ModuleInfo
         return FileHelper::readMarkdown($path);
     }
 
-    public function getHashFileName()
-    {
-        return 'modulehash.json';
-    }
+    // public function getHashFileName()
+    // {
+    //     return 'modulehash.json';
+    // }
 
     /**
      * Liefert den absoluten Pfad zur modulehash.json
@@ -310,7 +310,7 @@ class Module extends ModuleInfo
      */
     public function getHashPath(): string
     {
-        return App::getRoot() . $this->getModulePath() . '/' . $this->getHashFileName();
+        return App::getRoot() . $this->getModulePath() . '/modulehash.json';
     }
 
     public function setRemote(bool $value): void
