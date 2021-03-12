@@ -23,57 +23,57 @@ class App
     protected static $archivesDir = 'Archives';
     protected static $configDir = 'config';
 
-    public static function setModulesDir($modulesDir)
+    public static function setModulesDir(string $modulesDir): void
     {
         self::$modulesDir = $modulesDir;
     }
 
-    public static function setArchivesDir($archivesDir)
+    public static function setArchivesDir(string $archivesDir): void
     {
         self::$archivesDir = $archivesDir;
     }
 
-    public static function getRoot()
+    public static function getRoot(): string
     {
         return realPath(__DIR__ . '/../../');
     }
 
-    public static function getShopRoot()
+    public static function getShopRoot(): string
     {
         return realPath(__DIR__ . '/../../../');
     }
 
-    public static function getSrcRoot()
+    public static function getSrcRoot(): string
     {
         return self::getRoot() . '/src';
     }
 
-    public static function getTemplatesRoot()
+    public static function getTemplatesRoot(): string
     {
         return self::getRoot() . '/src/Templates';
     }
 
-    public static function getConfigRoot()
+    public static function getConfigRoot(): string
     {
         return self::getRoot() . '/' . self::$configDir;
     }
 
-    public static function getArchivesRoot()
+    public static function getArchivesRoot(): string
     {
         return self::getRoot() . '/' . self::$archivesDir;
     }
 
-    public static function getModulesRoot()
+    public static function getModulesRoot(): string
     {
         return self::getRoot() . '/' . self::getModulesDirName();
     }
 
-    public static function getModulesDirName()
+    public static function getModulesDirName(): string
     {
         return self::$modulesDir;
     }
 
-    public static function start()
+    public static function start(): void
     {
         $serverRequest = self::getServerRequest();
 

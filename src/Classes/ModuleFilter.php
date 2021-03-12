@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -11,13 +13,18 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 
 class ModuleFilter
 {
-    public static function filterLoaded($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterLoaded(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -28,7 +35,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function filterInstalled($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterInstalled(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -39,6 +50,10 @@ class ModuleFilter
         return $filteredModules;
     }
 
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
     public static function filterUpdatable(array $modules): array
     {
         $filteredModules = [];
@@ -50,6 +65,10 @@ class ModuleFilter
         return $filteredModules;
     }
 
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
     public static function filterRepairable(array $modules): array
     {
         $filteredModules = [];
@@ -61,7 +80,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function filterNotLoaded($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterNotLoaded(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -72,7 +95,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function filterValid($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterValid(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -83,7 +110,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function filterNewestVersion($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterNewestVersion(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -108,7 +139,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function filterNewestOrInstalledVersion($modules)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterNewestOrInstalledVersion($modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -142,7 +177,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function filterByArchiveName($modules, $archiveName)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterByArchiveName(array $modules, string $archiveName): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -153,7 +192,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function filterByVersion($modules, $version)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterByVersion(array $modules, string $version): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {

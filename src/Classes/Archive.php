@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -24,7 +26,7 @@ class Archive
     private $archiveName;
     private $version;
 
-    public function __construct($archiveName, $version)
+    public function __construct(string $archiveName, string $version)
     {
         $this->localRootPath = App::getArchivesRoot();
         $this->urlRootPath = ServerHelper::getUri() . '/Archives';
@@ -32,54 +34,54 @@ class Archive
         $this->version = $version;
     }
 
-    public function getLocalRootPath()
+    public function getLocalRootPath(): string
     {
         return $this->localRootPath;
     }
 
-    public function getUrlRootPath()
+    public function getUrlRootPath(): string
     {
         return $this->urlRootPath;
     }
 
-    public function getArchiveName()
+    public function getArchiveName(): string
     {
         return $this->archiveName;
     }
 
-    public function getVersion()
+    public function getVersion(): string
     {
         return $this->version;
     }
 
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->getUrlRootPath() . '/' . $this->getFileArchvieName();
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->getLocalRootPath() . '/' . $this->getFileArchvieName();
     }
 
-    public function getFileArchvieName()
+    public function getFileArchvieName(): string
     {
         return str_replace('/', '_', $this->getArchiveName()) . '_' . $this->getVersion() . '.tar';
     }
 
-    public function getModulePath()
+    public function getModulePath(): string
     {
         return App::getModulesRoot() . '/' . $this->getArchiveName() . '/' . $this->getVersion();
     }
 
-    public function getVendorName()
+    public function getVendorName(): string
     {
         $parts = explode('/', $this->getArchiveName());
         $vendorName = $parts[0];
         return $vendorName;
     }
 
-    public function tarArchive()
+    public function tarArchive(): bool
     {
         $localModuleLoader = new LocalModuleLoader();
         $module = $localModuleLoader->loadByArchiveNameAndVersion($this->getArchiveName(), $this->getVersion());
@@ -112,7 +114,7 @@ class Archive
         return true;
     }
 
-    public function untarArchive($external = false)
+    public function untarArchive(bool $external = false): bool
     {
         @mkdir(App::getModulesRoot());
 
@@ -135,7 +137,7 @@ class Archive
         return true;
     }
 
-    public static function pullArchive($path, $archiveName, $version)
+    public static function pullArchive(string $path, string $archiveName, string $version): Archive
     {
         $archive = new Archive($archiveName, $version);
 

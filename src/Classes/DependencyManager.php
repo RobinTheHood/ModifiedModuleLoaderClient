@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -11,6 +13,7 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
@@ -38,6 +41,8 @@ class DependencyManager
      * abhängt. Zur Info. Es kann ganz viele Versions-Komkombintionen geben, von
      * denen ein Modul habhängig ist. Die Methode liefert nur eine Möglichkeit an
      * kombinationen.
+     *
+     * @return Module[]
      */
     public function getAllModules($module): array
     {
@@ -71,8 +76,10 @@ class DependencyManager
     /**
      * Test ob das Modul in $module installiert werden kann, ob das Modul $module
      * selbst oder eine Abhängigkeit in $modules im Status 'changed' ist.
+     *
+     * @param Module[] $modules
      */
-    private function canBeInstalledTestChanged(Module $module, $modules): void
+    private function canBeInstalledTestChanged(Module $module, array $modules): void
     {
         $module = $module->getInstalledVersion();
         if ($module && $module->isInstalled() && $module->isChanged()) {
@@ -106,6 +113,8 @@ class DependencyManager
      *
      * Überprüft ob das Module in $module installiert werden kann, oder ob es ein Modul
      * in $selectedModules gibt, dass von dem Modul in $module in einer anderen Version abhängig ist.
+     *
+     * @param Module[] $selectedModules
      */
     public function canBeInstalledTestSelected(Module $module, array $selectedModules): void
     {
@@ -127,6 +136,8 @@ class DependencyManager
      * Diese Methode überprüft, ob das Module in $module unter einigen Voraussetzungen
      * installiert werden kann. Es wird verglichen, ob die Module/Versionen in $selectedModules
      * ausreichen, um die Abhängigkeiten zu erfüllen, die $module benötigt.
+     *
+     * @param Module[] $selectedModules
      */
     public function canBeInstalledTestRequiers(Module $module, array $selectedModules): void
     {
@@ -156,6 +167,8 @@ class DependencyManager
     /**
      * Liefert eine Liste mit allen Modulen aus $selectedModules, die das Modul
      * $module verwenden.
+     *
+     * @param Module[] $selectedModules
     */
     public function getUsedByEntrys(Module $module, array $selectedModules): array
     {
@@ -204,19 +217,22 @@ class DependencyManager
         return array_values($uniqueModules);
     }
 
-    public function buildTreeByArchiveName($archiveName, $version)
+    public function buildTreeByArchiveName(string $archiveName, string $version)
     {
         $module = $this->loadModuleByArchiveName($archiveName, $version);
+        if (!$module) {
+            return [];
+        }
         return $this->buildTreeByModule($module);
     }
 
-    public function buildTreeByModule($module)
+    public function buildTreeByModule(Module $module)
     {
         $requireModulesTree = $this->buildTreeByModuleRecursive($module);
         return $requireModulesTree;
     }
 
-    public function buildTreeByModuleRecursive($module, $depth = 0)
+    public function buildTreeByModuleRecursive(Module $module, int $depth = 0)
     {
         if ($depth >= 5) {
             return false;

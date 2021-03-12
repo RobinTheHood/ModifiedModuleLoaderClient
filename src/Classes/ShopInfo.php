@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -17,7 +19,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 class ShopInfo
 {
 
-    public static function getAdminPath()
+    public static function getAdminPath(): string
     {
         return App::getShopRoot() . '/' . self::getAdminDir();
     }

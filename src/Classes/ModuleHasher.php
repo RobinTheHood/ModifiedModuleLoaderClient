@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -11,24 +13,25 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\Hasher;
 
 class ModuleHasher extends Hasher
 {
-    public function hashModule($module)
+    public function hashModule(Module $module): void
     {
         $hashFilePath = $module->getHashPath();
         $hashes = $this->createModuleHashes($module);
         $this->createHashFile($hashFilePath, $hashes);
     }
 
-    public function unhashModule($module)
+    public function unhashModule(Module $module): void
     {
         $hashFilePath = $module->getHashPath();
         $this->deleteHashFile($hashFilePath);
     }
 
-    public function createModuleHashes($module, $moduleDir = false)
+    public function createModuleHashes(Module $module, bool $moduleDir = false): array
     {
         $files = $module->getSrcFilePaths();
 
@@ -48,7 +51,7 @@ class ModuleHasher extends Hasher
         return $hashes;
     }
 
-    public function mapHashesShopToMmlc($hashes)
+    public function mapHashesShopToMmlc(array $hashes): array
     {
         $mappedHashes = [];
         foreach ($hashes as $file => $hash) {
@@ -58,14 +61,14 @@ class ModuleHasher extends Hasher
         return $mappedHashes;
     }
 
-    public function loadeModuleHashes($module)
+    public function loadeModuleHashes(Module $module): array
     {
         $hashFilePath = $module->getHashPath();
         $hashes = $this->loadHashes($hashFilePath);
         return $hashes;
     }
 
-    public function getModuleChanges($module)
+    public function getModuleChanges(Module $module)
     {
         $hashesLoaded = $this->loadeModuleHashes($module);
         $hashesCreatedA = $this->createModuleHashes($module);
@@ -74,7 +77,7 @@ class ModuleHasher extends Hasher
         return $this->getChanges($hashesLoaded, $hashesCreatedA, $hashesCreatedB);
     }
 
-    public static function getFileChanges($module, $path, $mode = 'changed')
+    public static function getFileChanges(Module $module, string $path, string $mode = 'changed')
     {
         if ($mode != 'changed') {
             return '';

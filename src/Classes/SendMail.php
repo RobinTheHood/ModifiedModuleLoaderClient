@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -18,7 +20,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class SendMail
 {
-    public static function sendIssue()
+    public static function sendIssue(): void
     {
         $fromEmail = ArrayHelper::getIfSet($_POST, 'email', '');
         $from = ArrayHelper::getIfSet($_POST, 'name', '');

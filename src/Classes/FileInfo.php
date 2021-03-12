@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -13,12 +15,11 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class FileInfo
 {
-    public static function isTemplateFile($path)
+    public static function isTemplateFile(string $path): bool
     {
         if (strpos($path, '/templates/') === 0) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -13,7 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class AccessFileCreator
 {
-    public function renewAccessFiles()
+    public function renewAccessFiles(): void
     {
         $this->checkAndCreateAccess(App::getConfigRoot(), []);
         $this->checkAndCreateAccess(App::getArchivesRoot(), []);
@@ -23,7 +25,10 @@ class AccessFileCreator
         $this->checkAndCreateAccess(App::getShopRoot() . '/vendor-no-composer', ['png', 'jpg', 'gif']);
     }
 
-    public function checkAndCreateAccess($path, $fileSuffixes)
+    /**
+     * @param array<string> $fileSuffixes
+     */
+    private function checkAndCreateAccess(string $path, array $fileSuffixes): void
     {
         if (!file_exists($path)) {
             return;
@@ -40,7 +45,10 @@ class AccessFileCreator
         $this->createAccess($path . '/.htaccess', $fileSuffixes);
     }
 
-    public function createAccess($path, $fileSuffixes)
+    /**
+     * @param array<string> $fileSuffixes
+     */
+    private function createAccess(string $path, array $fileSuffixes): void
     {
         $suffixes = '';
         $count = 1;
