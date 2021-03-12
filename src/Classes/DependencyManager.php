@@ -15,7 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
@@ -210,15 +210,6 @@ class DependencyManager
         return array_values($uniqueModules);
     }
 
-    public function buildTreeByArchiveName(string $archiveName, string $version)
-    {
-        $module = $this->loadModuleByArchiveName($archiveName, $version);
-        if (!$module) {
-            return [];
-        }
-        return $this->buildTreeByModule($module);
-    }
-
     public function buildTreeByModule(Module $module)
     {
         $requireModulesTree = $this->buildTreeByModuleRecursive($module);
@@ -235,53 +226,26 @@ class DependencyManager
 
         $requireModulesTree = [];
         foreach ($require as $archiveName => $versionConstraint) {
-            // $version = str_replace('^', '', $version);
-            // $requireModule = $this->loadModuleByArchiveName($archiveName, $version);
-            $requireModule = $this->loadModuleByArchiveName($archiveName, $versionConstraint);
+            $moduleLoader = ModuleLoader::getModuleLoader();
+            $requireModule = $moduleLoader->loadLatestByArchiveNameAndConstraint($archiveName, $versionConstraint);
+
+            if (!$requireModule) {
+                continue;
+            }
 
             $entry = [];
-            if ($requireModule) {
-                $entry['module'] = $requireModule;
-                $entry['requestedVersion'] = $versionConstraint;
-                $entry['selectedVersion'] = $requireModule->getVersion();
-                $entry['require'] = [];
-                $requireModules = $this->buildTreeByModuleRecursive($requireModule, ++$depth);
+            $entry['module'] = $requireModule;
+            $entry['requestedVersion'] = $versionConstraint;
+            $entry['selectedVersion'] = $requireModule->getVersion();
+            $entry['require'] = [];
+            $requireModules = $this->buildTreeByModuleRecursive($requireModule, ++$depth);
 
-                if ($requireModules) {
-                    $entry['require'] = $requireModules;
-                }
-
-                $requireModulesTree[] = $entry;
+            if ($requireModules) {
+                $entry['require'] = $requireModules;
             }
+
+            $requireModulesTree[] = $entry;
         }
         return $requireModulesTree;
-    }
-
-    public function loadModuleByArchiveName(string $archiveName, $versionConstraint): ?Module
-    {
-        $localModuleLoader = new LocalModuleLoader();
-        $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
-        $localModule = ModuleFilter::getLatestVersion($localModules);
-
-        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-        $remoteModule = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
-
-        if ($localModule && !$remoteModule) {
-            return $localModule;
-        }
-
-        if (!$localModule && $remoteModule) {
-            return $remoteModule;
-        }
-
-        if (!$localModule || !$remoteModule) {
-            return null;
-        }
-
-        if ($this->comparator->greaterThanOrEqualTo($localModule->getVersion(), $remoteModule->getVersion())) {
-            return $localModule;
-        } else {
-            return $remoteModule;
-        }
     }
 }
