@@ -94,7 +94,7 @@ class DependencyManager
      * bereits installites Modul gibt, das von dem Modul in $module in einer anderern Version
      * abhängig ist.
      */
-    public function canBeInstalledTestInstalled(Module $module): void
+    private function canBeInstalledTestInstalled(Module $module): void
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
         $installedModules = $localModuleLoader->loadAllInstalledVersions();
@@ -109,7 +109,7 @@ class DependencyManager
      *
      * @param Module[] $selectedModules
      */
-    public function canBeInstalledTestSelected(Module $module, array $selectedModules): void
+    private function canBeInstalledTestSelected(Module $module, array $selectedModules): void
     {
         $usedByEntrys = $this->getUsedByEntrys($module, $selectedModules);
         foreach ($usedByEntrys as $usedByEntry) {
@@ -132,7 +132,7 @@ class DependencyManager
      *
      * @param Module[] $selectedModules
      */
-    public function canBeInstalledTestRequiers(Module $module, array $selectedModules): void
+    private function canBeInstalledTestRequiers(Module $module, array $selectedModules): void
     {
         foreach ($module->getRequire() as $archiveName => $version) {
             $moduleFound = false;
@@ -179,7 +179,7 @@ class DependencyManager
         return $usedByEntrys;
     }
 
-    public function flattenTree($moduleTree, &$modules = null)
+    private function flattenTree($moduleTree, &$modules = null)
     {
         if (!$moduleTree) {
             return;
@@ -195,7 +195,7 @@ class DependencyManager
         }
     }
 
-    public function getUniqueRequireModules($requireModules)
+    private function getUniqueRequireModules($requireModules)
     {
         $uniqueModules = [];
         foreach ($requireModules as $requireModule) {
@@ -210,13 +210,13 @@ class DependencyManager
         return array_values($uniqueModules);
     }
 
-    public function buildTreeByModule(Module $module)
+    private function buildTreeByModule(Module $module)
     {
         $requireModulesTree = $this->buildTreeByModuleRecursive($module);
         return $requireModulesTree;
     }
 
-    public function buildTreeByModuleRecursive(Module $module, int $depth = 0)
+    private function buildTreeByModuleRecursive(Module $module, int $depth = 0)
     {
         if ($depth >= 5) {
             return false;
