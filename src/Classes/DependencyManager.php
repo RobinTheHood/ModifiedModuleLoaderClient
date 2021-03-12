@@ -28,13 +28,13 @@ class DependencyManager
         $this->comparator = new Comparator(new Parser());
     }
 
-    public function getInstalledModules()
-    {
-        $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $modules = $localModuleLoader->loadAllVersions();
-        $installedModules = ModuleFilter::filterInstalled($modules);
-        return $installedModules;
-    }
+    // public function getInstalledModules()
+    // {
+    //     $localModuleLoader = LocalModuleLoader::getModuleLoader();
+    //     $modules = $localModuleLoader->loadAllVersions();
+    //     $installedModules = ModuleFilter::filterInstalled($modules);
+    //     return $installedModules;
+    // }
 
     /**
      * Liefert eine Mögichkeit von Modulen/Versionen von denen das Modul $module
@@ -104,7 +104,8 @@ class DependencyManager
      */
     public function canBeInstalledTestInstalled(Module $module): void
     {
-        $installedModules = $this->getInstalledModules();
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $installedModules = $localModuleLoader->loadAllInstalledVersions();
         $this->canBeInstalledTestSelected($module, $installedModules);
     }
 

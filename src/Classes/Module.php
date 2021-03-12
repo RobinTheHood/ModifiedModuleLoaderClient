@@ -529,8 +529,10 @@ class Module extends ModuleInfo
      */
     public function getUsedBy(): array
     {
+        $localModuleLoader = LocalModuleLoader::getModuleLoader();
+        $installedModules = $localModuleLoader->loadAllInstalledVersions();
+
         $dependencyManager = new DependencyManager();
-        $installedModules = $dependencyManager->getInstalledModules();
         $usedByEntrys = $dependencyManager->getUsedByEntrys($this, $installedModules);
 
         $usedByModules = [];

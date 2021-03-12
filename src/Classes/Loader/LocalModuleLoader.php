@@ -109,6 +109,18 @@ class LocalModuleLoader
         return $module;
     }
 
+    /**
+     * Loads all installed module versions.
+     *
+     * @return Module[] Returns a array of installed module versions.
+     */
+    public function loadAllInstalledVersions(): array
+    {
+        $modules = $this->loadAllVersions();
+        $installedModules = ModuleFilter::filterInstalled($modules);
+        return $installedModules;
+    }
+
     public function getVendorDirs()
     {
         return FileHelper::scanDir(App::getModulesRoot(), FileHelper::DIRS_ONLY);
