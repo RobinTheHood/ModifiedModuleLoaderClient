@@ -56,11 +56,6 @@ class LocalModuleLoader
 
         $modules = [];
         foreach ($moduleDirs as $moduleDir) {
-            // $module = new Module();
-            // if ($module->load($moduleDir)) {
-            //     $modules[] = $module;
-            // }
-
             try {
                 $module = ModuleFactory::createFromPath($moduleDir);
                 $modules[] = $module;
