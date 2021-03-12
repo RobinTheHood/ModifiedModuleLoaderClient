@@ -15,9 +15,9 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class Category
 {
-    const DEFAULT_CATEGORY = 'nocategory';
+    private const DEFAULT_CATEGORY = 'nocategory';
 
-    const CATEGORIES = [
+    private const CATEGORIES = [
         'import/export' => 'Import/Export',
         'language' => 'Sprachpaket',
         'persistance' => 'Datenbank Module',
