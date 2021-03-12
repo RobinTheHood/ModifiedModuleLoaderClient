@@ -207,20 +207,11 @@ class ModuleFilter
         return $filteredModules;
     }
 
-    public static function getByArchiveNameAndVersion($modules, $archiveName, $version)
-    {
-        foreach ($modules as $module) {
-            if ($module->getArchiveName() != $archiveName) {
-                continue;
-            }
-
-            if ($module->getVersion() == $version) {
-                return $module;
-            }
-        }
-    }
-
-    public static function filterByVersionConstrain($modules, $constrain)
+    /**
+     * @param Module[] $modules
+     * @return Module[]
+     */
+    public static function filterByVersionConstrain(array $modules, string $constrain): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -245,5 +236,23 @@ class ModuleFilter
             }
         }
         return $selectedModule;
+    }
+
+        /**
+     * @param Module[] $modules
+     * @return Module|null
+     */
+    public static function getByArchiveNameAndVersion(array $modules, string $archiveName, string $version): ?Module
+    {
+        foreach ($modules as $module) {
+            if ($module->getArchiveName() != $archiveName) {
+                continue;
+            }
+
+            if ($module->getVersion() == $version) {
+                return $module;
+            }
+        }
+        return null;
     }
 }
