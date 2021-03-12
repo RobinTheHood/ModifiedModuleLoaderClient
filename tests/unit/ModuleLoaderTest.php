@@ -25,10 +25,10 @@ class ModuleLoaderTest extends TestCase
 
     public function testCanLoadAllVersionsByContraintWithLocalAuto()
     {
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '1.0.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '1.0.0');
         $this->assertEquals(0, count($modules));
 
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '^99.0.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^99.0.0');
 
         if (count($modules) != 1 || $modules[0]->getVersion() != 'auto') {
             return;
@@ -36,13 +36,13 @@ class ModuleLoaderTest extends TestCase
 
         $this->assertEquals(1, count($modules)); // Lokale Version mit 'auto';
 
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '^0.2.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^0.2.0');
         $this->assertEquals('auto', $modules[0]->getVersion());  // Lokale Version mit 'auto';
         $this->assertEquals('0.2.0', $modules[1]->getVersion());
         $this->assertEquals('0.3.0', $modules[2]->getVersion());
         $this->assertEquals('0.4.0', $modules[3]->getVersion());
 
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '^0.0.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^0.0.0');
         $this->assertEquals('auto', $modules[0]->getVersion());  // Lokale Version mit 'auto';
         $this->assertEquals('0.0.1', $modules[1]->getVersion());
         $this->assertEquals('0.1.0', $modules[2]->getVersion());
@@ -50,10 +50,10 @@ class ModuleLoaderTest extends TestCase
 
     public function testCanLoadAllVersionsByContraint()
     {
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '1.0.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '1.0.0');
         $this->assertEquals(0, count($modules));
 
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '^99.0.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^99.0.0');
 
         if (count($modules) == 1) {
             return;
@@ -61,12 +61,12 @@ class ModuleLoaderTest extends TestCase
 
         $this->assertEquals(0, count($modules)); // Lokale Version mit 'auto';
 
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '^0.2.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^0.2.0');
         $this->assertEquals('0.2.0', $modules[0]->getVersion());
         $this->assertEquals('0.3.0', $modules[1]->getVersion());
         $this->assertEquals('0.4.0', $modules[2]->getVersion());
 
-        $modules = $this->loader->loadByArchiveNameAndVersionContraint('robinthehood/modified-std-module', '^0.0.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^0.0.0');
         $this->assertEquals('0.0.1', $modules[0]->getVersion());
         $this->assertEquals('0.1.0', $modules[1]->getVersion());
     }
