@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -42,10 +44,14 @@ class ModuleInstaller
             return false;
         }
 
-        $archive = Archive::pullArchive($archiveUrl, $module->getArchiveName(), $module->getVersion());
-        $archive->untarArchive();
-
-        return true;
+        try {
+            $archive = Archive::pullArchive($archiveUrl, $module->getArchiveName(), $module->getVersion());
+            $archive->untarArchive();
+            return true;
+        } catch (\RuntimeException $e) {
+            //Can not pull Archive
+            return false;
+        }
     }
 
     public function delete(Module $module)

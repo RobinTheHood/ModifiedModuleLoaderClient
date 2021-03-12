@@ -147,7 +147,7 @@ class Archive
         // TODO - check if $tarBall is a tarball or a error response form request
         
         if (!$tarBall) {
-            return false;
+            throw new \RuntimeException("Can not pull Archive $archiveName:$version");
         }
 
         @mkdir($archive->getLocalRootPath());
