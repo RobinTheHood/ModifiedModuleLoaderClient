@@ -28,14 +28,6 @@ class DependencyManager
         $this->comparator = new Comparator(new Parser());
     }
 
-    // public function getInstalledModules()
-    // {
-    //     $localModuleLoader = LocalModuleLoader::getModuleLoader();
-    //     $modules = $localModuleLoader->loadAllVersions();
-    //     $installedModules = ModuleFilter::filterInstalled($modules);
-    //     return $installedModules;
-    // }
-
     /**
      * Liefert eine Mögichkeit von Modulen/Versionen von denen das Modul $module
      * abhängt. Zur Info. Es kann ganz viele Versions-Komkombintionen geben, von
