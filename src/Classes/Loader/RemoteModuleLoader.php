@@ -23,10 +23,18 @@ class RemoteModuleLoader
     
     private $cachedModules;
 
+    /** @var ApiRequest */
+    private $apiRequest;
+
+    public function __construct(ApiRequest $apiRequest)
+    {
+        $this->apiRequest = $apiRequest;
+    }
+
     public static function getModuleLoader(): RemoteModuleLoader
     {
         if (!self::$moduleLoader) {
-            self::$moduleLoader = new RemoteModuleLoader();
+            self::$moduleLoader = new RemoteModuleLoader(new ApiRequest());
         }
         return self::$moduleLoader;
     }
@@ -38,8 +46,7 @@ class RemoteModuleLoader
      */
     public function loadAllVersions(): array
     {
-        $apiRequest = new ApiRequest();
-        $result = $apiRequest->getModules([]);
+        $result = $this->apiRequest->getModules([]);
         $modules = $this->convertResultToModules($result);
         return $modules;
     }
@@ -55,8 +62,7 @@ class RemoteModuleLoader
             return $this->cachedModules;
         }
 
-        $apiRequest = new ApiRequest();
-        $result = $apiRequest->getModules(['filter' => 'latestVersion']);
+        $result = $this->apiRequest->getModules(['filter' => 'latestVersion']);
         $modules = $this->convertResultToModules($result);
 
         $this->cachedModules = $modules;
@@ -70,8 +76,7 @@ class RemoteModuleLoader
      */
     public function loadAllVersionsByArchiveName(string $archiveName): array
     {
-        $apiRequest = new ApiRequest();
-        $result = $apiRequest->getModules(['archiveName' => $archiveName]);
+        $result = $this->apiRequest->getModules(['archiveName' => $archiveName]);
         $modules = $this->convertResultToModules($result);
         return $modules;
     }
@@ -83,8 +88,7 @@ class RemoteModuleLoader
      */
     public function loadLatestVersionByArchiveName(string $archiveName): ?Module
     {
-        $apiRequest = new ApiRequest();
-        $result = $apiRequest->getModules(['filter' => 'latestVersion', 'archiveName' => $archiveName]);
+        $result = $this->apiRequest->getModules(['filter' => 'latestVersion', 'archiveName' => $archiveName]);
         $modules = $this->convertResultToModules($result);
         return ArrayHelper::getIfSet($modules, 0, null);
     }
@@ -97,8 +101,7 @@ class RemoteModuleLoader
      */
     public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
     {
-        $apiRequest = new ApiRequest();
-        $result = $apiRequest->getModules(['archiveName' => $archiveName, 'version' => $version]);
+        $result = $this->apiRequest->getModules(['archiveName' => $archiveName, 'version' => $version]);
         $modules = $this->convertResultToModules($result);
         return ArrayHelper::getIfSet($modules, 0, null);
     }
