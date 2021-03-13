@@ -17,12 +17,13 @@ use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 
 class RemoteModuleLoaderTest extends TestCase
 {
     public function setUp()
     {
-        $this->loader = new RemoteModuleLoader();
+        $this->loader = new RemoteModuleLoader(new ApiRequest());
     }
 
     public function testCanLoadAllVersions()
