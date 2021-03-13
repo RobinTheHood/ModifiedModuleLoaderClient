@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
-//use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 
@@ -23,13 +22,11 @@ class RemoteModuleLoaderTest extends TestCase
 {
     public function setUp()
     {
-        //require_once 'config/config.php';
         $this->loader = new RemoteModuleLoader();
     }
 
     public function testCanLoadAllVersions()
     {
-        $apiRequest = new ApiRequest();
         $modules = $this->loader->loadAllVersions();
 
         $this->assertContainsOnlyInstancesOf(Module::class, $modules);
@@ -44,7 +41,6 @@ class RemoteModuleLoaderTest extends TestCase
 
     public function testCanLoadAllLatestVersions()
     {
-        $apiRequest = new ApiRequest();
         $modules = $this->loader->loadAllLatestVersions();
 
         $this->assertContainsOnlyInstancesOf(Module::class, $modules);
@@ -59,7 +55,6 @@ class RemoteModuleLoaderTest extends TestCase
 
     public function testCanLoadAllVersionsByArchiveName()
     {
-        $apiRequest = new ApiRequest();
         $modules = $this->loader->loadAllVersionsByArchiveName('robinthehood/modified-std-module');
         $this->assertGreaterThan(2, count($modules));
 
@@ -69,7 +64,6 @@ class RemoteModuleLoaderTest extends TestCase
 
     public function testCanLoadLatestVersionByArchiveName()
     {
-        $apiRequest = new ApiRequest();
         $module = $this->loader->loadLatestVersionByArchiveName('composer/autoload');
 
         $this->assertEquals('composer/autoload', $module->getArchiveName());
@@ -78,7 +72,6 @@ class RemoteModuleLoaderTest extends TestCase
 
     public function testCanLoadByArchiveNameAndVersion()
     {
-        $apiRequest = new ApiRequest();
         $module = $this->loader->loadLatestVersionByArchiveName('composer/autoload', '1.1.0');
 
         $this->assertEquals('composer/autoload', $module->getArchiveName());

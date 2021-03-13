@@ -16,7 +16,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\Exceptions\UrlNotExistsApiException;
 
 class RemoteModuleLoader
 {
@@ -113,10 +112,6 @@ class RemoteModuleLoader
 
         $modules = [];
         foreach ($result['content'] as $moduleArray) {
-            // $module = new Module();
-            // $module->loadFromArray($moduleArray);
-            // $modules[] = $module;
-
             try {
                 $module = ModuleFactory::createFromArray($moduleArray);
                 $modules[] = $module;
