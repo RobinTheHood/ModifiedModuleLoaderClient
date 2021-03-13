@@ -18,7 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Archive;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;

@@ -15,7 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
+//use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 

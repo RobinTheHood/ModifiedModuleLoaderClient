@@ -20,8 +20,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\HttpRequest;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 
 class SelfUpdater
 {

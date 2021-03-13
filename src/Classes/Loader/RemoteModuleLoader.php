@@ -14,7 +14,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\Client\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\Exceptions\UrlNotExistsApiException;
 

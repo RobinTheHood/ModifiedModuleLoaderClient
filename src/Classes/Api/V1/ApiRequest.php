@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Api\Client;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 

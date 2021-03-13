@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
-use RobinTheHood\ModifiedModuleLoaderClient\Api\HttpRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ServerHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
