@@ -16,7 +16,8 @@
         "erusev/parsedown": "^1.7",
         "sebastian/diff": "^3.0",
         "nyholm/psr7": "^1.4",
-        "nyholm/psr7-server": "^1.0"
+        "nyholm/psr7-server": "^1.0",
+        "kriswallsmith/buzz": "^1.2"
     },
 
     "require-dev": {
