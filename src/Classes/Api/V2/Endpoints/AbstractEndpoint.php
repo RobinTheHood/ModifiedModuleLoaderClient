@@ -21,9 +21,17 @@ abstract class AbstractEndpoint
     /** @var string */
     protected $resourcePath;
 
+    /** @var string */
+    protected $apiToken;
+
     public function __construct(\Buzz\Browser $browser)
     {
         $this->browser = $browser;
+    }
+
+    public function setApiToken(string $apiToken)
+    {
+        $this->apiToken = $apiToken;
     }
 
     protected function convertBoolToString(array &$parameters)
