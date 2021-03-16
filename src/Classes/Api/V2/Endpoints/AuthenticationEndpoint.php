@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -13,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V2\Endpoints;
 
 use Buzz\Browser;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\ApiException;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\ApiToken;
 use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 
 class AuthenticationEndpoint extends AbstractEndpoint
@@ -20,7 +23,7 @@ class AuthenticationEndpoint extends AbstractEndpoint
     /** @var string  */
     protected $resourcePath = 'http://app.module-loader.localhost/api/v2/authentication/gettoken';
 
-    public function getToken(array $parameters)
+    public function getApiToken(array $parameters): ApiToken
     {
         $this->convertBoolToString($parameters);
 
@@ -29,18 +32,19 @@ class AuthenticationEndpoint extends AbstractEndpoint
         $response = $this->browser->post($url, $header);
 
         if ($response->getStatusCode() >= 400) {
-            //throw new ApiException();
-
-            // TODO: DO NOT USE Notification, throw ApiException
-            Notification::pushFlashMessage([
-                'text' => 'Error: Bad response. {MESSAGE}',
-                'type' => 'error'
-            ]);
+            throw new ApiException(
+                'AuthenticationEndpoint::getToken() - Error: HTTP Status ' . $response->getStatusCode()
+            );
         }
 
         $array = json_decode($response->getBody()->getContents(), true);
-        $token = $array['token'] ?? '';
 
-        return $token;
+        if (!isset($array['token'])) {
+            throw new ApiException(
+                'AuthenticationEndpoint::getToken() - Can not request apiToken.'
+            );
+        }
+
+        return new ApiToken($array['token']);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -13,13 +15,17 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V2;
 
 use Buzz\Browser;
 use Buzz\Client\FileGetContents;
+use Psr\Http\Client\ClientInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\ApiToken;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\Endpoints\ModulesEndpoint;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\Endpoints\AuthenticationEndpoint;
 
 class ApiRequest
 {
+    /** @var  ClientInterface*/
     private $client;
+
     private $browser;
 
     public function __construct()
@@ -28,20 +34,23 @@ class ApiRequest
         $this->browser = new Browser($this->client, new Psr17Factory());
     }
 
-    public function getApiToken()
+    public function getApiToken(): ApiToken
     {
         $authenticationEndpoint = new AuthenticationEndpoint($this->browser);
-        $token = $authenticationEndpoint->getToken([]);
+        $token = $authenticationEndpoint->getApiToken([]);
         return $token;
     }
 
-    public function getModules($conditions)
+    /**
+     * @return string JSON
+     */
+    public function getModules(array $conditions): string
     {
         $modulesEndpoint = new ModulesEndpoint($this->browser);
         $params = $this->convertConditionsToParams($conditions);
         
-        $token = $this->getApiToken();
-        $modulesEndpoint->setApiToken($token);
+        $apiToken = $this->getApiToken();
+        $modulesEndpoint->setApiToken($apiToken);
 
         $result = $modulesEndpoint->getAllBy($params);
         
@@ -56,7 +65,7 @@ class ApiRequest
     {
     }
 
-    private function convertConditionsToParams($conditions)
+    private function convertConditionsToParams(array $conditions): array
     {
         $params = [];
         if (isset($conditions['archiveName'])) {

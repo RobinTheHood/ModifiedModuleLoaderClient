@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -21,26 +23,22 @@ class ModulesEndpoint extends AbstractEndpoint
     protected $resourcePath = 'http://app.module-loader.localhost/api/v2/modules';
 
 
-    public function getAllBy(array $parameters)
+    public function getAllBy(array $parameters): string
     {
         $this->convertBoolToString($parameters);
 
         $header = [];
         if ($this->apiToken) {
-            $header['Authorization'] = 'Bearer ' . $this->apiToken;
+            $header['Authorization'] = $this->apiToken->createBearer();
         }
 
         $url = $this->resourcePath . '?' . http_build_query($parameters);
         $response = $this->browser->get($url, $header);
 
         if ($response->getStatusCode() >= 400) {
-            //throw new ApiException();
-
-            // TODO: DO NOT USE Notification, throw ApiException
-            Notification::pushFlashMessage([
-                'text' => 'Error: Bad response. {MESSAGE}',
-                'type' => 'error'
-            ]);
+            throw new ApiException(
+                'ModulesEndpoint::getAllBy - Error: HTTP Status ' . $response->getStatusCode()
+            );
         }
 
         return $response->getBody()->getContents();

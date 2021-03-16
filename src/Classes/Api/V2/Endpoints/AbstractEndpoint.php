@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -12,6 +14,7 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V2\Endpoints;
 
 use Buzz\Browser;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\ApiToken;
 
 abstract class AbstractEndpoint
 {
@@ -21,7 +24,7 @@ abstract class AbstractEndpoint
     /** @var string */
     protected $resourcePath;
 
-    /** @var string */
+    /** @var ApiToken */
     protected $apiToken;
 
     public function __construct(\Buzz\Browser $browser)
@@ -29,7 +32,7 @@ abstract class AbstractEndpoint
         $this->browser = $browser;
     }
 
-    public function setApiToken(string $apiToken)
+    public function setApiToken(ApiToken $apiToken)
     {
         $this->apiToken = $apiToken;
     }
