@@ -84,7 +84,7 @@ $moduleView = new ModuleViewModel($module);
 
                 <?php if (ModuleStatus::isRepairable($module)) { ?>
                     <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="
-                    <?= $moduleView->getInstallUrl('moduleInfo') ?> ">
+                    <?= $moduleView->getRevertChangesUrl('moduleInfo') ?> ">
                         <?php if (Config::getInstallMode() != 'link') {?>
                             <i class="fas fa-tools fa-fw"></i>
                             Änderungen verwerfen

@@ -32,6 +32,11 @@ class ModuleViewModel
         return $this->getUrl('install', $ref);
     }
 
+    public function getRevertChangesUrl(string $ref = ''): string
+    {
+        return $this->getUrl('revertChanges', $ref);
+    }
+
     public function getLoadAndInstallUrl(string $ref = ''): string
     {
         return $this->getUrl('loadAndInstall', $ref);

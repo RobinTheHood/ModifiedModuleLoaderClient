@@ -54,6 +54,8 @@ class IndexController extends Controller
                 return $this->invokeLoadAndInstall();
             case 'unloadLocalModule':
                 return $this->invokeUnloadLocalModule();
+            case 'revertChanges':
+                return $this->invokeRevertChanges();
             case 'signIn':
                 return $this->invokeSignIn();
             case 'signOut':
@@ -307,6 +309,40 @@ class IndexController extends Controller
             //$moduleInstaller->installDependencies($module);
             $moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+
+        return $this->redirectRef($archiveName, $module->getVersion());
+    }
+
+    private function invokeRevertChanges()
+    {
+        $this->checkAccessRight();
+
+        $queryParams = $this->serverRequest->getQueryParams();
+        $archiveName = $queryParams['archiveName'] ?? '';
+        $version = $queryParams['version'] ?? '';
+
+        $moduleLoader = new LocalModuleLoader();
+        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+
+        if (!$module) {
+            $this->addModuleNotFoundNotification($archiveName, $version);
+            return $this->redirect('/');
+        }
+
+        try {
+            $moduleInstaller = new ModuleInstaller();
+            $moduleInstaller->revertChanges($module);
+        } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (\RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'

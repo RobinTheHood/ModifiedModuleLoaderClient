@@ -80,10 +80,12 @@ class ModuleInstaller
         }
     }
 
-    public function install(Module $module): void
+    public function install(Module $module, $force = false): void
     {
-        $dependencyManager = new DependencyManager();
-        $dependencyManager->canBeInstalled($module);
+        if (!$force) {
+            $dependencyManager = new DependencyManager();
+            $dependencyManager->canBeInstalled($module);
+        }
 
         $files = $module->getSrcFilePaths();
 
@@ -108,6 +110,15 @@ class ModuleInstaller
         $moduleHasher->hashModule($module);
 
         $this->createAutoloadFile();
+    }
+
+    public function revertChanges(Module $module): void
+    {
+        if (!$module->isInstalled()) {
+            throw new \RuntimeException('Can not revert changes because ' . $module->getArchiveName() . ' is not installed.');
+        }
+
+        $this->install($module, true);
     }
 
     public function installDependencies(Module $module): void
