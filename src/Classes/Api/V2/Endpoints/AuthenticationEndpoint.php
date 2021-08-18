@@ -29,13 +29,22 @@ class AuthenticationEndpoint extends AbstractEndpoint
 
         $header = [];
         $url = $this->resourcePath . '?' . http_build_query($parameters);
-        $response = $this->browser->post($url, $header);
+        $response = $this->browser->post($url, $header, '{
+            "mmlcAccessToken": "abc",
+            "domain": "localhost",
+            "ip": "192.168.0.1",
+            "datetime": "2021-03-15 21:44:00",
+            "hash": "qwertzuiop"
+          }');
 
         if ($response->getStatusCode() >= 400) {
             throw new ApiException(
                 'AuthenticationEndpoint::getToken() - Error: HTTP Status ' . $response->getStatusCode()
             );
         }
+
+        // var_dump($response->getBody()->getContents());
+        // die();
 
         $array = json_decode($response->getBody()->getContents(), true);
 
