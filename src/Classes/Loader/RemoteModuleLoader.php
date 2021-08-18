@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
@@ -28,15 +27,22 @@ class RemoteModuleLoader
     /** @var ApiRequest */
     private $apiRequest;
 
-    public function __construct(ApiRequest $apiRequest)
+    /** @var ApiV1ModuleConverter */
+    private $moduleConverter;
+
+    public function __construct(ApiRequest $apiRequest, ApiV1ModuleConverter $moduleConverter)
     {
         $this->apiRequest = $apiRequest;
+        $this->moduleConverter = $moduleConverter;
     }
 
     public static function getModuleLoader(): RemoteModuleLoader
     {
         if (!self::$moduleLoader) {
-            self::$moduleLoader = new RemoteModuleLoader(new ApiRequest());
+            self::$moduleLoader = new RemoteModuleLoader(
+                new ApiRequest(),
+                new ApiV1ModuleConverter()
+            );
         }
         return self::$moduleLoader;
     }
@@ -49,7 +55,7 @@ class RemoteModuleLoader
     public function loadAllVersions(): array
     {
         $result = $this->apiRequest->getModules([]);
-        $modules = $this->convertResultToModules($result);
+        $modules = $this->moduleConverter->convertToModules($result);
         return $modules;
     }
 
@@ -65,7 +71,7 @@ class RemoteModuleLoader
         }
 
         $result = $this->apiRequest->getModules(['filter' => 'latestVersion']);
-        $modules = $this->convertResultToModules($result);
+        $modules = $this->moduleConverter->convertToModules($result);
 
         $this->cachedModules = $modules;
         return $this->cachedModules;
@@ -79,7 +85,7 @@ class RemoteModuleLoader
     public function loadAllVersionsByArchiveName(string $archiveName): array
     {
         $result = $this->apiRequest->getModules(['archiveName' => $archiveName]);
-        $modules = $this->convertResultToModules($result);
+        $modules = $this->moduleConverter->convertToModules($result);
         return $modules;
     }
 
@@ -91,7 +97,7 @@ class RemoteModuleLoader
     public function loadLatestVersionByArchiveName(string $archiveName): ?Module
     {
         $result = $this->apiRequest->getModules(['filter' => 'latestVersion', 'archiveName' => $archiveName]);
-        $modules = $this->convertResultToModules($result);
+        $modules = $this->moduleConverter->convertToModules($result);
         return ArrayHelper::getIfSet($modules, 0, null);
     }
 
@@ -104,27 +110,7 @@ class RemoteModuleLoader
     public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
     {
         $result = $this->apiRequest->getModules(['archiveName' => $archiveName, 'version' => $version]);
-        $modules = $this->convertResultToModules($result);
+        $modules = $this->moduleConverter->convertToModules($result);
         return ArrayHelper::getIfSet($modules, 0, null);
-    }
-
-
-    public function convertResultToModules($result)
-    {
-        if (!ArrayHelper::getIfSet($result, 'content')) {
-            return [];
-        }
-
-        $modules = [];
-        foreach ($result['content'] as $moduleArray) {
-            try {
-                $module = ModuleFactory::createFromArray($moduleArray);
-                $modules[] = $module;
-            } catch (\RuntimeException $e) {
-                // do nothing
-            }
-        }
-
-        return $modules;
     }
 }
