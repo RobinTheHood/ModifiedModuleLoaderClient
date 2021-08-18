@@ -30,7 +30,7 @@ class ConfigControllerTest extends TestCase
         $serverRequest = $psr17Factory->createServerRequest('POST', '')
             ->withQueryParams(['action' => 'settings'])
             ->withParsedBody(['username' => $newUserName]);
-    
+
         $controller = new IndexController($serverRequest, $session);
         $result = $controller->invoke();
         //Config::reloadConfiguration();

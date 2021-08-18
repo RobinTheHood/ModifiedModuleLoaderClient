@@ -36,7 +36,7 @@ class SemverComparatorTest extends TestCase
         $this->assertTrue($this->comparator->greaterThan('1.2.10', '1.2.9'));
         $this->assertTrue($this->comparator->greaterThan('1.3.3', '1.2.3'));
         $this->assertTrue($this->comparator->greaterThan('2.2.3', '1.2.3'));
-        
+
         $this->assertTrue($this->comparator->greaterThan('v1.2.10', 'v1.2.9'));
         $this->assertTrue($this->comparator->greaterThan('v1.3.3', '1.2.3'));
         $this->assertTrue($this->comparator->greaterThan('2.2.3', 'v1.2.3'));
