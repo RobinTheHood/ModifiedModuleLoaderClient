@@ -25,6 +25,11 @@ class Config
         return App::getConfigRoot() . '/config.php';
     }
 
+    public static function reloadConfiguration()
+    {
+        self::readConfiguration(false);
+    }
+
     /**
      * @param bool $cache whether to load from file (true) or not.
      *
