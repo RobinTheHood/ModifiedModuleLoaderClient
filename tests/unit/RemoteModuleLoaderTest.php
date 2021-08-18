@@ -23,7 +23,8 @@ class RemoteModuleLoaderTest extends TestCase
 {
     public function setUp()
     {
-        $this->loader = new RemoteModuleLoader(new ApiRequest());
+        $this->loader = RemoteModuleLoader::getModuleLoader();
+        //$this->loader = new RemoteModuleLoader(new ApiRequest());
     }
 
     public function testCanLoadAllVersions()
@@ -68,14 +69,14 @@ class RemoteModuleLoaderTest extends TestCase
         $module = $this->loader->loadLatestVersionByArchiveName('composer/autoload');
 
         $this->assertEquals('composer/autoload', $module->getArchiveName());
-        $this->assertEquals('1.2.0', $module->getVersion());
+        $this->assertEquals('1.2.1', $module->getVersion());
     }
 
     public function testCanLoadByArchiveNameAndVersion()
     {
-        $module = $this->loader->loadLatestVersionByArchiveName('composer/autoload', '1.1.0');
+        $module = $this->loader->loadByArchiveNameAndVersion('composer/autoload', '1.1.0');
 
         $this->assertEquals('composer/autoload', $module->getArchiveName());
-        $this->assertEquals('1.2.0', $module->getVersion());
+        $this->assertEquals('1.1.0', $module->getVersion());
     }
 }
