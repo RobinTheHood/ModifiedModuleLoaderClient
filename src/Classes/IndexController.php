@@ -140,7 +140,7 @@ class IndexController extends Controller
 
         $queryParams = $this->serverRequest->getQueryParams();
         $installVersion = $queryParams['install'] ?? '';
-        
+
         if ($installVersion) {
             $selfUpdater->update($installVersion);
             return $this->redirect('/?action=selfUpdate');
@@ -176,7 +176,7 @@ class IndexController extends Controller
         $modules = ModuleFilter::filterNewestOrInstalledVersion($modules);
 
         $heading = 'Alle Module';
-        
+
         $queryParams = $this->serverRequest->getQueryParams();
         $filterModules = $queryParams['filterModules'] ?? '';
 
@@ -549,7 +549,7 @@ class IndexController extends Controller
          */
         if ($this->isPostRequest()) {
             $parsedBody = $this->serverRequest->getParsedBody();
-            
+
             if (isset($parsedBody['username'])) {
                 Config::setUsername($parsedBody['username']);
             }
@@ -569,7 +569,7 @@ class IndexController extends Controller
             if (isset($parsedBody['modulesLocalDir'])) {
                 Config::setModulesLocalDir($parsedBody['modulesLocalDir']);
             }
-            
+
             if (isset($parsedBody['installMode'])) {
                 Config::setInstallMode($parsedBody['installMode']);
             }
@@ -578,7 +578,7 @@ class IndexController extends Controller
                 'text' => 'Einstellungen erfolgreich gespeichert.',
                 'type' => 'success'
             ]);
-            
+
             $queryParams = $this->serverRequest->getQueryParams();
             $section = $queryParams['section'] ?? '';
 

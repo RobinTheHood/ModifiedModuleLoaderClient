@@ -84,7 +84,7 @@ class App
             Redirect::redirect($result['redirect']);
             die();
         }
-        
+
         echo $result['content'];
     }
 
@@ -98,7 +98,7 @@ class App
             $psr17Factory, // UploadedFileFactory
             $psr17Factory  // StreamFactory
         );
-        
+
         $serverRequest = $creator->fromGlobals();
 
         return $serverRequest;

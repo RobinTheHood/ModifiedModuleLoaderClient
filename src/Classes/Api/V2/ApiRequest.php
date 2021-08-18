@@ -48,12 +48,12 @@ class ApiRequest
     {
         $modulesEndpoint = new ModulesEndpoint($this->browser);
         $params = $this->convertConditionsToParams($conditions);
-        
+
         $apiToken = $this->getApiToken();
         $modulesEndpoint->setApiToken($apiToken);
 
         $result = $modulesEndpoint->getAllBy($params);
-        
+
         return $result;
     }
 

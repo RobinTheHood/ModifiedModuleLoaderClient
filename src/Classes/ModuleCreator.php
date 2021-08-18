@@ -104,7 +104,7 @@ class ModuleCreator
                 '2.0.4.2'
             ]
         ];
-    
+
         $json = json_encode($info, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/moduleinfo.json', $json);
     }

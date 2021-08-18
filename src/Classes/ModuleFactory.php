@@ -51,7 +51,7 @@ class ModuleFactory
         $array['readmePath'] = self::createReadmePath($modulePath, $path);
         $array['srcFilePaths'] = self::createSrcFilePaths($absSrcRootPath);
         $array['isRemote'] = false;
-        
+
         $module = self::createFromArray($array);
 
         return $module;

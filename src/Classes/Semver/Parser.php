@@ -23,7 +23,7 @@ class Parser
         $string = $this->deletePrefix($string);
 
         $baseParts = explode('-', $string);
-        
+
         if (count($baseParts) == 2) {
             $versionString = $baseParts[0];
             $tagString = $baseParts[1];

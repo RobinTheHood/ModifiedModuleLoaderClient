@@ -131,7 +131,7 @@ class ModuleLoader
         if ($module) {
             $modules[] = $module;
         }
-        
+
         $latestVersion = ModuleFilter::getLatestVersion($modules);
         return $latestVersion;
     }

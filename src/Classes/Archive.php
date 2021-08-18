@@ -145,7 +145,7 @@ class Archive
         $tarBall = $httpRequest->sendGetRequest($path);
 
         // TODO - check if $tarBall is a tarball or a error response form request
-        
+
         if (!$tarBall) {
             throw new \RuntimeException("Can not pull Archive $archiveName:$version");
         }

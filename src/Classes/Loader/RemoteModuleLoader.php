@@ -22,7 +22,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 class RemoteModuleLoader
 {
     private static $moduleLoader = null;
-    
+
     private $cachedModules;
 
     /** @var ApiRequest */

@@ -34,7 +34,7 @@ class ModuleInfo
      * @var string
      */
     protected $archiveName;
-    
+
     /**
      * Das Verzeichnis, in dem sich die Quellcode Dateien des Moduls befinden,
      * die in den Shop kopiert/verlinkt werden sollen.
@@ -44,7 +44,7 @@ class ModuleInfo
      * @var string
      */
     protected $sourceDir;
-    
+
     /**
      * Die Version des Moduls. Die Version muss der Sermver konvention folgen.
      * Der Wert darf auch 'auto' sein. In diesem Fall wird versucht, sich die
@@ -55,21 +55,21 @@ class ModuleInfo
      * @var string
      */
     protected $version;
-    
+
     /**
      * Eine Kurzbeschreibung des Moduls in menschen lesbarer Form.
      *
      * @var string
      */
     protected $shortDescription;
-    
+
     /**
      * Eine Beschreibung des Moduls in menschen lesbarer Form.
      *
      * @var string
      */
     protected $description;
-    
+
     /**
      * Name des Entwickler / Entwicklerfirma, die das Modul
      * programmiert.
@@ -77,21 +77,21 @@ class ModuleInfo
      * @var string
      */
     protected $developer;
-    
+
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
      * @var string
      */
     protected $developerWebsite;
-    
+
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
      * @var string
      */
     protected $website;
-    
+
     /**
      * Ein Array mit archiveNamen mit Version, von denen das Modul
      * abhängig ist.
@@ -101,21 +101,21 @@ class ModuleInfo
      * @var array
      */
     protected $require;
-    
+
     /**
      * Die Kategorie in der sich das Modul befindet.
      *
      * @var string
      */
     protected $category;
-    
+
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
      * @var string
      */
     protected $type;
-    
+
     /**
      * Mit welchen Version von Modified ist das Modul kompatible.
      *
@@ -127,7 +127,7 @@ class ModuleInfo
      * @var array
      */
     protected $modifiedCompatibility;
-    
+
     /**
      * Installtionsanleitung in menschen lesbarer Form.
      *

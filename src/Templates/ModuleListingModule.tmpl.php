@@ -7,7 +7,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
 $moduleView = new ModuleViewModel($module);
 
 $dataTags = $module->getName() . ' ' . $module->getArchiveName() . ' ' . str_replace(',', ' ', $module->getTags());
-                                
+
 if ($module->isCompatible()) {
     $compatibility = 'kompatibel';
     $tooltip = 'Dieses Modul wurde getestet und funktioniert mit deiner Version von modified.';

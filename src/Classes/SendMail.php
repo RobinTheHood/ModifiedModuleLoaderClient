@@ -25,7 +25,7 @@ class SendMail
         $fromEmail = ArrayHelper::getIfSet($_POST, 'email', '');
         $from = ArrayHelper::getIfSet($_POST, 'name', '');
         $message = ArrayHelper::getIfSet($_POST, 'message', '');
-        
+
         if ($fromEmail == '' || $from == '' || $message == '') {
             Notification::pushFlashMessage(
                 [
@@ -39,7 +39,7 @@ class SendMail
         $to = 'info@module-loader.de';
         $subject = 'MMLC Report Issue';
         $shopVersion = ShopInfo::getModifiedVersion();
-        
+
         $selfUpdater = new SelfUpdater();
         $mmlcVersion = $selfUpdater->getInstalledVersion();
 
@@ -49,7 +49,7 @@ class SendMail
             '<br />MMLC version: ' . $mmlcVersion .
             '<br />Browser: ' . $_SERVER['HTTP_USER_AGENT'] .
             '<br />PHP version: ' . phpversion();
-        
+
         $headers = [
             'MIME-Version: 1.0',
             'Content-type: text/html; charset=utf-8',

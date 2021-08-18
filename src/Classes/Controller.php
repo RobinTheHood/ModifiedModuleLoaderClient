@@ -56,7 +56,7 @@ abstract class Controller
         require $path;
         $content = ob_get_contents();
         ob_end_clean();
-        
+
         return [
             'templateName' => $templateName,
             'templatePath' => $path,

@@ -43,7 +43,7 @@ class ModuleHasher extends Hasher
         }
 
         $hashes = $this->createFileHashes($files, $root);
-        
+
         if (!$moduleDir) {
             $hashes = $this->mapHashesShopToMmlc($hashes);
         }

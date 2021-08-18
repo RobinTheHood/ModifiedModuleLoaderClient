@@ -51,7 +51,7 @@ class LocalModuleLoader
         if (isset($this->modules)) {
             return $this->modules;
         }
-        
+
         $moduleDirs = $this->getModuleDirs();
 
         $modules = [];

@@ -24,7 +24,7 @@ class ApiV2ModuleConverter
     {
         $array = json_decode($result, true);
         $modulesArray = $array['data'] ?? [];
-       
+
         $modules = [];
         foreach ($modulesArray as $moduleArray) {
             try {
