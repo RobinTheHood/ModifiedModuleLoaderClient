@@ -23,7 +23,7 @@ class ApiRequest extends ApiBaseRequest
         $this->setAccessToken(Config::getAccessToken());
     }
 
-    public function getModules($conditions)
+    public function getModules(array $conditions): array
     {
         $conditionStr = $this->buildConditionString($conditions);
 
@@ -35,7 +35,7 @@ class ApiRequest extends ApiBaseRequest
         ');
     }
 
-    public function getArchive($archiveName, $version)
+    public function getArchive(string $archiveName, string $version): array
     {
         return $this->sendRequest('
             {
@@ -45,7 +45,7 @@ class ApiRequest extends ApiBaseRequest
         ');
     }
 
-    public function getAllVersions()
+    public function getAllVersions(): array
     {
         return $this->sendRequest('
             {
@@ -55,7 +55,7 @@ class ApiRequest extends ApiBaseRequest
         ');
     }
 
-    public function buildConditionString($conditions): string
+    public function buildConditionString(array $conditions): string
     {
         $conditionStr = '';
         foreach ($conditions as $name => $value) {

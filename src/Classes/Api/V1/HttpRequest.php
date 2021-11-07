@@ -15,7 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
 class HttpRequest
 {
-    public function isServerAvailable($url)
+    public function isServerAvailable(string $url): bool
     {
         $headers = @get_headers($url);
         if ($headers) {
@@ -24,7 +24,7 @@ class HttpRequest
         return false;
     }
 
-    public function sendPostRequest($url, $data)
+    public function sendPostRequest(string $url, $data)
     {
         // http verwenden, auch wenn die Url mit https://... beginnt
         $options = [
@@ -59,7 +59,7 @@ class HttpRequest
         return @file_get_contents($url, false, $context);
     }
 
-    public static function createQuery($queryValues)
+    public static function createQuery(array $queryValues): string
     {
         $query = '';
         foreach ($queryValues as $name => $value) {

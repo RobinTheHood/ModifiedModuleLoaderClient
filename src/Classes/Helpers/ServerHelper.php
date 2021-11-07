@@ -15,7 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Helpers;
 
 class ServerHelper
 {
-    public static function getUri()
+    public static function getUri(): string
     {
         $http = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
         $url = $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];
@@ -23,7 +23,7 @@ class ServerHelper
         return $http . $parts['dirname'];
     }
 
-    public static function urlExists($url)
+    public static function urlExists(string $url): bool
     {
         $headers = @get_headers($url);
 
