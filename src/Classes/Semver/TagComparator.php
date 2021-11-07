@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Semver;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class TagComparator
 {
