@@ -134,7 +134,9 @@ class IndexController extends Controller
 
     public function invokeSelfUpdate()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $selfUpdater = new SelfUpdater();
         $installedVersion = $selfUpdater->getInstalledVersion();
@@ -171,7 +173,9 @@ class IndexController extends Controller
 
     public function invokeIndex()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $moduleLoader = ModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
@@ -211,7 +215,9 @@ class IndexController extends Controller
 
     public function invokeModuleInfo()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -238,7 +244,9 @@ class IndexController extends Controller
 
     public function invokeLazyModuleInfo()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -261,7 +269,9 @@ class IndexController extends Controller
 
     public function invokeLazyModuleUpdateCount()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $value = $this->calcModuleUpdateCount();
         if ($value) {
@@ -271,7 +281,9 @@ class IndexController extends Controller
 
     public function invokeLazyModuleChangeCount()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $value = $this->calcModuleChangeCount();
         if ($value) {
@@ -281,7 +293,9 @@ class IndexController extends Controller
 
     public function invokeLazySystemUpdateCount()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $value = $this->calcSystemUpdateCount();
         if ($value) {
@@ -291,7 +305,9 @@ class IndexController extends Controller
 
     public function invokeInstall()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -322,7 +338,9 @@ class IndexController extends Controller
 
     private function invokeRevertChanges()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -356,7 +374,9 @@ class IndexController extends Controller
 
     public function invokeUninstall()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -385,7 +405,9 @@ class IndexController extends Controller
 
     public function invokeUpdate()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -422,7 +444,9 @@ class IndexController extends Controller
 
     public function invokeLoadRemoteModule()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -449,7 +473,9 @@ class IndexController extends Controller
 
     public function invokeLoadAndInstall()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -496,7 +522,9 @@ class IndexController extends Controller
 
     public function invokeUnloadLocalModule()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
@@ -525,7 +553,9 @@ class IndexController extends Controller
 
     public function invokeReportIssue()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         $parsedBody = $this->serverRequest->getParsedBody();
         if (isset($parsedBody['send_mail'])) {
@@ -537,14 +567,18 @@ class IndexController extends Controller
 
     public function invokeSupport()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         return $this->render('Support');
     }
 
     public function invokeSettings()
     {
-        $this->checkAccessRight();
+        if ($accessRedirect = $this->checkAccessRight()) {
+            return $accessRedirect;
+        }
 
         /**
          * Save submitted form input to config.
