@@ -2,7 +2,7 @@
 
 # *** USAGE ***
 # Execute this script from the mmlc root directory
-# ./scripts/buildClient.sh Git-Tag-Versionsc    
+# ./scripts/buildClient.sh Git-Tag-Version
 
 
 TAG_VERSION=$1
