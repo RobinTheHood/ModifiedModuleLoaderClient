@@ -85,7 +85,7 @@ class App
             die();
         }
 
-        echo $result['content'];
+        echo $result['content'] ?? '';
     }
 
     private static function getServerRequest(): ServerRequestInterface
