@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\Hasher;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 
 class ModulePathMapper
