@@ -1,8 +1,7 @@
 <?php
+
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
-use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
@@ -32,43 +31,47 @@ $moduleView = new ModuleViewModel($module);
                 <div class="row">
                     <div class="col">
                         <div class="module-title">
-                            <img src="<?= $module->getIconUri(); ?>">
+                            <img src="<?= $moduleView->getIconUri(); ?>">
 
-                            <h1><?= $module->getName() ?></h1>
+                            <h1><?= $moduleView->getName() ?></h1>
                         </div>
 
-                        <?php if ($module->getImageUris()) { ?>
+                        <?php if ($moduleView->getImageUris()) { ?>
                             <div class="module-previews">
-                            <?php foreach ($module->getImageUris() as $image) { ?>
+                            <?php foreach ($moduleView->getImageUris() as $imageUri) { ?>
                                 <div class="preview">
-                                    <a href="<?= $image ?>" data-lightbox="show-1" data-title="<?= $module->getName() ?>">
-                                        <img src="<?= $image ?>">
+                                    <a href="<?= $imageUri ?>" data-lightbox="show-1" data-title="<?= $moduleView->getName() ?>">
+                                        <img src="<?= $imageUri ?>">
                                     </a>
                                 </div>
                             <?php } ?>
                             </div>
                         <?php } ?>
 
-                        <?php if (ModuleStatus::isRepairable($module)) { ?>
+                        <?php if ($moduleView->isRepairable()) { ?>
                             <div class="alert alert-warning" role="alert">
                                 <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an diesen
-                                Anpassungen vorgenommen. <strong>Deinstallation</strong> und <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur
-                                Verfügung, damit deine Arbeit nicht verloren geht. <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
+                                Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an
+                                diesen Anpassungen vorgenommen. <strong>Deinstallation</strong> und
+                                <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur Verfügung, damit
+                                deine Arbeit nicht verloren geht.
+                                <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
                             </div>
                         <?php } ?>
 
-                        <?php if (!ModuleStatus::isLoadable($module)) { ?>
+                        <?php if (!$moduleView->isLoadable()) { ?>
                             <div class="alert alert-primary" role="alert">
                                 <i class="fas fa-info-circle fa-fw"></i>
-                                Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann dir das Modul (z. B. nach einem Kauf) freischalten.
+                                Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann
+                                dir das Modul (z. B. nach einem Kauf) freischalten.
                             </div>
                         <?php } ?>
 
-                        <?php if (!$module->isCompatible()) { ?>
+                        <?php if (!$moduleView->isCompatible()) { ?>
                             <div class="alert alert-warning" role="alert">
                                 <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed <strong><?= ShopInfo::getModifiedVersion()?></strong> installiert.
+                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed
+                                <strong><?= ShopInfo::getModifiedVersion()?></strong> installiert.
                             </div>
                         <?php } ?>
                     </div>
@@ -78,11 +81,11 @@ $moduleView = new ModuleViewModel($module);
 
         <div class="content">
             <div class="moduleinfo-buttons">
-                <?php if (ModuleStatus::isUpdatable($module) && !ModuleStatus::isRepairable($module)) { ?>
+                <?php if ($viewModule->isUpdatable() && !$moduleView->isRepairable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getUpdateUrl('moduleInfo') ?>">Update installieren</a>
                 <?php } ?>
 
-                <?php if (ModuleStatus::isRepairable($module)) { ?>
+                <?php if ($moduleView->isRepairable()) { ?>
                     <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="
                     <?= $moduleView->getRevertChangesUrl('moduleInfo') ?> ">
                         <?php if (Config::getInstallMode() != 'link') {?>
@@ -100,28 +103,28 @@ $moduleView = new ModuleViewModel($module);
                     </a>
                 <?php } ?>
 
-                <?php if (ModuleStatus::isCompatibleLoadebaleAndInstallable($module)) { ?>
+                <?php if ($viewModule->isCompatibleLoadebaleAndInstallable()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>">Download & Install</a>
 
-                <?php } elseif (ModuleStatus::isUncompatibleLoadebale($module)) { ?>
+                <?php } elseif ($viewModule->isUncompatibleLoadebale()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getLoadModuleUrl('moduleInfo') ?>">Download (inkompatible Version)</a>
 
-                <?php } elseif (ModuleStatus::isUninstallable($module) && !ModuleStatus::isRepairable($module)) { ?>
+                <?php } elseif ($viewModule->isUninstallable() && !$viewModule->isRepairable()) { ?>
                     <a class="button button-danger" href="<?= $moduleView->getUninstallUrl('moduleInfo') ?>">Deinstallieren</a>
 
-                <?php } elseif (ModuleStatus::isCompatibleInstallable($module)) { ?>
+                <?php } elseif ($viewModule->isCompatibleInstallable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren</a>
 
-                <?php } elseif (ModuleStatus::isUncompatibleInstallable($module)) { ?>
+                <?php } elseif ($viewModule->isUncompatibleInstallable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
-                <?php } elseif ($installedModule = $module->getInstalledVersion()) { ?>
-                    <?php if ($installedModule->getVersion() != $module->getVersion()) { ?>
+                <?php } elseif ($installedModule = $viewModule->getInstalledVersion()) { ?>
+                    <?php if ($installedModule->getVersion() != $viewModule->getVersion()) { ?>
                         <a class="button button-default" href="<?= $moduleView->getModuleInfoUrl('moduleInfo') ?>">Zur installierten Version</a>
                     <?php } ?>
                 <?php } ?>
 
-                <?php if (!$module->isRemote() && $module->isLoaded() && !$module->isInstalled()) { ?>
+                <?php if (!$viewModule->isRemote() && $viewModule->isLoaded() && !$viewModule->isInstalled()) { ?>
                     <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?= $moduleView->getUnloadModuleUrl('moduleInfo') ?>">Modul löschen</a>
                 <?php } ?>
             </div>
@@ -134,7 +137,7 @@ $moduleView = new ModuleViewModel($module);
                         <a class="nav-link" id="v-pills-usage-tab" data-toggle="pill" href="#v-pills-usage" role="tab" aria-controls="v-pills-usage" aria-selected="false">Bedienung</a>
                         <a class="nav-link" id="v-pills-changes-tab" data-toggle="pill" href="#v-pills-changes" role="tab" aria-controls="v-pills-changes" aria-selected="false">Änderungsprotokoll</a>
                         <a class="nav-link" id="v-pills-details-tab" data-toggle="pill" href="#v-pills-details" role="tab" aria-controls="v-pills-details" aria-selected="false">Details</a>
-                        <?php if (ModuleStatus::isRepairable($module)) { ?>
+                        <?php if ($moduleView->isRepairable()) { ?>
                             <a class="nav-link" id="v-pills-files-tab" data-toggle="pill" href="#v-pills-files" role="tab" aria-controls="v-pills-files" aria-selected="false">Geänderte Dateien</a>
                         <?php } ?>
                     </div>
@@ -148,7 +151,7 @@ $moduleView = new ModuleViewModel($module);
                                     <tbody>
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $module->getVersion(); ?></td>
+                                            <td><?= $viewModule->getVersion(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -243,7 +246,7 @@ $moduleView = new ModuleViewModel($module);
 
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $module->getVersion(); ?></td>
+                                            <td><?= $viewModule->getVersion(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -341,12 +344,14 @@ $moduleView = new ModuleViewModel($module);
                         <div class="tab-pane fade" id="v-pills-files" role="tabpanel" aria-labelledby="v-pills-files-tab">
                             <h3>Geänderte Dateien</h3>
 
-                            <?php if ($module->isInstalled() && $module->isChanged()) { ?>
+                            <?php if ($viewModule->isInstalled() && $viewModule->isChanged()) { ?>
                                     <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
                                         <?php $changes = htmlentities(ModuleHasher::getFileChanges($module, $file, $mode)); ?>
 
                                         <div><?= $file ?><span>: <?= $mode ?></span></div>
-                                        <?php if ($changes) { ?><pre><code class="diff"><?= $changes ?></code></pre><?php } ?>
+                                        <?php if ($changes) { ?>
+                                            <pre><code class="diff"><?= $changes ?></code></pre>
+                                        <?php } ?>
                                     <?php } ?>
                             <?php } else { ?>
                                 keine Änderungen vorhanden
