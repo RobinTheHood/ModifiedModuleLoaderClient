@@ -118,10 +118,8 @@ $moduleView = new ModuleViewModel($module);
                 <?php } elseif ($viewModule->isUncompatibleInstallable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
-                <?php } elseif ($installedModule = $viewModule->getInstalledVersion()) { ?>
-                    <?php if ($installedModule->getVersion() != $viewModule->getVersion()) { ?>
-                        <a class="button button-default" href="<?= $moduleView->getModuleInfoUrl('moduleInfo') ?>">Zur installierten Version</a>
-                    <?php } ?>
+                <?php } elseif ($viewModule->hasInstalledVersion()) { ?>
+                    <a class="button button-default" href="<?= $moduleView->getModuleInfoUrl('moduleInfo') ?>">Zur installierten Version</a>
                 <?php } ?>
 
                 <?php if (!$viewModule->isRemote() && $viewModule->isLoaded() && !$viewModule->isInstalled()) { ?>

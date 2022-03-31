@@ -121,7 +121,7 @@ class ModuleViewModel
 
     public function isUncompatibleLoadebale(): bool
     {
-        return ModuleStatus::isUncompatibleLoadebale($this->module)
+        return ModuleStatus::isUncompatibleLoadebale($this->module);
     }
 
     public function isUninstallable(): bool
@@ -139,9 +139,19 @@ class ModuleViewModel
         return ModuleStatus::isUncompatibleInstallable($this->module);
     }
 
-    public function getInstalledVersion(): string
+    public function hasInstalledVersion(): bool
     {
-        return $this->module->getInstalledVersion();
+        $installedModule = $this->module->getInstalledVersion();
+
+        if (!$installedModule) {
+            return false;
+        }
+
+        if ($installedModule->getVersion() == $this->module->getVersion()) {
+            return false;
+        }
+
+        return true;
     }
 
     public function getVersion(): string
