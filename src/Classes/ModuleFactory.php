@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ServerHelper;
 
@@ -61,7 +60,10 @@ class ModuleFactory
     {
         $module = new Module();
 
-        $autoload = ArrayHelper::getIfSet($array, 'autoload', []);
+        $autoload = $array['autoload'] ?? [];
+        if (!$autoload) {
+            $autoload = [];
+        }
 
         // ModuleInfo
         $module->setName($array['name'] ?? '');

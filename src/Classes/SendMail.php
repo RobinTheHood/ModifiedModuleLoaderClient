@@ -16,15 +16,14 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\SelfUpdater;
 use RobinTheHood\ModifiedModuleLoaderClient\Notification;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class SendMail
 {
     public static function sendIssue(): void
     {
-        $fromEmail = ArrayHelper::getIfSet($_POST, 'email', '');
-        $from = ArrayHelper::getIfSet($_POST, 'name', '');
-        $message = ArrayHelper::getIfSet($_POST, 'message', '');
+        $fromEmail = $_POST['email'] ?? '';
+        $from = $_POST['name'] ?? '';
+        $message = $_POST['message'] ?? '';
 
         if ($fromEmail == '' || $from == '' || $message == '') {
             Notification::pushFlashMessage(

@@ -19,7 +19,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 
@@ -78,11 +77,12 @@ class SelfUpdater
         $apiRequest = new ApiRequest();
         $result = $apiRequest->getAllVersions();
 
-        if (!ArrayHelper::getIfSet($result, 'content')) {
+        $content = $result['content'] ?? [];
+        if (!$content) {
             return [];
         }
 
-        return $result['content'];
+        return $content;
     }
 
     public function getInstalledVersion(): string

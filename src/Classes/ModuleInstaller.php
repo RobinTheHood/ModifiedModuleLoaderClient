@@ -21,7 +21,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class ModuleInstaller
 {
@@ -34,11 +33,12 @@ class ModuleInstaller
         $apiRequest = new ApiRequest();
         $result = $apiRequest->getArchive($module->getArchiveName(), $module->getVersion());
 
-        if (!ArrayHelper::getIfSet($result, 'content')) {
+        $content = $result['content'] ?? [];
+        if (!$content) {
             return false;
         }
 
-        $archiveUrl = ArrayHelper::getIfSet($result['content'], 'archiveUrl');
+        $archiveUrl = $content['archiveUrl'] ?? '';
 
         if (!$archiveUrl) {
             return false;

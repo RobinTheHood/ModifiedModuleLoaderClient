@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class RemoteModuleLoader
 {
@@ -27,7 +26,7 @@ class RemoteModuleLoader
     private $apiRequest;
 
     /** @var ApiV1ModuleConverter */
-    private $moduleConverter;
+    protected $moduleConverter;
 
     public function __construct(ApiRequest $apiRequest, ApiV1ModuleConverter $moduleConverter)
     {
@@ -97,7 +96,7 @@ class RemoteModuleLoader
     {
         $result = $this->apiRequest->getModules(['filter' => 'latestVersion', 'archiveName' => $archiveName]);
         $modules = $this->moduleConverter->convertToModules($result);
-        return ArrayHelper::getIfSet($modules, 0, null);
+        return $modules[0] ?? null;
     }
 
 
@@ -110,6 +109,6 @@ class RemoteModuleLoader
     {
         $result = $this->apiRequest->getModules(['archiveName' => $archiveName, 'version' => $version]);
         $modules = $this->moduleConverter->convertToModules($result);
-        return ArrayHelper::getIfSet($modules, 0, null);
+        return $modules[0] ?? null;
     }
 }

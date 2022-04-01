@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
 
 class ApiV1ModuleConverter
 {
@@ -25,12 +24,13 @@ class ApiV1ModuleConverter
     public function convertToModules($result): array
     {
 
-        if (!ArrayHelper::getIfSet($result, 'content')) {
+        $content = $result['content'] ?? [];
+        if (!$content) {
             return [];
         }
 
         $modules = [];
-        foreach ($result['content'] as $moduleArray) {
+        foreach ($content as $moduleArray) {
             try {
                 $module = ModuleFactory::createFromArray($moduleArray);
                 $modules[] = $module;

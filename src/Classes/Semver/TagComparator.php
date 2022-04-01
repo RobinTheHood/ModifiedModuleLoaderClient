@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Semver;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Helpers\ArrayHelper;
-
 class TagComparator
 {
     /**
@@ -75,8 +73,8 @@ class TagComparator
             return false;
         }
 
-        $value1 = ArrayHelper::getIfSet($this->map, $string1, 0);
-        $value2 = ArrayHelper::getIfSet($this->map, $string2, 0);
+        $value1 = $this->map[$string1] ?? 0;
+        $value2 = $this->map[$string2] ?? 0;
         return $value1 > $value2;
     }
 
