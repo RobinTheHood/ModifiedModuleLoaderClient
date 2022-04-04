@@ -30,7 +30,7 @@ class ModuleStatus
             !$module->isRemote();
     }
 
-    public static function isCompatibleLoadebale(Module $module): bool
+    public static function isCompatibleLoadable(Module $module): bool
     {
         return
             $module->isLoadable() &&
@@ -40,7 +40,7 @@ class ModuleStatus
             $module->isCompatible();
     }
 
-    public static function isUncompatibleLoadebale(Module $module): bool
+    public static function isIncompatibleLoadebale(Module $module): bool
     {
         return
             $module->isLoadable() &&
@@ -84,7 +84,7 @@ class ModuleStatus
             $module->isCompatible();
     }
 
-    public static function isCompatibleLoadebaleAndInstallable(Module $module): bool
+    public static function isCompatibleLoadableAndInstallable(Module $module): bool
     {
         return
             $module->isLoadable() &&
@@ -96,7 +96,7 @@ class ModuleStatus
             !$module->getInstalledVersion();
     }
 
-    public static function isUncompatibleInstallable(Module $module): bool
+    public static function isIncompatibleInstallable(Module $module): bool
     {
         return
             !$module->isRemote() &&
@@ -110,7 +110,7 @@ class ModuleStatus
         return $module->isCompatible();
     }
 
-    public static function isUncompatible(Module $module): bool
+    public static function isIncompatible(Module $module): bool
     {
         return !$module->isCompatible();
     }

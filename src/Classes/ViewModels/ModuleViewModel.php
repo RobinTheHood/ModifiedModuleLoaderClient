@@ -114,14 +114,14 @@ class ModuleViewModel
         return ModuleStatus::isUpdatable($this->module);
     }
 
-    public function isCompatibleLoadebaleAndInstallable(): bool
+    public function isCompatibleLoadableAndInstallable(): bool
     {
-        return ModuleStatus::isCompatibleLoadebaleAndInstallable($this->module);
+        return ModuleStatus::isCompatibleLoadableAndInstallable($this->module);
     }
 
-    public function isUncompatibleLoadebale(): bool
+    public function isIncompatibleLoadebale(): bool
     {
-        return ModuleStatus::isUncompatibleLoadebale($this->module);
+        return ModuleStatus::isIncompatibleLoadebale($this->module);
     }
 
     public function isUninstallable(): bool
@@ -134,9 +134,9 @@ class ModuleViewModel
         return ModuleStatus::isCompatibleInstallable($this->module);
     }
 
-    public function isUncompatibleInstallable(): bool
+    public function isIncompatibleInstallable(): bool
     {
-        return ModuleStatus::isUncompatibleInstallable($this->module);
+        return ModuleStatus::isIncompatibleInstallable($this->module);
     }
 
     public function hasInstalledVersion(): bool

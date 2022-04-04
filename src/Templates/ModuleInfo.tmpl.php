@@ -103,10 +103,10 @@ $moduleView = new ModuleViewModel($module);
                     </a>
                 <?php } ?>
 
-                <?php if ($viewModule->isCompatibleLoadebaleAndInstallable()) { ?>
+                <?php if ($viewModule->isCompatibleLoadableAndInstallable()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>">Download & Install</a>
 
-                <?php } elseif ($viewModule->isUncompatibleLoadebale()) { ?>
+                <?php } elseif ($viewModule->isIncompatibleLoadebale()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getLoadModuleUrl('moduleInfo') ?>">Download (inkompatible Version)</a>
 
                 <?php } elseif ($viewModule->isUninstallable() && !$viewModule->isRepairable()) { ?>
@@ -115,7 +115,7 @@ $moduleView = new ModuleViewModel($module);
                 <?php } elseif ($viewModule->isCompatibleInstallable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren</a>
 
-                <?php } elseif ($viewModule->isUncompatibleInstallable()) { ?>
+                <?php } elseif ($viewModule->isIncompatibleInstallable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
                 <?php } elseif ($viewModule->hasInstalledVersion()) { ?>
