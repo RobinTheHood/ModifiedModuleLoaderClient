@@ -18,7 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 
 class ModuleLoaderTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->loader = new ModuleLoader();
     }

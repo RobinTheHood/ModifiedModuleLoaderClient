@@ -26,7 +26,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
 class IndexController extends Controller
 {
-    private const REQUIRED_PHP_VERSION = '7.1.12';
+    private const REQUIRED_PHP_VERSION = '7.4.0';
 
     public function invoke()
     {

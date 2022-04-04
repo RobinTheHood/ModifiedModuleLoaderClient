@@ -18,7 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class SemverParserTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->parser = new Parser();
     }

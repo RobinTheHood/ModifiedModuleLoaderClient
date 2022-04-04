@@ -21,7 +21,7 @@ class SemverComparatorTest extends TestCase
 {
     public $comparator;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->comparator = new Comparator(new Parser());
     }

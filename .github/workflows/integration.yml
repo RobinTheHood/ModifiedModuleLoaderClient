@@ -13,15 +13,15 @@ jobs:
       uses: php-actions/composer@v5
       with:
         progress: yes
-        version: 1
-        php_version: 7.2
+        version: 2
+        php_version: 7.4
     #- name: composer install missing files
     #  run: composer1 install
     - name: copy config
       run: cp config/_config.php config/config.php
     - name: run phpcs for PSR12 coding style checks 
-      run: php7.3 ./vendor/bin/phpcs -np --standard=PSR12 --ignore=".src/Templates" ./src
+      run: php7.4 ./vendor/bin/phpcs -np --standard=PSR12 --ignore=".src/Templates" ./src
     - name: run test - php unit
-      run: php7.3 ./vendor/bin/phpunit --testdox
+      run: php7.4 ./vendor/bin/phpunit --testdox
     - name: run static code analysis - psalm
-      run: php7.3 ./vendor/bin/psalm
+      run: php7.4 ./vendor/bin/psalm

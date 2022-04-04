@@ -20,7 +20,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 
 class RemoteModuleLoaderTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->loader = RemoteModuleLoader::getModuleLoader();
     }
