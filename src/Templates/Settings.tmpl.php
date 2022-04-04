@@ -1,9 +1,19 @@
-<?php 
+<?php
+
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
+
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
 
 $notificationView = new NotificationViewModel();
+
+function viewIsSelected(bool $value): string
+{
+    if ($value) {
+        return '';
+    }
+    return 'selected="selected"';
+}
 ?>
 
 <!DOCTYPE html>
@@ -40,12 +50,12 @@ $notificationView = new NotificationViewModel();
                                 <div class="form-group">
                                     <label for="inputAccessToken">AccessToken</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?php echo Config::getAccessToken(); ?>"<?php echo empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
+                                        <input type="text" name="accessToken" class="form-control" id="inputAccessToken" value="<?= Config::getAccessToken(); ?>"<?= empty(Config::getAccessToken()) ? '' : 'readonly'; ?>>
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="copyToClipboard('inputAccessToken')">kopieren</button>
                                         </div>
                                     </div>
-                                    <p>Aus Sicherheitsgründen ist das Ändern des AccessTokens gesperrt. Der Wert kann unter <code style="word-break: break-all"><?php echo Config::path(); ?></code> geändert werden.</p>
+                                    <p>Aus Sicherheitsgründen ist das Ändern des AccessTokens gesperrt. Der Wert kann unter <code style="word-break: break-all"><?= Config::path(); ?></code> geändert werden.</p>
                                 </div>
 
                                 <div class="form-group">
@@ -60,7 +70,7 @@ $notificationView = new NotificationViewModel();
                             <form action="?action=settings&section=user" method="post">
                                 <div class="form-group">
                                     <label for="inputUsername">Benutzername</label>
-                                    <input type="text" name="username" class="form-control" id="inputUsername" value="<?php echo Config::getUsername(); ?>">
+                                    <input type="text" name="username" class="form-control" id="inputUsername" value="<?= Config::getUsername(); ?>">
                                     <p>Mit diesem Namen meldest du dich im MMLC an.</p>
                                 </div>
                                 
@@ -83,7 +93,7 @@ $notificationView = new NotificationViewModel();
                                 <!-- modulesLocalDir -->
                                 <div class="form-group">
                                     <label for="inputModulesLocalDir">Module Pfad</label>
-                                    <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?php echo Config::getModulesLocalDir(); ?>">
+                                    <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?= Config::getModulesLocalDir(); ?>">
                                     <p>In diesem Ordner werden Module für den MMLC heruntergeladen.</p>
                                 </div>
 
@@ -91,8 +101,8 @@ $notificationView = new NotificationViewModel();
                                 <div class="form-group">
                                     <label for="inputInstallMode">Installationsmodus</label>
                                     <select name="installMode" class="form-control" id="inputInstallMode" size="1">
-                                        <option <?php if (Config::getInstallMode() == 'copy') echo 'selected="selected"'; ?> value="copy">copy</option>
-                                        <option <?php if (Config::getInstallMode() == 'link') echo 'selected="selected"'; ?> value="link">link</option>
+                                        <option <?= viewIsSelected(Config::getInstallMode() == 'copy') ?> value="copy">copy</option>
+                                        <option <?= viewIsSelected(Config::getInstallMode() == 'link') ?> value="link">link</option>
                                     </select>
                                     
                                     <p>Du kannst zwischen <code>copy</code> und <code>link</code> wählen. Hast du den MMLC in einem Live-Shop im Einsatz, wähle <code>copy</code>. Wenn du mit dem MMLC Module entwickelst, wähle <code>link</code>.</p>

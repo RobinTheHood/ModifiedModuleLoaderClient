@@ -1,4 +1,10 @@
-<?php defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.'); ?>
+<?php
+
+defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
+
+use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
+
+?>
 
 <script src="src/Templates/Scripts/bootstrap.bundle.min.js"></script>
 <script src="src/Templates/Scripts/lightbox.js"></script>
@@ -62,8 +68,6 @@
         document.execCommand('copy');
     }
 </script>
-
-<?php use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader; ?>
 
 <?= LazyLoader::loadModuleChangeCount('#moduleChangeCount') ?>
 <?= LazyLoader::loadSystemUpdateCount('#systemUpdateCount') ?>
