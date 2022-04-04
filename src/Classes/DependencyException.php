@@ -15,5 +15,4 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class DependencyException extends \LogicException
 {
-
 }

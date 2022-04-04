@@ -15,5 +15,4 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Semver;
 
 class ParseErrorException extends \LogicException
 {
-
 }

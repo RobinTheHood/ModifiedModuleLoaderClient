@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class LazyLoader
 {
-
     public static function createUrl($module, $dataField)
     {
         $url = '?action=lazyModuleInfo&archiveName=' . $module->getArchiveName() . '&version=' . $module->getVersion() . '&data=' . $dataField;

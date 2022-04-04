@@ -18,7 +18,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 
 class ShopInfo
 {
-
     public static function getAdminPath(): string
     {
         return App::getShopRoot() . '/' . self::getAdminDir();

@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Helpers;
 
 class Measurement
 {
-
     public static function getTimeStamp(): string
     {
         $now = \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''));
