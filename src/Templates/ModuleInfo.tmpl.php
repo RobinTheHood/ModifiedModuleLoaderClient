@@ -2,14 +2,16 @@
 
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
-use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
-use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
 
 $moduleView = new ModuleViewModel($module);
+$notificationView = new NotificationViewModel();
+
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +28,7 @@ $moduleView = new ModuleViewModel($module);
 
         <div class="block">
             <div class="content">
-                <?= Notification::renderFlashMessages() ?>
+                <?= $notificationView->renderFlashMessages() ?>
 
                 <div class="row">
                     <div class="col">

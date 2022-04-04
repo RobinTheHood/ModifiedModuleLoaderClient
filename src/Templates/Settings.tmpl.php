@@ -1,6 +1,9 @@
 <?php 
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
+
+$notificationView = new NotificationViewModel();
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +16,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Config;
         <?php include 'Navi.tmpl.php' ?>
 
         <div class="content">
-            <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
+            <?= $notificationView->renderFlashMessages() ?>
 
             <h1>Einstellungen</h1>
 

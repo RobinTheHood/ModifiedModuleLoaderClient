@@ -1,4 +1,11 @@
-<?php defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.'); ?>
+<?php
+
+defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
+
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
+
+$notificationView = new NotificationViewModel();
+?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -11,7 +18,7 @@
         <div class="content">
             <h1>Hilfe & Support</h1>
 
-            <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
+            <?= $notificationView->renderFlashMessages() ?>
 
             <section>
                 <h2>Anleitung</h2>

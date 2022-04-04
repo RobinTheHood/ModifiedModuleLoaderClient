@@ -1,4 +1,11 @@
-<?php defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.'); ?>
+<?php
+
+defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
+
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
+
+$notificationView = new NotificationViewModel();
+?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -10,7 +17,7 @@
         <?php include 'Navi.tmpl.php' ?>
         <div class="content">
             <div>
-                <?php echo RobinTheHood\ModifiedModuleLoaderClient\Notification::renderFlashMessages() ?>
+                <?= $notificationView->renderFlashMessages() ?>
                 <div class="row">
                     <div class="offset-3 col-6">
                         <h2>Nachricht an MMLC-Entwickler senden</h2>
