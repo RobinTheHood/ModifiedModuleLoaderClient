@@ -83,7 +83,7 @@ $notificationView = new NotificationViewModel();
 
         <div class="content">
             <div class="moduleinfo-buttons">
-                <?php if ($viewModule->isUpdatable() && !$moduleView->isRepairable()) { ?>
+                <?php if ($moduleView->isUpdatable() && !$moduleView->isRepairable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getUpdateUrl('moduleInfo') ?>">Update installieren</a>
                 <?php } ?>
 
@@ -105,26 +105,26 @@ $notificationView = new NotificationViewModel();
                     </a>
                 <?php } ?>
 
-                <?php if ($viewModule->isCompatibleLoadableAndInstallable()) { ?>
+                <?php if ($moduleView->isCompatibleLoadableAndInstallable()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>">Download & Install</a>
 
-                <?php } elseif ($viewModule->isIncompatibleLoadebale()) { ?>
+                <?php } elseif ($moduleView->isIncompatibleLoadebale()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getLoadModuleUrl('moduleInfo') ?>">Download (inkompatible Version)</a>
 
-                <?php } elseif ($viewModule->isUninstallable() && !$viewModule->isRepairable()) { ?>
+                <?php } elseif ($moduleView->isUninstallable() && !$moduleView->isRepairable()) { ?>
                     <a class="button button-danger" href="<?= $moduleView->getUninstallUrl('moduleInfo') ?>">Deinstallieren</a>
 
-                <?php } elseif ($viewModule->isCompatibleInstallable()) { ?>
+                <?php } elseif ($moduleView->isCompatibleInstallable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren</a>
 
-                <?php } elseif ($viewModule->isIncompatibleInstallable()) { ?>
+                <?php } elseif ($moduleView->isIncompatibleInstallable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
-                <?php } elseif ($viewModule->hasInstalledVersion()) { ?>
+                <?php } elseif ($moduleView->hasInstalledVersion()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getModuleInfoUrl('moduleInfo') ?>">Zur installierten Version</a>
                 <?php } ?>
 
-                <?php if (!$viewModule->isRemote() && $viewModule->isLoaded() && !$viewModule->isInstalled()) { ?>
+                <?php if (!$moduleView->isRemote() && $moduleView->isLoaded() && !$moduleView->isInstalled()) { ?>
                     <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?= $moduleView->getUnloadModuleUrl('moduleInfo') ?>">Modul löschen</a>
                 <?php } ?>
             </div>
@@ -151,7 +151,7 @@ $notificationView = new NotificationViewModel();
                                     <tbody>
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $viewModule->getVersion(); ?></td>
+                                            <td><?= $moduleView->getVersion(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -246,7 +246,7 @@ $notificationView = new NotificationViewModel();
 
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $viewModule->getVersion(); ?></td>
+                                            <td><?= $moduleView->getVersion(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -344,7 +344,7 @@ $notificationView = new NotificationViewModel();
                         <div class="tab-pane fade" id="v-pills-files" role="tabpanel" aria-labelledby="v-pills-files-tab">
                             <h3>Geänderte Dateien</h3>
 
-                            <?php if ($viewModule->isInstalled() && $viewModule->isChanged()) { ?>
+                            <?php if ($moduleView->isInstalled() && $moduleView->isChanged()) { ?>
                                     <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
                                         <?php $changes = htmlentities(ModuleHasher::getFileChanges($module, $file, $mode)); ?>
 
