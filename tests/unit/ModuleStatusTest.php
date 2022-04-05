@@ -23,7 +23,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(true);
         $stubModule->method('isLoaded')->willReturn(true);
 
@@ -39,7 +39,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(true);
         $stubModule->method('isLoaded')->willReturn(false);
 
@@ -55,7 +55,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isLoadable')->willReturn(true);
         $stubModule->method('isRemote')->willReturn(true);
 
@@ -72,7 +72,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isLoadable')->willReturn(false);
         $stubModule->method('isRemote')->willReturn(false);
 
@@ -89,7 +89,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(true);
         $stubModule->method('isLoadable')->willReturn(true);
         $stubModule->method('isRemote')->willReturn(true);
@@ -108,7 +108,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(false);
         $stubModule->method('isLoadable')->willReturn(true);
         $stubModule->method('isRemote')->willReturn(true);
@@ -127,7 +127,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(false);
         $stubModule->method('isLoadable')->willReturn(true);
         $stubModule->method('isRemote')->willReturn(true);
@@ -146,7 +146,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(true);
         $stubModule->method('isLoadable')->willReturn(true);
         $stubModule->method('isRemote')->willReturn(true);
@@ -165,7 +165,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('isInstalled')->willReturn(true);
@@ -183,7 +183,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('isInstalled')->willReturn(true);
@@ -201,7 +201,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('isInstalled')->willReturn(true);
@@ -218,7 +218,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('isInstalled')->willReturn(false);
@@ -235,7 +235,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn(null);
@@ -252,7 +252,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn(new Module());
@@ -269,7 +269,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn(null);
@@ -287,7 +287,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn(null);
@@ -305,7 +305,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isLoadable')->willReturn(true);
         $stubModule->method('isRemote')->willReturn(true);
         $stubModule->method('isCompatible')->willReturn(true);
@@ -326,7 +326,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isLoadable')->willReturn(false);
         $stubModule->method('isRemote')->willReturn(true);
         $stubModule->method('isCompatible')->willReturn(true);
@@ -347,7 +347,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn(null);
@@ -365,7 +365,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isLoaded')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn(null);
@@ -383,7 +383,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(true);
 
         //Act
@@ -398,7 +398,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(false);
 
         //Act
@@ -413,7 +413,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(false);
 
         //Act
@@ -428,7 +428,7 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isCompatible')->willReturn(true);
 
         //Act
@@ -443,16 +443,16 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubNewestModule */
-        $stubNewestModule = $this->createStub(Module::class);
+        $stubNewestModule = $this->createMock(Module::class);
         $stubNewestModule->method('getVersion')->willReturn('1.0.1');
         $stubNewestModule->method('isLoadable')->willReturn(true);
 
         /** @var MockObject $stubInstalledModule */
-        $stubInstalledModule = $this->createStub(Module::class);
+        $stubInstalledModule = $this->createMock(Module::class);
         $stubInstalledModule->method('getVersion')->willReturn('1.0.0');
 
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isInstalled')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn($stubInstalledModule);
@@ -470,16 +470,16 @@ class ModuleStatusTest extends TestCase
     {
         // Arrage
         /** @var MockObject $stubNewestModule */
-        $stubNewestModule = $this->createStub(Module::class);
+        $stubNewestModule = $this->createMock(Module::class);
         $stubNewestModule->method('getVersion')->willReturn('1.0.0');
         $stubNewestModule->method('isLoadable')->willReturn(true);
 
         /** @var MockObject $stubInstalledModule */
-        $stubInstalledModule = $this->createStub(Module::class);
+        $stubInstalledModule = $this->createMock(Module::class);
         $stubInstalledModule->method('getVersion')->willReturn('1.0.0');
 
         /** @var MockObject $stubModule */
-        $stubModule = $this->createStub(Module::class);
+        $stubModule = $this->createMock(Module::class);
         $stubModule->method('isRemote')->willReturn(false);
         $stubModule->method('isInstalled')->willReturn(true);
         $stubModule->method('getInstalledVersion')->willReturn($stubInstalledModule);
