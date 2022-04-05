@@ -48,6 +48,11 @@ class App
         return self::getRoot() . '/src';
     }
 
+    public static function getLogsRoot(): string
+    {
+        return self::getRoot() . '/logs';
+    }
+
     public static function getTemplatesRoot(): string
     {
         return self::getRoot() . '/src/Templates';

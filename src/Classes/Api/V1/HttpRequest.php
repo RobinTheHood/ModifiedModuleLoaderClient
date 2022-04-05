@@ -13,8 +13,12 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
+
 class HttpRequest
 {
+    private bool $logging = true;
+
     public function isServerAvailable(string $url): bool
     {
         $headers = @get_headers($url);
@@ -38,7 +42,14 @@ class HttpRequest
             ]
         ];
         $context  = stream_context_create($options);
-        return @file_get_contents($url, false, $context);
+        $result = @file_get_contents($url, false, $context);
+
+        // Logging
+        if ($this->logging) {
+            file_put_contents(App::getLogsRoot() . '/log.txt', $result);
+        }
+
+        return $result;
     }
 
 
@@ -56,7 +67,14 @@ class HttpRequest
         ];
 
         $context = stream_context_create($options);
-        return @file_get_contents($url, false, $context);
+        $result = @file_get_contents($url, false, $context);
+
+        // Logging
+        if ($this->logging) {
+            file_put_contents(App::getLogsRoot() . '/log.txt', $result);
+        }
+
+        return $result;
     }
 
     public static function createQuery(array $queryValues): string
