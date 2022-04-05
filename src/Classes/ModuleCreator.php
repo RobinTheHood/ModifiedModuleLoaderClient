@@ -115,6 +115,7 @@ class ModuleCreator
     public function createSystemModuleFile($archiveName, $fileName, $className, $moduleConstName)
     {
         $content = '<?php
+
 defined(\'_VALID_XTC\') or die(\'Direct Access to this location is not allowed.\');
 
 use RobinTheHood\ModifiedStdModule\Classes\StdModule;
@@ -126,7 +127,7 @@ class ' . $className . ' extends StdModule
     {
         $this->init(\'' . $moduleConstName . '\');
     }
-       
+
     public function display()
     {
         return $this->displaySaveButton();
@@ -141,7 +142,8 @@ class ' . $className . ' extends StdModule
     {
         parent::remove();
     }
-}';
+}
+';
 
         \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/modules/system/' . $fileName, $content);
     }
@@ -149,6 +151,7 @@ class ' . $className . ' extends StdModule
     public function createSystemModuleLanguageDeFile($archiveName, $fileName, $moduleConstName, $vendorName)
     {
         $content = '<?php
+
 define(\'' . $moduleConstName . '_TITLE\', \'' . $archiveName . ' © by <a href="#" target="_blank" style="color: #e67e22; font-weight: bold;">' . $vendorName . '</a>\');
 define(\'' . $moduleConstName . '_LONG_DESCRIPTION\', \'Lange Beschreibung für ' . $archiveName . '\');
 define(\'' . $moduleConstName . '_STATUS_TITLE\', \'' . $archiveName . ' Modul aktivieren?\');
@@ -161,6 +164,7 @@ define(\'' . $moduleConstName . '_STATUS_DESC\', \'\');
     public function createSystemModuleLanguageEnFile($archiveName, $fileName, $moduleConstName, $vendorName)
     {
         $content = '<?php
+
 define(\'' . $moduleConstName . '_TITLE\', \'' . $archiveName . ' © by <a href="#" target="_blank" style="color: #e67e22; font-weight: bold;">' . $vendorName . '</a>\');
 define(\'' . $moduleConstName . '_LONG_DESCRIPTION\', \'Long description for ' . $archiveName . '\');
 define(\'' . $moduleConstName . '_STATUS_TITLE\', \'' . $archiveName . ' Modul active?\');
