@@ -39,11 +39,22 @@ class SelfUpdater
      */
     protected $comparator;
 
-    public function __construct()
+    /**
+     * @var Parser
+     */
+    protected $parser;
+
+    private $apiRequest;
+
+    public function __construct($apiRequest = null)
     {
+        $this->apiRequest = $apiRequest;
+
         // appRoot wird in die Variable ausgelagert, da während der Installation,
         // wenn Dateien verschoben werden, die Methode App::getRoot() nicht
         // mehr richtige Ergebnisse liefert.
+        $this->appRoot = App::getRoot();
+
         $remoteAddress = Config::getRemoteAddress() ?? '';
 
         if (empty(Config::getRemoteAddress())) {
@@ -51,14 +62,16 @@ class SelfUpdater
         }
 
         $this->remoteUpdateServer = str_replace('/api.php', '/Downloads/', $remoteAddress);
-        $this->appRoot = App::getRoot();
+
         $this->comparator = new Comparator(new Parser());
+        $this->parser = new Parser();
     }
 
 
     public function checkUpdate(): bool
     {
-        $newestVersionInfo = $this->getNewestVersionInfo();
+        $latest = Config::getSelfUpdate() == 'latest';
+        $newestVersionInfo = $this->getNewestVersionInfo($latest);
         $installedVersion = $this->getInstalledVersion();
 
         try {
@@ -74,7 +87,11 @@ class SelfUpdater
 
     public function getVersionInfos(): array
     {
-        $apiRequest = new ApiRequest();
+        if ($this->apiRequest) {
+            $apiRequest = $this->apiRequest;
+        } else {
+            $apiRequest = new ApiRequest();
+        }
         $result = $apiRequest->getAllVersions();
 
         $content = $result['content'] ?? [];
@@ -98,7 +115,7 @@ class SelfUpdater
     /**
      * @return array<string, string> Returns the latest version info
      */
-    public function getNewestVersionInfo(): array
+    public function getNewestVersionInfo($latest = false): array
     {
         $versionInfos = $this->getVersionInfos();
 
@@ -106,9 +123,9 @@ class SelfUpdater
 
         foreach ($versionInfos as $versionInfo) {
             try {
-                $version = (new Parser())->parse($versionInfo['version']);
+                $version = $this->parser->parse($versionInfo['version']);
 
-                if (Config::getSelfUpdate() != 'latest' && $version->getTag()) {
+                if (!$latest && $version->getTag()) {
                     continue;
                 }
 
@@ -123,10 +140,9 @@ class SelfUpdater
         return $newestVersionInfo;
     }
 
-    public function getFileNameByVersion(string $version): string
+    private function getFileNameByVersion(string $version): string
     {
         $versionInfos = $this->getVersionInfos();
-        $installFileName = '';
         foreach ($versionInfos as $versionInfo) {
             if ($versionInfo['version'] == $version) {
                 return $versionInfo['fileName'];
@@ -258,7 +274,8 @@ class SelfUpdater
         }
 
         if (!file_exists($dest)) {
-            $newestVersionInfo = $this->getNewestVersionInfo();
+            $latest = Config::getSelfUpdate() == 'latest';
+            $newestVersionInfo = $this->getNewestVersionInfo($latest);
             file_put_contents($this->appRoot . '/config/version.json', '{"version": "' . $newestVersionInfo['version'] . '"}');
         }
     }

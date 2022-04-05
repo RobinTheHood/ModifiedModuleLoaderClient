@@ -139,7 +139,8 @@ class IndexController extends Controller
 
         $selfUpdater = new SelfUpdater();
         $installedVersion = $selfUpdater->getInstalledVersion();
-        $version = $selfUpdater->getNewestVersionInfo();
+        $latest = Config::getSelfUpdate() == 'latest';
+        $version = $selfUpdater->getNewestVersionInfo($latest);
 
         $queryParams = $this->serverRequest->getQueryParams();
         $installVersion = $queryParams['install'] ?? '';
