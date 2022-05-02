@@ -9,7 +9,7 @@ $notificationView = new NotificationViewModel();
 
 function viewIsSelected(bool $value): string
 {
-    if ($value) {
+    if (!$value) {
         return '';
     }
     return 'selected="selected"';
