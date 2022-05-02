@@ -17,6 +17,8 @@ jobs:
         php_version: 7.4
     #- name: composer install missing files
     #  run: composer1 install
+    - name: create directories
+      run: mkdir logs
     - name: copy config
       run: cp config/_config.php config/config.php
     - name: run phpcs for PSR12 coding style checks 
