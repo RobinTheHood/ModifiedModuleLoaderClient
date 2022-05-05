@@ -8,7 +8,9 @@ NEW_VERSION=$1
 
 # Prepare build directory
 mkdir ./build
-rm -rf ./build/ModifiedModuleLoaderClient.tar
+rm -rf ./build/ModifiedModuleLoaderClientLocal.tar
+rm -rf ./build/ModifiedModuleLoaderClient
+rm -rf ./build/ModifiedModuleLoaderClientLocal
 
 echo "Build Version: ${NEW_VERSION}"
 
@@ -51,10 +53,12 @@ mkdir ./build/ModifiedModuleLoaderClientLocal/Modules
 mkdir ./build/ModifiedModuleLoaderClientLocal/Archives
 
 # Create tar file
-COPYFILE_DISABLE=1 tar -C ./build/ -cf ./build/ModifiedModuleLoaderClientLocal.tar ModifiedModuleLoaderClientLocal/
+mv ./build/ModifiedModuleLoaderClientLocal ./build/ModifiedModuleLoaderClient
+COPYFILE_DISABLE=1 tar -C ./build/ -cf ./build/ModifiedModuleLoaderClientLocal.tar ModifiedModuleLoaderClient/
 
 # Add Version
 rm -f ./build/ModifiedModuleLoaderClientLocal_v${NEW_VERSION}.tar
 cp ./build/ModifiedModuleLoaderClientLocal.tar ./build/ModifiedModuleLoaderClientLocal_v${NEW_VERSION}.tar
 
+rm -rf ./build/ModifiedModuleLoaderClient
 rm -rf ./build/ModifiedModuleLoaderClientLocal
