@@ -24,7 +24,7 @@ $notificationView = new NotificationViewModel();
         <script src="src/Templates/Scripts/language-smarty.js"></script>
         <script>
             hljs.configure({
-                languages: ['smarty', 'php'],
+                languages: ['smarty', 'php', 'js'],
                 ignoreUnescapedHTML: true
             });
             hljs.registerLanguage('smarty', smarty);
