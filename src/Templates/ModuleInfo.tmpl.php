@@ -18,9 +18,17 @@ $notificationView = new NotificationViewModel();
 <html lang="de">
     <head>
         <?php include 'Head.tmpl.php' ?>
-        <link rel="stylesheet" href="src/Templates/Styles/github.css">
-        <script src="src/Templates/Scripts/highlight.pack.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
+        <link rel="stylesheet" href="src/Templates/Styles/highlight-github.css">
+        <link rel="stylesheet" href="src/Templates/Styles/github-markdown-css.css">
+        <script src="src/Templates/Scripts/highlight.min.js"></script>
+        <script src="src/Templates/Scripts/language-smarty.js"></script>
+        <script>
+            hljs.configure({
+                languages: ['smarty', 'php'],
+                ignoreUnescapedHTML: true
+            });
+            hljs.registerLanguage('smarty', smarty);
+        </script>
     </head>
 
     <body>
@@ -203,8 +211,8 @@ $notificationView = new NotificationViewModel();
                                 </table>
                             </div>
 
-                            <div class="markdown">
-                                <h2>Beschreibung</h2>
+                            <h2>Beschreibung</h2>
+                            <div class="markdown-body">
                                 <p>
                                     <?php if ($module->getDescription()) { ?>
                                         <?= $module->getDescription() ?>
@@ -216,21 +224,21 @@ $notificationView = new NotificationViewModel();
                         </div>                        
 
                         <div class="tab-pane fade" id="v-pills-install" role="tabpanel" aria-labelledby="v-pills-install-tab">
-                            <div class="markdown">
+                            <div class="markdown-body">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
                         
 
                         <div class="tab-pane fade" id="v-pills-usage" role="tabpanel" aria-labelledby="v-pills-usage-tab">
-                            <div class="markdown">
+                            <div class="markdown-body">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
                         
 
                         <div class="tab-pane fade" id="v-pills-changes" role="tabpanel" aria-labelledby="v-pills-changes-tab">
-                            <div class="markdown changelog">
+                            <div class="markdown-body changelog">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
@@ -334,7 +342,7 @@ $notificationView = new NotificationViewModel();
                                 <hr>
 
                                 <div id="readme" style="padding-bottom: 30px">
-                                    <div class="markdown">
+                                    <div class="markdown-body">
                                         README.md Wird geladen. Bitte warten...
                                     </div>
                                  </div>
@@ -362,10 +370,10 @@ $notificationView = new NotificationViewModel();
             </div>
         </div>
 
-        <?= LazyLoader::loadModuleReadme($module, '#readme .markdown', 'Es ist keine README.md vorhanden.'); ?>
-        <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown', 'Es ist keine manuelle Installationanleitung vorhanden.'); ?>
-        <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown', 'Es ist keine Bedienungsanleitung vorhanden.'); ?>
-        <?= LazyLoader::loadModuleChangelog($module->getNewestVersion(), '#v-pills-changes .markdown', 'Es ist kein Änderungsprotokoll vorhanden.'); ?>
+        <?= LazyLoader::loadModuleReadme($module, '#readme .markdown-body', 'Es ist keine README.md vorhanden.'); ?>
+        <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown-body', 'Es ist keine manuelle Installationanleitung vorhanden.'); ?>
+        <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown-body', 'Es ist keine Bedienungsanleitung vorhanden.'); ?>
+        <?= LazyLoader::loadModuleChangelog($module->getNewestVersion(), '#v-pills-changes .markdown-body', 'Es ist kein Änderungsprotokoll vorhanden.'); ?>
 
         <?php include 'Footer.tmpl.php' ?>
     </body>

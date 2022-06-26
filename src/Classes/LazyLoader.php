@@ -29,6 +29,9 @@ class LazyLoader
                     if (data) {
                         $("' . $target . '").html(data);
                         $("' . $target . '").show();
+                        if (window.hljs) {
+                            hljs.highlightAll();
+                        }
                     } else {
                         $("' . $target . '").html("' . $default . '");
                     }
