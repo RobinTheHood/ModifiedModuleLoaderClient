@@ -541,6 +541,7 @@ section {
 
 .infos {
     border-bottom: 1px solid var(--colourBorder);
+    margin-bottom: 20px;
 }
 
 .infos .table-sm td {
