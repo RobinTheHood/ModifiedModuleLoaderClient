@@ -30,5 +30,10 @@
         "psr-4": {
             "RobinTheHood\\ModifiedModuleLoaderClient\\": "src/Classes/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "ocramius/package-versions": true
+        }
     }
 }
