@@ -295,6 +295,17 @@ $notificationView = new NotificationViewModel();
                                         </tr>
 
                                         <tr>
+                                            <td>Website</td>
+                                            <td>
+                                                <?php if ($module->getModuleWebsite()) { ?>
+                                                    <a target="_blank" href="<?= $module->getModuleWebsite() ?>"><?= $module->getModuleWebsite() ?></a>
+                                                <?php } else { ?>
+                                                    unbekannte Website
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
                                             <td>Alle Versionen</td>
                                             <td>
                                                 <?php foreach ($module->getVersions() as $moduleVersion) {?>

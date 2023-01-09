@@ -567,4 +567,11 @@ class Module extends ModuleInfo
 
         return $authorWebsite;
     }
+
+    public function getModuleWebsite(): string
+    {
+        $moduleWebsite = $this->website;
+
+        return $moduleWebsite;
+    }
 }
