@@ -18,7 +18,8 @@ if ($module->isCompatible()) {
 
 $modulePrice = $module->isInstalled() ? 'installiert' : $moduleView->getPriceFormated();
 $moduleLink = '?action=moduleInfo&archiveName=' . $module->getArchiveName() . '&version=' . $module->getVersion();
-
+$moduleAuthor = $module->getAuthor();
+$moduleAuthorWebsite = $module->getAuthorWebsite();
 ?>
 
 <div class="card module-serach-box <?= $module->isCompatible() ? 'compatible' : 'incompatible'; ?>" data-tags="<?= $dataTags ?>">
@@ -30,6 +31,13 @@ $moduleLink = '?action=moduleInfo&archiveName=' . $module->getArchiveName() . '&
         <h5 class="card-title">
             <?= $module->getName(); ?>
             <span class="card-version"><?= $module->getVersion(); ?></span>
+            <div class="card-author">
+                <?php if ($moduleAuthorWebsite) { ?>
+                    <a href="<?= $module->getAuthorWebsite(); ?>"><?= $moduleAuthor ?></a>
+                <?php } else { ?>
+                    <?= $moduleAuthor ?>
+                <?php } ?>
+            </div>
         </h5>
 
         <div class="module-price">

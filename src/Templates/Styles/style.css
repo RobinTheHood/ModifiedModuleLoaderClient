@@ -188,6 +188,11 @@ section {
     color: var(--gray);
 }
 
+.modules .category .card .card-author {
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
 .modules .category .card .module-price {
     font-size: 1.25em;
     color: var(--blue);

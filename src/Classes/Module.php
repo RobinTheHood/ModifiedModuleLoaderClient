@@ -553,4 +553,18 @@ class Module extends ModuleInfo
         $changedFiles = $moduleHasher->getModuleChanges($this);
         return $changedFiles;
     }
+
+    public function getAuthor(): string
+    {
+        $author = $this->developer;
+
+        return $author;
+    }
+
+    public function getAuthorWebsite(): string
+    {
+        $authorWebsite = $this->developerWebsite;
+
+        return $authorWebsite;
+    }
 }
