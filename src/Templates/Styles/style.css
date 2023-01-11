@@ -204,15 +204,15 @@ section {
 .modules .category .card .card-img-top {
     --padding: 40px;
 
-	display: block;
+    display: block;
     width: auto;
     height: 64px;
 
     margin: auto;
-	padding: var(--padding);
+    padding: var(--padding);
 
-	box-sizing: content-box;
-	max-width: calc(100% - var(--padding) * 2);
+    box-sizing: content-box;
+    max-width: calc(100% - var(--padding) * 2);
 }
 
 .modules .category .card.incompatible .card-img-top {
