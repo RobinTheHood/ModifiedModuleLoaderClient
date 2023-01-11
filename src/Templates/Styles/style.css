@@ -71,7 +71,7 @@ select + p {
 
 select.form-control {
     height: 38px !important;
-} 
+}
 
 h1,
 h2,
@@ -186,6 +186,11 @@ section {
 .modules .category .card .card-version {
     display: inline-block;
     color: var(--gray);
+}
+
+.modules .category .card .card-developer {
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
 }
 
 .modules .category .card .module-price {
