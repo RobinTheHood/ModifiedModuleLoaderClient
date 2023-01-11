@@ -67,7 +67,7 @@ class RemoteModuleLoaderTest extends TestCase
         $module = $this->loader->loadLatestVersionByArchiveName('composer/autoload');
 
         $this->assertEquals('composer/autoload', $module->getArchiveName());
-        $this->assertEquals('1.2.2', $module->getVersion());
+        $this->assertEquals('1.3.0', $module->getVersion());
     }
 
     public function testCanLoadByArchiveNameAndVersion()
