@@ -48,7 +48,7 @@ class FileHelper
                 continue;
             }
 
-            if (!$includeInvisibles && self::isInvisable($fileName)) {
+            if (!$includeInvisibles && self::isInvisible($fileName)) {
                 continue;
             }
 
@@ -75,7 +75,7 @@ class FileHelper
         return $paths;
     }
 
-    public static function isInvisable($path)
+    public static function isInvisible($path)
     {
         if ($path[0] == '.') {
             return true;
