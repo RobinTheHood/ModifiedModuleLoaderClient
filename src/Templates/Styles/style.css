@@ -71,7 +71,7 @@ select + p {
 
 select.form-control {
     height: 38px !important;
-} 
+}
 
 h1,
 h2,
@@ -202,13 +202,17 @@ section {
 }
 
 .modules .category .card .card-img-top {
-    display: block;
-    padding: 40px;
+    --padding: 40px;
+
+	display: block;
     width: auto;
     height: 64px;
-    margin: auto;
 
-    box-sizing: content-box;
+    margin: auto;
+	padding: var(--padding);
+
+	box-sizing: content-box;
+	max-width: calc(100% - var(--padding) * 2);
 }
 
 .modules .category .card.incompatible .card-img-top {
