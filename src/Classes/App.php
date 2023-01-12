@@ -40,12 +40,7 @@ class App
 
     public static function getShopRoot(): string
     {
-        $shopRootOption = Config::getOption('shopRoot');
-        $shopRootDirectory = empty($shopRootOption)
-                           ? realpath(__DIR__ . '/../../../')
-                           : rtrim($shopRootOption, '/\\');
-
-        return $shopRootDirectory;
+        return dirname(dirname($_SERVER['SCRIPT_FILENAME']));
     }
 
     public static function getSrcRoot(): string
