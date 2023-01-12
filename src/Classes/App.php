@@ -40,7 +40,11 @@ class App
 
     public static function getShopRoot(): string
     {
-        return realPath(__DIR__ . '/../../../');
+        $shopRoot = empty(Config::getOption('shopRoot'))
+                  ? realpath(__DIR__ . '/../../../')
+                  : rtrim(Config::getOption('shopRoot'), '/\\');
+
+        return $shopRoot;
     }
 
     public static function getSrcRoot(): string
