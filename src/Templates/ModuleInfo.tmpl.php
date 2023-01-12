@@ -221,21 +221,21 @@ $notificationView = new NotificationViewModel();
                                     <?php } ?>
                                 </p>
                             </div>
-                        </div>                        
+                        </div>
 
                         <div class="tab-pane fade" id="v-pills-install" role="tabpanel" aria-labelledby="v-pills-install-tab">
                             <div class="markdown-body">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        
+
 
                         <div class="tab-pane fade" id="v-pills-usage" role="tabpanel" aria-labelledby="v-pills-usage-tab">
                             <div class="markdown-body">
                                 Wird geladen. Bitte warten...
                             </div>
                         </div>
-                        
+
 
                         <div class="tab-pane fade" id="v-pills-changes" role="tabpanel" aria-labelledby="v-pills-changes-tab">
                             <div class="markdown-body changelog">
@@ -290,6 +290,17 @@ $notificationView = new NotificationViewModel();
                                                     <?= $module->getDeveloper() ?>
                                                 <?php } else { ?>
                                                     unbekannter Entwickler
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Website</td>
+                                            <td>
+                                                <?php if ($module->getWebsite()) { ?>
+                                                    <a target="_blank" href="<?= $module->getWebsite() ?>"><?= $module->getWebsite() ?></a>
+                                                <?php } else { ?>
+                                                    unbekannte Website
                                                 <?php } ?>
                                             </td>
                                         </tr>

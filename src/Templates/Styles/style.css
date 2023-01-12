@@ -71,7 +71,7 @@ select + p {
 
 select.form-control {
     height: 38px !important;
-} 
+}
 
 h1,
 h2,
@@ -188,6 +188,11 @@ section {
     color: var(--gray);
 }
 
+.modules .category .card .card-developer {
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
 .modules .category .card .module-price {
     font-size: 1.25em;
     color: var(--blue);
@@ -202,13 +207,17 @@ section {
 }
 
 .modules .category .card .card-img-top {
+    --padding: 40px;
+
     display: block;
-    padding: 40px;
     width: auto;
     height: 64px;
+
     margin: auto;
+    padding: var(--padding);
 
     box-sizing: content-box;
+    max-width: calc(100% - var(--padding) * 2);
 }
 
 .modules .category .card.incompatible .card-img-top {
