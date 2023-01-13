@@ -90,6 +90,13 @@ function viewIsSelected(bool $value): string
                         <div class="tab-pane fade show" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
                             <h2>Erweitert</h2>
                             <form action="?action=settings&section=advanced" method="post">
+                                <!-- shopRoot -->
+                                <div class="form-group">
+                                    <label for="inputShopRoot">Shop Root</label>
+                                    <input type="text" name="shopRoot" class="form-control" id="inputShopRoot" value="<?= Config::getShopRoot(); ?>">
+                                    <p>Verzeichnis vom modified-shop. Lasse dieses Feld leer für die Standard Einstellung.</p>
+                                </div>
+
                                 <!-- modulesLocalDir -->
                                 <div class="form-group">
                                     <label for="inputModulesLocalDir">Module Pfad</label>
