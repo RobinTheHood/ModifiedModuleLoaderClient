@@ -33,6 +33,7 @@ $configuration = [
      * of your modified-shop root and exists as a symbolic link, you may need to
      * define your shop root here.
      *
-     * 'shopRoot' => '/path/to/modified-shop',
+     * Leave empty for default.
      */
+    'shopRoot' => '',
 ];
