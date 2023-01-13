@@ -73,7 +73,7 @@ function viewIsSelected(bool $value): string
                                     <input type="text" name="username" class="form-control" id="inputUsername" value="<?= Config::getUsername(); ?>">
                                     <p>Mit diesem Namen meldest du dich im MMLC an.</p>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="inputPassword">Password</label>
                                     <input type="password" name="password" class="form-control" id="inputPassword">
@@ -104,7 +104,7 @@ function viewIsSelected(bool $value): string
                                         <option <?= viewIsSelected(Config::getInstallMode() == 'copy') ?> value="copy">copy</option>
                                         <option <?= viewIsSelected(Config::getInstallMode() == 'link') ?> value="link">link</option>
                                     </select>
-                                    
+
                                     <p>Du kannst zwischen <code>copy</code> und <code>link</code> wählen. Hast du den MMLC in einem Live-Shop im Einsatz, wähle <code>copy</code>. Wenn du mit dem MMLC Module entwickelst, wähle <code>link</code>.</p>
                                 </div>
 
@@ -126,7 +126,7 @@ function viewIsSelected(bool $value): string
                 $(tabId).tab('show')
             })
         </script>
-        
+
         <?php include 'Footer.tmpl.php' ?>
     </body>
 </html>
