@@ -73,7 +73,7 @@ function viewIsSelected(bool $value): string
                                     <input type="text" name="username" class="form-control" id="inputUsername" value="<?= Config::getUsername(); ?>">
                                     <p>Mit diesem Namen meldest du dich im MMLC an.</p>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="inputPassword">Password</label>
                                     <input type="password" name="password" class="form-control" id="inputPassword">
@@ -90,6 +90,13 @@ function viewIsSelected(bool $value): string
                         <div class="tab-pane fade show" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
                             <h2>Erweitert</h2>
                             <form action="?action=settings&section=advanced" method="post">
+                                <!-- shopRoot -->
+                                <div class="form-group">
+                                    <label for="inputShopRoot">Shop Root</label>
+                                    <input type="text" name="shopRoot" class="form-control" id="inputShopRoot" value="<?= Config::getShopRoot(); ?>">
+                                    <p>Verzeichnis vom modified-shop. Lasse dieses Feld leer für die Standard Einstellung.</p>
+                                </div>
+
                                 <!-- modulesLocalDir -->
                                 <div class="form-group">
                                     <label for="inputModulesLocalDir">Module Pfad</label>
@@ -104,7 +111,7 @@ function viewIsSelected(bool $value): string
                                         <option <?= viewIsSelected(Config::getInstallMode() == 'copy') ?> value="copy">copy</option>
                                         <option <?= viewIsSelected(Config::getInstallMode() == 'link') ?> value="link">link</option>
                                     </select>
-                                    
+
                                     <p>Du kannst zwischen <code>copy</code> und <code>link</code> wählen. Hast du den MMLC in einem Live-Shop im Einsatz, wähle <code>copy</code>. Wenn du mit dem MMLC Module entwickelst, wähle <code>link</code>.</p>
                                 </div>
 
@@ -126,7 +133,7 @@ function viewIsSelected(bool $value): string
                 $(tabId).tab('show')
             })
         </script>
-        
+
         <?php include 'Footer.tmpl.php' ?>
     </body>
 </html>

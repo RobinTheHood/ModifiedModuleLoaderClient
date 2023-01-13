@@ -40,7 +40,7 @@ class App
 
     public static function getShopRoot(): string
     {
-        return realPath(__DIR__ . '/../../../');
+        return Config::getShopRoot();
     }
 
     public static function getSrcRoot(): string
