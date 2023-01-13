@@ -24,5 +24,16 @@ $configuration = [
      * @param string selfUpdate stable, latest
      */
     'installMode' => 'copy',
-    'selfUpdate' => 'stable'
+    'selfUpdate' => 'stable',
+
+    /**
+     * Settings revolving around your modified-shop
+     *
+     * Overwrite the default shop path. If your MMLC installation is not inside
+     * of your modified-shop root and exists as a symbolic link, you may need to
+     * define your shop root here.
+     *
+     * Leave empty for default.
+     */
+    'shopRoot' => '',
 ];

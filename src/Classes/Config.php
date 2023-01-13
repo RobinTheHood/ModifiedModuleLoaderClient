@@ -226,6 +226,26 @@ class Config
     }
 
     /**
+     * Get the modified-shop root directory.
+     *
+     * @return string
+     */
+    public static function getShopRoot(): string
+    {
+        $shopRootOption = self::getOption('shopRoot');
+        $shopRootDirectory = empty($shopRootOption)
+                           ? realpath(__DIR__ . '/../../../')
+                           : rtrim($shopRootOption, '/\\');
+
+        return $shopRootDirectory;
+    }
+
+    public static function setShopRoot(string $newShopRoot): void
+    {
+        self::writeConfiguration(['shopRoot' => $newShopRoot]);
+    }
+
+    /**
      * Get modulesLocalDir from config.
      *
      * @return string|null Returns the modulesLocalDir from config or null.

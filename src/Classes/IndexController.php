@@ -602,6 +602,10 @@ class IndexController extends Controller
                 Config::setAccessToken($parsedBody['accessToken']);
             }
 
+            if (isset($parsedBody['shopRoot'])) {
+                Config::setShopRoot($parsedBody['shopRoot']);
+            }
+
             if (isset($parsedBody['modulesLocalDir'])) {
                 Config::setModulesLocalDir($parsedBody['modulesLocalDir']);
             }

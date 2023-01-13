@@ -46,7 +46,14 @@ class HttpRequest
 
         // Logging
         if ($this->logging) {
-            file_put_contents(App::getLogsRoot() . '/log.txt', $result);
+            $logFilepath = App::getLogsRoot() . '/log.txt';
+            $logDirectory = dirname($logFilepath);
+
+            if (!file_exists($logDirectory)) {
+                mkdir($logDirectory);
+            }
+
+            file_put_contents($logFilepath, $result);
         }
 
         return $result;
