@@ -34,22 +34,38 @@ composer update -d ./build/ModifiedModuleLoaderClient --no-dev
 # Rename config.php
 mv ./build/ModifiedModuleLoaderClient/config/_config.php ./build/ModifiedModuleLoaderClient/config/config.php
 
-# Delete directories
-rm -rf ./build/ModifiedModuleLoaderClient/docs
-rm -rf ./build/ModifiedModuleLoaderClient/tests
-rm -rf ./build/ModifiedModuleLoaderClient/patches
-rm -rf ./build/ModifiedModuleLoaderClient/.github
+# Delete directories even if they do not exist
+rm -rf ./build/ModifiedModuleLoaderClientLocal/.github
+rm -rf ./build/ModifiedModuleLoaderClientLocal/.vscode
+rm -rf ./build/ModifiedModuleLoaderClientLocal/Archives
+rm -rf ./build/ModifiedModuleLoaderClientLocal/build
+# keep ./build/ModifiedModuleLoaderClientLocal/config
+rm -rf ./build/ModifiedModuleLoaderClientLocal/docs
+rm -rf ./build/ModifiedModuleLoaderClientLocal/logs
+rm -rf ./build/ModifiedModuleLoaderClientLocal/Modules
+rm -rf ./build/ModifiedModuleLoaderClientLocal/private
+# keep ./build/ModifiedModuleLoaderClientLocal/scripts
+# keep ./build/ModifiedModuleLoaderClientLocal/src
+rm -rf ./build/ModifiedModuleLoaderClientLocal/tests
+# keep ./build/ModifiedModuleLoaderClientLocal/vendor
 
-# Delete files
-rm ./build/ModifiedModuleLoaderClient/README.md
-rm ./build/ModifiedModuleLoaderClient/.gitignore
-rm ./build/ModifiedModuleLoaderClient/composer.json
-rm ./build/ModifiedModuleLoaderClient/composer.lock
-rm ./build/ModifiedModuleLoaderClient/phpunit.xml
-rm ./build/ModifiedModuleLoaderClient/psalm.xml
-rm ./build/ModifiedModuleLoaderClient/psalm-baseline.xml
-rm ./build/ModifiedModuleLoaderClient/mmlc_installer.php
-rm ./build/ModifiedModuleLoaderClient/scripts/buildClient.sh
+# Delete files from root
+rm ./build/ModifiedModuleLoaderClientLocal/.gitignore
+rm ./build/ModifiedModuleLoaderClientLocal/codeception.yml
+rm ./build/ModifiedModuleLoaderClientLocal/composer.json
+rm ./build/ModifiedModuleLoaderClientLocal/composer.lock
+rm ./build/ModifiedModuleLoaderClientLocal/icon.png
+# keep ./build/ModifiedModuleLoaderClientLocal/index.php
+rm ./build/ModifiedModuleLoaderClientLocal/mmlc_installer.php
+rm ./build/ModifiedModuleLoaderClientLocal/phpunit.xml
+rm ./build/ModifiedModuleLoaderClientLocal/psalm-baseline.xml
+rm ./build/ModifiedModuleLoaderClientLocal/psalm.xml
+rm ./build/ModifiedModuleLoaderClientLocal/README.md
+
+# Delete files from scripts/
+rm ./build/ModifiedModuleLoaderClientLocal/scripts/buildClient.sh
+rm ./build/ModifiedModuleLoaderClientLocal/scripts/buildClientFromLocal.sh
+# keep ./build/ModifiedModuleLoaderClientLocal/scripts/createModule.sh
 
 # Create empty directories
 mkdir ./build/ModifiedModuleLoaderClient/Modules
