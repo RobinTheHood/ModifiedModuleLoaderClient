@@ -17,7 +17,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\App;
 
 class HttpRequest
 {
-    private bool $logging = true;
+    private bool $logging = false;
 
     public function isServerAvailable(string $url): bool
     {
