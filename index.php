@@ -30,7 +30,6 @@ if (file_exists('config/config.php')) {
 use RobinTheHood\ExceptionMonitor\ExceptionMonitor;
 use RobinTheHood\Debug\Debug;
 
-use RobinTheHood\ModifiedModuleLoaderClient\IndexController;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
