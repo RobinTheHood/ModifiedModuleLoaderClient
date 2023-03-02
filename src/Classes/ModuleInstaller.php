@@ -194,10 +194,14 @@ class ModuleInstaller
         $template = \file_get_contents(App::getTemplatesRoot() . '/autoload.php.tmpl');
         $template = \str_replace('{VENDOR_PSR4_NAMESPACE_MAPPINGS}', $namespaceMapping, $template);
 
-        @mkdir(App::getShopRoot() . '/vendor-no-composer');
+        if (!file_exists(App::getShopRoot() . '/vendor-no-composer')) {
+            mkdir(App::getShopRoot() . '/vendor-no-composer');
+        }
         \file_put_contents(App::getShopRoot() . '/vendor-no-composer/autoload.php', $template);
 
-        @mkdir(App::getShopRoot() . '/vendor-mmlc');
+        if (!file_exists(App::getShopRoot() . '/vendor-mmlc')) {
+            mkdir(App::getShopRoot() . '/vendor-mmlc');
+        }
         \file_put_contents(App::getShopRoot() . '/vendor-mmlc/autoload.php', $template);
     }
 
