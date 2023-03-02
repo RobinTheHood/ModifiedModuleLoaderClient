@@ -71,6 +71,11 @@ class Module extends ModuleInfo
     private array $srcFilePaths;
 
     /**
+     * @var string[]
+     */
+    private array $srcFileMmlcPaths;
+
+    /**
      * @var bool
      */
     private bool $isRemote;
@@ -254,6 +259,26 @@ class Module extends ModuleInfo
     }
 
     /**
+     * Liefert ein Array mit Dateienpfaden, die sich in 'src-mmlc'
+     * befinden.
+     *
+     * Beispiel: [
+     *  /admin/includes/rth_file1.php
+     *  /includes/rth_file1.php
+     *  /includes/extra/rth_file1.php
+     * ]
+     */
+    public function getSrcFileMmlcPaths(): array
+    {
+        return $this->srcFileMmlcPaths;
+    }
+
+    public function setSrcFileMmlcPaths(array $value): void
+    {
+        $this->srcFileMmlcPaths = $value;
+    }
+
+    /**
      * Liefert true, wenn es sich um ein Remote Modul handelt.
      */
     public function isRemote(): bool
@@ -300,6 +325,16 @@ class Module extends ModuleInfo
     public function getSrcRootPath(): string
     {
         return $this->getModulePath() . '/' . $this->getSourceDir();
+    }
+
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/src-mmlc
+     */
+    public function getSrcMmlcRootPath(): string
+    {
+        return $this->getModulePath() . '/' . $this->getSourceDirMmlc();
     }
 
     /**

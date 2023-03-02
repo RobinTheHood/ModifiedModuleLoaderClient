@@ -35,10 +35,14 @@ class ModuleFactory
             throw new \RuntimeException('Can not parse ' . $moduleInfoJsonPath);
         }
 
+        $sourceDir = $array['sourceDir'] ?? 'src';
+        $sourceDirMmlc = $array['sourceDirMmlc'] ?? 'src-mmlc';
+
         $modulePath = FileHelper::stripBasePath(App::getRoot(), $path);
         $category = $array['category'] ?? '';
         $localRootPath = App::getRoot();
-        $absSrcRootPath = $localRootPath . $modulePath . '/' . $array['sourceDir'];
+        $absSrcRootPath = $localRootPath . $modulePath . '/' . $sourceDir;
+        $absSrcMmlcRootPath = $localRootPath . $modulePath . '/' . $sourceDirMmlc;
 
         $array['localRootPath'] = $localRootPath;
         $array['urlRootPath'] = ServerHelper::getUri();
@@ -49,6 +53,7 @@ class ModuleFactory
         $array['changelogPath'] = self::createChangelogPath($modulePath, $path);
         $array['readmePath'] = self::createReadmePath($modulePath, $path);
         $array['srcFilePaths'] = self::createSrcFilePaths($absSrcRootPath);
+        $array['srcFileMmlcPaths'] = self::createSrcFilePaths($absSrcMmlcRootPath);
         $array['isRemote'] = false;
 
         $module = self::createFromArray($array);
@@ -69,6 +74,7 @@ class ModuleFactory
         $module->setName($array['name'] ?? '');
         $module->setArchiveName($array['archiveName'] ?? '');
         $module->setSourceDir($array['sourceDir'] ?? 'new_files');
+        $module->setSourceDirMmlc($array['sourceDirMmlc'] ?? 'src-mmlc');
         $module->setVersion($array['version'] ?? 'auto');
         $module->setShortDescription($array['shortDescription'] ?? '');
         $module->setDescription($array['description'] ?? '');
@@ -95,6 +101,7 @@ class ModuleFactory
         $module->setChangelogPath($array['changelogPath'] ?? '');
         $module->setReadmePath($array['readmePath'] ?? '');
         $module->setSrcFilePaths($array['srcFilePaths'] ?? []);
+        $module->setSrcFileMmlcPaths($array['srcFileMmlcPaths'] ?? []);
         $module->setRemote($array['isRemote'] ?? false);
         $module->setLoadable($array['isLoadable'] ?? false);
 

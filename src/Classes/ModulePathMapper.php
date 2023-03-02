@@ -35,6 +35,11 @@ class ModulePathMapper
         return $mmlcPath;
     }
 
+    public static function srcMmlcToVendorMmlc(string $path, string $archiveName): string
+    {
+        return 'vendor-mmlc/' . $archiveName . '/' . $path;
+    }
+
     /**
      * Converts multible mmlc-paths to shop-paths. For example this method
      * renames all custome admin-directory-names like admin to admin_123456.

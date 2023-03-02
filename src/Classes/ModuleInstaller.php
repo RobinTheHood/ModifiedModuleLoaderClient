@@ -87,6 +87,7 @@ class ModuleInstaller
             $dependencyManager->canBeInstalled($module);
         }
 
+        // Install Source Files
         $files = $module->getSrcFilePaths();
 
         foreach ($files as $file) {
@@ -104,6 +105,15 @@ class ModuleInstaller
                 $dest = App::getShopRoot() . $file;
                 $this->installFile($src, $dest, $overwrite);
             }
+        }
+
+        // Install Source MMLC Files in vendor-mmlc
+        $files = $module->getSrcFileMmlcPaths();
+        foreach ($files as $file) {
+            $src = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/' . $file;
+            $file = ModulePathMapper::srcMmlcToVendorMmlc($file, $module->getArchiveName());
+            $dest = App::getShopRoot() . '/' . $file;
+            $this->installFile($src, $dest, true);
         }
 
         $moduleHasher = new ModuleHasher();
@@ -172,6 +182,7 @@ class ModuleInstaller
             }
 
             foreach ($autoload['psr-4'] as $namespace => $path) {
+                $path = str_replace($module->getSourceDirMmlc(), 'vendor-mmlc/' . $module->getArchiveName(), $path);
                 $namespaceEntrys[] =
                     '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
             }
@@ -185,6 +196,9 @@ class ModuleInstaller
 
         @mkdir(App::getShopRoot() . '/vendor-no-composer');
         \file_put_contents(App::getShopRoot() . '/vendor-no-composer/autoload.php', $template);
+
+        @mkdir(App::getShopRoot() . '/vendor-mmlc');
+        \file_put_contents(App::getShopRoot() . '/vendor-mmlc/autoload.php', $template);
     }
 
     //TODO: Better return void type an thorw exception at error

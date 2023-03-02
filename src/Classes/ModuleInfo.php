@@ -39,11 +39,21 @@ class ModuleInfo
      * Das Verzeichnis, in dem sich die Quellcode Dateien des Moduls befinden,
      * die in den Shop kopiert/verlinkt werden sollen.
      *
-     * Beispiel: new_fieles
+     * Beispiel: new_files
      *
      * @var string
      */
     protected $sourceDir;
+
+    /**
+     * Das Verzeichnis, in dem sich die Quellcode Dateien des Moduls befinden,
+     * die in den Shop kopiert/verlinkt werden sollen.
+     *
+     * Beispiel: src-mmlc
+     *
+     * @var string
+     */
+    protected $sourceDirMmlc;
 
     /**
      * Die Version des Moduls. Die Version muss der Sermver konvention folgen.
@@ -193,6 +203,16 @@ class ModuleInfo
     public function setSourceDir(string $value): void
     {
         $this->sourceDir = $value;
+    }
+
+    public function getSourceDirMmlc(): string
+    {
+        return $this->sourceDirMmlc;
+    }
+
+    public function setSourceDirMmlc(string $value): void
+    {
+        $this->sourceDirMmlc = $value;
     }
 
     public function getVersion(): string
