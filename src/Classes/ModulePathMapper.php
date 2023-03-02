@@ -37,7 +37,24 @@ class ModulePathMapper
 
     public static function srcMmlcToVendorMmlc(string $path, string $archiveName): string
     {
-        return 'vendor-mmlc/' . $archiveName . '/' . $path;
+        return '/vendor-mmlc/' . $archiveName . '/' . $path;
+    }
+
+    public static function vendorMmlcToSrcMmlc(string $vendorMmlcPath, string $archiveName): string
+    {
+        $string = '/vendor-mmlc/' . $archiveName . '/';
+        $replace = str_replace('/', '\/', $string);
+        $srcMmlcPath = preg_replace('/^' . $replace . '/', '/', $vendorMmlcPath);
+        return $srcMmlcPath;
+    }
+
+    public static function srcMmlcToVendorMmlcPaths(array $paths, string $archiveName): array
+    {
+        $resultPaths = [];
+        foreach ($paths as $path) {
+            $resultPaths[] = self::srcMmlcToVendorMmlc($path, $archiveName);
+        }
+        return $resultPaths;
     }
 
     /**
