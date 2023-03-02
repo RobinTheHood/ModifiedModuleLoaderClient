@@ -33,6 +33,7 @@ class ModuleHasher extends Hasher
 
     public function createModuleHashes(Module $module, bool $moduleDir = false): array
     {
+        // hash src
         $files = $module->getSrcFilePaths();
 
         if ($moduleDir) {
@@ -42,13 +43,22 @@ class ModuleHasher extends Hasher
             $files = ModulePathMapper::mmlcPathsToShopPaths($files);
         }
 
-        $hashes = $this->createFileHashes($files, $root);
+        $hashesSrc = $this->createFileHashes($files, $root);
 
         if (!$moduleDir) {
-            $hashes = $this->mapHashesShopToMmlc($hashes);
+            $hashesSrc = $this->mapHashesShopToMmlc($hashesSrc);
         }
 
-        return $hashes;
+        // hash src-mmlc
+        $files = $module->getSrcFileMmlcPaths();
+        $files = ModulePathMapper::srcMmlcToVendorMmlcPaths($files, $module->getArchiveName());
+        $hashesSrcMmlc = $this->createFileHashes($files, $root);
+
+        if (!$moduleDir) {
+            $hashesSrcMmlc = $this->mapHashesVendorMmlcToSrcMmlc($hashesSrcMmlc, $module->getArchiveName());
+        }
+
+        return $hashesSrc + $hashesSrcMmlc;
     }
 
     public function mapHashesShopToMmlc(array $hashes): array
@@ -56,6 +66,16 @@ class ModuleHasher extends Hasher
         $mappedHashes = [];
         foreach ($hashes as $file => $hash) {
             $file = ModulePathMapper::shopToMmlc($file);
+            $mappedHashes[$file] = $hash;
+        }
+        return $mappedHashes;
+    }
+
+    public function mapHashesVendorMmlcToSrcMmlc(array $hashes, $archiveName): array
+    {
+        $mappedHashes = [];
+        foreach ($hashes as $file => $hash) {
+            $file = ModulePathMapper::vendorMmlcToSrcMmlc($file, $archiveName);
             $mappedHashes[$file] = $hash;
         }
         return $mappedHashes;
@@ -74,7 +94,15 @@ class ModuleHasher extends Hasher
         $hashesCreatedA = $this->createModuleHashes($module);
         $hashesCreatedB = $this->createModuleHashes($module, true);
 
-        return $this->getChanges($hashesLoaded, $hashesCreatedA, $hashesCreatedB);
+        var_dump($hashesLoaded['scopes']['src']['hashes']);
+        var_dump($hashesCreatedA);
+        var_dump($hashesCreatedB);
+        //die();
+        $result = $this->getChanges($hashesLoaded['scopes']['src']['hashes'], $hashesCreatedA, $hashesCreatedB);
+
+        var_dump($result);
+        die();
+        return $result;
     }
 
     public static function getFileChanges(Module $module, string $path, string $mode = 'changed')
