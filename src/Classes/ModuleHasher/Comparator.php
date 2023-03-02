@@ -21,7 +21,7 @@ class Comparator
      * @param HashEntryCollection $shop
      * @param HashEntryCollection $mmlc
      *
-     * @return ChangedEntry[]
+     * @return ChangedEntryCollection
      */
     public function getChangedEntries(
         HashEntryCollection $installed,
@@ -33,6 +33,7 @@ class Comparator
         $changed1 = $installed->getNotEqualTo($shop);
         $changed2 = $mmlc->getNotEqualTo($installed);
 
+        $changeEntryCollections = [];
 
         $changeEntryCollections[]
             = ChangedEntryCollection::createFromHashEntryCollection($new, ChangedEntry::TYPE_NEW);

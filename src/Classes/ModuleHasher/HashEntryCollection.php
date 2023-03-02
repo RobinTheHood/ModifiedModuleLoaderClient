@@ -28,6 +28,9 @@ class HashEntryCollection
         $this->hashEntries = $hashEntries;
     }
 
+    /**
+     * Liefert ein HashEntry anhand von $file zurück.
+     */
     public function getByFile(string $file): ?HashEntry
     {
         foreach ($this->hashEntries as $hashEntry) {
@@ -47,6 +50,7 @@ class HashEntryCollection
      */
     public function getNotIn(HashEntryCollection $hashEntryCollection): HashEntryCollection
     {
+        /** @var HashEntry[] */
         $hashEntries = [];
         foreach ($this->hashEntries as $hashEntry) {
             $foundHashEntry = $hashEntryCollection->getByFile($hashEntry->file);
@@ -67,6 +71,7 @@ class HashEntryCollection
      */
     public function getNotEqualTo(HashEntryCollection $hashEntryCollection): HashEntryCollection
     {
+        /** @var HashEntry[] */
         $hashEntries = [];
         foreach ($this->hashEntries as $hashEntry) {
             $foundHashEntry = $hashEntryCollection->getByFile($hashEntry->file);

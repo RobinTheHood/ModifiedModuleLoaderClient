@@ -11,9 +11,21 @@ class ChangedEntry
     public const TYPE_DELETED = 2;
     public const TYPE_CHANGED = 3;
 
-    public $file;
-    public $type;
+    /**
+     * @var string $file
+     */
+    public $file = '';
 
+    /**
+     * @var int $type
+     */
+    public $type = self::TYPE_UNCHANGED;
+
+    /**
+     * Erzeut ein ChangedEntry aus einem HashEntry
+     *
+     * @param int $type ChangedEntry::TYPE_...
+     */
     public static function createFromHashEntry(HashEntry $hashEntry, int $type): ChangedEntry
     {
         $changedEntry = new ChangedEntry();
