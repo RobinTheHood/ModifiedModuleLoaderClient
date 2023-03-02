@@ -1,0 +1,23 @@
+{
+    "settings": {
+        "version": "0.1.0"
+    },
+    "scopes": {
+        "src": {
+            "hashes": {
+                "/admin/includes/extra/functions/rth_modified_std_module.php": "1272252602e0cc126510fdbd7ce3b819",
+                "/includes/extra/functions/rth_modified_std_module.php": "10667e5ae8ac68f602da78c49132a376",
+                "/vendor-no-composer/robinthehood/ModifiedStdModule/Classes/CaseConverter.php": "d48879c776655e739413e7cbf53c343a",
+                "/vendor-no-composer/robinthehood/ModifiedStdModule/Classes/Configuration.php": "1f361119d936585bb76da505315b8431",
+                "/vendor-no-composer/robinthehood/ModifiedStdModule/Classes/ControllerInterface.php": "315ddb6391c4888cf25ca6c2a56cb817",
+                "/vendor-no-composer/robinthehood/ModifiedStdModule/Classes/StdController.php": "e538e8e4747bf7949570bbbca4d66f0d",
+                "/vendor-no-composer/robinthehood/ModifiedStdModule/Classes/StdModule.php": "6b0e7213c02bf432d4cd7db280335cc8"
+            }
+        },
+        "src-mmlc": {
+            "hashes": {
+                "//Test.php": "c6a10c87a435efcc271d3f83c01887c7"
+            }
+        }
+    }
+}
