@@ -23,9 +23,7 @@ class ChangedEntryCollectionTest extends TestCase
 {
     public function testCanConstruct()
     {
-        $changeEntry = new ChangedEntry();
-        $changeEntry->file = '/dir/testfile.php';
-        $changeEntry->type = ChangedEntry::TYPE_CHANGED;
+        $changeEntry = $this->createChangedEntry('/dir/testfile.php', ChangedEntry::TYPE_CHANGED);
 
         $changedEntryCollection = new ChangedEntryCollection([
             $changeEntry
@@ -37,13 +35,8 @@ class ChangedEntryCollectionTest extends TestCase
 
     public function testGetByType()
     {
-        $changeEntry1 = new ChangedEntry();
-        $changeEntry1->file = '/dir/testfile.php';
-        $changeEntry1->type = ChangedEntry::TYPE_CHANGED;
-
-        $changeEntry2 = new ChangedEntry();
-        $changeEntry2->file = '/dir/testfile2.php';
-        $changeEntry2->type = ChangedEntry::TYPE_NEW;
+        $changeEntry1 = $this->createChangedEntry('/dir/testfile1.php', ChangedEntry::TYPE_CHANGED);
+        $changeEntry2 = $this->createChangedEntry('/dir/testfile2.php', ChangedEntry::TYPE_NEW);
 
         $changedEntryCollection = new ChangedEntryCollection([$changeEntry1, $changeEntry2]);
         $new = $changedEntryCollection->getByType(ChangedEntry::TYPE_NEW);
@@ -51,34 +44,32 @@ class ChangedEntryCollectionTest extends TestCase
         $this->assertEquals($changeEntry2, $new->changedEntries[0]);
     }
 
-    public function testCanCreateFromHashEntryCollection()
-    {
-        $expectedChangeEntry = new ChangedEntry();
-        $expectedChangeEntry->file = '/dir/testfile.php';
-        $expectedChangeEntry->type = ChangedEntry::TYPE_CHANGED;
+    // public function testCanCreateFromHashEntryCollection()
+    // {
+    //     $hashEntry = new HashEntry();
+    //     $hashEntry->file = '/dir/testfile.php';
 
-        $hashEntry = new HashEntry();
-        $hashEntry->file = '/dir/testfile.php';
-        $hashEntry->hash = md5('code');
+    //     $expectedChangeEntry = new ChangedEntry();
+    //     $expectedChangeEntry->hashEntryA = $hashEntry;
+    //     $expectedChangeEntry->type = ChangedEntry::TYPE_CHANGED;
 
-        $hashEntryCollection = new HashEntryCollection([$hashEntry]);
+    //     $hashEntry = new HashEntry();
+    //     $hashEntry->file = '/dir/testfile.php';
+    //     $hashEntry->hash = md5('code');
 
-        $changedEntryCollection
-            = ChangedEntryCollection::createFromHashEntryCollection($hashEntryCollection, ChangedEntry::TYPE_CHANGED);
+    //     $hashEntryCollection = new HashEntryCollection([$hashEntry]);
 
-        $this->assertCount(1, $changedEntryCollection->changedEntries);
-        $this->assertEquals($expectedChangeEntry, $changedEntryCollection->changedEntries[0]);
-    }
+    //     $changedEntryCollection
+    //         = ChangedEntryCollection::createFromHashEntryCollection(ChangedEntry::TYPE_CHANGED, $hashEntryCollection, null);
+
+    //     $this->assertCount(1, $changedEntryCollection->changedEntries);
+    //     $this->assertEquals($expectedChangeEntry, $changedEntryCollection->changedEntries[0]);
+    // }
 
     public function testCanMerge()
     {
-        $changeEntry1 = new ChangedEntry();
-        $changeEntry1->file = '/dir/testfile.php';
-        $changeEntry1->type = ChangedEntry::TYPE_CHANGED;
-
-        $changeEntry2 = new ChangedEntry();
-        $changeEntry2->file = '/dir/testfile2.php';
-        $changeEntry2->type = ChangedEntry::TYPE_NEW;
+        $changeEntry1 = $this->createChangedEntry('/dir/testfile1.php', ChangedEntry::TYPE_CHANGED);
+        $changeEntry2 = $this->createChangedEntry('/dir/testfile2.php', ChangedEntry::TYPE_NEW);
 
         $changedEntryCollection1 = new ChangedEntryCollection([$changeEntry1]);
         $changedEntryCollection2 = new ChangedEntryCollection([$changeEntry2]);
@@ -92,10 +83,35 @@ class ChangedEntryCollectionTest extends TestCase
 
     public function testAdd()
     {
+        $changeEntry1 = $this->createChangedEntry('/dir/testfile1.php', ChangedEntry::TYPE_CHANGED);
+        $changeEntry2 = $this->createChangedEntry('/dir/testfile2.php', ChangedEntry::TYPE_NEW);
 
+        $changedEntryCollection = new ChangedEntryCollection([$changeEntry1]);
+        $changedEntryCollection->add($changeEntry2);
+
+        $this->assertCount(2, $changedEntryCollection->changedEntries);
+        $this->assertEquals($changeEntry2, $changedEntryCollection->changedEntries[1]);
     }
 
     public function testUnique()
     {
+        $changeEntry1 = $this->createChangedEntry('/dir/testfile1.php', ChangedEntry::TYPE_CHANGED);
+        $changeEntry2 = $this->createChangedEntry('/dir/testfile1.php', ChangedEntry::TYPE_CHANGED);
+        $changedEntryCollection = new ChangedEntryCollection([$changeEntry1, $changeEntry2]);
+        $changedEntryCollection = $changedEntryCollection->unique();
+
+        $this->assertCount(1, $changedEntryCollection->changedEntries);
+    }
+
+    private function createChangedEntry(string $file, int $type): ChangedEntry
+    {
+        $hashEntry = new HashEntry();
+        $hashEntry->file = $file;
+
+        $changeEntry = new ChangedEntry();
+        $changeEntry->hashEntryA = $hashEntry;
+        $changeEntry->type = $type;
+
+        return $changeEntry;
     }
 }

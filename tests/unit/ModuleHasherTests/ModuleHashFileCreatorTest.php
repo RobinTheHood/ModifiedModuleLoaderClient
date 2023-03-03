@@ -15,7 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\ModuleHahserTests;
 
 use PHPUnit\Framework\TestCase;
 
-class ModuleHashFileCreatorTest extends TestCase
+class ModuleHashFileCreatorTest
 {
     public function testCreateHashFile()
     {

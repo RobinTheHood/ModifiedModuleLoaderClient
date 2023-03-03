@@ -56,6 +56,7 @@ class HashFileFactory
     private static function convertToVersion020(array $array, string $scope): array
     {
         $newArray = [
+            'version' => '0.2.0',
             'scopes' => [
                 $scope => [
                     'hashes' => $array

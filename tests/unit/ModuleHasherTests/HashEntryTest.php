@@ -14,10 +14,17 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\ModuleHahserTests;
 
 use PHPUnit\Framework\TestCase;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\HashEntry;
 
-class FileHaserTest extends TestCase
+class HashEntryTest extends TestCase
 {
-    public function testCreateHashes()
+    public function testClone()
     {
+        $hashEntry = new HashEntry();
+        $hashEntry->file = '/dir/testfile.php';
+        $hashEntry->hash = md5('code');
+
+        $clonedHashEntry = $hashEntry->clone();
+        $this->assertEquals($hashEntry, $clonedHashEntry);
     }
 }

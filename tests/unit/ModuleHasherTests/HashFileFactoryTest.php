@@ -14,14 +14,16 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\ModuleHahserTests;
 
 use PHPUnit\Framework\TestCase;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\HashFileFactory;
 
 class HashFileFactoryTest extends TestCase
 {
-    public function testCreateFromArray()
-    {
-    }
-
     public function testCreateFromJson()
     {
+        $hashFile = HashFileFactory::createFromJson('{
+            "/dir/testfile.php": "hash"
+        }');
+
+        $this->assertEquals('0.2.0', $hashFile->array['version']);
     }
 }

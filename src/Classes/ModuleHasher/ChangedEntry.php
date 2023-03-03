@@ -46,7 +46,9 @@ class ChangedEntry
     {
         $changedEntry = new ChangedEntry();
         $changedEntry->hashEntryA = $this->hashEntryA->clone();
-        $changedEntry->hashEntryB = $this->hashEntryB->clone();
+        if ($this->hashEntryB) {
+            $changedEntry->hashEntryB = $this->hashEntryB->clone();
+        }
         $changedEntry->type = $this->type;
         return $changedEntry;
     }
