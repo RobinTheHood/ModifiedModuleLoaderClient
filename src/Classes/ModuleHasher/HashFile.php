@@ -44,4 +44,10 @@ class HashFile
 
         return new HashEntryCollection($hashEntries);
     }
+
+    public function writeTo(string $path): void
+    {
+        $json = json_encode($this->array, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        file_put_contents($path, $json);
+    }
 }
