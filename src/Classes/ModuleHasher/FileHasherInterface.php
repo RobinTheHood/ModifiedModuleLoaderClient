@@ -15,5 +15,5 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
 
 interface FileHasherInterface
 {
-    public function createHashes(array $paths, string $basePath = ''): HashEntryCollection;
+    public function createHashes(array $paths, string $basePath = '', string $scope = ''): HashEntryCollection;
 }

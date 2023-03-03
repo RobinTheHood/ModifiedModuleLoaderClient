@@ -48,4 +48,8 @@ class ChangedEntryTest extends TestCase
 
         $this->assertEquals($expectedChangedEntry, $changedEntry);
     }
+
+    public function testClone()
+    {
+    }
 }

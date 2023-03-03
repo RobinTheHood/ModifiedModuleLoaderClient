@@ -30,14 +30,13 @@ class ModuleHashFileCreator
         $shopHashEntryCollection = $this->moduleHasher->createShopHashes($module);
         $shopVendorMmlcEntryCollection = $this->moduleHasher->createShopVendorMmlcHashes($module);
 
-
         $array = [
             'version' => '0.2.0',
             'scopes' => [
-                'src' => [
+                ModuleHasher::SCOPE_MODULE_SRC => [
                     'hashes' => $shopHashEntryCollection->toArray()
                 ],
-                'src-mmlc' => [
+                ModuleHasher::SCOPE_MODULE_SRC_MMLC => [
                     'hashes' => $shopVendorMmlcEntryCollection->toArray()
                 ]
             ]

@@ -18,6 +18,19 @@ class HashEntry
     /** @var string $file */
     public $file;
 
+    /** @var string $scope */
+    public $scope;
+
     /** @var string $hash */
     public $hash;
+
+    // TODO add test for clone
+    public function clone(): HashEntry
+    {
+        $hashEntry = new HashEntry();
+        $hashEntry->file = $this->file;
+        $hashEntry->scope = $this->scope;
+        $hashEntry->hash = $this->hash;
+        return $hashEntry;
+    }
 }

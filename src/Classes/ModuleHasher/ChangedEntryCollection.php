@@ -21,11 +21,24 @@ class ChangedEntryCollection
     public $changedEntries = [];
 
     /**
-     * @param ChangedEntry[] $hashEntries
+     * @param ChangedEntry[] $changedEntries
      */
     public function __construct(array $changedEntries)
     {
         $this->changedEntries = $changedEntries;
+    }
+
+    /**
+     * Liefert ein ChangedEntry anhand von $file zurück.
+     */
+    public function getByFileA(string $file): ?ChangedEntry
+    {
+        foreach ($this->changedEntries as $changedEntry) {
+            if ($changedEntry->hashEntryA->file === $file) {
+                return $changedEntry;
+            }
+        }
+        return null;
     }
 
     public function getByType(int $type): ChangedEntryCollection
@@ -40,22 +53,23 @@ class ChangedEntryCollection
         return new ChangedEntryCollection($changedEntries);
     }
 
-    /**
-     * Erzeugt eine ChangedEntryCollection aus einer HashEntryCollection
-     *
-     * @param HashEntryCollection $hashEntryCollection
-     * @param int $type ChangedEntry::TYPE_...
-     */
-    public static function createFromHashEntryCollection(
-        HashEntryCollection $hashEntryCollection,
-        int $type
-    ): ChangedEntryCollection {
-        /** @var ChangedEntry[] */
-        $changedEntries = [];
-        foreach ($hashEntryCollection->hashEntries as $hashEntry) {
-            $changedEntries[] = ChangedEntry::createFromHashEntry($hashEntry, $type);
+
+    public function add(ChangedEntry $changedEntry): void
+    {
+        $this->changedEntries[] = $changedEntry;
+    }
+
+    public function unique(): ChangedEntryCollection
+    {
+        $newChangeEntryCollection = new ChangedEntryCollection([]);
+        foreach ($this->changedEntries as $changedEntry) {
+            if ($newChangeEntryCollection->getByFileA($changedEntry->hashEntryA->file)) {
+                continue;
+            }
+            $newChangedEntry = $changedEntry->clone();
+            $newChangeEntryCollection->add($newChangedEntry);
         }
-        return new ChangedEntryCollection($changedEntries);
+        return $newChangeEntryCollection;
     }
 
     /**

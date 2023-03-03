@@ -23,13 +23,13 @@ class HashFileFactory
         return $hashFile;
     }
 
-    public static function createFromJson(string $json): HashFile
+    public static function createFromJson(string $json, string $defaultScope = 'root'): HashFile
     {
         $array = json_decode($json, true);
 
         $version = self::getVersion($array);
         if ($version === '0.1.0') {
-            $array = self::convertToVersion020($array);
+            $array = self::convertToVersion020($array, $defaultScope);
         }
 
         return self::createFromArray($array);
@@ -53,11 +53,11 @@ class HashFileFactory
         return '0.1.0';
     }
 
-    private static function convertToVersion020(array $array): array
+    private static function convertToVersion020(array $array, string $scope): array
     {
         $newArray = [
             'scopes' => [
-                'src' => [
+                $scope => [
                     'hashes' => $array
                 ]
             ]

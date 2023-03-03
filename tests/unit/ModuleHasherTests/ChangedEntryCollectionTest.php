@@ -89,4 +89,13 @@ class ChangedEntryCollectionTest extends TestCase
         $this->assertCount(2, $mergedChangedEntryCollection->changedEntries);
         $this->assertEquals([$changeEntry1, $changeEntry2], $mergedChangedEntryCollection->changedEntries);
     }
+
+    public function testAdd()
+    {
+
+    }
+
+    public function testUnique()
+    {
+    }
 }

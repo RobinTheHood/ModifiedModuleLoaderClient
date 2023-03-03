@@ -38,6 +38,7 @@ class HashFile
         foreach ($hashes as $file => $hash) {
             $hashEntry = new HashEntry();
             $hashEntry->file = $file;
+            $hashEntry->scope = $name;
             $hashEntry->hash = $hash;
             $hashEntries[] = $hashEntry;
         }

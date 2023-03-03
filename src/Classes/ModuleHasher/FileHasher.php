@@ -18,7 +18,7 @@ class FileHasher implements FileHasherInterface
     /**
      * @param string[] paths
      */
-    public function createHashes(array $paths, string $basePath = ''): HashEntryCollection
+    public function createHashes(array $paths, string $basePath = '', string $scope = ''): HashEntryCollection
     {
         $hashEntries = [];
         foreach ($paths as $path) {
@@ -35,6 +35,7 @@ class FileHasher implements FileHasherInterface
 
             $hashEntry = new HashEntry();
             $hashEntry->file = $path;
+            $hashEntry->scope = $scope;
             $hashEntry->hash = $hash;
 
             $hashEntries[] = $hashEntry;

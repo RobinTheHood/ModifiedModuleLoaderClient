@@ -41,51 +41,6 @@ class HashEntryCollection
         return null;
     }
 
-    /**
-     * Gibt alle HashEntries zurück, deren Files nicht in $hashEntryCollection enthalten sind.
-     *
-     * @param HashEntryCollection $hashEntryCollection
-     *
-     * @return HashEntryCollection
-     */
-    public function getNotIn(HashEntryCollection $hashEntryCollection): HashEntryCollection
-    {
-        /** @var HashEntry[] */
-        $hashEntries = [];
-        foreach ($this->hashEntries as $hashEntry) {
-            $foundHashEntry = $hashEntryCollection->getByFile($hashEntry->file);
-            if (!$foundHashEntry) {
-                $hashEntries[] = $hashEntry;
-            }
-        }
-        return new HashEntryCollection($hashEntries);
-    }
-
-    /**
-     * Gibt alle HashEntries zurück, deren File in hashEntryCollection enthalten
-     * sind und bei denen die Hashes gleichzeitg unterschiedlich sind.
-     *
-     * @param HashEntryCollection $hashEntryCollection
-     *
-     * @return HashEntryCollection
-     */
-    public function getNotEqualTo(HashEntryCollection $hashEntryCollection): HashEntryCollection
-    {
-        /** @var HashEntry[] */
-        $hashEntries = [];
-        foreach ($this->hashEntries as $hashEntry) {
-            $foundHashEntry = $hashEntryCollection->getByFile($hashEntry->file);
-            if (!$foundHashEntry) {
-                continue;
-            }
-
-            if ($hashEntry->hash !== $foundHashEntry->hash) {
-                $hashEntries[] = $hashEntry;
-            }
-        }
-        return new HashEntryCollection($hashEntries);
-    }
-
     public function toArray(): array
     {
         $array = [];

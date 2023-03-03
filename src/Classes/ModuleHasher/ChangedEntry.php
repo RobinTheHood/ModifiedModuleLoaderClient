@@ -12,9 +12,14 @@ class ChangedEntry
     public const TYPE_CHANGED = 3;
 
     /**
-     * @var string $file
+     * @var HashEntry $hashEntryA
      */
-    public $file = '';
+    public $hashEntryA;
+
+    /**
+     * @var HashEntry $hashEntryB
+     */
+    public $hashEntryB;
 
     /**
      * @var int $type
@@ -26,11 +31,23 @@ class ChangedEntry
      *
      * @param int $type ChangedEntry::TYPE_...
      */
-    public static function createFromHashEntry(HashEntry $hashEntry, int $type): ChangedEntry
+    public static function createFromHashEntry(int $type, HashEntry $hashEntryA, ?HashEntry $hashEntryB): ChangedEntry
     {
         $changedEntry = new ChangedEntry();
-        $changedEntry->file = $hashEntry->file;
+        $changedEntry->hashEntryA = $hashEntryA;
+        if ($hashEntryB) {
+            $changedEntry->hashEntryB = $hashEntryB;
+        }
         $changedEntry->type = $type;
+        return $changedEntry;
+    }
+
+    public function clone(): ChangedEntry
+    {
+        $changedEntry = new ChangedEntry();
+        $changedEntry->hashEntryA = $this->hashEntryA->clone();
+        $changedEntry->hashEntryB = $this->hashEntryB->clone();
+        $changedEntry->type = $this->type;
         return $changedEntry;
     }
 }

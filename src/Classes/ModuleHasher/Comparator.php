@@ -16,6 +16,59 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
 class Comparator
 {
     /**
+     * Gibt alle ChangedEntries zurück, deren Files A nicht in B enthalten sind.
+     *
+     * @param HashEntryCollection $hashEntryCollectionA
+     * @param HashEntryCollection $hashEntryCollectionB
+     *
+     * @return ChangedEntryCollection
+     */
+    public function getANotInB(
+        HashEntryCollection $hashEntryCollectionA,
+        HashEntryCollection $hashEntryCollectionB,
+        int $type
+    ): ChangedEntryCollection {
+        /** @var ChangedEntry[] */
+        $changedEntries = [];
+        foreach ($hashEntryCollectionA->hashEntries as $hashEntry) {
+            $foundHashEntry = $hashEntryCollectionB->getByFile($hashEntry->file);
+            if (!$foundHashEntry) {
+                $changedEntries[] = ChangedEntry::createFromHashEntry($type, $hashEntry, null);
+            }
+        }
+        return new ChangedEntryCollection($changedEntries);
+    }
+
+    /**
+     * Gibt alle ChangedEntries zurück, deren File in A und B enthalten
+     * sind und bei denen die Hashes gleichzeitg unterschiedlich sind.
+     *
+     * @param HashEntryCollection $hashEntryCollectionA
+     * @param HashEntryCollection $hashEntryCollectionB
+     *
+     * @return ChangedEntryCollection
+     */
+    public function getANotEqualToB(
+        HashEntryCollection $hashEntryCollectionA,
+        HashEntryCollection $hashEntryCollectionB,
+        int $type
+    ): ChangedEntryCollection {
+        /** @var ChangedEntry[] */
+        $changedEntries = [];
+        foreach ($hashEntryCollectionA->hashEntries as $hashEntry) {
+            $foundHashEntry = $hashEntryCollectionB->getByFile($hashEntry->file);
+            if (!$foundHashEntry) {
+                continue;
+            }
+
+            if ($hashEntry->hash !== $foundHashEntry->hash) {
+                $changedEntries[] = ChangedEntry::createFromHashEntry($type, $hashEntry, $foundHashEntry);
+            }
+        }
+        return new ChangedEntryCollection($changedEntries);
+    }
+
+    /**
      *
      * @param HashEntryCollection $installed
      * @param HashEntryCollection $shop
@@ -28,22 +81,11 @@ class Comparator
         HashEntryCollection $shop,
         HashEntryCollection $mmlc
     ): ChangedEntryCollection {
-        $new = $mmlc->getNotIn($installed);
-        $deleted = $installed->getNotIn($shop);
-        $changed1 = $installed->getNotEqualTo($shop);
-        $changed2 = $mmlc->getNotEqualTo($installed);
-
         $changeEntryCollections = [];
-
-        $changeEntryCollections[]
-            = ChangedEntryCollection::createFromHashEntryCollection($new, ChangedEntry::TYPE_NEW);
-        $changeEntryCollections[]
-            = ChangedEntryCollection::createFromHashEntryCollection($deleted, ChangedEntry::TYPE_DELETED);
-        $changeEntryCollections[]
-            = ChangedEntryCollection::createFromHashEntryCollection($changed1, ChangedEntry::TYPE_CHANGED);
-        $changeEntryCollections[]
-            = ChangedEntryCollection::createFromHashEntryCollection($changed2, ChangedEntry::TYPE_CHANGED);
-
-        return ChangedEntryCollection::merge($changeEntryCollections);
+        $changeEntryCollections[] = $this->getANotInB($mmlc, $installed, ChangedEntry::TYPE_NEW);
+        $changeEntryCollections[] = $this->getANotInB($installed, $shop, ChangedEntry::TYPE_DELETED);
+        $changeEntryCollections[] = $this->getANotEqualToB($installed, $shop, ChangedEntry::TYPE_CHANGED);
+        $changeEntryCollections[] = $this->getANotEqualToB($mmlc, $installed, ChangedEntry::TYPE_CHANGED);
+        return ChangedEntryCollection::merge($changeEntryCollections)->unique();
     }
 }

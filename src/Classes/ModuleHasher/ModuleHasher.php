@@ -19,6 +19,11 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModulePathMapper;
 
 class ModuleHasher
 {
+    public const SCOPE_MODULE_SRC = 'module-src';
+    public const SCOPE_MODULE_SRC_MMLC = 'module-src-mmlc';
+    public const SCOPE_SHOP_ROOT = 'shop-root';
+    public const SCOPE_SHOP_VENDOR_MMLC = 'shop-vendor-mmlc';
+
     /** @var FileHasherInterface $hasher */
     private $fileHasher;
 
@@ -30,36 +35,36 @@ class ModuleHasher
     /**
      * <SHOPROOT>/Module/<VENDOR>/<MODULE>/<SRC>/...
      */
-    public function createSrcHashes(Module $module): HashEntryCollection
+    public function createModuleSrcHashes(Module $module): HashEntryCollection
     {
         $files = $module->getSrcFilePaths();
         $root = $module->getLocalRootPath() . $module->getSrcRootPath() . '/';
-        return  $this->fileHasher->createHashes($files, $root);
+        return  $this->fileHasher->createHashes($files, $root, self::SCOPE_MODULE_SRC);
     }
 
     /**
      * <SHOPROOT>/Module/<VENDOR>/<MODULE>/<SRC-MMLC>/...
      */
-    public function createSrcMmlcHashes(Module $module): HashEntryCollection
+    public function createModuleSrcMmlcHashes(Module $module): HashEntryCollection
     {
         return new HashEntryCollection([]);
 
         // TODO: Warte auf feat/vendor-mmlc
         // $files = $module->getSrcMmlcFilePaths();
         // $root = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/';
-        // return $this->fileHasher->createHashes($files, $root);
+        // return $this->fileHasher->createHashes($files, $root, self::SCOPE_MODULE_SRC_MMLC);
     }
 
     /**
      * <SHOPROOT>/...
      */
-    public function createShopHashes(Module $module): HashEntryCollection
+    public function createShopRootHashes(Module $module): HashEntryCollection
     {
         $files = $module->getSrcFilePaths();
         $root = App::getShopRoot();
         $files = ModulePathMapper::mmlcPathsToShopPaths($files);
         //$files = ModulePathMapper::srcPathsToShopPaths($files);
-        return $this->fileHasher->createHashes($files, $root);
+        return $this->fileHasher->createHashes($files, $root, self::SCOPE_SHOP_ROOT);
     }
 
     /**
@@ -73,6 +78,6 @@ class ModuleHasher
         // $files = $module->getSrcMmlcFilePaths();
         // $root = App::getShopRoot();
         // $files = ModulePathMapper::srcMmlcPathsToVendorMmlcPaths($files);
-        // return $this->fileHasher->createHashes($files, $root);
+        // return $this->fileHasher->createHashes($files, $root, self::SCOPE_SHOP_VENDOR_MMLC);
     }
 }
