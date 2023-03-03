@@ -119,4 +119,8 @@ class HashEntryCollectionTest extends TestCase
         $this->assertCount(1, $hashEntryCollection->hashEntries);
         $this->assertEquals($hashEntry4, $hashEntryCollection->hashEntries[0]);
     }
+
+    public function testToArray()
+    {
+    }
 }

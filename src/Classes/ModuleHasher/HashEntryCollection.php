@@ -85,4 +85,13 @@ class HashEntryCollection
         }
         return new HashEntryCollection($hashEntries);
     }
+
+    public function toArray(): array
+    {
+        $array = [];
+        foreach ($this->hashEntries as $hashEntry) {
+            $array[$hashEntry->file] = $hashEntry->hash;
+        }
+        return $array;
+    }
 }
