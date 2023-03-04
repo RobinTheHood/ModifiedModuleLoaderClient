@@ -169,7 +169,7 @@ class ModuleInfo
      * Mit welchen Version von PHP ist das Modul kompatible.
      *
      * Beispiel: [
-     *     'version' => '^7.4 || ^8.0'
+     *     'version' => '^7.4.0 || ^8.0.0'
      * ]
      *
      * @var array
