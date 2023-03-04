@@ -23,6 +23,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\ChangedEntryCollection;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class Module extends ModuleInfo
 {
@@ -438,12 +440,26 @@ class Module extends ModuleInfo
         return false;
     }
 
+
+    public function isCompatible(): bool
+    {
+        if (!$this->isCompatibleWithModified()) {
+            return false;
+        }
+
+        if (!$this->isCompatibleWithPhp()) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Checks whether this module is compatible with the installed version of modified.
      *
      * @return bool Returns true if the module is compatible, otherwise false.
      */
-    public function isCompatible(): bool
+    public function isCompatibleWithModified(): bool
     {
         $installedVersion = ShopInfo::getModifiedVersion();
         $versions = $this->getModifiedCompatibility();
@@ -455,6 +471,19 @@ class Module extends ModuleInfo
         }
 
         return false;
+    }
+
+    public function isCompatibleWithPhp(): bool
+    {
+        $php = $this->getPhp();
+        $phpVersionContraint = $php['version'] ?? '';
+        if (!$phpVersionContraint) {
+            return true;
+        }
+
+        $phpVersionInstalled = phpversion();
+        $comparator = new Comparator(new Parser());
+        return $comparator->satisfiesOr($phpVersionInstalled, $phpVersionContraint);
     }
 
     public function getTemplateFiles($file): array

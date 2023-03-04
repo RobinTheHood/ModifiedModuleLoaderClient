@@ -11,13 +11,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\SemverTests;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class SemverParserTest extends TestCase
 {
+    /** @var Parser */
+    private $parser;
+
     protected function setUp(): void
     {
         $this->parser = new Parser();

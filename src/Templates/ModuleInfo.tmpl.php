@@ -78,11 +78,12 @@ $notificationView = new NotificationViewModel();
                         <?php } ?>
 
                         <?php if (!$moduleView->isCompatible()) { ?>
-                            <div class="alert alert-warning" role="alert">
-                                <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed
-                                <strong><?= ShopInfo::getModifiedVersion()?></strong> installiert.
-                            </div>
+                            <?php foreach ($moduleView->getCompatibleStrings() as $string) { ?>
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="fas fa-exclamation-triangle fa-fw"></i>
+                                    <?= $string ?>
+                                </div>
+                            <?php } ?>
                         <?php } ?>
                     </div>
                 </div>
@@ -263,6 +264,19 @@ $notificationView = new NotificationViewModel();
                                                 <?php if ($module->getModifiedCompatibility()) { ?>
                                                     <?php foreach ($module->getModifiedCompatibility() as $version) { ?>
                                                         <span class="badge badge-secondary"><?= $version; ?></span>
+                                                    <?php } ?>
+                                                <?php } else { ?>
+                                                    unbekannt
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Kompatibel mit PHP</td>
+                                            <td>
+                                                <?php if ($module->getPhp()) { ?>
+                                                    <?php foreach (explode('||', $module->getPhp()['version'] ?? '') as $version) { ?>
+                                                        <span class="badge badge-secondary"><?= trim($version); ?></span>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     unbekannt

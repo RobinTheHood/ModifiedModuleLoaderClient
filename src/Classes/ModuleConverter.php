@@ -37,7 +37,8 @@ class ModuleConverter
             'visibility' => $module->getVisibility(),
             'price' => $module->getPrice(),
             'autoload' => $module->getAutoload(),
-            'tags' => $module->getTags()
+            'tags' => $module->getTags(),
+            'php' => $module->getPhp()
         ];
 
         $moduleArray = [

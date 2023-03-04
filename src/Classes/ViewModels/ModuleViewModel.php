@@ -15,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\ViewModels;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
+use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 
 class ModuleViewModel
 {
@@ -186,5 +187,25 @@ class ModuleViewModel
             '&archiveName=' . $this->module->getArchiveName() .
             '&version=' . $this->module->getVersion() .
             '&ref=' . $ref;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCompatibleStrings(): array
+    {
+        $array = [];
+
+        if (!$this->module->isCompatibleWithModified()) {
+            $version = ShopInfo::getModifiedVersion();
+            $array[] = "Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed Version <strong>$version</strong> installiert.";
+        }
+
+        if (!$this->module->isCompatibleWithPhp()) {
+            $version = phpversion();
+            $array[] = "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du hast PHP Version <strong>$version</strong> installiert.";
+        }
+
+        return $array;
     }
 }
