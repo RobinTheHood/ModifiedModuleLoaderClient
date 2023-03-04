@@ -451,6 +451,10 @@ class Module extends ModuleInfo
             return false;
         }
 
+        if (!$this->isCompatibleWithMmlc()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -484,6 +488,26 @@ class Module extends ModuleInfo
         $phpVersionInstalled = phpversion();
         $comparator = new Comparator(new Parser());
         return $comparator->satisfiesOr($phpVersionInstalled, $phpVersionContraint);
+    }
+
+    /**
+     * Version 1.20.0 is the last version without isCompatibleWithMmlc()
+     */
+    public function isCompatibleWithMmlc(): bool
+    {
+        $mmlcVersionInstalled = App::getMmlcVersion();
+        if (!$mmlcVersionInstalled) {
+            return false;
+        }
+
+        $mmlc = $this->getMmlc();
+        $mmlcVersionContraint = $mmlc['version'] ?? '^1.20.0';
+        if (!$mmlcVersionContraint) {
+            return true;
+        }
+
+        $comparator = new Comparator(new Parser());
+        return $comparator->satisfiesOr($mmlcVersionInstalled, $mmlcVersionContraint);
     }
 
     public function getTemplateFiles($file): array
