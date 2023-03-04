@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\ModuleHahserTests;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\FileHasherTests;
 
 use PHPUnit\Framework\TestCase;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\HashFileFactory;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\HashFileFactory;
 
 class HashFileFactoryTest extends TestCase
 {

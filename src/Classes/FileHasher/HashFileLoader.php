@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
+namespace RobinTheHood\ModifiedModuleLoaderClient\FileHasher;
 
 class HashFileLoader
 {
@@ -23,10 +23,10 @@ class HashFileLoader
         $this->defaultScope = $scope;
     }
 
-    public function load(string $path): HashFile
+    public function load(string $path): ?HashFile
     {
         if (!file_exists($path)) {
-            return '';
+            return null;
         }
         $json = file_get_contents($path);
         return HashFileFactory::createFromJson($json, $this->defaultScope);

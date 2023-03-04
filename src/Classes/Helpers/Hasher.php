@@ -13,73 +13,73 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Helpers;
 
 class Hasher
 {
-    public function createHashFile($path, $hashes)
-    {
-        $jsonStr = json_encode($hashes, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        file_put_contents($path, $jsonStr);
-    }
+    // public function createHashFile($path, $hashes)
+    // {
+    //     $jsonStr = json_encode($hashes, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    //     file_put_contents($path, $jsonStr);
+    // }
 
-    public function deleteHashFile($path)
-    {
-        if (file_exists($path)) {
-            unlink($path);
-        }
-    }
+    // public function deleteHashFile($path)
+    // {
+    //     if (file_exists($path)) {
+    //         unlink($path);
+    //     }
+    // }
 
-    public function loadHashes($path)
-    {
-        if (!file_exists($path)) {
-            return [];
-        }
+    // public function loadHashes($path)
+    // {
+    //     if (!file_exists($path)) {
+    //         return [];
+    //     }
 
-        $jsonStr = file_get_contents($path);
-        $hashes = json_decode($jsonStr, true);
-        return $hashes;
-    }
+    //     $jsonStr = file_get_contents($path);
+    //     $hashes = json_decode($jsonStr, true);
+    //     return $hashes;
+    // }
 
-    public function createFileHashes($files, $root = '')
-    {
-        $hashes = [];
+    // public function createFileHashes($files, $root = '')
+    // {
+    //     $hashes = [];
 
-        foreach ($files as $file) {
-            $src = $root . $file;
-            if (file_exists($src)) {
-                $hashes[$file] = md5_file($src);
-            }
-        }
+    //     foreach ($files as $file) {
+    //         $src = $root . $file;
+    //         if (file_exists($src)) {
+    //             $hashes[$file] = md5_file($src);
+    //         }
+    //     }
 
-        return $hashes;
-    }
+    //     return $hashes;
+    // }
 
-    public function getChanges($hashesLoaded, $hashesCreatedA, $hashesCreatedB)
-    {
-        $changedFiles = [];
-        foreach ($hashesLoaded as $file => $hashLoaded) {
-            if (!isset($hashesCreatedA[$file])) {
-                $changedFiles[$file] = 'deleted';
-                continue;
-            }
+    // public function getChanges($hashesLoaded, $hashesCreatedA, $hashesCreatedB)
+    // {
+    //     $changedFiles = [];
+    //     foreach ($hashesLoaded as $file => $hashLoaded) {
+    //         if (!isset($hashesCreatedA[$file])) {
+    //             $changedFiles[$file] = 'deleted';
+    //             continue;
+    //         }
 
-            $hashCreated = $hashesCreatedA[$file];
+    //         $hashCreated = $hashesCreatedA[$file];
 
-            if ($hashCreated != $hashLoaded) {
-                $changedFiles[$file] = 'changed';
-            }
-        }
+    //         if ($hashCreated != $hashLoaded) {
+    //             $changedFiles[$file] = 'changed';
+    //         }
+    //     }
 
-        foreach ($hashesCreatedB as $file => $hashCreated) {
-            if (!isset($hashesLoaded[$file])) {
-                $changedFiles[$file] = 'new';
-                continue;
-            }
+    //     foreach ($hashesCreatedB as $file => $hashCreated) {
+    //         if (!isset($hashesLoaded[$file])) {
+    //             $changedFiles[$file] = 'new';
+    //             continue;
+    //         }
 
-            $hashLoaded = $hashesLoaded[$file];
+    //         $hashLoaded = $hashesLoaded[$file];
 
-            if ($hashCreated != $hashLoaded) {
-                $changedFiles[$file] = 'changed';
-            }
-        }
+    //         if ($hashCreated != $hashLoaded) {
+    //             $changedFiles[$file] = 'changed';
+    //         }
+    //     }
 
-        return $changedFiles;
-    }
+    //     return $changedFiles;
+    // }
 }

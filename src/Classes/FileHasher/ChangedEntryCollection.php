@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
+namespace RobinTheHood\ModifiedModuleLoaderClient\FileHasher;
 
 class ChangedEntryCollection
 {

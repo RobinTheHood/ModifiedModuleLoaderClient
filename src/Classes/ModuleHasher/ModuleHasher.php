@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\FileHasherInterface;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\HashEntryCollection;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModulePathMapper;
 

@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\ModuleHahserTests;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\FileHasherTests;
 
 use PHPUnit\Framework\TestCase;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ChangedEntry;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\HashEntry;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\ChangedEntry;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\HashEntry;
 
 class ChangedEntryTest extends TestCase
 {

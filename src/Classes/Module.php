@@ -19,13 +19,10 @@ use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\ChangedEntryCollection;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ChangedEntryCollection;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\HashFile;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\HashFileLoader;
 
 class Module extends ModuleInfo
 {
@@ -408,8 +405,7 @@ class Module extends ModuleInfo
 
     public function isChanged(): bool
     {
-        //if ($this->getChancedFiles()) {
-        if ($this->getChancedFilesNew()) {
+        if ($this->getChancedFiles()->changedEntries) {
             return true;
         } else {
             return false;
@@ -550,78 +546,10 @@ class Module extends ModuleInfo
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
-     * @return string[]
+     * @return ChangedEntryCollection
      */
-    public function getChancedFiles(): array
+    public function getChancedFiles(): ChangedEntryCollection
     {
-        $moduleHasher = new ModuleHasher();
-        $changedFiles = $moduleHasher->getModuleChanges($this);
-        return $changedFiles;
-    }
-
-    /**
-     * HIER FEHLT EINE BESCHREIBUNG
-     *
-     * @return string[]
-     */
-    public function getChancedFilesNew(): ChangedEntryCollection
-    {
-        $hashFileLoader = new HashFileLoader();
-        $hashFileLoader->setDefaultScope(
-            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_ROOT
-        );
-        $hashFile = $hashFileLoader->load($this->getHashPath());
-
-        $srcChangedEntiresCollection = $this->getSrcChanges($this, $hashFile);
-        $srcMmlcChangedEntiresCollection = $this->getSrcMmlcChanges($this, $hashFile);
-
-        $changedEntiresCollection = ChangedEntryCollection::merge([
-            $srcChangedEntiresCollection,
-            $srcMmlcChangedEntiresCollection
-        ]);
-
-        // if ($this->getArchiveName() === 'robinthehood/modified-std-module') {
-        //     echo '<pre>';
-        //     print_r($hashFile);
-        //     print_r($changedEntiresCollection);
-        //     die();
-        // }
-        return $changedEntiresCollection;
-    }
-
-    private function getSrcChanges(Module $module, HashFile $hashFile): ChangedEntryCollection
-    {
-        $moduleHasher = new \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher(
-            new \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\FileHasher()
-        );
-
-        $installedHashes = $hashFile->getScopeHashes(
-            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_ROOT
-        );
-        $shopHashes = $moduleHasher->createShopRootHashes($module);
-        $srcHashes = $moduleHasher->createModuleSrcHashes($module);
-
-        $comparator = new Comparator();
-        $changedEntiresCollection = $comparator->getChangedEntries($installedHashes, $shopHashes, $srcHashes);
-
-        return $changedEntiresCollection;
-    }
-
-    private function getSrcMmlcChanges(Module $module, HashFile $hashFile): ChangedEntryCollection
-    {
-        $moduleHasher = new \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher(
-            new \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\FileHasher()
-        );
-
-        $installedHashes = $hashFile->getScopeHashes(
-            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_VENDOR_MMLC
-        );
-        $vendorMmlcHashes = $moduleHasher->createShopVendorMmlcHashes($module);
-        $srcMmlcHashes = $moduleHasher->createModuleSrcMmlcHashes($module);
-
-        $comparator = new Comparator();
-        $changedEntiresCollection = $comparator->getChangedEntries($installedHashes, $vendorMmlcHashes, $srcMmlcHashes);
-
-        return $changedEntiresCollection;
+        return ModuleChangeManager::getChangedFiles($this);
     }
 }

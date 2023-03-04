@@ -212,8 +212,12 @@ class ModuleInstaller
             $this->uninstallFile($dest);
         }
 
-        $moduleHasher = new ModuleHasher();
-        $moduleHasher->unhashModule($module);
+        // $moduleHasher = new ModuleHasher();
+        // $moduleHasher->unhashModule($module);
+
+        if (file_exists($module->getHashPath())) {
+            unlink($module->getHashPath());
+        }
 
         $this->createAutoloadFile();
 

@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
 
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\FileHasher;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\HashFile;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 
 class ModuleHashFileCreator
 {
-    /** @var ModuleHaser */
+    /** @var ModuleHasher */
     private $moduleHasher;
 
     public function __construct()
@@ -27,7 +29,7 @@ class ModuleHashFileCreator
 
     public function createHashFile(Module $module): HashFile
     {
-        $shopHashEntryCollection = $this->moduleHasher->createShopHashes($module);
+        $shopHashEntryCollection = $this->moduleHasher->createShopRootHashes($module);
         $shopVendorMmlcEntryCollection = $this->moduleHasher->createShopVendorMmlcHashes($module);
 
         $array = [
