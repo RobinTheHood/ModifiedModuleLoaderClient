@@ -104,7 +104,9 @@ class ModuleCreator
                 '2.0.4.2'
             ],
 
-            'mmlcCompatibility' => '^1.20.0',
+            "mmlc" => [
+                "version" => "^1.21.0"
+            ],
 
             "php" => [
                 "version" => "^7.4 || ^8.0",
