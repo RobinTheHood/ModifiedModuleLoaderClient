@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\SemverTests;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
@@ -194,5 +194,11 @@ class SemverComparatorTest extends TestCase
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^3.2.3'));
         $this->assertTrue($this->comparator->satisfies('3.3.3', '3.3.3'));
         $this->assertFalse($this->comparator->satisfies('3.3.3', '3.2.3'));
+    }
+
+    public function testThatVersionASatisfiesOrContraint()
+    {
+        $this->assertTrue($this->comparator->satisfiesOr('3.3.3', '^2.2.2 || ^3.3.3'));
+        $this->assertFalse($this->comparator->satisfiesOr('4.4.4', '^2.2.2 || ^3.3.3'));
     }
 }

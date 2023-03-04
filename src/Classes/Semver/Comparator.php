@@ -186,6 +186,23 @@ class Comparator
         }
     }
 
+    /**
+     * Can satisfy multiple constraints with OR / ||
+     *
+     * Example: ^7.4 || ^8.0
+     */
+    public function satisfiesOr(string $versionString1, string $constraintOrExpression): bool
+    {
+        $constraints = explode('||', $constraintOrExpression);
+        foreach ($constraints as $constraint) {
+            $constraint = trim($constraint);
+            if ($this->satisfies($versionString1, $constraint)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function sort(array $versionStrings): array
     {
         usort($versionStrings, [$this, 'compareAsc']);
