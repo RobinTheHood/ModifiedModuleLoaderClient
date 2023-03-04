@@ -30,6 +30,10 @@ class ModuleChangeManager
      */
     public static function getChangedFiles(Module $module): ChangedEntryCollection
     {
+        if ($module->getArchiveName() === 'robinthehood/modified-std-module') {
+            $a = 1;
+        }
+
         $hashFileLoader = new HashFileLoader();
         $hashFileLoader->setDefaultScope(ModuleHasher::SCOPE_SHOP_ROOT);
         $hashFile = $hashFileLoader->load($module->getHashPath());
@@ -96,15 +100,22 @@ class ModuleChangeManager
             $changedEntry->hashEntryA->scope === ModuleHasher::SCOPE_SHOP_ROOT
             || $changedEntry->hashEntryA->scope === ModuleHasher::SCOPE_MODULE_SRC
         ) {
-            $moduleSrcFilePath = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $changedEntry->hashEntryA->file;
-            $installedFilePath = App::getShopRoot() . '/' . ModulePathMapper::moduleSrcToShopRoot($changedEntry->hashEntryA->file);
+            $moduleSrcFilePath =
+                $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $changedEntry->hashEntryA->file;
+            $installedFilePath =
+                App::getShopRoot() . '/' . ModulePathMapper::moduleSrcToShopRoot($changedEntry->hashEntryA->file);
         } elseif (
             $changedEntry->hashEntryA->scope === ModuleHasher::SCOPE_SHOP_VENDOR_MMLC
             || $changedEntry->hashEntryA->scope === ModuleHasher::SCOPE_MODULE_SRC_MMLC
         ) {
             // TODO
-            $moduleSrcFilePath = '';
-            $installedFilePath = '';
+            $moduleSrcFilePath =
+                $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/' . $changedEntry->hashEntryA->file;
+            $installedFilePath =
+                App::getShopRoot() . '/' . ModulePathMapper::moduleSrcMmlcToShopVendorMmlc(
+                    $changedEntry->hashEntryA->file,
+                    $module->getArchiveName()
+                );
         }
 
 
