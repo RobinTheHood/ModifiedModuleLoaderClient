@@ -5,7 +5,7 @@ defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleChangeManager;
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
 
@@ -364,10 +364,9 @@ $notificationView = new NotificationViewModel();
                             <h3>Geänderte Dateien</h3>
 
                             <?php if ($moduleView->isInstalled() && $moduleView->isChanged()) { ?>
-                                    <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
-                                        <?php $changes = htmlentities(ModuleHasher::getFileChanges($module, $file, $mode)); ?>
-
-                                        <div><?= $file ?><span>: <?= $mode ?></span></div>
+                                    <?php foreach ($module->getChancedFiles()->changedEntries as $changedEntry) { ?>
+                                        <?php $changes = htmlentities(ModuleChangeManager::getFileChanges($module, $changedEntry)); ?>
+                                        <div><?= $changedEntry->hashEntryA->file ?><span>: <?= $changedEntry->type ?></span></div>
                                         <?php if ($changes) { ?>
                                             <pre><code class="diff"><?= $changes ?></code></pre>
                                         <?php } ?>

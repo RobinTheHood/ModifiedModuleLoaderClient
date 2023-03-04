@@ -21,6 +21,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHashFileCreator;
 
 class ModuleInstaller
 {
@@ -116,8 +117,9 @@ class ModuleInstaller
             $this->installFile($src, $dest, true);
         }
 
-        $moduleHasher = new ModuleHasher();
-        $moduleHasher->hashModule($module);
+        $moduleHashFileCreator = new ModuleHashFileCreator();
+        $moduleHashFile = $moduleHashFileCreator->createHashFile($module);
+        $moduleHashFile->writeTo($module->getHashPath());
 
         $this->createAutoloadFile();
     }
@@ -225,8 +227,9 @@ class ModuleInstaller
             $this->uninstallFile($dest);
         }
 
-        $moduleHasher = new ModuleHasher();
-        $moduleHasher->unhashModule($module);
+        if (file_exists($module->getHashPath())) {
+            unlink($module->getHashPath());
+        }
 
         $this->createAutoloadFile();
 

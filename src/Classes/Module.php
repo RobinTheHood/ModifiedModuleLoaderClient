@@ -19,6 +19,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\ChangedEntryCollection;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
@@ -439,7 +440,7 @@ class Module extends ModuleInfo
 
     public function isChanged(): bool
     {
-        if ($this->getChancedFiles()) {
+        if ($this->getChancedFiles()->changedEntries) {
             return true;
         } else {
             return false;
@@ -580,12 +581,10 @@ class Module extends ModuleInfo
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
-     * @return string[]
+     * @return ChangedEntryCollection
      */
-    public function getChancedFiles(): array
+    public function getChancedFiles(): ChangedEntryCollection
     {
-        $moduleHasher = new ModuleHasher();
-        $changedFiles = $moduleHasher->getModuleChanges($this);
-        return $changedFiles;
+        return ModuleChangeManager::getChangedFiles($this);
     }
 }
