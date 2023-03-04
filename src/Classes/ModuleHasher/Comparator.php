@@ -77,15 +77,15 @@ class Comparator
      * @return ChangedEntryCollection
      */
     public function getChangedEntries(
-        HashEntryCollection $installed,
-        HashEntryCollection $shop,
-        HashEntryCollection $mmlc
+        HashEntryCollection $installedShop,
+        HashEntryCollection $moduleToShop,
+        HashEntryCollection $module
     ): ChangedEntryCollection {
         $changeEntryCollections = [];
-        $changeEntryCollections[] = $this->getANotInB($mmlc, $installed, ChangedEntry::TYPE_NEW);
-        $changeEntryCollections[] = $this->getANotInB($installed, $shop, ChangedEntry::TYPE_DELETED);
-        $changeEntryCollections[] = $this->getANotEqualToB($installed, $shop, ChangedEntry::TYPE_CHANGED);
-        $changeEntryCollections[] = $this->getANotEqualToB($mmlc, $installed, ChangedEntry::TYPE_CHANGED);
+        $changeEntryCollections[] = $this->getANotInB($module, $installedShop, ChangedEntry::TYPE_NEW);
+        $changeEntryCollections[] = $this->getANotInB($installedShop, $moduleToShop, ChangedEntry::TYPE_DELETED);
+        $changeEntryCollections[] = $this->getANotEqualToB($installedShop, $moduleToShop, ChangedEntry::TYPE_CHANGED);
+        $changeEntryCollections[] = $this->getANotEqualToB($module, $installedShop, ChangedEntry::TYPE_CHANGED);
         return ChangedEntryCollection::merge($changeEntryCollections)->unique();
     }
 }

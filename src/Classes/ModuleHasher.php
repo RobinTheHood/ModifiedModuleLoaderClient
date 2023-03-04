@@ -15,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\Hasher;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ChangedEntry;
 
 class ModuleHasher extends Hasher
 {
@@ -109,5 +110,50 @@ class ModuleHasher extends Hasher
 
         $differ = new \SebastianBergmann\Diff\Differ($builder);
         return $differ->diff($moduleFileContent, $installedFileContent);
+    }
+
+    public static function getFileChangesNew(Module $module, ChangedEntry $changedEntry)
+    {
+        if ($changedEntry->type !== ChangedEntry::TYPE_CHANGED) {
+            return '';
+        }
+
+        if (
+            $changedEntry->hashEntryA->scope === \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_ROOT
+            || $changedEntry->hashEntryA->scope === \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_MODULE_SRC
+        ) {
+            $moduleSrcFilePath = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $changedEntry->hashEntryA->file;
+            $installedFilePath = App::getShopRoot() . '/' . ModulePathMapper::mmlcToShop($changedEntry->hashEntryA->file);
+        } elseif (
+            $changedEntry->hashEntryA->scope === \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_VENDOR_MMLC
+            || $changedEntry->hashEntryA->scope === \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_MODULE_SRC_MMLC
+        ) {
+            // TODO
+            $moduleSrcFilePath = '';
+            $installedFilePath = '';
+        }
+
+
+        if (file_exists($installedFilePath) && is_link($installedFilePath)) {
+            return "No line by line diff available for linked files, because they have always equal content.";
+        }
+
+        $moduleSrcFileContent = '';
+        if (file_exists($moduleSrcFilePath)) {
+            $moduleSrcFileContent = file_get_contents($moduleSrcFilePath);
+        }
+
+        $installedFileContent = '';
+        if (file_exists($installedFilePath)) {
+            $installedFileContent = file_get_contents($installedFilePath);
+        }
+
+        $builder = new \SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder(
+            "--- Original\n+++ New\n",  // custom header
+            true                        // show line numbers
+        );
+
+        $differ = new \SebastianBergmann\Diff\Differ($builder);
+        return $differ->diff($moduleSrcFileContent, $installedFileContent);
     }
 }

@@ -567,10 +567,10 @@ class Module extends ModuleInfo
     public function getChancedFilesNew(): ChangedEntryCollection
     {
         $hashFileLoader = new HashFileLoader();
-        $hashFile = $hashFileLoader->load(
-            $this->getHashPath(),
-            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_MODULE_SRC
+        $hashFileLoader->setDefaultScope(
+            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_ROOT
         );
+        $hashFile = $hashFileLoader->load($this->getHashPath());
 
         $srcChangedEntiresCollection = $this->getSrcChanges($this, $hashFile);
         $srcMmlcChangedEntiresCollection = $this->getSrcMmlcChanges($this, $hashFile);
@@ -580,11 +580,12 @@ class Module extends ModuleInfo
             $srcMmlcChangedEntiresCollection
         ]);
 
-        if ($this->getArchiveName() === 'robinthehood/modified-std-module') {
-            echo '<pre>';
-            print_r($changedEntiresCollection);
-            die();
-        }
+        // if ($this->getArchiveName() === 'robinthehood/modified-std-module') {
+        //     echo '<pre>';
+        //     print_r($hashFile);
+        //     print_r($changedEntiresCollection);
+        //     die();
+        // }
         return $changedEntiresCollection;
     }
 
@@ -595,7 +596,7 @@ class Module extends ModuleInfo
         );
 
         $installedHashes = $hashFile->getScopeHashes(
-            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_MODULE_SRC
+            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_ROOT
         );
         $shopHashes = $moduleHasher->createShopRootHashes($module);
         $srcHashes = $moduleHasher->createModuleSrcHashes($module);
@@ -613,7 +614,7 @@ class Module extends ModuleInfo
         );
 
         $installedHashes = $hashFile->getScopeHashes(
-            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_MODULE_SRC_MMLC
+            \RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHasher::SCOPE_SHOP_VENDOR_MMLC
         );
         $vendorMmlcHashes = $moduleHasher->createShopVendorMmlcHashes($module);
         $srcMmlcHashes = $moduleHasher->createModuleSrcMmlcHashes($module);

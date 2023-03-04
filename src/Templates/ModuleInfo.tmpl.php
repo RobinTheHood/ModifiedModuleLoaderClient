@@ -364,10 +364,13 @@ $notificationView = new NotificationViewModel();
                             <h3>Geänderte Dateien</h3>
 
                             <?php if ($moduleView->isInstalled() && $moduleView->isChanged()) { ?>
-                                    <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
-                                        <?php $changes = htmlentities(ModuleHasher::getFileChanges($module, $file, $mode)); ?>
+                                    <?php // foreach ($module->getChancedFiles() as $file => $mode) { ?>
+                                    <?php foreach ($module->getChancedFilesNew()->changedEntries as $changedEntry) { ?>
+                                        <?php // $changes = htmlentities(ModuleHasher::getFileChanges($module, $file, $mode)); ?>
+                                        <?php $changes = htmlentities(ModuleHasher::getFileChangesNew($module, $changedEntry)); ?>
 
-                                        <div><?= $file ?><span>: <?= $mode ?></span></div>
+                                        <!-- <div><?= $file ?><span>: <?= $mode ?></span></div> -->
+                                        <div><?= $changedEntry->hashEntryA->file ?><span>: <?= $changedEntry->type ?></span></div>
                                         <?php if ($changes) { ?>
                                             <pre><code class="diff"><?= $changes ?></code></pre>
                                         <?php } ?>

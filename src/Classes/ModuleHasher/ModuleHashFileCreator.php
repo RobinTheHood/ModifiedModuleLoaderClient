@@ -33,10 +33,10 @@ class ModuleHashFileCreator
         $array = [
             'version' => '0.2.0',
             'scopes' => [
-                ModuleHasher::SCOPE_MODULE_SRC => [
+                ModuleHasher::SCOPE_SHOP_ROOT => [
                     'hashes' => $shopHashEntryCollection->toArray()
                 ],
-                ModuleHasher::SCOPE_MODULE_SRC_MMLC => [
+                ModuleHasher::SCOPE_SHOP_VENDOR_MMLC => [
                     'hashes' => $shopVendorMmlcEntryCollection->toArray()
                 ]
             ]
