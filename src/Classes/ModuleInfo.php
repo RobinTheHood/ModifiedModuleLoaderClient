@@ -169,13 +169,23 @@ class ModuleInfo
      * Mit welchen Version von PHP ist das Modul kompatible.
      *
      * Beispiel: [
-     *     'version' => '^7.4 || ^8.0'
+     *     'version' => '^7.4.0 || ^8.0.0'
      * ]
      *
      * @var array
      */
     protected $php;
 
+    /**
+     * Mit welchen Version von PHP ist das Modul kompatible.
+     *
+     * Beispiel: [
+     *     'version' => '^1.20.0'
+     * ]
+     *
+     * @var array
+     */
+    protected $mmlc;
 
     public function getName(): string
     {
@@ -371,5 +381,15 @@ class ModuleInfo
     public function setPhp(array $value): void
     {
         $this->php = $value;
+    }
+
+    public function getMmlc(): array
+    {
+        return $this->mmlc;
+    }
+
+    public function setMmlc(array $value): void
+    {
+        $this->mmlc = $value;
     }
 }

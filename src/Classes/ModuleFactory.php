@@ -85,6 +85,7 @@ class ModuleFactory
         $module->setAutoload($autoload);
         $module->setTags($array['tags'] ?? '');
         $module->setPhp($array['php'] ?? []);
+        $module->setMmlc($array['mmlc'] ?? []);
 
         // Module
         $module->setLocalRootPath($array['localRootPath'] ?? '');

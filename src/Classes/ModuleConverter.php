@@ -38,7 +38,8 @@ class ModuleConverter
             'price' => $module->getPrice(),
             'autoload' => $module->getAutoload(),
             'tags' => $module->getTags(),
-            'php' => $module->getPhp()
+            'php' => $module->getPhp(),
+            'mmlc' => $module->getMmlc()
         ];
 
         $moduleArray = [

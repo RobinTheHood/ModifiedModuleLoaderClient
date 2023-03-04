@@ -284,6 +284,19 @@ $notificationView = new NotificationViewModel();
                                             </td>
                                         </tr>
 
+                                        <tr>
+                                            <td>Kompatibel mit MMLC</td>
+                                            <td>
+                                                <?php if (true || $module->getMmlc()) { ?>
+                                                    <?php foreach (explode('||', $module->getMmlc()['version'] ?? '^1.20.0') as $version) { ?>
+                                                        <span class="badge badge-secondary"><?= trim($version); ?></span>
+                                                    <?php } ?>
+                                                <?php } else { ?>
+                                                    unbekannt
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+
                                         <?php if ($module->getTags()) { ?>
                                             <tr>
                                                 <td>Tags</td>
