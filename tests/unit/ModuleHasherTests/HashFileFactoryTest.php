@@ -24,6 +24,6 @@ class HashFileFactoryTest extends TestCase
             "/dir/testfile.php": "hash"
         }');
 
-        $this->assertEquals('0.2.0', $hashFile->array['version']);
+        $this->assertEquals('0.1.0', $hashFile->array['version']);
     }
 }
