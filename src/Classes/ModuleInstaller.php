@@ -88,7 +88,7 @@ class ModuleInstaller
             $dependencyManager->canBeInstalled($module);
         }
 
-        // Install Source Files
+        // Install Source Files to Shop Root
         $files = $module->getSrcFilePaths();
 
         foreach ($files as $file) {
@@ -108,7 +108,7 @@ class ModuleInstaller
             }
         }
 
-        // Install Source MMLC Files in vendor-mmlc
+        // Install Source Mmlc Files to shop vendor-mmlc
         $files = $module->getSrcMmlcFilePaths();
         foreach ($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/' . $file;
