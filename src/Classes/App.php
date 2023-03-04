@@ -78,6 +78,23 @@ class App
         return self::$modulesDir;
     }
 
+    public static function getMmlcVersion(): string
+    {
+        $path = self::getRoot() . '/config/version.json';
+        if (!file_exists($path)) {
+            return '';
+        }
+
+        $json = file_get_contents($path);
+        $version = json_decode($json);
+
+        if (!$version) {
+            return ''; // Better throw an exception
+        }
+
+        return $version->version;
+    }
+
     public static function start(): void
     {
         $serverRequest = self::getServerRequest();
