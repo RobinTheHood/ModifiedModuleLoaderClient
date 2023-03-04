@@ -74,7 +74,7 @@ class Module extends ModuleInfo
     /**
      * @var string[]
      */
-    private array $srcFileMmlcPaths;
+    private array $srcMmlcFilePaths;
 
     /**
      * @var bool
@@ -262,21 +262,15 @@ class Module extends ModuleInfo
     /**
      * Liefert ein Array mit Dateienpfaden, die sich in 'src-mmlc'
      * befinden.
-     *
-     * Beispiel: [
-     *  /admin/includes/rth_file1.php
-     *  /includes/rth_file1.php
-     *  /includes/extra/rth_file1.php
-     * ]
      */
-    public function getSrcFileMmlcPaths(): array
+    public function getSrcMmlcFilePaths(): array
     {
-        return $this->srcFileMmlcPaths;
+        return $this->srcMmlcFilePaths;
     }
 
-    public function setSrcFileMmlcPaths(array $value): void
+    public function setSrcMmlcFilePaths(array $value): void
     {
-        $this->srcFileMmlcPaths = $value;
+        $this->srcMmlcFilePaths = $value;
     }
 
     /**
@@ -335,7 +329,7 @@ class Module extends ModuleInfo
      */
     public function getSrcMmlcRootPath(): string
     {
-        return $this->getModulePath() . '/' . $this->getSourceDirMmlc();
+        return $this->getModulePath() . '/' . $this->getSourceMmlcDir();
     }
 
     /**

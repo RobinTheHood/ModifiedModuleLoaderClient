@@ -53,7 +53,7 @@ class ModuleInfo
      *
      * @var string
      */
-    protected $sourceDirMmlc;
+    protected $sourceMmlcDir;
 
     /**
      * Die Version des Moduls. Die Version muss der Sermver konvention folgen.
@@ -205,14 +205,14 @@ class ModuleInfo
         $this->sourceDir = $value;
     }
 
-    public function getSourceDirMmlc(): string
+    public function getSourceMmlcDir(): string
     {
-        return $this->sourceDirMmlc;
+        return $this->sourceMmlcDir;
     }
 
-    public function setSourceDirMmlc(string $value): void
+    public function setSourceMmlcDir(string $value): void
     {
-        $this->sourceDirMmlc = $value;
+        $this->sourceMmlcDir = $value;
     }
 
     public function getVersion(): string

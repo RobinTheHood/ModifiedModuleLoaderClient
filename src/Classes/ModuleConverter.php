@@ -23,7 +23,7 @@ class ModuleConverter
             'name' => $module->getName(),
             'archiveName' => $module->getArchiveName(),
             'sourceDir' => $module->getSourceDir(),
-            'sourceDirMmlc' => $module->getSourceDirMmlc(),
+            'sourceMmlcDir' => $module->getSourceMmlcDir(),
             'version' => $module->getVersion(),
             'shortDescription' => $module->getShortDescription(),
             'description' => $module->getDescription(),
@@ -51,7 +51,7 @@ class ModuleConverter
             'changelogPath' => $module->getChangelogPath(),
             'readmePath' => $module->getReadmePath(),
             'srcFilePaths' => $module->getSrcFilePaths(),
-            'srcFileMmmlcPaths' => $module->getSrcFileMmlcPaths(),
+            'srcMmlcFilePaths' => $module->getSrcMmlcFilePaths(),
             'isRemote' => $module->isRemote(),
             'isLoadable' => $module->isLoadable()
         ];

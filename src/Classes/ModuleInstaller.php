@@ -109,7 +109,7 @@ class ModuleInstaller
         }
 
         // Install Source MMLC Files in vendor-mmlc
-        $files = $module->getSrcFileMmlcPaths();
+        $files = $module->getSrcMmlcFilePaths();
         foreach ($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/' . $file;
             $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
@@ -184,7 +184,7 @@ class ModuleInstaller
             }
 
             foreach ($autoload['psr-4'] as $namespace => $path) {
-                $path = str_replace($module->getSourceDirMmlc(), 'vendor-mmlc/' . $module->getArchiveName(), $path);
+                $path = str_replace($module->getSourceMmlcDir(), 'vendor-mmlc/' . $module->getArchiveName(), $path);
                 $namespaceEntrys[] =
                     '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
             }
