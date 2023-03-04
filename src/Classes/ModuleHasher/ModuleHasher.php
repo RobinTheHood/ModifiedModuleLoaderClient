@@ -64,7 +64,7 @@ class ModuleHasher
     {
         $files = $module->getSrcFilePaths();
         $root = App::getShopRoot();
-        $files = ModulePathMapper::mmlcPathsToShopPaths($files);
+        $files = ModulePathMapper::allModuleSrcToShopRoot($files);
         //$files = ModulePathMapper::srcPathsToShopPaths($files);
         return $this->fileHasher->createHashes($files, $root, self::SCOPE_SHOP_ROOT);
     }

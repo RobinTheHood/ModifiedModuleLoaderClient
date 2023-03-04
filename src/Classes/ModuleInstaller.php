@@ -101,7 +101,7 @@ class ModuleInstaller
                     $overwrite = true;
                 }
 
-                $file = ModulePathMapper::mmlcToShop($file);
+                $file = ModulePathMapper::moduleSrcToShopRoot($file);
 
                 $dest = App::getShopRoot() . $file;
                 $this->installFile($src, $dest, $overwrite);
@@ -112,7 +112,7 @@ class ModuleInstaller
         $files = $module->getSrcFileMmlcPaths();
         foreach ($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/' . $file;
-            $file = ModulePathMapper::srcMmlcToVendorMmlc($file, $module->getArchiveName());
+            $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
             $dest = App::getShopRoot() . '/' . $file;
             $this->installFile($src, $dest, true);
         }
@@ -222,7 +222,7 @@ class ModuleInstaller
         $files = $module->getSrcFilePaths();
 
         foreach ($files as $file) {
-            $file = ModulePathMapper::mmlcToShop($file);
+            $file = ModulePathMapper::moduleSrcToShopRoot($file);
             $dest = App::getShopRoot() . $file;
             $this->uninstallFile($dest);
         }

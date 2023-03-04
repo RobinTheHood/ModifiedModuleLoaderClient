@@ -97,7 +97,7 @@ class ModuleChangeManager
             || $changedEntry->hashEntryA->scope === ModuleHasher::SCOPE_MODULE_SRC
         ) {
             $moduleSrcFilePath = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $changedEntry->hashEntryA->file;
-            $installedFilePath = App::getShopRoot() . '/' . ModulePathMapper::mmlcToShop($changedEntry->hashEntryA->file);
+            $installedFilePath = App::getShopRoot() . '/' . ModulePathMapper::moduleSrcToShopRoot($changedEntry->hashEntryA->file);
         } elseif (
             $changedEntry->hashEntryA->scope === ModuleHasher::SCOPE_SHOP_VENDOR_MMLC
             || $changedEntry->hashEntryA->scope === ModuleHasher::SCOPE_MODULE_SRC_MMLC
