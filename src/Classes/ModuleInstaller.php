@@ -219,12 +219,21 @@ class ModuleInstaller
             return false;
         }
 
+        // Uninstall from shop-root
         $files = $module->getSrcFilePaths();
-
         foreach ($files as $file) {
             $file = ModulePathMapper::moduleSrcToShopRoot($file);
             $dest = App::getShopRoot() . $file;
             $this->uninstallFile($dest);
+        }
+
+        // Uninstall from shop-vendor-mmlc
+        $files = $module->getSrcMmlcFilePaths();
+        foreach ($files as $file) {
+            $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
+            $dest = App::getShopRoot() . $file;
+            $this->uninstallFile($dest);
+            FileHelper::deletePathIsEmpty($dest);
         }
 
         if (file_exists($module->getHashPath())) {
