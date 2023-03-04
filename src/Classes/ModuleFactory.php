@@ -84,6 +84,7 @@ class ModuleFactory
         $module->setPrice($array['price'] ?? '');
         $module->setAutoload($autoload);
         $module->setTags($array['tags'] ?? '');
+        $module->setPhp($array['php'] ?? []);
 
         // Module
         $module->setLocalRootPath($array['localRootPath'] ?? '');

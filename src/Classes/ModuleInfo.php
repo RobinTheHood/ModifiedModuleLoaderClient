@@ -165,6 +165,18 @@ class ModuleInfo
      */
     protected $tags;
 
+    /**
+     * Mit welchen Version von PHP ist das Modul kompatible.
+     *
+     * Beispiel: [
+     *     'version' => '^7.4 || ^8.0'
+     * ]
+     *
+     * @var array
+     */
+    protected $php;
+
+
     public function getName(): string
     {
         return $this->name;
@@ -349,5 +361,15 @@ class ModuleInfo
     public function setTags(string $value): void
     {
         $this->tags = $value;
+    }
+
+    public function getPhp(): array
+    {
+        return $this->php;
+    }
+
+    public function setPhp(array $value): void
+    {
+        $this->php = $value;
     }
 }
