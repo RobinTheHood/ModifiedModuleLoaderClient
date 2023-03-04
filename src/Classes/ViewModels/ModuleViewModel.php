@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\ViewModels;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
@@ -203,7 +204,12 @@ class ModuleViewModel
 
         if (!$this->module->isCompatibleWithPhp()) {
             $version = phpversion();
-            $array[] = "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du hast PHP Version <strong>$version</strong> installiert.";
+            $array[] = "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du verwendest die PHP Version <strong>$version</strong>.";
+        }
+
+        if (!$this->module->isCompatibleWithMmlc()) {
+            $version = App::getMmlcVersion();
+            $array[] = "Dieses Modul wurde noch nicht mit deiner MMLC Version getestet. Du verwendest die MMLC Version <strong>$version</strong>.";
         }
 
         return $array;
