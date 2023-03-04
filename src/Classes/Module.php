@@ -240,7 +240,7 @@ class Module extends ModuleInfo
     }
 
     /**
-     * Liefert ein Array mit Dateienpfaden, die sich in 'new_files'
+     * Liefert ein Array mit Dateienpfaden, die sich in 'src'
      * befinden.
      *
      * Beispiel: [
@@ -315,7 +315,7 @@ class Module extends ModuleInfo
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
-     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/src
      */
     public function getSrcRootPath(): string
     {

@@ -39,7 +39,7 @@ class ModuleInfo
      * Das Verzeichnis, in dem sich die Quellcode Dateien des Moduls befinden,
      * die in den Shop kopiert/verlinkt werden sollen.
      *
-     * Beispiel: new_files
+     * Beispiel: src
      *
      * @var string
      */
