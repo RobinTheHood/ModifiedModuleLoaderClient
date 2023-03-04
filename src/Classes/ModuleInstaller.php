@@ -107,9 +107,6 @@ class ModuleInstaller
             }
         }
 
-        // $moduleHasher = new ModuleHasher();
-        // $moduleHasher->hashModule($module);
-
         $moduleHashFileCreator = new ModuleHashFileCreator();
         $moduleHashFile = $moduleHashFileCreator->createHashFile($module);
         $moduleHashFile->writeTo($module->getHashPath());
@@ -211,9 +208,6 @@ class ModuleInstaller
             $dest = App::getShopRoot() . $file;
             $this->uninstallFile($dest);
         }
-
-        // $moduleHasher = new ModuleHasher();
-        // $moduleHasher->unhashModule($module);
 
         if (file_exists($module->getHashPath())) {
             unlink($module->getHashPath());
