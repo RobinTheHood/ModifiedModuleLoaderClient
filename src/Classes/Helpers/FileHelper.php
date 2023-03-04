@@ -155,4 +155,29 @@ class FileHelper
         }
         return true;
     }
+
+    public static function deletePathIsEmpty(string $path): void
+    {
+        if (file_exists($path) && !is_dir($path)) {
+            return;
+        }
+
+        if (file_exists($path) && is_dir($path) && !self::isDirEmpty($path)) {
+            return;
+        }
+
+        if (file_exists($path) && is_dir($path) && self::isDirEmpty($path)) {
+            rmdir($path);
+        }
+
+        self::deletePathIsEmpty(dirname($path));
+    }
+
+    public static function isDirEmpty(string $path): bool
+    {
+        if (!is_readable($path)) {
+            return false;
+        }
+        return (count(scandir($path)) === 2);
+    }
 }
