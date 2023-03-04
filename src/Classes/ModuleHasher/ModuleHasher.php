@@ -35,7 +35,7 @@ class ModuleHasher
     }
 
     /**
-     * <SHOPROOT>/Module/<VENDOR>/<MODULE>/<SRC>/...
+     * /../<SHOPROOT>/Module/<VENDOR>/<MODULE>/<SRC>/...
      */
     public function createModuleSrcHashes(Module $module): HashEntryCollection
     {
@@ -45,41 +45,33 @@ class ModuleHasher
     }
 
     /**
-     * <SHOPROOT>/Module/<VENDOR>/<MODULE>/<SRC-MMLC>/...
+     * /../<SHOPROOT>/Module/<VENDOR>/<MODULE>/<SRC-MMLC>/...
      */
     public function createModuleSrcMmlcHashes(Module $module): HashEntryCollection
     {
-        return new HashEntryCollection([]);
-
-        // TODO: Warte auf feat/vendor-mmlc
-        // $files = $module->getSrcMmlcFilePaths();
-        // $root = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/';
-        // return $this->fileHasher->createHashes($files, $root, self::SCOPE_MODULE_SRC_MMLC);
+        $files = $module->getSrcMmlcFilePaths();
+        $root = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/';
+        return $this->fileHasher->createHashes($files, $root, self::SCOPE_MODULE_SRC_MMLC);
     }
 
     /**
-     * <SHOPROOT>/...
+     * /.../<SHOPROOT>/...
      */
     public function createShopRootHashes(Module $module): HashEntryCollection
     {
         $files = $module->getSrcFilePaths();
         $root = App::getShopRoot();
-        $files = ModulePathMapper::mmlcPathsToShopPaths($files);
-        //$files = ModulePathMapper::srcPathsToShopPaths($files);
+        $files = ModulePathMapper::allModuleSrcToShopRoot($files);
         return $this->fileHasher->createHashes($files, $root, self::SCOPE_SHOP_ROOT);
     }
 
     /**
-     * <SHOPROOT>/vendor-mmlc/<VENDOR>/<MODULE>/...
+     * /.../<SHOPROOT>/vendor-mmlc/<VENDOR-NAME>/<MODULE-NAME>/...
      */
     public function createShopVendorMmlcHashes(Module $module): HashEntryCollection
     {
-        return new HashEntryCollection([]);
-
-        // TODO: Warte auf feat/vendor-mmlc
-        // $files = $module->getSrcMmlcFilePaths();
-        // $root = App::getShopRoot();
-        // $files = ModulePathMapper::srcMmlcPathsToVendorMmlcPaths($files);
-        // return $this->fileHasher->createHashes($files, $root, self::SCOPE_SHOP_VENDOR_MMLC);
+        $files = $module->getSrcMmlcFilePaths();
+        $root = App::getShopRoot() . '/' . ModulePathMapper::moduleSrcMmlcToShopVendorMmlc('/', $module->getArchiveName());
+        return $this->fileHasher->createHashes($files, $root, self::SCOPE_SHOP_VENDOR_MMLC);
     }
 }

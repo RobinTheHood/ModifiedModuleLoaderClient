@@ -19,5 +19,6 @@ class ModuleHashFileCreatorTest
 {
     public function testCreateHashFile()
     {
+        // TODO: write test
     }
 }

@@ -88,6 +88,7 @@ class ModuleInstaller
             $dependencyManager->canBeInstalled($module);
         }
 
+        // Install Source Files to Shop Root
         $files = $module->getSrcFilePaths();
 
         foreach ($files as $file) {
@@ -100,11 +101,20 @@ class ModuleInstaller
                     $overwrite = true;
                 }
 
-                $file = ModulePathMapper::mmlcToShop($file);
+                $file = ModulePathMapper::moduleSrcToShopRoot($file);
 
                 $dest = App::getShopRoot() . $file;
                 $this->installFile($src, $dest, $overwrite);
             }
+        }
+
+        // Install Source Mmlc Files to shop vendor-mmlc
+        $files = $module->getSrcMmlcFilePaths();
+        foreach ($files as $file) {
+            $src = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/' . $file;
+            $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
+            $dest = App::getShopRoot() . '/' . $file;
+            $this->installFile($src, $dest, true);
         }
 
         $moduleHashFileCreator = new ModuleHashFileCreator();
@@ -174,6 +184,7 @@ class ModuleInstaller
             }
 
             foreach ($autoload['psr-4'] as $namespace => $path) {
+                $path = str_replace($module->getSourceMmlcDir(), 'vendor-mmlc/' . $module->getArchiveName(), $path);
                 $namespaceEntrys[] =
                     '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
             }
@@ -185,8 +196,15 @@ class ModuleInstaller
         $template = \file_get_contents(App::getTemplatesRoot() . '/autoload.php.tmpl');
         $template = \str_replace('{VENDOR_PSR4_NAMESPACE_MAPPINGS}', $namespaceMapping, $template);
 
-        @mkdir(App::getShopRoot() . '/vendor-no-composer');
+        if (!file_exists(App::getShopRoot() . '/vendor-no-composer')) {
+            mkdir(App::getShopRoot() . '/vendor-no-composer');
+        }
         \file_put_contents(App::getShopRoot() . '/vendor-no-composer/autoload.php', $template);
+
+        if (!file_exists(App::getShopRoot() . '/vendor-mmlc')) {
+            mkdir(App::getShopRoot() . '/vendor-mmlc');
+        }
+        \file_put_contents(App::getShopRoot() . '/vendor-mmlc/autoload.php', $template);
     }
 
     //TODO: Better return void type an thorw exception at error
@@ -201,12 +219,21 @@ class ModuleInstaller
             return false;
         }
 
+        // Uninstall from shop-root
         $files = $module->getSrcFilePaths();
-
         foreach ($files as $file) {
-            $file = ModulePathMapper::mmlcToShop($file);
+            $file = ModulePathMapper::moduleSrcToShopRoot($file);
             $dest = App::getShopRoot() . $file;
             $this->uninstallFile($dest);
+        }
+
+        // Uninstall from shop-vendor-mmlc
+        $files = $module->getSrcMmlcFilePaths();
+        foreach ($files as $file) {
+            $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
+            $dest = App::getShopRoot() . $file;
+            $this->uninstallFile($dest);
+            FileHelper::deletePathIsEmpty($dest);
         }
 
         if (file_exists($module->getHashPath())) {

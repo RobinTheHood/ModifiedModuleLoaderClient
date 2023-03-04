@@ -52,4 +52,19 @@ class ChangedEntry
         $changedEntry->type = $this->type;
         return $changedEntry;
     }
+
+    public static function typeToString(int $type): string
+    {
+        if ($type === self::TYPE_UNCHANGED) {
+            return 'unchanged';
+        } elseif ($type === self::TYPE_NEW) {
+            return 'new';
+        } elseif ($type === self::TYPE_DELETED) {
+            return 'deleted';
+        } elseif ($type === self::TYPE_CHANGED) {
+            return 'changed';
+        }
+
+        return 'unkown type';
+    }
 }

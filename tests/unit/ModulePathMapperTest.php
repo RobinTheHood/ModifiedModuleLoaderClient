@@ -15,24 +15,39 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\ModuleHahserTests;
 
 use PHPUnit\Framework\TestCase;
 
-class ModuleHaserTest
+class ModulePathMapperTest
 {
-    public function testCreateSrcHashes()
+    public function testmoduleSrcToShopRoot()
     {
         // TODO: write test
     }
 
-    public function testCreateSrcMmlcHashes()
+    public function testshopRootToModuleSrc()
     {
         // TODO: write test
     }
 
-    public function testCreateShopHashes()
+    public function testmoduleSrcMmlcToShopVendorMmlc()
     {
         // TODO: write test
     }
 
-    public function testCreateShopVendorMmlcHashes()
+    public function testshopVendorMmlcToModuleSrcMmlc()
+    {
+        // TODO: write test
+    }
+
+    public function testallModuleSrcMmlcToShopVendorMmlc()
+    {
+        // TODO: write test
+    }
+
+    public function testallModuleSrcToShopRoot()
+    {
+        // TODO: write test
+    }
+
+    public function testallShopRootToModuleSrc()
     {
         // TODO: write test
     }

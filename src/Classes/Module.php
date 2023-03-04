@@ -74,6 +74,11 @@ class Module extends ModuleInfo
     private array $srcFilePaths;
 
     /**
+     * @var string[]
+     */
+    private array $srcMmlcFilePaths;
+
+    /**
      * @var bool
      */
     private bool $isRemote;
@@ -237,7 +242,7 @@ class Module extends ModuleInfo
     }
 
     /**
-     * Liefert ein Array mit Dateienpfaden, die sich in 'new_files'
+     * Liefert ein Array mit Dateienpfaden, die sich in 'src'
      * befinden.
      *
      * Beispiel: [
@@ -254,6 +259,20 @@ class Module extends ModuleInfo
     public function setSrcFilePaths(array $value): void
     {
         $this->srcFilePaths = $value;
+    }
+
+    /**
+     * Liefert ein Array mit Dateienpfaden, die sich in 'src-mmlc'
+     * befinden.
+     */
+    public function getSrcMmlcFilePaths(): array
+    {
+        return $this->srcMmlcFilePaths;
+    }
+
+    public function setSrcMmlcFilePaths(array $value): void
+    {
+        $this->srcMmlcFilePaths = $value;
     }
 
     /**
@@ -298,11 +317,21 @@ class Module extends ModuleInfo
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
-     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/src
      */
     public function getSrcRootPath(): string
     {
         return $this->getModulePath() . '/' . $this->getSourceDir();
+    }
+
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/src-mmlc
+     */
+    public function getSrcMmlcRootPath(): string
+    {
+        return $this->getModulePath() . '/' . $this->getSourceMmlcDir();
     }
 
     /**
