@@ -13,6 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 
 class DependencyBuilder
 {
@@ -21,35 +22,160 @@ class DependencyBuilder
         $moduleLoader = ModuleLoader::getModuleLoader();
         $module = $moduleLoader->loadLatestVersionByArchiveName('firstweb/multi-order');
 
+        $this->satisfiesContraints(
+            $module,
+            [
+                //"composer/autoload" => ['1.2.0'],
+                "robinthehood/modified-std-module" => ['0.6.0'],
+                //"robinthehood/modified-orm" => ['1.7.0']
+                "robinthehood/pdf-bill" => ['0.10.0']
+            ]
+        );
+    }
 
-        // $modules = [];
-        // $this->getModuleList($modules, $module);
-        // file_put_contents(__DIR__ . '/debug-log-modules.txt', print_r($modules, true));
-        // file_put_contents(__DIR__ . '/debug-log-modules.json', json_encode($modules, JSON_PRETTY_PRINT));
-        // return;
+    public function satisfiesContraints($module, $contraints)
+    {
+        $moduleTreeNodes = $this->buildModuleTreeByConstraints($module);
+        file_put_contents(__DIR__ . '/debug-log-tree-constraint-obj.txt', print_r($moduleTreeNodes, true));
+        file_put_contents(__DIR__ . '/debug-log-tree-constraint-obj.json', json_encode($moduleTreeNodes, JSON_PRETTY_PRINT));
 
-        // $tree = $this->buildTreeByModuleRecursive($module);
-        // file_put_contents(__DIR__ . '/debug-log-tree.txt', print_r($tree, true));
-        // file_put_contents(__DIR__ . '/debug-log-tree.json', json_encode($tree, JSON_PRETTY_PRINT));
+        $moduleFlatEntries = [];
+        $this->flattenModuleTreeNodes($moduleTreeNodes, $moduleFlatEntries);
+        file_put_contents(__DIR__ . '/debug-log-flat-obj.txt', print_r($moduleFlatEntries, true));
+        file_put_contents(__DIR__ . '/debug-log-flat-obj.json', json_encode($moduleFlatEntries, JSON_PRETTY_PRINT));
 
-        $tree = $this->buildTreeByModuleRecursiveConstraint($module);
-        file_put_contents(__DIR__ . '/debug-log-tree-constraint.txt', print_r($tree, true));
-        file_put_contents(__DIR__ . '/debug-log-tree-constraint.json', json_encode($tree, JSON_PRETTY_PRINT));
-
-        $flatt = [];
-        $this->flattenTreeNew($tree, $flatt);
-        file_put_contents(__DIR__ . '/debug-log-flatt.txt', print_r($flatt, true));
-        file_put_contents(__DIR__ . '/debug-log-flatt.json', json_encode($flatt, JSON_PRETTY_PRINT));
+        $moduleFlatEntries = $this->removeModuleFlatEnties($moduleFlatEntries, $contraints);
+        file_put_contents(__DIR__ . '/debug-log-flat-filtered-obj.txt', print_r($moduleFlatEntries, true));
+        file_put_contents(__DIR__ . '/debug-log-flat-filtered-obj.json', json_encode($moduleFlatEntries, JSON_PRETTY_PRINT));
 
         $combinations = [];
-        $this->allCombinations($flatt, $combinations, 0);
-        file_put_contents(__DIR__ . '/debug-log-combinations.txt', print_r($combinations, true));
-        file_put_contents(__DIR__ . '/debug-log-combinations.json', json_encode($combinations, JSON_PRETTY_PRINT));
+        $moduleFlatEntries = array_values($moduleFlatEntries);
+        $this->buildAllCombinations($moduleFlatEntries, $combinations);
+        file_put_contents(__DIR__ . '/debug-log-combinations-obj.txt', print_r($combinations, true));
+        file_put_contents(__DIR__ . '/debug-log-combinations-obj.json', json_encode($combinations, JSON_PRETTY_PRINT));
 
-        $combinations = array_reverse($combinations);
+        $this->satisfiesCominations($moduleTreeNodes, $combinations);
+    }
+
+    /**
+     * @param Module $Module
+     * @param int $depth
+     * @return ModuleTreeNode[]
+     */
+    private function buildModuleTreeByConstraints(Module $module, int $depth = 0): array
+    {
+        if ($depth >= 10) {
+            return [];
+        }
+
+        $require = $module->getRequire();
+
+        $moduleTreeNodes = [];
+        foreach ($require as $archiveName => $versionConstraint) {
+            // Modules to Entry
+            $moduleTreeNode = new ModuleTreeNode();
+            $moduleTreeNode->archiveName = $archiveName;
+            $moduleTreeNode->versionConstraint = $versionConstraint;
+
+            // Versions
+            $moduleLoader = ModuleLoader::getModuleLoader();
+            $modules = $moduleLoader->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
+            $modules = ModuleSorter::sortByVersion($modules);
+            foreach ($modules as $module) {
+                $versionStr = $module->getVersion();
+                $moduleTreeNode->versions[$versionStr] = $this->buildModuleTreeByConstraints($module, $depth + 1);
+            }
+
+            $moduleTreeNodes[] = $moduleTreeNode;
+        }
+
+        return $moduleTreeNodes;
+    }
+
+    /**
+     * @param ModuleTreeNode[] $moduleTreeNodes
+     * @param ModuleFlatEntry[] $moduleFlatEntries
+     */
+    private function flattenModuleTreeNodes(array $moduleTreeNodes, array &$moduleFlatEntries): void
+    {
+        if (!$moduleTreeNodes) {
+            return;
+        }
+
+        foreach ($moduleTreeNodes as $moduleTreeNode) {
+            $moduleFlatEntry = new ModuleFlatEntry();
+            $moduleFlatEntry->archiveName = $moduleTreeNode->archiveName;
+            foreach ($moduleTreeNode->versions as $versionStr => $subModuleTreeNodes) {
+                $moduleFlatEntry->versions[] = $versionStr;
+                /** @var ModuleTreeNode[] $subModuleTreeNodes */
+                $this->flattenModuleTreeNodes($subModuleTreeNodes, $moduleFlatEntries);
+            }
+            $moduleFlatEntries[$moduleTreeNode->archiveName] = $moduleFlatEntry;
+        }
+    }
+
+    private function removeModuleFlatEnties(array $moduleFlatTreeEntries, $contraints): array
+    {
+        foreach ($contraints as $archiveName => $versions) {
+            $moduleFlatTreeEntries = $this->removeModuleFlatEnty($moduleFlatTreeEntries, $archiveName, $versions);
+        }
+        return $moduleFlatTreeEntries;
+    }
+
+    private function removeModuleFlatEnty(array $moduleFlatTreeEntries, string $archiveName, array $versions): array
+    {
+        $filteredModuleFlatTreeEntries = [];
+        foreach ($moduleFlatTreeEntries as $moduleFlatTreeEntry) {
+            if ($moduleFlatTreeEntry->archiveName !== $archiveName) {
+                $filteredModuleFlatTreeEntries[$moduleFlatTreeEntry->archiveName] = $moduleFlatTreeEntry;
+                continue;
+            }
+
+            $fileredVersions = [];
+            foreach ($moduleFlatTreeEntry->versions as $versionStr) {
+                if (!in_array($versionStr, $versions)) {
+                    continue;
+                }
+                $fileredVersions[] = $versionStr;
+            }
+            $newModuleFlatTreeEntry = new ModuleFlatEntry();
+            $newModuleFlatTreeEntry->archiveName = $moduleFlatTreeEntry->archiveName;
+            $newModuleFlatTreeEntry->versions = $fileredVersions;
+            $filteredModuleFlatTreeEntries[$moduleFlatTreeEntry->archiveName] = $newModuleFlatTreeEntry;
+        }
+        return $filteredModuleFlatTreeEntries;
+    }
+
+    /**
+     * @param ModuleFlatEntry[] $moduleFlatEntries
+     * @param array $moduleFlatEntries
+     * @param int $index
+     * @param string[] $versionList
+     */
+    private function buildAllCombinations(array &$moduleFlatEntries, array &$combinations, int $index = 0, array $versionList = [])
+    {
+        /** @var ModuleFlatEntry*/
+        $moduleFlatEntry = $moduleFlatEntries[$index] ?? [];
+
+        if (!$moduleFlatEntry) {
+            $combinations[] = $versionList;
+            return;
+        }
+
+        foreach ($moduleFlatEntry->versions as $versionStr) {
+            $version = [
+                $moduleFlatEntry->archiveName => $versionStr
+            ];
+            $newVersionList = array_merge($versionList, $version);
+            $this->buildAllCombinations($moduleFlatEntries, $combinations, $index + 1, $newVersionList);
+        }
+    }
+
+    private function satisfiesCominations(array $moduleTreeNodes, array $combinations)
+    {
         foreach ($combinations as $combination) {
-            $combination['composer/autoload'] = '1.0.0';
-            $result = $this->satisfiesComination($tree, $combination);
+            $combination['robinthehood/modified-orm'] = '1.7.0';
+            $result = $this->satisfiesComination($moduleTreeNodes, $combination);
             if ($result) {
                 var_dump($combination);
                 var_dump($result);
@@ -58,236 +184,27 @@ class DependencyBuilder
         }
     }
 
-
-    private function allCombinations(&$flatt, &$combinations, int $index, $combination = [])
-    {
-        $entry = array_values($flatt)[$index] ?? [];
-
-        if (!$entry) {
-            $combinations[] = $combination;
-            return;
-        }
-
-        foreach ($entry['versions'] as $version) {
-            $newCombination = array_merge($combination, [$entry['archiveName'] => $version]);
-            $this->allCombinations($flatt, $combinations, $index + 1, $newCombination);
-        }
-    }
-
-    private function satisfiesComination(&$tree, $combination): bool
+    private function satisfiesComination(array $moduleTreeNodes, array $combination): bool
     {
         // Expanded
         $moduleResult = true;
-        foreach ($tree as &$module) {
+        foreach ($moduleTreeNodes as $moduleTreeNode) {
             // Module
-            $archiveName = $module['archiveName'];
-            $moduleVersions = &$module['versions'];
+            /** @var ModuleTreeNode $moduleTreeNode */
+            $archiveName = $moduleTreeNode->archiveName;
+            $moduleVersions = $moduleTreeNode->versions;
             $selectedVersion = $combination[$archiveName];
             $versionResult = false;
-            foreach ($moduleVersions as $version => &$moduleVersion) {
+            foreach ($moduleVersions as $version => $subModuleTreeNodes) {
                 // Version
+                /** @var ModuleTreeNode[] $subModuleTreeNodes */
                 if ($version === $selectedVersion) {
-                    $subTree = &$moduleVersion['requireExpanded'];
-                    $versionResult = $this->satisfiesComination($subTree, $combination);
+                    $versionResult = $this->satisfiesComination($subModuleTreeNodes, $combination);
                     break;
                 }
             }
             $moduleResult = $moduleResult && $versionResult;
         }
         return $moduleResult;
-    }
-
-    private function flattenTreeNew($tree, &$flatt)
-    {
-        if (!$tree) {
-            return;
-        }
-
-        foreach ($tree as $entry) {
-            $moduleEntry = [];
-            $moduleEntry["archiveName"] = $entry['archiveName'];
-            foreach ($entry['versions'] as $version => $entrys) {
-                $moduleEntry["versions"][] = $version;
-                $this->flattenTreeNew($entrys['requireExpanded'], $flatt);
-            }
-            $flatt[$entry['archiveName']] = $moduleEntry;
-        }
-    }
-
-    private function getModuleList(array &$modules, Module $module, int $depth = 0)
-    {
-        if ($depth >= 10) {
-            return;
-        }
-
-        $requireExpanded = [];
-        $require = $module->getRequire();
-        foreach ($require as $archiveName => $versionConstraint) {
-            $moduleLoader = ModuleLoader::getModuleLoader();
-            $moduleVersions = $moduleLoader->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
-            $versions = [];
-            foreach ($moduleVersions as $moduleA) {
-                $versions[] = $archiveName . ' : ' . $moduleA->getVersion();
-            }
-            $requireExpanded[$archiveName] = $versions;
-        }
-
-        $moduleAsArray = [
-            'archiveName' => $module->getArchiveName(),
-            'version' => $module->getVersion(),
-            'require' => $require,
-            'requireExpanded' => $requireExpanded
-        ];
-
-        if (!$this->containsModule($moduleAsArray, $modules)) {
-            $modules[] = $moduleAsArray;
-        }
-
-        $require = $module->getRequire();
-        foreach ($require as $archiveName => $versionConstraint) {
-            $moduleLoader = ModuleLoader::getModuleLoader();
-            $moduleVersions = $moduleLoader->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
-            // var_dump($archiveName);
-            // if ($archiveName == 'robinthehood/modified-std-module') {
-            //     echo 'aaa';
-            //     var_dump($moduleVersions);
-            //     die();
-            // }
-            foreach ($moduleVersions as $moduleA) {
-                $this->getModuleList($modules, $moduleA, $depth + 1);
-            }
-        }
-    }
-
-    private function containsModule($moduleA, $modules)
-    {
-        foreach ($modules as $moduleB) {
-            if ($moduleA['archiveName'] !== $moduleB['archiveName']) {
-                continue;
-            }
-
-            if ($moduleA['version'] !== $moduleB['version']) {
-                continue;
-            }
-
-            return true;
-        }
-        return false;
-    }
-
-    private function buildTreeByModuleRecursiveConstraint(Module $module, int $depth = 0): array
-    {
-        if ($depth >= 10) {
-            return [];
-        }
-
-        $require = $module->getRequire();
-
-        $requireModulesTree = [];
-        foreach ($require as $archiveName => $versionConstraint) {
-            // Modules to Entry
-            $entry = [];
-            $entry['archiveName'] = $archiveName;
-            $entry['versionConstraint'] = $versionConstraint;
-
-            // Versions
-            $moduleLoader = ModuleLoader::getModuleLoader();
-            $modules = $moduleLoader->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
-            foreach ($modules as $module) {
-                $entry['versions'][$module->getVersion()] = [
-                    'value' => false,
-                    'requireExpanded' => $this->buildTreeByModuleRecursiveConstraint($module, $depth + 1)
-                ];
-            }
-
-
-            $requireModulesTree[] = $entry;
-        }
-
-        return $requireModulesTree;
-    }
-
-    private function buildTreeByModuleRecursive(Module $module, int $depth = 0): array
-    {
-        if ($depth >= 10) {
-            return [];
-        }
-
-        $require = $module->getRequire();
-
-        $requireModulesTree = [];
-        foreach ($require as $archiveName => $versionConstraint) {
-            // Modules to Entry
-            $entry = [];
-            $entry['archiveName'] = $archiveName;
-            $entry['versionConstraint'] = $versionConstraint;
-
-            // Versions
-            $moduleLoader = ModuleLoader::getModuleLoader();
-            $modules = $moduleLoader->loadAllVersionsByArchiveName($archiveName);
-            foreach ($modules as $module) {
-                $entry['versions'][$module->getVersion()] = $this->buildTreeByModuleRecursive($module, $depth + 1);
-            }
-
-
-            $requireModulesTree[] = $entry;
-        }
-
-        return $requireModulesTree;
-    }
-
-
-    private function buildTreeByModuleRecursiveOld(Module $module, int $depth = 0): array
-    {
-        if ($depth >= 5) {
-            return [];
-        }
-
-        $require = $module->getRequire();
-
-        $requireModulesTree = [];
-        foreach ($require as $archiveName => $versionConstraint) {
-            $moduleLoader = ModuleLoader::getModuleLoader();
-
-            // An dieser Stelle wird zurzeit immer die neuste Variante ausgewählt.
-            // Eigentlich müssen hier alle Varianten die zu $versionConstraint passen
-            // ausgewählt und weiter verarbeitet werden. Zurzeit wird $versionConstraint
-            // aber nicht beachtet. Das muss bei einer späteren Version verbessert werden.
-            $selectedModule = $moduleLoader->loadLatestVersionByArchiveName($archiveName);
-
-            $entry = [];
-            if ($selectedModule) {
-                // $entry['module'] = $selectedModule;
-                $entry['archiveName'] = $selectedModule->getArchiveName();
-                $entry['requestedVersion'] = $versionConstraint;
-                $entry['selectedVersion'] = $selectedModule->getVersion();
-                $entry['require'] = [];
-                $requireModules = $this->buildTreeByModuleRecursive($selectedModule, ++$depth);
-
-                if ($requireModules) {
-                    $entry['require'] = $requireModules;
-                }
-
-                $requireModulesTree[] = $entry;
-            }
-        }
-
-        return $requireModulesTree;
-    }
-
-    public function flattenTree($moduleTree, &$modules = null)
-    {
-        if (!$moduleTree) {
-            return;
-        }
-
-        foreach ($moduleTree as $entry) {
-            $modules[] = [
-                'module' => $entry['module'],
-                'requestedVersion' => $entry['requestedVersion'],
-                'selectedVersion' => $entry['selectedVersion']
-            ];
-            $this->flattenTree($entry['require'], $modules);
-        }
     }
 }
