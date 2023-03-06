@@ -11,19 +11,17 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\DependencyManager;
 
 use PHPUnit\Framework\TestCase;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 
-class DependencyBuilderTest //extends TestCase
+class DependencyBuilderTest extends TestCase
 {
-
-    /*
-    public function invokeDependencyTest()
+    public function testInvokeDependency()
     {
         $dpb = new DependencyBuilder();
         $dpb->test();
         die('TEST DONE');
     }
-    */
 }
