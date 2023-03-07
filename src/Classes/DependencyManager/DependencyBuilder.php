@@ -77,13 +77,17 @@ class DependencyBuilder
             $moduleTreeNode->archiveName = $archiveName;
             $moduleTreeNode->versionConstraint = $versionConstraint;
 
-            // Versions
+            // Fetch Versions
             $moduleLoader = ModuleLoader::getModuleLoader();
             $modules = $moduleLoader->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
             $modules = ModuleSorter::sortByVersion($modules);
+
+            // VersionList
             foreach ($modules as $module) {
-                $versionStr = $module->getVersion();
-                $moduleTreeNode->versions[$versionStr] = $this->buildModuleTreeByConstraints($module, $depth + 1);
+                $moduleVersion = new ModuleVersion();
+                $moduleVersion->version = $module->getVersion();
+                $moduleVersion->require = $this->buildModuleTreeByConstraints($module, $depth + 1);
+                $moduleTreeNode->moduleVersions[$moduleVersion->version] = $moduleVersion;
             }
 
             $moduleTreeNodes[] = $moduleTreeNode;
@@ -105,10 +109,9 @@ class DependencyBuilder
         foreach ($moduleTreeNodes as $moduleTreeNode) {
             $moduleFlatEntry = new ModuleFlatEntry();
             $moduleFlatEntry->archiveName = $moduleTreeNode->archiveName;
-            foreach ($moduleTreeNode->versions as $versionStr => $subModuleTreeNodes) {
-                $moduleFlatEntry->versions[] = $versionStr;
-                /** @var ModuleTreeNode[] $subModuleTreeNodes */
-                $this->flattenModuleTreeNodes($subModuleTreeNodes, $moduleFlatEntries);
+            foreach ($moduleTreeNode->moduleVersions as $moduleVersion) {
+                $moduleFlatEntry->versions[] = $moduleVersion->version;
+                $this->flattenModuleTreeNodes($moduleVersion->require, $moduleFlatEntries);
             }
             $moduleFlatEntries[$moduleTreeNode->archiveName] = $moduleFlatEntry;
         }
@@ -186,23 +189,21 @@ class DependencyBuilder
 
     private function satisfiesComination(array $moduleTreeNodes, array $combination): bool
     {
-        // Expanded
+        // Context: Expanded
         $moduleResult = true;
         foreach ($moduleTreeNodes as $moduleTreeNode) {
-            // Module
-            /** @var ModuleTreeNode $moduleTreeNode */
+            // Context: Module
             $archiveName = $moduleTreeNode->archiveName;
-            $moduleVersions = $moduleTreeNode->versions;
             $selectedVersion = $combination[$archiveName];
             $versionResult = false;
-            foreach ($moduleVersions as $version => $subModuleTreeNodes) {
-                // Version
-                /** @var ModuleTreeNode[] $subModuleTreeNodes */
-                if ($version === $selectedVersion) {
-                    $versionResult = $this->satisfiesComination($subModuleTreeNodes, $combination);
+            foreach ($moduleTreeNode->moduleVersions as $moduleVersion) {
+                // Context: Version
+                if ($moduleVersion->version === $selectedVersion) {
+                    $versionResult = $this->satisfiesComination($moduleVersion->require, $combination);
                     break;
                 }
             }
+
             $moduleResult = $moduleResult && $versionResult;
         }
         return $moduleResult;
