@@ -30,4 +30,9 @@ class ModuleFlatEntryList
     {
         return $this->moduleFlatEntries[$index] ?? null;
     }
+
+    public function getAll(): array
+    {
+        return $this->moduleFlatEntries;
+    }
 }

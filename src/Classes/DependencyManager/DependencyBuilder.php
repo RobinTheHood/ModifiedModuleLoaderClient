@@ -13,10 +13,14 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 
 class DependencyBuilder
 {
+    /** @var Module[] */
+    private $moduleCache = [];
+
     public function test()
     {
         // $moduleLoader = ModuleLoader::getModuleLoader();
@@ -24,12 +28,12 @@ class DependencyBuilder
 
         $this->satisfiesContraints(
             'firstweb/multi-order',
-            '^1.13.0',
+            '^1.0.0',
             [
                 //"composer/autoload" => ['1.2.0'],
-                "robinthehood/modified-std-module" => ['0.6.0'],
+                "robinthehood/modified-std-module" => ['0.1.0'],
                 //"robinthehood/modified-orm" => ['1.7.0']
-                "robinthehood/pdf-bill" => ['0.10.0']
+                //"robinthehood/pdf-bill" => ['0.10.0']
             ]
         );
     }
@@ -42,7 +46,7 @@ class DependencyBuilder
 
 
         $moduleTreeNode = $this->buildModuleTreeByConstraintsNew($archiveName, $constraint);
-        file_put_contents(__DIR__ . '/debug-log-tree-constraint-obj-new.txt', print_r($moduleTreeNode, true));
+        // file_put_contents(__DIR__ . '/debug-log-tree-constraint-obj-new.txt', print_r($moduleTreeNode, true));
         file_put_contents(__DIR__ . '/debug-log-tree-constraint-obj-new.json', json_encode($moduleTreeNode, JSON_PRETTY_PRINT));
 
         // $moduleFlatEntries = [];
@@ -52,7 +56,7 @@ class DependencyBuilder
 
         $moduleFlatEntries = [];
         $this->flattenModuleTreeNodeNew($moduleTreeNode, $moduleFlatEntries);
-        file_put_contents(__DIR__ . '/debug-log-flat-obj-new.txt', print_r($moduleFlatEntries, true));
+        // file_put_contents(__DIR__ . '/debug-log-flat-obj-new.txt', print_r($moduleFlatEntries, true));
         file_put_contents(__DIR__ . '/debug-log-flat-obj-new.json', json_encode($moduleFlatEntries, JSON_PRETTY_PRINT));
 
         $moduleFlatEntries = $this->removeModuleFlatEnties($moduleFlatEntries, $contraints);
@@ -65,14 +69,42 @@ class DependencyBuilder
         // file_put_contents(__DIR__ . '/debug-log-combinations-obj.txt', print_r($combinations, true));
         // file_put_contents(__DIR__ . '/debug-log-combinations-obj.json', json_encode($combinations, JSON_PRETTY_PRINT));
 
-        $combinations = [];
-        $moduleFlatEntryList = new ModuleFlatEntryList($moduleFlatEntries);
-        $this->buildAllCombinationsNew($moduleFlatEntryList, $combinations);
-        file_put_contents(__DIR__ . '/debug-log-combinations-obj-new.txt', print_r($combinations, true));
-        file_put_contents(__DIR__ . '/debug-log-combinations-obj-new.json', json_encode($combinations, JSON_PRETTY_PRINT));
+
+        $combinationIterator = new CombinationIterator($moduleFlatEntries);
+        // for ($i = 0; $i < 10; $i++) {
+        //     $combination = $combinationIterator->next();
+        //     var_dump($combination);
+        // }
+        // die();
+
+        // $combinations = [];
+        // $moduleFlatEntryList = new ModuleFlatEntryList($moduleFlatEntries);
+        // $this->buildAllCombinationsNew($moduleFlatEntryList, $combinations);
+        // file_put_contents(__DIR__ . '/debug-log-combinations-obj-new.json', json_encode($combinations, JSON_PRETTY_PRINT));
+
 
         //$this->satisfiesCominations($moduleTreeNodes, $combinations);
-        $this->satisfiesCominationsNew($moduleTreeNode, $combinations);
+        //$this->satisfiesCominationsNew($moduleTreeNode, $combinations);
+
+        $this->satisfiesCominationsNewNew($moduleTreeNode, $combinationIterator);
+    }
+
+    /**
+     * @param string $archiveName
+     * @param string $versionConstraint
+     * @return Module[]
+     */
+    private function loadAllByArchiveNameAndConstraint(string $archiveName, string $versionConstraint): array
+    {
+        $modules = $this->moduleCache[$archiveName] ?? [];
+        if (!$modules) {
+            $moduleLoader = ModuleLoader::getModuleLoader();
+            $modules = $moduleLoader->loadAllVersionsByArchiveName($archiveName);
+            $modules = ModuleSorter::sortByVersion($modules);
+            $this->moduleCache[$archiveName] = $modules;
+        }
+
+        return ModuleFilter::filterByVersionConstrain($modules, $versionConstraint);
     }
 
     /**
@@ -125,9 +157,10 @@ class DependencyBuilder
         $moduleTreeNode->archiveName = $archiveName;
         $moduleTreeNode->versionConstraint = $versionConstraint;
 
-        $moduleLoader = ModuleLoader::getModuleLoader();
-        $modules = $moduleLoader->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
-        $modules = ModuleSorter::sortByVersion($modules);
+        // $moduleLoader = ModuleLoader::getModuleLoader();
+        // $modules = $moduleLoader->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
+        // $modules = ModuleSorter::sortByVersion($modules);
+        $modules = $this->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
 
         $moduleVersions = [];
         foreach ($modules as $module) {
@@ -310,6 +343,24 @@ class DependencyBuilder
                 var_dump($combination);
                 var_dump($result);
                 break;
+            }
+        }
+    }
+
+    private function satisfiesCominationsNewNew(ModuleTreeNode $moduleTreeNode, CombinationIterator $combinationIterator)
+    {
+        while (true) {
+            $combination = $combinationIterator->current();
+            $result = $this->satisfiesCominationNew($moduleTreeNode, $combination);
+            if ($result) {
+                var_dump($combination);
+                var_dump($result);
+                return;
+            }
+
+            $combinationIterator->next();
+            if ($combinationIterator->isStart()) {
+                return;
             }
         }
     }
