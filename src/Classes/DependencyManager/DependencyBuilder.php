@@ -71,7 +71,6 @@ class DependencyBuilder
         $this->buildAllCombinationsFromModuleFlatEntries($moduleFlatEntries, $combinations);
         file_put_contents(__DIR__ . '/debug-log-combinations-obj.json', json_encode($combinations, JSON_PRETTY_PRINT));
 
-        //$value = $this->satisfiesCominationsFromModuleTreeNodes($moduleTreeNodes, $combinations);
         $combinationSatisfyer = new CombinationSatisfyer();
         $array = $combinationSatisfyer->satisfiesCominationsFromModuleTreeNodes($moduleTreeNodes, $combinations);
         var_dump($array);
@@ -95,7 +94,6 @@ class DependencyBuilder
         $this->buildAllCombinationsFromModuleFlatEntryList($moduleFlatEntryList, $combinations);
         file_put_contents(__DIR__ . '/debug-log-combinations-obj-new.json', json_encode($combinations, JSON_PRETTY_PRINT));
 
-        //$this->satisfiesCominationsFromModuleTreeNode($moduleTreeNode, $combinations);
         $combinationSatisfyer = new CombinationSatisfyer();
         $array = $combinationSatisfyer->satisfiesCominationsFromModuleTreeNode($moduleTreeNode, $combinations);
         var_dump($array);
@@ -115,8 +113,6 @@ class DependencyBuilder
         file_put_contents(__DIR__ . '/debug-log-flat-filtered-obj.json', json_encode($moduleFlatEntries, JSON_PRETTY_PRINT));
 
         $combinationIterator = new CombinationIterator($moduleFlatEntries);
-        //$this->satisfiesCominationsFromModuleWithIterator($moduleTreeNode, $combinationIterator);
-
         $combinationSatisfyer = new CombinationSatisfyer();
         $array = $combinationSatisfyer->satisfiesCominationsFromModuleWithIterator($moduleTreeNode, $combinationIterator);
         var_dump($array);
@@ -326,93 +322,5 @@ class DependencyBuilder
             $newCombination = array_merge($compination, $version);
             $this->buildAllCombinationsFromModuleFlatEntryList($moduleFlatEntryList, $combinations, $newCombination, $index + 1);
         }
-    }
-
-    private function satisfiesCominationsFromModuleTreeNodes(array $moduleTreeNodes, array $combinations)
-    {
-        foreach ($combinations as $combination) {
-            $result = $this->satisfiesCominationFromModuleTreeNodes($moduleTreeNodes, $combination);
-            if ($result) {
-                var_dump($combination);
-                var_dump($result);
-                break;
-            }
-        }
-    }
-
-    private function satisfiesCominationFromModuleTreeNodes(array $moduleTreeNodes, array $combination): bool
-    {
-        // Context: Expanded
-        $moduleResult = true;
-        foreach ($moduleTreeNodes as $moduleTreeNode) {
-            // Context: Module
-            $archiveName = $moduleTreeNode->archiveName;
-            $selectedVersion = $combination[$archiveName];
-            $versionResult = false;
-            foreach ($moduleTreeNode->moduleVersions as $moduleVersion) {
-                // Context: Version
-                if ($moduleVersion->version === $selectedVersion) {
-                    $versionResult = $this->satisfiesCominationFromModuleTreeNodes($moduleVersion->require, $combination);
-                    break;
-                }
-            }
-
-            $moduleResult = $moduleResult && $versionResult;
-        }
-        return $moduleResult;
-    }
-
-    private function satisfiesCominationsFromModuleTreeNode(ModuleTreeNode $moduleTreeNode, array $combinations)
-    {
-        foreach ($combinations as $combination) {
-            $result = $this->satisfiesCominationFromModuleTreeNode($moduleTreeNode, $combination);
-            if ($result) {
-                var_dump($combination);
-                var_dump($result);
-                break;
-            }
-        }
-    }
-
-    private function satisfiesCominationsFromModuleWithIterator(ModuleTreeNode $moduleTreeNode, CombinationIterator $combinationIterator)
-    {
-        while (true) {
-            $combination = $combinationIterator->current();
-            $result = $this->satisfiesCominationFromModuleTreeNode($moduleTreeNode, $combination);
-            if ($result) {
-                var_dump($combination);
-                var_dump($result);
-                return;
-            }
-
-            $combinationIterator->next();
-            if ($combinationIterator->isStart()) {
-                return;
-            }
-        }
-    }
-
-    public function satisfiesCominationFromModuleTreeNode(ModuleTreeNode $moduleTreeNode, array $combination): bool
-    {
-        // Context: Module
-        $archiveName = $moduleTreeNode->archiveName;
-        $selectedVersion = $combination[$archiveName];
-        foreach ($moduleTreeNode->moduleVersions as $moduleVersion) {
-            // Context: Version
-            if ($moduleVersion->version === $selectedVersion) {
-                return $this->satisfiesCominationFromModuleTreeNode2($moduleVersion->require, $combination);
-            }
-        }
-        return false;
-    }
-
-    private function satisfiesCominationFromModuleTreeNode2(array $moduleTreeNodes, array $combination): bool
-    {
-        // Context: Expanded
-        $moduleResult = true;
-        foreach ($moduleTreeNodes as $moduleTreeNode) {
-            $moduleResult = $moduleResult && $this->satisfiesCominationFromModuleTreeNode($moduleTreeNode, $combination);
-        }
-        return $moduleResult;
     }
 }
