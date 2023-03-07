@@ -38,6 +38,20 @@ class FlatEntryBuilder
     }
 
     /**
+     * @param FlatEntry[] $flatEntries
+     * @param string $archiveName
+     * @param FlatEntry $flatEntry
+     */
+    private function addFlatEntry(array &$flatEntries, string $archiveName, FlatEntry $flatEntry): void
+    {
+        if (array_key_exists($archiveName, $flatEntries)) {
+            $flatEntries[$archiveName]->combine($flatEntry);
+        } else {
+            $flatEntries[$archiveName] = $flatEntry;
+        }
+    }
+
+    /**
      * @param ModuleTree[] $moduleTrees
      * @param FlatEntry[] $flatEntries
      */
@@ -54,13 +68,9 @@ class FlatEntryBuilder
                 $flatEntry->versions[] = $moduleVersion->version;
                 $this->buildModuleFlatEntriesByModuleTrees($moduleVersion->require, $flatEntries);
             }
-            $flatEntries[$moduleTree->archiveName] = $flatEntry;
+            $this->addFlatEntry($flatEntries, $moduleTree->archiveName, $flatEntry);
         }
     }
-
-
-
-
 
     /**
      * @param ModuleTree $moduleTree
@@ -70,16 +80,21 @@ class FlatEntryBuilder
     {
         $flatEntry = new FlatEntry();
         $flatEntry->archiveName = $moduleTree->archiveName;
-        $flatEntries[$moduleTree->archiveName] = $flatEntry;
         foreach ($moduleTree->moduleVersions as $moduleVersion) {
             $flatEntry->versions[] = $moduleVersion->version;
             foreach ($moduleVersion->require as $moduleTree) {
                 $this->buildModuleFlatEntriesByModuleTree($moduleTree, $flatEntries);
             }
         }
+        $this->addFlatEntry($flatEntries, $flatEntry->archiveName, $flatEntry);
     }
 
-    public function removeFlatEntriesByContrains(array $moduleFlatTreeEntries, $contraints): array
+    /**
+     * @param FlatEntry[] $moduleFlatTreeEntries
+     * @param array $contraints
+     * @return FlatEntry[]
+     */
+    public function removeFlatEntriesByContrains(array $moduleFlatTreeEntries, array $contraints): array
     {
         foreach ($contraints as $archiveName => $versions) {
             $moduleFlatTreeEntries = $this->removeModuleFlatEnty($moduleFlatTreeEntries, $archiveName, $versions);
@@ -87,6 +102,13 @@ class FlatEntryBuilder
         return $moduleFlatTreeEntries;
     }
 
+    /**
+     * @param FlatEntry[] $moduleFlatTreeEntries
+     * @param string $archiveName
+     * @param string[] $versions
+     *
+     * @return FlatEntry[]
+     */
     private function removeModuleFlatEnty(array $moduleFlatTreeEntries, string $archiveName, array $versions): array
     {
         $filteredModuleFlatTreeEntries = [];

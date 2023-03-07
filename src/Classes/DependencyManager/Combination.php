@@ -18,7 +18,7 @@ use Exception;
 class Combination
 {
     /** @var array */
-    private $combinations = [];
+    public $combinations = [];
 
     public function add(string $archiveName, string $version)
     {

@@ -78,10 +78,14 @@ class CombinationSatisfyer
         $selectedVersion = $combination->getVersion($archiveName);
         foreach ($moduleTree->moduleVersions as $moduleVersion) {
             // Context: Version
+            //var_dump($archiveName . " {$moduleVersion->version} == {$selectedVersion}");
             if ($moduleVersion->version === $selectedVersion) {
+                //var_dump('x');
                 return $this->satisfiesCominationFromModuleTrees($moduleVersion->require, $combination);
             }
         }
+        // var_dump('xxx');
+        // var_dump($moduleTree);
         return false;
     }
 

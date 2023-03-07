@@ -29,10 +29,11 @@ class DependencyBuilder
         $module = $moduleLoader->loadLatestVersionByArchiveName('firstweb/multi-order');
 
         $constraints = [
-            //"composer/autoload" => ['1.2.0'],
-            "robinthehood/modified-std-module" => ['0.1.0'],
-            //"robinthehood/modified-orm" => ['1.7.0']
-            //"robinthehood/pdf-bill" => ['0.10.0']
+            // "modified" => ['2.0.4.2'],
+            "composer/autoload" => ['1.3.0'],
+            // "robinthehood/modified-std-module" => ['0.9.0'],
+            // "robinthehood/modified-orm" => ['1.8.1'],
+            // "robinthehood/pdf-bill" => ['0.17.0']
         ];
 
         var_dump('TEST: satisfiesContraints1');
@@ -94,7 +95,7 @@ class DependencyBuilder
 
         $combinationBuilder = new CombinationBuilder();
         $combinations = $combinationBuilder->buildAllFromModuleFlatEntries($flatEntries);
-        $this->log($combinations, '2-combinations.json');
+        // $this->log($combinations, '2-combinations.json');
 
         $combinationSatisfyer = new CombinationSatisfyer();
         $combination = $combinationSatisfyer->satisfiesCominationsFromModuleTree($moduleTree, $combinations);

@@ -55,6 +55,7 @@ class ModuleTreeBuilder
         $require = $module->getRequire();
 
         $moduleTrees = [];
+        $moduleTrees[] = $this->createModifed($module);
         foreach ($require as $archiveName => $versionConstraint) {
             // Modules to Entry
             $moduleTree = new ModuleTree();
@@ -69,6 +70,7 @@ class ModuleTreeBuilder
                 $moduleVersion = new ModuleVersion();
                 $moduleVersion->version = $module->getVersion();
                 $moduleVersion->require = $this->buildListByConstraints($module, $depth + 1);
+                //$moduleVersion->require[] = $this->createModifed($module);
                 $moduleTree->moduleVersions[$moduleVersion->version] = $moduleVersion;
             }
 
@@ -78,6 +80,26 @@ class ModuleTreeBuilder
         return $moduleTrees;
     }
 
+    /**
+     * @return ModuleTree[]
+     */
+    private function createModifed(Module $module): ModuleTree
+    {
+        $moduleVersions = [];
+        foreach ($module->getModifiedCompatibility() as $modifiedVersion) {
+            $moduleVersion = new ModuleVersion();
+            $moduleVersion->version = $modifiedVersion;
+            $moduleVersion->require = [];
+            $moduleVersions[] = $moduleVersion;
+        }
+
+        $moduleTree = new ModuleTree();
+        $moduleTree->archiveName = 'modified';
+        $moduleTree->versionConstraint = '';
+        $moduleTree->moduleVersions = array_reverse($moduleVersions);
+
+        return $moduleTree;
+    }
     /**
      * @param string $archiveName
      * @param string $versionConstraint
