@@ -15,89 +15,88 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 class CombinationSatisfyer
 {
-    public function satisfiesCominationsFromModuleTreeNodes(array $moduleTreeNodes, array $combinations): array
+    /**
+     * @param ModuleTree[] $moduleTrees
+     * @param Combination[] $combinations
+     *
+     * @return Combination
+     */
+    public function satisfiesCominationsFromModuleTrees(array $moduleTrees, array $combinations): ?Combination
     {
         foreach ($combinations as $combination) {
-            $result = $this->satisfiesCominationFromModuleTreeNodes($moduleTreeNodes, $combination);
+            $result = $this->satisfiesCominationFromModuleTrees($moduleTrees, $combination);
             if ($result) {
                 return $combination;
             }
         }
-        return [];
+        return null;
     }
 
-    public function satisfiesCominationsFromModuleTreeNode(ModuleTreeNode $moduleTreeNode, array $combinations): array
+    /**
+     * @param ModuleTree $moduleTree
+     * @param Combination[] $combinations
+     *
+     * @return Combination
+     */
+    public function satisfiesCominationsFromModuleTree(ModuleTree $moduleTree, array $combinations): ?Combination
     {
         foreach ($combinations as $combination) {
-            $result = $this->satisfiesCominationFromModuleTreeNode($moduleTreeNode, $combination);
+            $result = $this->satisfiesCominationFromModuleTree($moduleTree, $combination);
             if ($result) {
                 return $combination;
             }
         }
-        return [];
+        return null;
     }
 
     public function satisfiesCominationsFromModuleWithIterator(
-        ModuleTreeNode $moduleTreeNode,
+        ModuleTree $moduleTree,
         CombinationIterator $combinationIterator
-    ): array {
+    ): ?Combination {
         while (true) {
             $combination = $combinationIterator->current();
-            $result = $this->satisfiesCominationFromModuleTreeNode($moduleTreeNode, $combination);
+            $result = $this->satisfiesCominationFromModuleTree($moduleTree, $combination);
             if ($result) {
                 return $combination;
             }
 
             $combinationIterator->next();
             if ($combinationIterator->isStart()) {
-                return [];
+                return null;
             }
         }
     }
 
-    public function satisfiesCominationFromModuleTreeNode(ModuleTreeNode $moduleTreeNode, array $combination): bool
+    /**
+     * @param ModuleTree $moduleTree
+     * @param Combination $combination
+     */
+    public function satisfiesCominationFromModuleTree(ModuleTree $moduleTree, Combination $combination): bool
     {
         // Context: Module
-        $archiveName = $moduleTreeNode->archiveName;
-        $selectedVersion = $combination[$archiveName];
-        foreach ($moduleTreeNode->moduleVersions as $moduleVersion) {
+        $archiveName = $moduleTree->archiveName;
+        $selectedVersion = $combination->getVersion($archiveName);
+        foreach ($moduleTree->moduleVersions as $moduleVersion) {
             // Context: Version
             if ($moduleVersion->version === $selectedVersion) {
-                return $this->satisfiesCominationFromModuleTreeNodes($moduleVersion->require, $combination);
+                return $this->satisfiesCominationFromModuleTrees($moduleVersion->require, $combination);
             }
         }
         return false;
     }
 
-    public function satisfiesCominationFromModuleTreeNodes(array $moduleTreeNodes, array $combination): bool
+    /**
+     * @param ModuleTree[] $moduleTrees
+     * @param Combination $combination
+     */
+    public function satisfiesCominationFromModuleTrees(array $moduleTrees, Combination $combination): bool
     {
         // Context: Expanded
         $moduleResult = true;
-        foreach ($moduleTreeNodes as $moduleTreeNode) {
+        foreach ($moduleTrees as $moduleTree) {
             $moduleResult =
-                $moduleResult && $this->satisfiesCominationFromModuleTreeNode($moduleTreeNode, $combination);
+                $moduleResult && $this->satisfiesCominationFromModuleTree($moduleTree, $combination);
         }
         return $moduleResult;
     }
-
-    // public function satisfiesCominationFromModuleTreeNodes(array $moduleTreeNodes, array $combination): bool
-    // {
-    //     // Context: Expanded
-    //     $moduleResult = true;
-    //     foreach ($moduleTreeNodes as $moduleTreeNode) {
-    //         // Context: Module
-    //         $archiveName = $moduleTreeNode->archiveName;
-    //         $selectedVersion = $combination[$archiveName];
-    //         $versionResult = false;
-    //         foreach ($moduleTreeNode->moduleVersions as $moduleVersion) {
-    //             // Context: Version
-    //             if ($moduleVersion->version === $selectedVersion) {
-    //                 $versionResult = $this->satisfiesCominationFromModuleTreeNodes($moduleVersion->require, $combination);
-    //                 break;
-    //             }
-    //         }
-    //         $moduleResult = $moduleResult && $versionResult;
-    //     }
-    //     return $moduleResult;
-    // }
 }

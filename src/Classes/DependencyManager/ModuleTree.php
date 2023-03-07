@@ -13,11 +13,14 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
-class ModuleFlatEntry
+class ModuleTree
 {
     /** @var string */
-    public $archiveName;
+    public $archiveName = '';
 
-    /** @var array version strings */
-    public $versions;
+    /** @var string version constraint string */
+    public $versionConstraint = '';
+
+    /** @var ModuleVersion[] */
+    public $moduleVersions = [];
 }

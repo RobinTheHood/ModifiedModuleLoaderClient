@@ -18,6 +18,6 @@ class ModuleVersion
     /** @var string */
     public $version = '';
 
-    /** @var ModuleTreeNode[] **/
+    /** @var ModuleTree[] **/
     public $require = [];
 }
