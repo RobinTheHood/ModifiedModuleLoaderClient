@@ -40,27 +40,19 @@ class DependencyBuilder
         ];
 
         var_dump('TEST: satisfiesContraints1');
-        $this->satisfiesContraints1(
-            $module,
-            $systemSet
-        );
+        $combinationSatisfyerResult = $this->satisfiesContraints1($module, $systemSet);
+        var_dump($combinationSatisfyerResult);
 
         var_dump('TEST: satisfiesContraints2');
-        $this->satisfiesContraints2(
-            'firstweb/multi-order',
-            '^1.0.0',
-            $systemSet
-        );
+        $combinationSatisfyerResult = $this->satisfiesContraints2('firstweb/multi-order', '^1.0.0', $systemSet);
+        var_dump($combinationSatisfyerResult);
 
         var_dump('TEST: satisfiesContraints3');
-        $this->satisfiesContraints3(
-            'firstweb/multi-order',
-            '^1.0.0',
-            $systemSet
-        );
+        $combinationSatisfyerResult = $this->satisfies('firstweb/multi-order', '^1.0.0', $systemSet);
+        var_dump($combinationSatisfyerResult);
     }
 
-    public function satisfiesContraints1(Module $module, SystemSet $systemSet): void
+    public function satisfiesContraints1(Module $module, SystemSet $systemSet): CombinationSatisfyerResult
     {
         $moduleTreeBuilder = new ModuleTreeBuilder();
         $moduleTrees = $moduleTreeBuilder->buildListByConstraints($module);
@@ -78,12 +70,13 @@ class DependencyBuilder
         $this->log($combinations, '1-combinations.json');
 
         $combinationSatisfyer = new CombinationSatisfyer();
-        $combination = $combinationSatisfyer->satisfiesCominationsFromModuleTrees($moduleTrees, $combinations);
-        var_dump($combination);
+        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleTrees($moduleTrees, $combinations);
+
+        return $combinationSatisfyerResult;
     }
 
 
-    public function satisfiesContraints2(string $archiveName, string $constraint, SystemSet $systemSet): void
+    public function satisfiesContraints2(string $archiveName, string $constraint, SystemSet $systemSet): CombinationSatisfyerResult
     {
         $moduleTreeBuilder = new ModuleTreeBuilder();
         $moduleTree = $moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
@@ -101,12 +94,13 @@ class DependencyBuilder
         $this->log($combinations, '2-combinations.json');
 
         $combinationSatisfyer = new CombinationSatisfyer();
-        $combination = $combinationSatisfyer->satisfiesCominationsFromModuleTree($moduleTree, $combinations);
-        var_dump($combination);
+        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleTree($moduleTree, $combinations);
+
+        return $combinationSatisfyerResult;
     }
 
 
-    public function satisfiesContraints3(string $archiveName, string $constraint, SystemSet $systemSet): void
+    public function satisfies(string $archiveName, string $constraint, SystemSet $systemSet): CombinationSatisfyerResult
     {
         $moduleTreeBuilder = new ModuleTreeBuilder();
         $moduleTree = $moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
@@ -117,11 +111,12 @@ class DependencyBuilder
         $this->log($flatEntries, '3-flatEntries.json');
 
         $flatEntries = $flatEntryBuilder->fitSystemSet($flatEntries, $systemSet);
-        $this->log($flatEntries, '2-flatEntries-fit.json');
+        $this->log($flatEntries, '3-flatEntries-fit.json');
 
         $combinationIterator = new CombinationIterator($flatEntries);
         $combinationSatisfyer = new CombinationSatisfyer();
-        $combination = $combinationSatisfyer->satisfiesCominationsFromModuleWithIterator($moduleTree, $combinationIterator);
-        var_dump($combination);
+        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleWithIterator($moduleTree, $combinationIterator);
+
+        return $combinationSatisfyerResult;
     }
 }
