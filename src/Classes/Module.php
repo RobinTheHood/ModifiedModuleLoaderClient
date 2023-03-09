@@ -519,9 +519,6 @@ class Module extends ModuleInfo
         return $comparator->satisfiesOr($phpVersionInstalled, $phpVersionContraint);
     }
 
-    /**
-     * Version 1.20.0 is the last version without isCompatibleWithMmlc()
-     */
     public function isCompatibleWithMmlc(): bool
     {
         $mmlcVersionInstalled = App::getMmlcVersion();
@@ -530,7 +527,7 @@ class Module extends ModuleInfo
         }
 
         $mmlc = $this->getMmlc();
-        $mmlcVersionContraint = $mmlc['version'] ?? '^1.20.0';
+        $mmlcVersionContraint = $mmlc['version'] ?? '';
         if (!$mmlcVersionContraint) {
             return true;
         }

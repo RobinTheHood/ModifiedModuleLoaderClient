@@ -94,7 +94,7 @@ class ModuleFactory
         $module->setAutoload($autoload);
         $module->setTags($array['tags'] ?? '');
         $module->setPhp($array['php'] ?? []);
-        $module->setMmlc($array['mmlc'] ?? []);
+        $module->setMmlc($array['mmlc'] ?? ['version' => App::getMmlcVersion()]);
 
         // Module
         $module->setLocalRootPath($array['localRootPath'] ?? '');
