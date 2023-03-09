@@ -29,6 +29,11 @@ class Combination
         $this->combinations[$archiveName] = $version;
     }
 
+    public function overwrite(string $archiveName, string $version)
+    {
+        $this->combinations[$archiveName] = $version;
+    }
+
     public function getVersion(string $archiveName): string
     {
         if (!array_key_exists($archiveName, $this->combinations)) {
@@ -44,5 +49,21 @@ class Combination
         $newCombination = new Combination();
         $newCombination->combinations = $combinations;
         return $newCombination;
+    }
+
+    /**
+     * Liefert eine neues Combinations Obj zurück, in der nur echte Module enthalten sind.
+     */
+    public function strip(): Combination
+    {
+        $combination = new Combination();
+        foreach ($this->combinations as $archiveName => $version) {
+            if (strpos($archiveName, '/') === false) { // Überspringe Einträge wie modified, php, mmlc ...
+                continue;
+            }
+
+            $combination->add($archiveName, $version);
+        }
+        return $combination;
     }
 }
