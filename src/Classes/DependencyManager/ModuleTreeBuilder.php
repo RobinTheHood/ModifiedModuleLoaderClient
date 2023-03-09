@@ -42,50 +42,6 @@ class ModuleTreeBuilder
     }
 
     /**
-     * @param Module $module
-     * @param ModuleTree[] $moduleTrees
-     */
-    private function addTreeModified(Module $module, array &$moduleTrees): void
-    {
-        if (!$module->getModifiedCompatibility()) {
-            return;
-        }
-
-        $moduleVersions = [];
-        foreach ($module->getModifiedCompatibility() as $modifiedVersion) {
-            $moduleVersion = new ModuleVersion();
-            $moduleVersion->version = $modifiedVersion;
-            $moduleVersion->require = [];
-            $moduleVersions[] = $moduleVersion;
-        }
-
-        $moduleTree = new ModuleTree();
-        $moduleTree->archiveName = 'modified';
-        $moduleTree->versionConstraint = '';
-        $moduleTree->moduleVersions = array_reverse($moduleVersions);
-
-        $moduleTrees[] = $moduleTree;
-    }
-
-    /**
-     * @param Module $module
-     * @param ModuleTree[] $moduleTrees
-     */
-    private function addTreePhp(Module $module, array &$moduleTrees): void
-    {
-        if (!$module->getPhp()) {
-            return;
-        }
-
-        $moduleTree = new ModuleTree();
-        $moduleTree->archiveName = 'php';
-        $moduleTree->versionConstraint = $module->getPhp()['version'] ?? '^7.4.0 || ^8.0.0';
-        $moduleTree->moduleVersions = [];
-
-        $moduleTrees[] = $moduleTree;
-    }
-
-    /**
      * @param Module $Module
      * @param int $depth
      * @return ModuleTree[]
@@ -100,8 +56,7 @@ class ModuleTreeBuilder
 
         $moduleTrees = [];
 
-        $this->addTreeModified($module, $moduleTrees);
-        $this->addTreePhp($module, $moduleTrees);
+        $this->addExtraDependencies($module, $moduleTrees);
 
         foreach ($require as $archiveName => $versionConstraint) {
             // Modules to Entry
@@ -146,8 +101,7 @@ class ModuleTreeBuilder
             $moduleVersion->version = $module->getVersion();
 
             if ($depth < 10) {
-                $this->addTreeModified($module, $moduleVersion->require);
-                $this->addTreePhp($module, $moduleVersion->require);
+                $this->addExtraDependencies($module, $moduleVersion->require);
 
                 $require = $module->getRequire();
                 foreach ($require as $archiveName => $versionConstraint) {
@@ -160,5 +114,78 @@ class ModuleTreeBuilder
         $moduleTree->moduleVersions = $moduleVersions;
 
         return $moduleTree;
+    }
+
+    /**
+     * @param Module $module
+     * @param ModuleTree[] $moduleTrees
+     */
+    private function addExtraDependencies(Module $module, array &$moduleTrees): void
+    {
+        $this->addTreeModified($module, $moduleTrees);
+        $this->addTreePhp($module, $moduleTrees);
+        $this->addTreeMmlc($module, $moduleTrees);
+    }
+
+    /**
+     * @param Module $module
+     * @param ModuleTree[] $moduleTrees
+     */
+    private function addTreeModified(Module $module, array &$moduleTrees): void
+    {
+        if (!$module->getModifiedCompatibility()) {
+            return;
+        }
+
+        $moduleVersions = [];
+        foreach ($module->getModifiedCompatibility() as $modifiedVersion) {
+            $moduleVersion = new ModuleVersion();
+            $moduleVersion->version = $modifiedVersion;
+            $moduleVersion->require = [];
+            $moduleVersions[] = $moduleVersion;
+        }
+
+        $moduleTree = new ModuleTree();
+        $moduleTree->archiveName = 'modified';
+        $moduleTree->versionConstraint = '';
+        $moduleTree->moduleVersions = array_reverse($moduleVersions);
+
+        $moduleTrees[] = $moduleTree;
+    }
+
+    /**
+     * @param Module $module
+     * @param ModuleTree[] $moduleTrees
+     */
+    private function addTreePhp(Module $module, array &$moduleTrees): void
+    {
+        if (!$module->getPhp()) {
+            return;
+        }
+
+        $moduleTree = new ModuleTree();
+        $moduleTree->archiveName = 'php';
+        $moduleTree->versionConstraint = $module->getPhp()['version'] ?? '^7.4.0 || ^8.0.0';
+        $moduleTree->moduleVersions = [];
+
+        $moduleTrees[] = $moduleTree;
+    }
+
+    /**
+     * @param Module $module
+     * @param ModuleTree[] $moduleTrees
+     */
+    private function addTreeMmlc(Module $module, array &$moduleTrees): void
+    {
+        if (!$module->getMmlc()) {
+            return;
+        }
+
+        $moduleTree = new ModuleTree();
+        $moduleTree->archiveName = 'mmlc';
+        $moduleTree->versionConstraint = $module->getMmlc()['version'] ?? '^1.19.0';
+        $moduleTree->moduleVersions = [];
+
+        $moduleTrees[] = $moduleTree;
     }
 }

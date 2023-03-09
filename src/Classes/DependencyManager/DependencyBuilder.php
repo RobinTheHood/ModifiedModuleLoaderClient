@@ -31,7 +31,8 @@ class DependencyBuilder
         $systemSet = new SystemSet();
         $systemSet->systems = [
             "modified" => '2.0.4.2',
-            //"php" => '7.3.0',
+            "php" => '7.4.0',
+            "mmlc" => '1.19.0',
             "composer/autoload" => '1.3.0',
             "robinthehood/modified-std-module" => '0.9.0',
             "robinthehood/modified-orm" => '1.8.1',
@@ -69,9 +70,6 @@ class DependencyBuilder
         $flatEntries = $flatEntryBuilder->buildListFromModuleTrees($moduleTrees);
         $this->log($flatEntries, '1-flatEntries.json');
 
-        // $flatEntries = $flatEntryBuilder->removeFlatEntriesBySystemSet($flatEntries, $systemSet);
-        // $this->log($flatEntries, '1-flatEntries-removed.json');
-
         $flatEntries = $flatEntryBuilder->fitSystemSet($flatEntries, $systemSet);
         $this->log($flatEntries, '1-flatEntries-fit.json');
 
@@ -95,9 +93,6 @@ class DependencyBuilder
         $flatEntries = $flatEntryBuilder->buildListFromModuleTree($moduleTree);
         $this->log($flatEntries, '2-flatEntries.json');
 
-        // $flatEntries = $flatEntryBuilder->removeFlatEntriesBySystemSet($flatEntries, $systemSet);
-        // $this->log($flatEntries, '2-flatEntries-removed.json');
-
         $flatEntries = $flatEntryBuilder->fitSystemSet($flatEntries, $systemSet);
         $this->log($flatEntries, '2-flatEntries-fit.json');
 
@@ -120,9 +115,6 @@ class DependencyBuilder
         $flatEntryBuilder = new FlatEntryBuilder();
         $flatEntries = $flatEntryBuilder->buildListFromModuleTree($moduleTree);
         $this->log($flatEntries, '3-flatEntries.json');
-
-        // $flatEntries = $flatEntryBuilder->removeFlatEntriesBySystemSet($flatEntries, $systemSet);
-        // $this->log($flatEntries, '3-flatEntries-removed.json');
 
         $flatEntries = $flatEntryBuilder->fitSystemSet($flatEntries, $systemSet);
         $this->log($flatEntries, '2-flatEntries-fit.json');
