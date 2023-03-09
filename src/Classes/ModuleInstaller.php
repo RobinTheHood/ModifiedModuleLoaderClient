@@ -17,8 +17,9 @@ use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Archive;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHashFileCreator;
@@ -133,35 +134,58 @@ class ModuleInstaller
         $this->install($module, true);
     }
 
-    public function installDependencies(Module $module): void
+    public function installDependencies(Combination $combination): void
     {
         $dependencyManager = new DependencyManager();
-        $modules = $dependencyManager->getAllModules($module);
+        $modules = $dependencyManager->getAllModulesFromCombination($combination);
 
-        foreach ($modules as $depModule) {
-            if (!$depModule->isLoaded()) {
-                $this->pull($depModule);
+        foreach ($modules as $module) {
+            if (!$module->isLoaded()) {
+                $this->pull($module);
             }
         }
 
-        $modules = $dependencyManager->getAllModules($module);
-        foreach ($modules as $depModule) {
-            $this->uninstall($depModule);
-            if ($depModule->isLoaded() && !$depModule->isInstalled()) {
-                $this->install($depModule);
+        $modules = $dependencyManager->getAllModulesFromCombination($combination);
+        foreach ($modules as $module) {
+            $this->uninstall($module);
+            if ($module->isLoaded() && !$module->isInstalled()) {
+                $this->install($module);
             }
         }
 
         $this->createAutoloadFile();
     }
 
+    // public function installDependenciesOld(Module $module): void
+    // {
+    //     $dependencyManager = new DependencyManager();
+    //     $modules = $dependencyManager->getAllModules($module);
+
+    //     foreach ($modules as $depModule) {
+    //         if (!$depModule->isLoaded()) {
+    //             $this->pull($depModule);
+    //         }
+    //     }
+
+    //     $modules = $dependencyManager->getAllModules($module);
+    //     foreach ($modules as $depModule) {
+    //         $this->uninstall($depModule);
+    //         if ($depModule->isLoaded() && !$depModule->isInstalled()) {
+    //             $this->install($depModule);
+    //         }
+    //     }
+
+    //     $this->createAutoloadFile();
+    // }
+
     public function installWithDependencies(Module $module): void
     {
         $dependencyManager = new DependencyManager();
-        $dependencyManager->canBeInstalled($module);
+        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
 
         $this->install($module);
-        $this->installDependencies($module);
+        $this->installDependencies($combinationSatisfyerResult->foundCombination);
+        //$this->installDependenciesOld($module);
     }
 
     public function createAutoloadFile(): void
@@ -259,6 +283,7 @@ class ModuleInstaller
         // Da nach $newModule->pull() das Modul noch nicht lokal inistailisiert
         // sein kann, wird es noch einmal geladen.
         $moduleLoader = new LocalModuleLoader();
+        $moduleLoader->resetCache();
         $newModule = $moduleLoader->loadByArchiveNameAndVersion($newModule->getArchiveName(), $newModule->getVersion());
 
         if (!$newModule) {
@@ -272,12 +297,15 @@ class ModuleInstaller
 
     public function updateWithDependencies(Module $module): ?Module
     {
+        $dependencyManager = new DependencyManager();
+        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
+
         $newModule = $this->update($module);
         if (!$newModule) {
             return null; //TODO: Better return not nullable type Module and thorw an exception
         }
 
-        $this->installDependencies($newModule);
+        $this->installDependencies($combinationSatisfyerResult->foundCombination);
         return $newModule;
     }
 

@@ -23,6 +23,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
 
 class IndexController extends Controller
 {
@@ -508,8 +509,9 @@ class IndexController extends Controller
 
         try {
             $moduleInstaller = new ModuleInstaller();
-            $moduleInstaller->install($module);
-            $moduleInstaller->installDependencies($module);
+            // $moduleInstaller->install($module);
+            // $moduleInstaller->installDependencies($module);
+            $moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
