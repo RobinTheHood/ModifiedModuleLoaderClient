@@ -52,18 +52,37 @@ class Combination
     }
 
     /**
-     * Liefert eine neues Combinations Obj zurück, in der nur echte Module enthalten sind.
+     * Liefert eine neues Combinations Obj zurück, in der nur echte Module enthalten sind
+     *
+     * Einträge, wie modified, php, mmlc werden entfernt.
+     *
+     * @return Combination Liefert ein Combination Obj nur mit echten Modulen
      */
     public function strip(): Combination
     {
         $combination = new Combination();
         foreach ($this->combinations as $archiveName => $version) {
-            if (strpos($archiveName, '/') === false) { // Überspringe Einträge wie modified, php, mmlc ...
+            if (!$this->isArchiveName($archiveName)) {
                 continue;
             }
 
             $combination->add($archiveName, $version);
         }
         return $combination;
+    }
+
+    /**
+     * Überprüft, ob es sich um einen gültigen ArchvieName handelt
+     *
+     * @param string $archiveName Ein ArchiveName
+     * @return bool Liefert true, wenn $archiveName ein gültiger ArchvieName ist
+     */
+    private function isArchiveName(string $archiveName): bool
+    {
+        if (strpos($archiveName, '/') === false) {
+            return false;
+        }
+
+        return true;
     }
 }
