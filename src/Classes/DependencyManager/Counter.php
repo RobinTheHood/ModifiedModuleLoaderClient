@@ -39,7 +39,7 @@ class Counter
 
     public function isStart(): bool
     {
-        foreach ($this->counterMaxValues as $value) {
+        foreach ($this->counterValues as $value) {
             if ($value !== 0) {
                 return false;
             }

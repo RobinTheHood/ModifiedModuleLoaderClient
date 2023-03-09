@@ -58,4 +58,22 @@ class CounterTest extends TestCase
         $this->assertEquals([2, 1, 3], $counter->next());
         $this->assertEquals([0, 0, 0], $counter->next());
     }
+
+    public function testStart()
+    {
+        $counter = new Counter([
+            2, 1
+        ]);
+
+        $this->assertEquals(true, $counter->isStart());
+        $this->assertEquals([0, 0], $counter->current());
+        $this->assertEquals([0, 1], $counter->next());
+        $this->assertEquals(false, $counter->isStart());
+        $this->assertEquals([1, 0], $counter->next());
+        $this->assertEquals([1, 1], $counter->next());
+        $this->assertEquals([2, 0], $counter->next());
+        $this->assertEquals([2, 1], $counter->next());
+        $this->assertEquals([0, 0], $counter->next());
+        $this->assertEquals(true, $counter->isStart());
+    }
 }

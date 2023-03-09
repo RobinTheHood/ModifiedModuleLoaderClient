@@ -13,8 +13,19 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
+
 class CombinationSatisfyer
 {
+    /** @var Comparator */
+    private $comparator;
+
+    public function __construct()
+    {
+        $this->comparator = new Comparator(new Parser());
+    }
+
     /**
      * @param ModuleTree[] $moduleTrees
      * @param Combination[] $combinations
@@ -76,6 +87,13 @@ class CombinationSatisfyer
         // Context: Module
         $archiveName = $moduleTree->archiveName;
         $selectedVersion = $combination->getVersion($archiveName);
+
+        // Es gibt keine weiteren Untermodule
+        if (!$moduleTree->moduleVersions) {
+            //var_dump($selectedVersion . ' == ' . $moduleTree->versionConstraint);
+            return $this->comparator->satisfiesOr($selectedVersion, $moduleTree->versionConstraint);
+        }
+
         foreach ($moduleTree->moduleVersions as $moduleVersion) {
             // Context: Version
             //var_dump($archiveName . " {$moduleVersion->version} == {$selectedVersion}");

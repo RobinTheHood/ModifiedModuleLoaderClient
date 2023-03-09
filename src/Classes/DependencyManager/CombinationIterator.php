@@ -31,6 +31,9 @@ class CombinationIterator
         $this->flatEntries = $flatEntries;
 
         foreach ($flatEntries as $flatEntry) {
+            if (!$flatEntry->versions) {
+                continue;
+            }
             $counterMaxValues[] = count($flatEntry->versions) - 1;
         }
 
@@ -64,6 +67,9 @@ class CombinationIterator
         $counterIndex = 0;
         $combination = new Combination();
         foreach ($flatEntries as $flatEntry) {
+            if (!$flatEntry->versions) {
+                continue;
+            }
             $versionIndex = $counter[$counterIndex];
             $versionStr = $flatEntry->versions[$versionIndex];
             $combination->add($flatEntry->archiveName, $versionStr);

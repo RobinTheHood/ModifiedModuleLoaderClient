@@ -89,14 +89,82 @@ class FlatEntryBuilder
         $this->addFlatEntry($flatEntries, $flatEntry->archiveName, $flatEntry);
     }
 
+
+
     /**
-     * @param FlatEntry[] $moduleFlatTreeEntries
-     * @param array $contraints
+     * @param FlatEntry[] $flatEntries
+     * @param SystemSet $systemSet
      * @return FlatEntry[]
      */
-    public function removeFlatEntriesByContrains(array $moduleFlatTreeEntries, array $contraints): array
+    public function fitSystemSet(array $flatEntries, SystemSet $systemSet): array
     {
-        foreach ($contraints as $archiveName => $versions) {
+        $flatEntries = $this->removeFlatEntriesBySystemSet($flatEntries, $systemSet);
+        $flatEntries = $this->removeFlatEntriesWithNoVersion($flatEntries);
+        $flatEntries = $this->addFlatEntriesBySystemSet($flatEntries, $systemSet);
+        return $flatEntries;
+    }
+
+    /**
+     * @param FlatEntry[] $flatEntries
+     * @param SystemSet $systemSet
+     * @return FlatEntry[]
+     */
+    public function addFlatEntriesBySystemSet(array $flatEntries, SystemSet $systemSet): array
+    {
+        foreach ($systemSet->systems as $archiveName => $version) {
+            if ($this->findFatEntryByArchiveName($archiveName, $flatEntries)) {
+                continue;
+            }
+            $flatEntry = new FlatEntry();
+            $flatEntry->archiveName = $archiveName;
+            $flatEntry->versions = [$version];
+            $flatEntries[] = $flatEntry;
+        }
+        return $flatEntries;
+    }
+
+    /**
+     * @param string $archiveName
+     * @param FlatEntry[] $flatEntries
+     *
+     * @return ?FlatEntry
+     */
+    private function findFatEntryByArchiveName(string $archiveName, array $flatEntries): ?FlatEntry
+    {
+        foreach ($flatEntries as $flatEntry) {
+            if ($flatEntry->archiveName === $archiveName) {
+                return $flatEntry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param FlatEntry[] $flatEntries
+     *
+     * @return FlatEntry[]
+     */
+    public function removeFlatEntriesWithNoVersion(array $flatEntries): array
+    {
+        $filteredFlatEntires = [];
+        foreach ($flatEntries as $flatEntry) {
+            if (!$flatEntry->versions) {
+                continue;
+            }
+            $filteredFlatEntires[] = $flatEntry;
+        }
+        return $filteredFlatEntires;
+    }
+
+    /**
+     * @param FlatEntry[] $moduleFlatTreeEntries
+     * @param SystemSet $systemSet
+     * @return FlatEntry[]
+     */
+    public function removeFlatEntriesBySystemSet(array $moduleFlatTreeEntries, SystemSet $systemSet): array
+    {
+        foreach ($systemSet->systems as $archiveName => $version) {
+            $versions = [$version];
             $moduleFlatTreeEntries = $this->removeModuleFlatEnty($moduleFlatTreeEntries, $archiveName, $versions);
         }
         return $moduleFlatTreeEntries;
