@@ -15,9 +15,9 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 class CombinationSatisfyerResult
 {
-    /** @var Combination */
+    /** @var ?Combination */
     public $testCombination = null;
-    /** @var Combination */
+    /** @var ?Combination */
     public $foundCombination = null;
 
     public function __construct(?Combination $testCombination, ?Combination $foundCombination)

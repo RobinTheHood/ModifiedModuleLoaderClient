@@ -30,6 +30,7 @@ class CombinationIterator
     {
         $this->flatEntries = $flatEntries;
 
+        $counterMaxValues = [];
         foreach ($flatEntries as $flatEntry) {
             if (!$flatEntry->versions) {
                 continue;

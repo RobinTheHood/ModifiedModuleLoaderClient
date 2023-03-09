@@ -99,7 +99,7 @@ class DependencyManagerOld
 
         $dependencyBuilder = new DependencyBuilder();
         $combinationSatisfyerResult = $dependencyBuilder->satisfies($module->getArchiveName(), $module->getVersion(), $systemSet);
-        if (!$combinationSatisfyerResult) {
+        if (!$combinationSatisfyerResult->foundCombination) {
             throw new DependencyException("Can not install modul");
         }
 

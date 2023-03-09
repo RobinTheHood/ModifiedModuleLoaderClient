@@ -16,41 +16,52 @@ use RobinTheHood\ModifiedModuleLoaderClient\Module;
 
 class DependencyBuilderOld
 {
+    private function logFile($value, $file)
+    {
+        @mkdir(__DIR__ . '/logs/');
+        $path = __DIR__ . '/logs/' . $file;
+        file_put_contents($path, json_encode($value, JSON_PRETTY_PRINT));
+    }
+
+    public function log($var)
+    {
+        print_r($var);
+    }
+
     public function test()
     {
         $moduleLoader = ModuleLoader::getModuleLoader();
         $module = $moduleLoader->loadLatestVersionByArchiveName('firstweb/multi-order');
 
+        if (!$module) {
+            die('Can not find base module');
+        }
+
         $modules = [];
         $this->getModuleList($modules, $module);
-        file_put_contents(__DIR__ . '/debug-log-modules.txt', print_r($modules, true));
-        file_put_contents(__DIR__ . '/debug-log-modules.json', json_encode($modules, JSON_PRETTY_PRINT));
+        $this->logFile($modules, 'debug-log-modules.json');
 
         $tree = $this->buildTreeByModuleRecursive($module);
-        file_put_contents(__DIR__ . '/debug-log-tree.txt', print_r($tree, true));
-        file_put_contents(__DIR__ . '/debug-log-tree.json', json_encode($tree, JSON_PRETTY_PRINT));
+        $this->logFile($tree, 'debug-log-tree.json');
 
         $tree = $this->buildTreeByModuleRecursiveConstraint($module);
-        file_put_contents(__DIR__ . '/debug-log-tree-constraint.txt', print_r($tree, true));
-        file_put_contents(__DIR__ . '/debug-log-tree-constraint.json', json_encode($tree, JSON_PRETTY_PRINT));
+        $this->logFile($tree, 'debug-log-tree-constraint.json');
 
         $flat = [];
         $this->flattenTreeNew($tree, $flat);
-        file_put_contents(__DIR__ . '/debug-log-flat.txt', print_r($flat, true));
-        file_put_contents(__DIR__ . '/debug-log-flat.json', json_encode($flat, JSON_PRETTY_PRINT));
+        $this->logFile($flat, 'debug-log-flat.json');
 
         $combinations = [];
         $this->allCombinations($flat, $combinations, 0);
-        file_put_contents(__DIR__ . '/debug-log-combinations.txt', print_r($combinations, true));
-        file_put_contents(__DIR__ . '/debug-log-combinations.json', json_encode($combinations, JSON_PRETTY_PRINT));
+        $this->logFile($combinations, 'debug-log-combinations.json');
 
         $combinations = array_reverse($combinations);
         foreach ($combinations as $combination) {
             $combination['composer/autoload'] = '1.0.0';
             $result = $this->satisfiesComination($tree, $combination);
             if ($result) {
-                var_dump($combination);
-                var_dump($result);
+                $this->log($combination);
+                $this->log($result);
                 break;
             }
         }

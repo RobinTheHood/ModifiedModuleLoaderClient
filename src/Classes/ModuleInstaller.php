@@ -183,6 +183,10 @@ class ModuleInstaller
         $dependencyManager = new DependencyManager();
         $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
 
+        if (!$combinationSatisfyerResult->foundCombination) {
+            return;
+        }
+
         $this->install($module);
         $this->installDependencies($combinationSatisfyerResult->foundCombination);
         //$this->installDependenciesOld($module);
@@ -303,6 +307,10 @@ class ModuleInstaller
         $newModule = $this->update($module);
         if (!$newModule) {
             return null; //TODO: Better return not nullable type Module and thorw an exception
+        }
+
+        if (!$combinationSatisfyerResult->foundCombination) {
+            return null;
         }
 
         $this->installDependencies($combinationSatisfyerResult->foundCombination);

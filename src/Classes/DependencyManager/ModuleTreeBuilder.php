@@ -20,7 +20,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 
 class ModuleTreeBuilder
 {
-    /** @var Module[] */
+    /** @var array<string, Module[]> */
     private $moduleCache = [];
 
     /**

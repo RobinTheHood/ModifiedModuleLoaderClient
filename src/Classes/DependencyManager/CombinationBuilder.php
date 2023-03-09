@@ -32,9 +32,9 @@ class CombinationBuilder
 
     /**
      * @param FlatEntry[] $flatEntries
-     * @param array $flatEntries
-     * @param int $index
+     * @param Combination[] $combinations
      * @param Combination $combination
+     * @param int $index
      */
     private function buildAllCombinationsFromModuleFlatEntries(
         array &$flatEntries,
