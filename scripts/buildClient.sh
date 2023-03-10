@@ -29,7 +29,7 @@ fi
 
 # Install dependencies
 composer install -d ./build/ModifiedModuleLoaderClient --no-dev
-composer update -d ./build/ModifiedModuleLoaderClient --no-dev
+# composer update -d ./build/ModifiedModuleLoaderClient --no-dev
 
 # Rename config.php
 mv ./build/ModifiedModuleLoaderClient/config/_config.php ./build/ModifiedModuleLoaderClient/config/config.php
