@@ -28,57 +28,57 @@ class Module extends ModuleInfo
     /**
      * @var string
      */
-    private string $localRootPath;
+    private $localRootPath;
 
     /**
      * @var string
      */
-    private string $urlRootPath;
+    private $urlRootPath;
 
     /**
      * @var string
      */
-    private string $modulePath;
+    private $modulePath;
 
     /**
      * @var string
      */
-    private string $iconPath;
+    private $iconPath;
 
     /**
      * @var string[]
      */
-    private array $imagePaths;
+    private $imagePaths;
 
     /**
      * @var string[]
      */
-    private array $docFilePaths;
+    private $docFilePaths;
 
     /**
      * @var string
      */
-    private string $changelogPath;
+    private $changelogPath;
 
     /**
      * @var string
      */
-    private string $readmePath;
+    private $readmePath;
 
     /**
      * @var string[]
      */
-    private array $srcFilePaths;
+    private $srcFilePaths;
 
     /**
      * @var bool
      */
-    private bool $isRemote;
+    private $isRemote;
 
     /**
      * @var bool
      */
-    private bool $isLoadable;
+    private $isLoadable;
 
     /**
      * Liefert den absoluten Pfad zum MMLC
