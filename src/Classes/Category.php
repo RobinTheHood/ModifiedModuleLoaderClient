@@ -25,6 +25,7 @@ class Category
         'promotion/marketing' => 'Promotion & Marketing',
         'productinfos' => 'Zusatzinformationen & Produkt-Tabs',
         'shipping' => 'Versand Module',
+        'payment' => 'Zahlungs Module',
         'library' => 'Programmcode Bibliotheken',
         'nocategory' => 'Sonstige Module',
     ];
