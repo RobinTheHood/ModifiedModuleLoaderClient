@@ -163,6 +163,7 @@ class SelfUpdater
         $this->untar($installFileName);
         $this->install();
         $this->setupConfig();
+        opcache_reset();
     }
 
     public function download(string $fileName): bool
