@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
-use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger;
 
 class HttpRequest
 {
-    private $logging = false;
-
     public function isServerAvailable(string $url): bool
     {
         $headers = @get_headers($url);
@@ -42,19 +40,11 @@ class HttpRequest
             ]
         ];
         $context  = stream_context_create($options);
+
+        Logger::staticLog('debug', "Send POST request to $url. Options: " . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $result = @file_get_contents($url, false, $context);
 
-        // Logging
-        if ($this->logging) {
-            $logFilepath = App::getLogsRoot() . '/log.txt';
-            $logDirectory = dirname($logFilepath);
-
-            if (!file_exists($logDirectory)) {
-                mkdir($logDirectory);
-            }
-
-            file_put_contents($logFilepath, $result);
-        }
+        Logger::staticLog('debug', "Response: $result");
 
         return $result;
     }
@@ -74,12 +64,11 @@ class HttpRequest
         ];
 
         $context = stream_context_create($options);
+
+        Logger::staticLog('debug', "Send GET request to $url. Options: " . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $result = @file_get_contents($url, false, $context);
 
-        // Logging
-        if ($this->logging) {
-            file_put_contents(App::getLogsRoot() . '/log.txt', $result);
-        }
+        Logger::staticLog('debug', "Response: $result");
 
         return $result;
     }
