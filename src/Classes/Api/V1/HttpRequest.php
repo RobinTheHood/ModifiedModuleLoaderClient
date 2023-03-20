@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Logger;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 
 class HttpRequest
 {
@@ -41,14 +43,17 @@ class HttpRequest
         ];
         $context  = stream_context_create($options);
 
-        Logger::staticLog('debug', "Send POST request to $url. Options: " . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        StaticLogger::log(
+            LogLevel::DEBUG,
+            "Send POST request to $url\n[OPTIONS]\n" . print_r($options, true) . "[DATA]\n" . print_r($data, true)
+        );
+
         $result = @file_get_contents($url, false, $context);
 
-        Logger::staticLog('debug', "Response: $result");
+        StaticLogger::log(LogLevel::DEBUG, "Response from $url\n" . print_r($result, true));
 
         return $result;
     }
-
 
     public function sendGetRequest($url)
     {
@@ -65,10 +70,14 @@ class HttpRequest
 
         $context = stream_context_create($options);
 
-        Logger::staticLog('debug', "Send GET request to $url. Options: " . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        StaticLogger::log(
+            LogLevel::DEBUG,
+            "Send GET request to $url\n[OPTIONS]\n" . print_r($options, true)
+        );
+
         $result = @file_get_contents($url, false, $context);
 
-        Logger::staticLog('debug', "Response: $result");
+        StaticLogger::log(LogLevel::DEBUG, "Response from $url\n" . print_r($result, true));
 
         return $result;
     }

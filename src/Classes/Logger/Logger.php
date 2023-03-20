@@ -11,22 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Logger;
 
 class Logger
 {
     /** @var string $logDir */
     private $logDir;
-
-    /** @var bool $logging */
-    private $logging = true;
-
-    public static function staticLog(string $logLevel, string $message)
-    {
-        $logger = new Logger();
-        $logger->setLogDir(App::getLogsRoot() . '/');
-        $logger->log($logLevel, $message);
-    }
 
     public function setLogDir(string $logDir): void
     {
@@ -35,10 +25,6 @@ class Logger
 
     public function log(string $logLevel, string $message): void
     {
-        if (!$this->logging) {
-            return;
-        }
-
         $logEntry = $this->createLogEntry($logLevel, $message);
         $this->writeLogEntry($logEntry);
     }
@@ -47,14 +33,24 @@ class Logger
     {
         $currentDateTime = date('Y-m-d H:i:s');
 
-        $logEntry = [
-            'timestamp' => $currentDateTime,
-            'level' => $logLevel,
-            'message' => $message
-        ];
+        $string = '[' . $currentDateTime . '] ' . LogLevel::toString($logLevel) . ': ' . $message . "\n";
 
-        return json_encode($logEntry, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        return $string;
     }
+
+
+    // private function createLogEntry(string $logLevel, string $message): string
+    // {
+    //     $currentDateTime = date('Y-m-d H:i:s');
+
+    //     $logEntry = [
+    //         'timestamp' => $currentDateTime,
+    //         'level' => $logLevel,
+    //         'message' => $message
+    //     ];
+
+    //     return json_encode($logEntry, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    // }
 
     private function writeLogEntry(string $message): void
     {
