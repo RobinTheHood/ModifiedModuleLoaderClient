@@ -188,7 +188,7 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->isCompatible('3.3.3', '3.3.4'));
     }
 
-    public function testThatVersionASatisfiesContraint()
+    public function testThatVersionASatisfiesConstraint()
     {
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^3.3.3'));
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^3.2.3'));
@@ -196,9 +196,95 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->satisfies('3.3.3', '3.2.3'));
     }
 
-    public function testThatVersionASatisfiesOrContraint()
+    public function testThatVersionASatisfiesOrConstraint()
     {
         $this->assertTrue($this->comparator->satisfiesOr('3.3.3', '^2.2.2 || ^3.3.3'));
         $this->assertFalse($this->comparator->satisfiesOr('4.4.4', '^2.2.2 || ^3.3.3'));
+    }
+
+    public function testCanFilterVerionsByConstraint()
+    {
+        $versions = [
+            '17.111.9',
+            '1.2.3',
+            '18.22.10',
+            '18.33.10',
+            '18.22.9',
+            '19.1.0',
+            '19.0.0'
+        ];
+
+        $resultVersions = [
+            '18.22.10',
+            '18.33.10',
+            '18.22.9'
+        ];
+
+        $this->assertEquals($resultVersions, $this->comparator->filterVersionsByConstraint('^18.0.0', $versions));
+
+        $resultVersions = [
+            '19.1.0',
+            '19.0.0'
+        ];
+
+        $this->assertEquals($resultVersions, $this->comparator->filterVersionsByConstraint('^19.0.0', $versions));
+    }
+
+    public function testCanGetLatestVersionByConstraint()
+    {
+        $versions = [
+            '17.111.9',
+            '1.2.3',
+            '18.22.10',
+            '18.33.10',
+            '18.22.9',
+            '19.1.0',
+            '19.0.0',
+            '19.0.0-beta.1'
+        ];
+
+        $this->assertEquals('', $this->comparator->getLatestVersionByConstraint('^0.0.0', $versions));
+        $this->assertEquals('', $this->comparator->getLatestVersionByConstraint('^2.0.0', $versions));
+        $this->assertEquals('18.33.10', $this->comparator->getLatestVersionByConstraint('^18.0.0', $versions));
+        $this->assertEquals('19.1.0', $this->comparator->getLatestVersionByConstraint('^19.0.0', $versions));
+    }
+
+    public function testCanGetOldestVersionByConstraint()
+    {
+        $versions = [
+            '17.111.9',
+            '1.2.3',
+            '18.22.10',
+            '18.33.10',
+            '18.22.9',
+            '19.1.0',
+            '19.0.0',
+            '19.0.0-beta.1'
+        ];
+
+        $this->assertEquals('', $this->comparator->getOldestVersionByConstraint('^0.0.0', $versions));
+        $this->assertEquals('', $this->comparator->getOldestVersionByConstraint('^2.0.0', $versions));
+        $this->assertEquals('18.22.9', $this->comparator->getOldestVersionByConstraint('^18.0.0', $versions));
+        $this->assertEquals('19.0.0-beta.1', $this->comparator->getOldestVersionByConstraint('^19.0.0-beta', $versions));
+        $this->assertEquals('19.0.0', $this->comparator->getOldestVersionByConstraint('^19.0.0', $versions));
+    }
+
+    public function testCanFilterStableVersions()
+    {
+        $versions = [
+            '18.33.10',
+            '19.0.0-beta.1',
+            '18.22.9',
+            '19.1.0-alpha.1',
+            '19.0.0'
+        ];
+
+        $resultVersions = [
+            '18.33.10',
+            '18.22.9',
+            '19.0.0'
+        ];
+
+        $this->assertEquals($resultVersions, $this->comparator->filterStable($versions));
     }
 }
