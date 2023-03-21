@@ -21,6 +21,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Filter;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Sorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Version;
 
 class SelfUpdater
@@ -45,6 +47,9 @@ class SelfUpdater
      */
     protected $parser;
 
+    /** @var Filter */
+    protected $filter;
+
     private $apiRequest;
 
     public function __construct($apiRequest = null)
@@ -66,6 +71,7 @@ class SelfUpdater
 
         $this->comparator = new Comparator(new Parser());
         $this->parser = new Parser();
+        $this->filter = new Filter($this->parser, $this->comparator, new Sorter($this->comparator));
     }
 
 
@@ -147,7 +153,7 @@ class SelfUpdater
         $versionStrings = $this->getVersionStringsFromVersionInfos($versionInfos);
 
         if (!$latest) {
-            $versionStrings = $this->comparator->filterStable($versionStrings);
+            $versionStrings = $this->filter->stable($versionStrings);
         }
 
         $installtedVersionString = $this->getInstalledVersion();
@@ -155,7 +161,7 @@ class SelfUpdater
 
         $constrain = '<=' . $version->getMajor() . '.' . ($version->getMinor() + 1) . '.0';
 
-        $versionString = $this->comparator->getLatestVersionByConstraint($constrain, $versionStrings);
+        $versionString = $this->filter->latestByConstraint($constrain, $versionStrings);
         $versionInfo = $this->getVersionInfoByVersionString($versionString, $versionInfos);
 
         return $versionInfo;
