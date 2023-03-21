@@ -21,6 +21,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Version;
 
 class SelfUpdater
 {
@@ -138,6 +139,48 @@ class SelfUpdater
         }
 
         return $newestVersionInfo;
+    }
+
+    public function getNextNewestVersionInfo(bool $latest = false): array
+    {
+        $versionInfos = $this->getVersionInfos();
+        $versionStrings = $this->getVersionStringsFromVersionInfos($versionInfos);
+
+        if (!$latest) {
+            $versionStrings = $this->comparator->filterStable($versionStrings);
+        }
+
+        $installtedVersionString = $this->getInstalledVersion();
+        $version = $this->parser->parse($installtedVersionString);
+
+        $constrain = '<=' . $version->getMajor() . '.' . ($version->getMinor() + 1) . '.0';
+
+        $versionString = $this->comparator->getLatestVersionByConstraint($constrain, $versionStrings);
+        $versionInfo = $this->getVersionInfoByVersionString($versionString, $versionInfos);
+
+        return $versionInfo;
+    }
+
+    private function getVersionInfoByVersionString($versionString, array $versionInfos): array
+    {
+        foreach ($versionInfos as $versionInfo) {
+            if ($versionInfo['version'] === $versionString) {
+                return $versionInfo;
+            }
+        }
+        return [];
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getVersionStringsFromVersionInfos(array $versionInfos): array
+    {
+        $versionStrings = [];
+        foreach ($versionInfos as $versionInfo) {
+            $versionStrings[] = $versionInfo['version'];
+        }
+        return $versionStrings;
     }
 
     private function getFileNameByVersion(string $version): string
