@@ -215,6 +215,51 @@ class Comparator
         return $versionStrings;
     }
 
+    public function filterVersionsByConstraint(string $constraint, array $versions): array
+    {
+        $fileredVersions = [];
+        foreach ($versions as $version) {
+            if ($this->satisfiesOr($version, $constraint)) {
+                $fileredVersions[] = $version;
+            }
+        }
+        return $fileredVersions;
+    }
+
+    public function getLatestVersionByConstraint(string $constraint, array $versions): string
+    {
+        $filteredVersions = $this->filterVersionsByConstraint($constraint, $versions);
+        if (!$filteredVersions) {
+            return '';
+        }
+        $filteredVersions = $this->rsort($filteredVersions);
+
+        return $filteredVersions[0] ?? '';
+    }
+
+    public function getOldestVersionByConstraint(string $constraint, array $versions): string
+    {
+        $filteredVersions = $this->filterVersionsByConstraint($constraint, $versions);
+        if (!$filteredVersions) {
+            return '';
+        }
+        $filteredVersions = $this->sort($filteredVersions);
+
+        return $filteredVersions[0] ?? '';
+    }
+
+    public function filterStable(array $versionStrings): array
+    {
+        $fileredVersionStrings = [];
+        foreach ($versionStrings as $versionString) {
+            $version = $this->parser->parse($versionString);
+            if (!$version->getTag()) {
+                $fileredVersionStrings[] = $versionString;
+            }
+        }
+        return $fileredVersionStrings;
+    }
+
     private function compareAsc(string $versionString1, string $versionString2): int
     {
         if ($this->greaterThan($versionString1, $versionString2)) {
