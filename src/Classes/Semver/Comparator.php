@@ -144,18 +144,6 @@ class Comparator
         return false;
     }
 
-    public function highest(array $versionStrings): string
-    {
-        $versionStrings = $this->rsort($versionStrings);
-        return $versionStrings[0];
-    }
-
-    public function lowest(array $versionStrings): string
-    {
-        $versionStrings = $this->sort($versionStrings);
-        return $versionStrings[0];
-    }
-
     // Testet ob Version1 mindestens das kann, was auch Version2 kann.
     // Version1 darf auch mehr können als das was Version2 kann,
     // aber nicht weniger.
@@ -204,35 +192,5 @@ class Comparator
             }
         }
         return false;
-    }
-
-    public function sort(array $versionStrings): array
-    {
-        usort($versionStrings, [$this, 'compareAsc']);
-        return $versionStrings;
-    }
-
-    public function rsort(array $versionStrings): array
-    {
-        usort($versionStrings, [$this, 'compareDes']);
-        return $versionStrings;
-    }
-
-    private function compareAsc(string $versionString1, string $versionString2): int
-    {
-        if ($this->greaterThan($versionString1, $versionString2)) {
-            return 1;
-        }
-
-        return -1;
-    }
-
-    private function compareDes(string $versionString1, string $versionString2): int
-    {
-        if ($this->greaterThan($versionString1, $versionString2)) {
-            return -1;
-        }
-
-        return 1;
     }
 }
