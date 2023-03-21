@@ -47,6 +47,63 @@ class SelfUpdaterTest extends TestCase
         return $stubApiRequest;
     }
 
+    public function getStubedSelfUpdater()
+    {
+        /** @var MockObject $stubSelfUpdater */
+        $stubSelfUpdater = $this->getMockBuilder(SelfUpdater::class)
+            ->onlyMethods(['getVersionInfos', 'getInstalledVersion'])
+            ->getMock();
+
+        $stubSelfUpdater->method('getVersionInfos')->willReturn([
+            [
+                'version' => '1.1.1-alpha',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.1.1-alpha.tar'
+            ],
+            [
+                'version' => '1.1.2-alpha',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.1.2-alpha.tar'
+            ],
+            [
+                'version' => '1.1.2',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.1.2.tar'
+            ],
+            [
+                'version' => '1.1.3-alpha',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.1.3-alpha.tar'
+            ],
+            [
+                'version' => '1.2.0',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.2.0.tar'
+            ],
+            [
+                'version' => '1.2.1',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.2.1.tar'
+            ],
+            [
+                'version' => '1.3.0-beta.1',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.3.0-beta.1.tar'
+            ],
+            [
+                'version' => '1.3.0',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.3.0.tar'
+            ],
+            [
+                'version' => '1.3.1',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.3.1.tar'
+            ],
+            [
+                'version' => '2.0.0',
+                'fileName' => 'ModifiedModuleLoaderClient_v2.0.0.tar'
+            ],
+            [
+                'version' => '2.1.0',
+                'fileName' => 'ModifiedModuleLoaderClient_v2.1.0.tar'
+            ]
+        ]);
+
+        return $stubSelfUpdater;
+    }
+
     public function testGetInstalledVersion()
     {
         $selfUpdater = new SelfUpdater();
@@ -111,5 +168,41 @@ class SelfUpdaterTest extends TestCase
         ];
 
         $this->assertEquals($expects, $versionInfos);
+    }
+
+    public function testCanGetNextNewestPathVersionInfo()
+    {
+        // 1.1.0 to 1.2.0
+        $selfUpdater = $this->getStubedSelfUpdater();
+        $selfUpdater->method('getInstalledVersion')->willReturn('1.1.0');
+        $this->assertEquals(
+            [
+                'version' => '1.2.0',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.2.0.tar'
+            ],
+            $selfUpdater->getNextNewestVersionInfo()
+        );
+
+        // 1.2.0 to 1.3.0
+        $selfUpdater = $this->getStubedSelfUpdater();
+        $selfUpdater->method('getInstalledVersion')->willReturn('1.2.0');
+        $this->assertEquals(
+            [
+                'version' => '1.3.0',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.3.0.tar'
+            ],
+            $selfUpdater->getNextNewestVersionInfo()
+        );
+
+        // 1.3.0 to 1.3.1
+        $selfUpdater = $this->getStubedSelfUpdater();
+        $selfUpdater->method('getInstalledVersion')->willReturn('1.3.0');
+        $this->assertEquals(
+            [
+                'version' => '1.3.1',
+                'fileName' => 'ModifiedModuleLoaderClient_v1.3.1.tar'
+            ],
+            $selfUpdater->getNextNewestVersionInfo()
+        );
     }
 }
