@@ -180,6 +180,9 @@ class Comparator
         if ($constrain[0] == '^') { // Ist Buchstabe an Index 0 = ^
             $versionString2 = str_replace('^', '', $constrain);
             return $this->isCompatible($versionString1, $versionString2);
+        } elseif ($constrain[0] == '<' && $constrain[1] == '=') {
+            $versionString2 = str_replace('<=', '', $constrain);
+            return $this->lessThanOrEqualTo($versionString1, $versionString2);
         } else {
             $versionString2 = $constrain;
             return $this->equalTo($versionString1, $versionString2);
