@@ -411,4 +411,21 @@ class Config
     {
         self::writeConfiguration(['exceptionMonitorMail' => $newExceptionMonitorMail]);
     }
+
+    /**
+     * Get logging from config.
+     *
+     * @return bool Returns logging from config or null.
+     */
+    public static function getLogging(): bool
+    {
+        /**
+         * Expect a string or null
+         * depending if the user specified an email address.
+         * You will not receive an empty string.
+         */
+        $logging = self::getOption('logging');
+
+        return $logging === 'true';
+    }
 }

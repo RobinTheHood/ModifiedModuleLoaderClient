@@ -14,15 +14,13 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Logger;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 
 class StaticLogger
 {
-    /** @var bool $logging */
-    private static $logging = true;
-
     public static function log(string $logLevel, string $message, array $context = []): void
     {
-        if (self::$logging === false) {
+        if (!Config::getLogging()) {
             return;
         }
 

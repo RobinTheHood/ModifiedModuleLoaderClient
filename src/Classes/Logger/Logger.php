@@ -38,20 +38,6 @@ class Logger
         return $string;
     }
 
-
-    // private function createLogEntry(string $logLevel, string $message): string
-    // {
-    //     $currentDateTime = date('Y-m-d H:i:s');
-
-    //     $logEntry = [
-    //         'timestamp' => $currentDateTime,
-    //         'level' => $logLevel,
-    //         'message' => $message
-    //     ];
-
-    //     return json_encode($logEntry, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    // }
-
     private function writeLogEntry(string $message): void
     {
         if (!file_exists($this->logDir)) {
