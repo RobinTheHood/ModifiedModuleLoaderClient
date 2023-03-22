@@ -18,7 +18,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\App;
 
 class AppTest extends TestCase
 {
-
     public function testRootDirectoryEndsWidthModifiedModuleLoaderClient()
     {
         $this->assertStringEndsWith('ModifiedModuleLoaderClient', App::getRoot());
