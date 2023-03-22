@@ -1,0 +1,181 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of MMLC - ModifiedModuleLoaderClient.
+ *
+ * (c) Robin Wieschendorf <mail@robinwieschendorf.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace RobinTheHood\ModifiedModuleLoaderClient;
+
+class Restore
+{
+    private const ACTION_RESTORE = 'restore';
+
+    /** @var string */
+    private $mmlcRootPath;
+
+    /** @var string */
+    private $backupRootPath;
+
+    /** @var string[] */
+    private $checkFiles = [];
+
+    /** @var string[] */
+    private $restoreFiles = [];
+
+    public function __construct()
+    {
+        $this->mmlcRootPath = __DIR__;
+        $this->backupRootPath = __DIR__ . '/backup';
+
+        $this->restoreFiles = [
+            '/config',
+            '/scripts',
+            '/src',
+            '/vendor',
+            '/index.php'
+        ];
+
+        $this->checkFiles = [
+            '/config',
+            '/src',
+            '/vendor',
+            '/index.php'
+        ];
+    }
+
+    public function invoke(): void
+    {
+        $action = $_GET['action'] ?? '';
+
+        if ($action === self::ACTION_RESTORE) {
+            $this->invokeRestore();
+        } else {
+            $this->invokeIndex();
+        }
+    }
+
+    private function invokeIndex(): void
+    {
+        $restoreUrl = '?action=' . self::ACTION_RESTORE;
+
+        if ($this->isRestorePossilbe()) {
+            $this->outDie(
+                "Click on the following link to restore the MMLC. <a href=\"$restoreUrl\">Restore MMLC now</a>"
+            );
+        } elseif ($this->isRestored()) {
+            $this->outDie(
+                "Looks like your MMLC is restored. <a href=\"index.php\">Go to MMLC</a>"
+            );
+        } elseif (!$this->isRestored() && $this->isRestorePossilbe()) {
+            $filesString = implode("<br>\n", $this->getMissingBackupFiles());
+            $this->outDie(
+                "Restore is not possible. Can not find the following files:<br>\n"
+                . "<br>\n"
+                . "$filesString<br>\n"
+            );
+        } elseif (!$this->isRestored() && !$this->isRestorePossilbe()) {
+            $filesString = implode("<br>\n", $this->getMissingBackupFiles());
+            $this->outDie(
+                "Your MMLC is NOT restored but a Restore is not possible. Can not find the following files:<br>\n"
+                . "<br>\n"
+                . "$filesString<br>\n"
+            );
+        }
+
+        $this->outDie(
+            "You can try to restore the MMLC. <a href=\"$restoreUrl\">Restore MMLC now</a>"
+        );
+    }
+
+    private function invokeRestore(): void
+    {
+        $message = '';
+        foreach ($this->restoreFiles as $restoreFile) {
+            $fromFile = $this->backupRootPath . $restoreFile;
+            $toFile = $this->mmlcRootPath . $restoreFile;
+
+            rename($fromFile, $toFile);
+
+            if (!file_exists($this->mmlcRootPath . $restoreFile)) {
+                $message .= "Something went wrong. Can not copy $fromFile to $toFile<br>\n";
+            }
+        }
+
+        if ($message) {
+            $this->outDie($message);
+        }
+
+        header("Location: index.php");
+        die();
+    }
+
+    private function isRestored(): bool
+    {
+        if ($this->getMissungFiles()) {
+            return false;
+        }
+        return true;
+    }
+
+    private function isRestorePossilbe(): bool
+    {
+        if ($this->getMissingBackupFiles()) {
+            return false;
+        }
+        return true;
+    }
+
+    private function getMissingBackupFiles(): array
+    {
+        $missingPaths = [];
+        foreach ($this->checkFiles as $path) {
+            if (!file_exists($this->backupRootPath . $path)) {
+                $missingPaths[] = $this->backupRootPath . $path;
+            }
+        }
+
+        return $missingPaths;
+    }
+
+    private function getMissungFiles(): array
+    {
+        $missingPaths = [];
+        foreach ($this->checkFiles as $path) {
+            if (!file_exists($this->mmlcRootPath . $path)) {
+                $missingPaths[] = $this->backupRootPath . $path;
+            }
+        }
+
+        return $missingPaths;
+    }
+
+    private function render(string $html): string
+    {
+        $html = ""
+            . "<h1>MMLC Restore</h1>\n"
+            . "$html<br>\n";
+
+        $html = ''
+        . '<div style="max-width: 800px; margin: 50px auto; padding: 30px; border: 1px solid black">'
+            . $html
+        . '</div>';
+
+        return $html;
+    }
+
+    private function outDie(string $message): void
+    {
+        echo $this->render($message);
+        die();
+    }
+}
+
+$restore = new Restore();
+$restore->invoke();
