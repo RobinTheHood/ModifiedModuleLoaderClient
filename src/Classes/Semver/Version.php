@@ -47,4 +47,23 @@ class Version
     {
         return $this->tag;
     }
+
+    public function nextMinor(): Version
+    {
+        return new Version(
+            $this->major,
+            $this->minor + 1,
+            0,
+            ''
+        );
+    }
+
+    public function __toString()
+    {
+        $versionString = $this->major . '.' . $this->minor . '.' . $this->patch;
+        if ($this->tag) {
+            $versionString .= '-' . $this->tag;
+        }
+        return $versionString;
+    }
 }
