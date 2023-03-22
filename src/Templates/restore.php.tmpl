@@ -65,25 +65,20 @@ class Restore
     {
         $restoreUrl = '?action=' . self::ACTION_RESTORE;
 
-        if ($this->isRestorePossilbe()) {
+        if (!$this->isRestored() && $this->isRestorePossilbe()) {
             $this->outDie(
                 "Click on the following link to restore the MMLC. <a href=\"$restoreUrl\">Restore MMLC now</a>"
             );
-        } elseif ($this->isRestored()) {
+        } elseif ($this->isRestored() && !$this->isRestorePossilbe()) {
             $this->outDie(
                 "Looks like your MMLC is restored. <a href=\"index.php\">Go to MMLC</a>"
-            );
-        } elseif (!$this->isRestored() && $this->isRestorePossilbe()) {
-            $filesString = implode("<br>\n", $this->getMissingBackupFiles());
-            $this->outDie(
-                "Restore is not possible. Can not find the following files:<br>\n"
-                . "<br>\n"
-                . "$filesString<br>\n"
             );
         } elseif (!$this->isRestored() && !$this->isRestorePossilbe()) {
             $filesString = implode("<br>\n", $this->getMissingBackupFiles());
             $this->outDie(
-                "Your MMLC is NOT restored but a Restore is not possible. Can not find the following files:<br>\n"
+                "Your MMLC is NOT restored but a restore is not possible.<br>\n"
+                . "<br>\n"
+                . "Can not find the following files:<br>\n"
                 . "<br>\n"
                 . "$filesString<br>\n"
             );
@@ -140,7 +135,6 @@ class Restore
                 $missingPaths[] = $this->backupRootPath . $path;
             }
         }
-
         return $missingPaths;
     }
 
@@ -159,13 +153,34 @@ class Restore
     private function render(string $html): string
     {
         $html = ""
-            . "<h1>MMLC Restore</h1>\n"
+            . "<h1>🚧 👷‍♀️ MMLC Restore 👷‍♂️ 🚧</h1>\n"
             . "$html<br>\n";
 
+        $css = "
+            <style>
+                .message-frame {
+                    max-width: 800px;
+                    margin: 50px auto;
+                    padding: 40px;
+                    font-family: Arial;
+                    border-radius: 5px;
+                    box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.25);
+                    line-height: 24px;
+                    font-size: 16px;
+                }
+
+                .message-frame li {
+                    margin-bottom: 20px
+                }
+            </style>
+        ";
+
         $html = ''
-        . '<div style="max-width: 800px; margin: 50px auto; padding: 30px; border: 1px solid black">'
-            . $html
-        . '</div>';
+            . $css
+            . "\n"
+            . '<div class="message-frame">'
+                . $html
+            . '</div>';
 
         return $html;
     }

@@ -151,7 +151,7 @@ class SelfUpdater
         }
 
         if (!file_exists($destPath)) {
-            $this->showSoftError("Can not create directory $destPath.");
+            $this->showSoftError("Can not create directory $destPath");
             return false;
         }
 
@@ -335,19 +335,39 @@ class SelfUpdater
     private function showSoftError(string $message): void
     {
         $errorMessage = ""
-            . "<h1>ATTENTION: DO NOT RELOAD THIS PAGE</h1>\n"
+            . "<h1>⚠️ ATTENTION: DO NOT RELOAD THIS PAGE</h1>\n"
             . "Because this message will disappear and probably no longer be displayed after a reload "
-            . "or leads to further errors.<br>\n"
-            . "You can close the window if you don't want to read the message anymore."
+            . "or leads to further errors. You can close the window if you don't want to read the message anymore."
             . "<h2>The MMLC update was interrupted</h2>\n"
-            . "<h3>ERROR</h3>"
+            . "<h3>❌ ERROR</h3>"
             . "$message<br>\n"
-            . "<h3>WHAT CAN YOU DO</h3>\n"
+            . "<h3>🛠️ WHAT CAN YOU DO</h3>\n"
             . "You can go back with the following url: "
             . "<a href=\"?action=selfUpdate\">Back to the MMLC System Page</a><br>\n";
 
+        $css = "
+            <style>
+                .message-frame {
+                    max-width: 800px;
+                    margin: 50px auto;
+                    padding: 40px;
+                    font-family: Arial;
+                    border-radius: 5px;
+                    box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.25);
+                    line-height: 24px;
+                    font-size: 16px;
+                }
+
+                .message-frame li {
+                    margin-bottom: 20px
+                }
+            </style>
+        ";
+
         $errorMessage = ''
-            . '<div style="max-width: 800px; margin: 50px auto; padding: 30px; border: 1px solid red">'
+            . $css
+            . "\n"
+            . '<div class="message-frame">'
                 . $errorMessage
             . '</div>';
 
@@ -360,26 +380,46 @@ class SelfUpdater
         $backupPath = $this->appRoot . '/backup';
 
         $errorMessage = ""
-            . "<h1>ATTENTION: DO NOT RELOAD THIS PAGE</h1>\n"
+            . "<h1>⚠️ ATTENTION: DO NOT RELOAD THIS PAGE</h1>\n"
             . "Because this message will disappear and probably no longer be displayed after a reload "
-            . "or leads to further errors.<br>\n"
-            . "You can close the window if you don't want to read the message anymore."
+            . "or leads to further errors. You can close the window if you don't want to read the message anymore."
             . "<h2>The MMLC update was interrupted</h2>\n"
             . "Your MMLC is now in an unsave and unusable state.<br>\n"
-            . "<h3>ERROR</h3>"
+            . "<h3>❌ ERROR</h3>"
             . "$message<br>\n"
-            . "<h3>WHAT CAN YOU DO</h3>\n"
-            . "Variant a) Try the following restore link, it will open in a new window. "
-            . "<a href=\"restore.php\" target=\"?action=_blank\">To the MMLC restore script in a new window</a><br>\n"
-            . "<br>\n"
-            . "Variant b) Try to restore you MMLC by moving all files/directories from $backupPath to $rootPath<br>\n"
-            . "and delete directory $rootPath/ModifiedModuleLoaderClient if exists<br>\n"
-            . "<br>\n"
-            . "Variant c) Go to module-loader.de and load the installer to reinstall the MMLC. "
-            . "The installer will try to keep your settings and module data.<br>\n";
+            . "<h3>🛠️ WHAT CAN YOU DO</h3>\n"
+            . "<ul>\n"
+            . "<li>Variant A - Try the following restore link, it will open in a new window. "
+            . "<a href=\"restore.php\" target=\"?action=_blank\">To the MMLC restore script in a new window</a></li>\n"
+            . "<li>Variant B - Try to restore you MMLC by moving all files/directories from $backupPath to $rootPath<br>\n"
+            . "and delete directory $rootPath/ModifiedModuleLoaderClient if exists</li>\n"
+            . "<li>Variant C - Go to module-loader.de and load the installer to reinstall the MMLC. "
+            . "The installer will try to keep your settings and module data.</li>\n"
+            . "</ul>\n";
+
+        $css = "
+            <style>
+                .message-frame {
+                    max-width: 800px;
+                    margin: 50px auto;
+                    padding: 40px;
+                    font-family: Arial;
+                    border-radius: 5px;
+                    box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.25);
+                    line-height: 24px;
+                    font-size: 16px;
+                }
+
+                .message-frame li {
+                    margin-bottom: 20px
+                }
+            </style>
+        ";
 
         $errorMessage = ''
-            . '<div style="max-width: 800px; margin: 50px auto; padding: 30px; border: 1px solid red">'
+            . $css
+            . "\n"
+            . '<div class="message-frame">'
                 . $errorMessage
             . '</div>';
 
