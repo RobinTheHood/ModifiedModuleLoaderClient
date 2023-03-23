@@ -14,12 +14,11 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
 use Exception;
-use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 
 class HttpRequest
 {
-    private $logging = false;
-
     public function isServerAvailable(string $url): bool
     {
         $headers = @get_headers($url);
@@ -34,23 +33,8 @@ class HttpRequest
         try {
             // HTTP POST-Request konfigurieren und senden
             $result = $this->sendCurlPostRequest($url, $data);
-
-            // Logging
-            if ($this->logging) {
-                $logFilepath = App::getLogsRoot() . '/log.txt';
-                $logDirectory = dirname($logFilepath);
-
-                if (!file_exists($logDirectory)) {
-                    mkdir($logDirectory);
-                }
-
-                file_put_contents($logFilepath, $result);
-            }
-
             return $result;
         } catch (Exception $e) {
-            // Fehler behandeln
-            //error_log($e->getMessage());
             return '';
         }
     }
@@ -61,23 +45,8 @@ class HttpRequest
         try {
             // HTTP GET-Request konfigurieren und senden
             $result = $this->sendCurlGetRequest($url);
-
-            // Logging
-            if ($this->logging) {
-                $logFilepath = App::getLogsRoot() . '/log.txt';
-                $logDirectory = dirname($logFilepath);
-
-                if (!file_exists($logDirectory)) {
-                    mkdir($logDirectory);
-                }
-
-                file_put_contents($logFilepath, $result);
-            }
-
             return $result;
         } catch (Exception $e) {
-            // Fehler behandeln
-            //error_log($e->getMessage());
             return '';
         }
     }
@@ -98,6 +67,11 @@ class HttpRequest
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Modified Module Loader Client');
 
+        StaticLogger::log(
+            LogLevel::DEBUG,
+            "Send GET request to $url"
+        );
+
         // Request senden und Ergebnis erhalten
         $result = curl_exec($curl);
 
@@ -106,14 +80,18 @@ class HttpRequest
         if ($result === false) {
             $error = curl_error($curl);
             curl_close($curl);
+            StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
             throw new Exception('Fehler beim Senden des GET-Requests: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
+            StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
             throw new Exception('Fehler beim Senden des GET-Requests: HTTP-Statuscode ' . $httpCode);
         }
 
         // Request beenden
         curl_close($curl);
+
+        StaticLogger::log(LogLevel::DEBUG, "$httpCode Response from $url\n" . print_r($result, true));
 
         return $result;
     }
@@ -127,6 +105,11 @@ class HttpRequest
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Modified Module Loader Client');
 
+        StaticLogger::log(
+            LogLevel::DEBUG,
+            "Send POST request to $url\n[DATA]\n" . print_r($data, true)
+        );
+
         // Request senden und Ergebnis erhalten
         $result = curl_exec($curl);
 
@@ -135,9 +118,11 @@ class HttpRequest
         if ($result === false) {
             $error = curl_error($curl);
             curl_close($curl);
+            StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
             throw new Exception('Fehler beim Senden des POST-Requests: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
+            StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
             throw new Exception('Fehler beim Senden des POST-Requests: HTTP-Statuscode ' . $httpCode);
         }
 

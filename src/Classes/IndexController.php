@@ -16,8 +16,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
@@ -137,36 +135,32 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
-        $selfUpdater = new SelfUpdater();
-        $installedVersion = $selfUpdater->getInstalledVersion();
+        // Nächste mögliche MMLC Version ermittlen
         $latest = Config::getSelfUpdate() == 'latest';
-        $version = $selfUpdater->getNewestVersionInfo($latest);
+        $installedMmlcVersionString = App::getMmlcVersion();
+        $selfUpdater = new SelfUpdater(MmlcVersionInfoLoader::createLoader());
+        $mmlcVersionInfo = $selfUpdater->getNextMmlcVersionInfo($installedMmlcVersionString, $latest);
 
+        // Update durchführen, wenn ausgewählt und vorhanden
         $queryParams = $this->serverRequest->getQueryParams();
         $installVersion = $queryParams['install'] ?? '';
-
-        if ($installVersion) {
-            $selfUpdater->update($installVersion);
+        if ($mmlcVersionInfo && $mmlcVersionInfo->version === $installVersion) {
+            $selfUpdater->update($mmlcVersionInfo);
             return $this->redirect('/?action=selfUpdate');
         }
 
-        // Postupdate ausführen, falls erforderlich
-        $executed = $selfUpdater->checkAndDoPostUpdate();
+        // Postupdate ausführen. Kann immer aufgerufen werden. Die Methode entscheidet selbst,
+        // ob etwas getan werden muss oder nicht.
+        $postUpdateExecuted = $selfUpdater->postUpdate();
 
-        // Wenn der Postupdate durchgeführt werden musste, die Seite noch einmal
-        // automatisch neu laden
-        if ($executed) {
+        // Wenn ein Postupdate durchgeführt wurde, die Seite noch einmal automatisch neu laden.
+        if ($postUpdateExecuted) {
             return $this->redirect('/?action=selfUpdate');
         }
-
-        $checkUpdate = $selfUpdater->checkUpdate();
-
-        $comparator = new Comparator(new Parser());
 
         return $this->render('SelfUpdate', [
-            'comparator' => $comparator,
-            'version' => $version,
-            'installedVersion' => $installedVersion,
+            'mmlcVersionInfo' => $mmlcVersionInfo,
+            'installedVersionString' => $installedMmlcVersionString,
             'serverName' => $_SERVER['SERVER_NAME'] ?? 'unknown Server Name'
         ]);
     }
@@ -645,8 +639,11 @@ class IndexController extends Controller
 
     public function calcSystemUpdateCount()
     {
-        $selfUpdater = new SelfUpdater();
-        $checkUpdate = $selfUpdater->checkUpdate();
+        $latest = Config::getSelfUpdate() == 'latest';
+        $installedMmlcVersionString = App::getMmlcVersion();
+
+        $selfUpdater = new SelfUpdater(MmlcVersionInfoLoader::createLoader());
+        $checkUpdate = $selfUpdater->updateAvailable($installedMmlcVersionString, $latest);
         if ($checkUpdate) {
             return 1;
         }
