@@ -107,6 +107,7 @@ class App
             die();
         }
 
+        header('Content-Type: text/html; charset=utf-8');
         echo $result['content'] ?? '';
     }
 
