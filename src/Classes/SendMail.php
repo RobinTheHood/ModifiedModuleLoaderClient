@@ -39,8 +39,7 @@ class SendMail
         $subject = 'MMLC Report Issue';
         $shopVersion = ShopInfo::getModifiedVersion();
 
-        $selfUpdater = new SelfUpdater();
-        $mmlcVersion = $selfUpdater->getInstalledVersion();
+        $mmlcVersion = App::getMmlcVersion();
 
         $message .=
             '<hr />Message sent from: ' . $_SERVER['HTTP_HOST'] .

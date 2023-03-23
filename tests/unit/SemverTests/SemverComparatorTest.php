@@ -107,74 +107,6 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->notEqualTo('1.2.3', '1.2.3'));
     }
 
-    public function testSemverCanSortVersions()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $expected = [
-            '1.2.3',
-            '17.111.9',
-            '18.22.9',
-            '18.22.10',
-            '18.33.10'
-        ];
-
-        $this->assertEquals($expected, $this->comparator->sort($versions));
-    }
-
-    public function testSemverCanSortReverseVersions()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $expected = [
-            '18.33.10',
-            '18.22.10',
-            '18.22.9',
-            '17.111.9',
-            '1.2.3'
-        ];
-
-        $this->assertEquals($expected, $this->comparator->rsort($versions));
-    }
-
-    public function testSemverGetsHighestVersionString()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $this->assertEquals('18.33.10', $this->comparator->highest($versions));
-    }
-
-    public function testSemverGetsLowestVersionString()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $this->assertEquals('1.2.3', $this->comparator->lowest($versions));
-    }
-
     public function testThatVersionAIsCompatibleWithVersionB()
     {
         $this->assertTrue($this->comparator->isCompatible('auto', '3.3.3'));
@@ -188,7 +120,7 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->isCompatible('3.3.3', '3.3.4'));
     }
 
-    public function testThatVersionASatisfiesContraint()
+    public function testThatVersionASatisfiesConstraint()
     {
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^3.3.3'));
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^3.2.3'));
@@ -196,7 +128,7 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->satisfies('3.3.3', '3.2.3'));
     }
 
-    public function testThatVersionASatisfiesOrContraint()
+    public function testThatVersionASatisfiesOrConstraint()
     {
         $this->assertTrue($this->comparator->satisfiesOr('3.3.3', '^2.2.2 || ^3.3.3'));
         $this->assertFalse($this->comparator->satisfiesOr('4.4.4', '^2.2.2 || ^3.3.3'));

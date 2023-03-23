@@ -76,7 +76,7 @@ class Module extends ModuleInfo
     /**
      * @var string[]
      */
-    private array $srcMmlcFilePaths;
+    private $srcMmlcFilePaths;
 
     /**
      * @var bool
