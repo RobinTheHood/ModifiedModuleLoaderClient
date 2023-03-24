@@ -11,13 +11,13 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 
-define('VERSION', '0.6.1');
+define('VERSION', '0.6.2');
 
 class Installer
 {
     const REMOTE_ADDRESS = 'https://app.module-loader.de';
     const INSTALL_FILE = '/Downloads/ModifiedModuleLoaderClient.tar';
-    const REQUIRED_PHP_VERSION = '7.1.12';
+    const REQUIRED_PHP_VERSION = '7.4.0';
 
     public function invoke()
     {
