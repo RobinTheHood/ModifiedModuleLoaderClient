@@ -15,9 +15,9 @@ define('VERSION', '0.6.2');
 
 class Installer
 {
-    const REMOTE_ADDRESS = 'https://app.module-loader.de';
-    const INSTALL_FILE = '/Downloads/ModifiedModuleLoaderClient.tar';
-    const REQUIRED_PHP_VERSION = '7.4.0';
+    private const REMOTE_ADDRESS = 'https://app.module-loader.de';
+    private const INSTALL_FILE = '/Downloads/ModifiedModuleLoaderClient.tar';
+    private const REQUIRED_PHP_VERSION = '7.4.0';
 
     public function invoke()
     {
@@ -36,7 +36,7 @@ class Installer
 
         if ($errors) {
             echo Template::showSystemCheck($errors);
-        } else if (!$this->isInstalled()) {
+        } elseif (!$this->isInstalled()) {
             echo Template::showInstall();
         } else {
             echo Template::showInstalled();
