@@ -19,7 +19,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 
 class CombinationTest extends TestCase
 {
-
     public function testAdd()
     {
         $combination = new Combination();

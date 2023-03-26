@@ -23,7 +23,7 @@ class FlatEntry
     /** @var array version strings */
     public $versions = [];
 
-    public function combine(FlatEntry $flatEntry)
+    public function combine(FlatEntry $flatEntry): void
     {
         if ($this->archiveName !== $flatEntry->archiveName) {
             throw new Exception("Cant combine FlatEntry {$this->archiveName} and {$flatEntry->archiveName}");
