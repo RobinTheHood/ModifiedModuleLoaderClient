@@ -108,9 +108,10 @@ class DependencyBuilder
         return $combinationSatisfyerResult;
     }
 
-
     public function satisfies(string $archiveName, string $constraint, SystemSet $systemSet): CombinationSatisfyerResult
     {
+        $constraint = $this->createConstraint($archiveName, $constraint, $systemSet);
+
         $moduleTreeBuilder = new ModuleTreeBuilder();
         $moduleTree = $moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
         $this->logFile($moduleTree, '3-moduleTrees.json');
