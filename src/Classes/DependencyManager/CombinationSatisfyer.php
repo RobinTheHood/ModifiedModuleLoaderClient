@@ -123,7 +123,7 @@ class CombinationSatisfyer
         // Es gibt keine weiteren Untermodule
         if (!$moduleTree->moduleVersions) {
             //var_dump($selectedVersion . ' == ' . $moduleTree->versionConstraint);
-            return $this->comparator->satisfiesOr($selectedVersion, $moduleTree->versionConstraint);
+            return $this->comparator->satisfies($selectedVersion, $moduleTree->versionConstraint);
         }
 
         foreach ($moduleTree->moduleVersions as $moduleVersion) {

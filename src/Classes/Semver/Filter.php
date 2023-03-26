@@ -52,7 +52,7 @@ class Filter
     {
         $fileredVersions = [];
         foreach ($versions as $version) {
-            if ($this->comparator->satisfiesOr($version, $constraint)) {
+            if ($this->comparator->satisfies($version, $constraint)) {
                 $fileredVersions[] = $version;
             }
         }

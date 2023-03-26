@@ -516,7 +516,7 @@ class Module extends ModuleInfo
 
         $phpVersionInstalled = phpversion();
         $comparator = new Comparator(new Parser());
-        return $comparator->satisfiesOr($phpVersionInstalled, $phpVersionContraint);
+        return $comparator->satisfies($phpVersionInstalled, $phpVersionContraint);
     }
 
     public function isCompatibleWithMmlc(): bool
@@ -533,7 +533,7 @@ class Module extends ModuleInfo
         }
 
         $comparator = new Comparator(new Parser());
-        return $comparator->satisfiesOr($mmlcVersionInstalled, $mmlcVersionContraint);
+        return $comparator->satisfies($mmlcVersionInstalled, $mmlcVersionContraint);
     }
 
     public function getTemplateFiles($file): array
