@@ -128,4 +128,45 @@ class DependencyBuilder
 
         return $combinationSatisfyerResult;
     }
+
+    /**
+     * Gehe alle Module durch, die in $systemSet sind und das gleichzeitig Modul $archiveName benötigen.
+     * Gibt ein $constraint zurück, sodass die Anforderungenden der Module in $systemSet erhaltenbleiben.
+     */
+    private function createConstraint(string $archiveName, string $constraint, SystemSet $systemSet): string
+    {
+        /** @var string[] */
+        $requiredConstraints = [$constraint];
+
+        $archives = $systemSet->getArchives();
+        foreach ($archives as $archiveNameB => $version) {
+            $installedModule = $this->getModuleByArchiveNameAndVersion($archiveNameB, $version);
+            if (!$installedModule) {
+                continue;
+            }
+
+            $requiredConstraint = $this->getRequiredConstraint($installedModule, $archiveName);
+            if (!$requiredConstraint) {
+                continue;
+            }
+
+            $requiredConstraints[] = $requiredConstraint;
+        }
+
+        $constraint = Constraint::createConstraintFromConstraints($requiredConstraints);
+
+        return $constraint;
+    }
+
+    private function getModuleByArchiveNameAndVersion(string $archiveName, string $version): ?Module
+    {
+        $moduleLoader = ModuleLoader::getModuleLoader();
+        return $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+    }
+
+    private function getRequiredConstraint(Module $installedModule, string $archiveName): string
+    {
+        $required = $installedModule->getRequire();
+        return $required[$archiveName] ?? '';
+    }
 }
