@@ -118,7 +118,11 @@ class CombinationSatisfyer
     {
         // Context: Module
         $archiveName = $moduleTree->archiveName;
-        $selectedVersion = $combination->getVersion($archiveName);
+        try {
+            $selectedVersion = $combination->getVersion($archiveName);
+        } catch (DependencyException $e) {
+            return false;
+        }
 
         // Es gibt keine weiteren Untermodule
         if (!$moduleTree->moduleVersions) {

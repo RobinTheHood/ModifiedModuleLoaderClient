@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
-use Exception;
-
 class Combination
 {
     /** @var array */
@@ -23,7 +21,7 @@ class Combination
     public function add(string $archiveName, string $version)
     {
         if (array_key_exists($archiveName, $this->combinations)) {
-            throw new Exception($archiveName . ' is already set.');
+            throw new DependencyException($archiveName . ' is already set.');
         }
 
         $this->combinations[$archiveName] = $version;
@@ -37,7 +35,7 @@ class Combination
     public function getVersion(string $archiveName): string
     {
         if (!array_key_exists($archiveName, $this->combinations)) {
-            throw new Exception('Version of ' . $archiveName . ' not found.');
+            throw new DependencyException('Version of ' . $archiveName . ' not found.');
         }
 
         return $this->combinations[$archiveName];

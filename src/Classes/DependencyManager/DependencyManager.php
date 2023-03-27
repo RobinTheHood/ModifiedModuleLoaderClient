@@ -17,7 +17,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSetFactory;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
@@ -86,9 +85,19 @@ class DependencyManager
         $systemSet = $systemSetFactory->getSystemSet();
 
         $dependencyBuilder = new DependencyBuilder();
-        $combinationSatisfyerResult = $dependencyBuilder->satisfies($module->getArchiveName(), $module->getVersion(), $systemSet);
+        $combinationSatisfyerResult = $dependencyBuilder->satisfies(
+            $module->getArchiveName(),
+            $module->getVersion(),
+            $systemSet
+        );
+
         if (!$combinationSatisfyerResult->foundCombination) {
-            throw new DependencyException("Can not install module {$module->getArchiveName()} in version {$module->getVersion()}");
+            throw new DependencyException(
+                "Can not install module {$module->getArchiveName()} in version {$module->getVersion()} "
+                . "because there are conflicting version contraints. "
+                . "Perhaps you have installed a module that requires a different version, "
+                . "or there is no compatible combination of dependencies."
+            );
         }
 
         $modules = $this->getAllModulesFromCombination($combinationSatisfyerResult->foundCombination);

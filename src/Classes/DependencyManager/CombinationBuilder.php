@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
-use Exception;
-
 class CombinationBuilder
 {
     /**

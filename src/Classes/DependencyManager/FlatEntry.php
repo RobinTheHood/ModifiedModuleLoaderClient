@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
-use Exception;
-
 class FlatEntry
 {
     /** @var string */
@@ -26,7 +24,7 @@ class FlatEntry
     public function combine(FlatEntry $flatEntry): void
     {
         if ($this->archiveName !== $flatEntry->archiveName) {
-            throw new Exception("Cant combine FlatEntry {$this->archiveName} and {$flatEntry->archiveName}");
+            throw new DependencyException("Cant combine FlatEntry {$this->archiveName} and {$flatEntry->archiveName}");
         }
 
         $this->versions = array_merge($this->versions, $flatEntry->versions);
