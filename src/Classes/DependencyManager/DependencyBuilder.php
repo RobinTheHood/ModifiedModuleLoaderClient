@@ -13,6 +13,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Constraint;
 
 class DependencyBuilder
 {
