@@ -110,6 +110,7 @@ class DependencyBuilder
 
     public function satisfies(string $archiveName, string $constraint, SystemSet $systemSet): CombinationSatisfyerResult
     {
+        $systemSet->removeByArchiveName($archiveName);
         $constraint = $this->createConstraint($archiveName, $constraint, $systemSet);
 
         $moduleTreeBuilder = new ModuleTreeBuilder();

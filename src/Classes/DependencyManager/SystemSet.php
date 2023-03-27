@@ -43,4 +43,11 @@ class SystemSet
         }
         return $archives;
     }
+
+    public function removeByArchiveName(string $archiveName): void
+    {
+        if (array_key_exists($archiveName, $this->systems)) {
+            unset($this->systems[$archiveName]);
+        }
+    }
 }
