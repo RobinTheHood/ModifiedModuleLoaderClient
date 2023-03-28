@@ -22,6 +22,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHashFileCreator;
 use RuntimeException;
 
@@ -100,10 +102,11 @@ class ModuleInstaller
         $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module, ['']);
 
         if (!$combinationSatisfyerResult->foundCombination) {
-            throw new RuntimeException(
+            $message =
                 "Can not install module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
-                . "No possible combination of versions found"
-            );
+                . "No possible combination of versions found";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new RuntimeException($message);
         }
 
         $this->uninstall($module);
@@ -157,10 +160,11 @@ class ModuleInstaller
         $reloaded = $this->reload($module);
 
         if (!$reloaded->isLoaded()) {
-            throw new RuntimeException(
+            $message =
                 "Can not pull and install module {$module->getArchiveName()} {$module->getVersion()}. "
-                . "Module is not loaded."
-            );
+                . "Module is not loaded.";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new RuntimeException($message);
         }
 
         if ($reloaded->isInstalled()) {
@@ -193,10 +197,11 @@ class ModuleInstaller
         $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
 
         if (!$combinationSatisfyerResult->foundCombination) {
-            throw new RuntimeException(
+            $message =
                 "Can not update module {$module->getArchiveName()} {$module->getVersion()}. "
-                . "No possible combination of versions found"
-            );
+                . "No possible combination of versions found";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new RuntimeException($message);
         }
 
         if ($installedModule) {
@@ -221,10 +226,11 @@ class ModuleInstaller
         $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
 
         if (!$combinationSatisfyerResult->foundCombination) {
-            throw new RuntimeException(
+            $message =
                 "Can not update module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
-                . "No possible combination of versions found"
-            );
+                . "No possible combination of versions found";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new RuntimeException($message);
         }
 
         if ($installedModule) {
@@ -251,7 +257,9 @@ class ModuleInstaller
         );
 
         if (!$reloadedModule) {
-            throw new RuntimeException("Can not reload module {$module->getArchiveName()} {$module->getVersion()}");
+            $message = "Can not reload module {$module->getArchiveName()} {$module->getVersion()}";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new RuntimeException($message);
         }
 
         return $reloadedModule;
@@ -260,9 +268,10 @@ class ModuleInstaller
     public function revertChanges(Module $module): void
     {
         if (!$module->isInstalled()) {
-            throw new RuntimeException(
-                "Can not revert changes because {$module->getArchiveName()} {$module->getVersion()} is not installed."
-            );
+            $message =
+                "Can not revert changes because {$module->getArchiveName()} {$module->getVersion()} is not installed.";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new RuntimeException($message);
         }
 
         $this->internalInstall($module);
@@ -319,10 +328,11 @@ class ModuleInstaller
         }
 
         if ($installedModule->isChanged()) {
-            throw new RuntimeException(
+            $message =
                 "Can not uninstall module {$installedModule->getArchiveName()} {$installedModule->getVersion()} "
-                . "because the module has changes."
-            );
+                . "because the module has changes.";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new RuntimeException($message);
         }
 
         $this->internalUninstall($installedModule);

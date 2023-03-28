@@ -19,6 +19,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSetFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
@@ -67,7 +69,9 @@ class DependencyManager
         foreach ($combination->strip()->getAll() as $archiveName => $version) {
             $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
             if (!$module) {
-                throw new DependencyException('Can not find Module ' . $archiveName . ' in version ' . $version);
+                $message = "Can not find Module {$archiveName} in version {$version}";
+                StaticLogger::log(LogLevel::WARNING, $message);
+                throw new DependencyException($message);
             }
             $modules[] = $module;
         }
@@ -97,13 +101,14 @@ class DependencyManager
         );
 
         if ($combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND) {
-            throw new DependencyException(
-                "Can not install module {$module->getArchiveName()} in version {$module->getVersion()} "
-                . "because there are conflicting version contraints. "
-                . "Perhaps you have installed a module that requires a different version, "
-                . "or there is no compatible combination of dependencies. "
-                . " The following combination is required: {$combinationSatisfyerResult->failLog}"
-            );
+            $message = "Can not install module {$module->getArchiveName()} in version {$module->getVersion()} "
+            . "because there are conflicting version contraints. "
+            . "Perhaps you have installed a module that requires a different version, "
+            . "or there is no compatible combination of dependencies. "
+            . " The following combination is required: {$combinationSatisfyerResult->failLog}";
+
+            StaticLogger::log(LogLevel::WARNING, $message);
+            throw new DependencyException($message);
         }
 
         // $modules = $this->getAllModulesFromCombination($combinationSatisfyerResult->foundCombination);
