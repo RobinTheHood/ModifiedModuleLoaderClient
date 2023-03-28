@@ -32,7 +32,7 @@ class NotificationViewModel
         if ($type == 'warning') {
             return '<div class="alert alert-warning" role="alert"><i class="fas fa-exclamation-triangle fa-fw"></i> ' . $message . '</div>';
         } elseif ($type == 'error') {
-            return '<div class="alert alert-danger" role="alert">' . $message . '</div>';
+            return '<div class="alert alert-danger" role="alert"><i class="fas fa-ban fa-fw"></i> ' . $message . '</div>';
         } elseif ($type == 'success') {
             return '<div class="alert alert-success auto-fade-out" role="alert"><i class="fas fa-check fa-fw"></i> ' . $message . '</div>';
         }

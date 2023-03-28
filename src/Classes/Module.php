@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInfo;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\ChangedEntryCollection;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
@@ -516,12 +516,9 @@ class Module extends ModuleInfo
 
         $phpVersionInstalled = phpversion();
         $comparator = new Comparator(new Parser());
-        return $comparator->satisfiesOr($phpVersionInstalled, $phpVersionContraint);
+        return $comparator->satisfies($phpVersionInstalled, $phpVersionContraint);
     }
 
-    /**
-     * Version 1.20.0 is the last version without isCompatibleWithMmlc()
-     */
     public function isCompatibleWithMmlc(): bool
     {
         $mmlcVersionInstalled = App::getMmlcVersion();
@@ -530,13 +527,13 @@ class Module extends ModuleInfo
         }
 
         $mmlc = $this->getMmlc();
-        $mmlcVersionContraint = $mmlc['version'] ?? '^1.20.0';
+        $mmlcVersionContraint = $mmlc['version'] ?? '';
         if (!$mmlcVersionContraint) {
             return true;
         }
 
         $comparator = new Comparator(new Parser());
-        return $comparator->satisfiesOr($mmlcVersionInstalled, $mmlcVersionContraint);
+        return $comparator->satisfies($mmlcVersionInstalled, $mmlcVersionContraint);
     }
 
     public function getTemplateFiles($file): array

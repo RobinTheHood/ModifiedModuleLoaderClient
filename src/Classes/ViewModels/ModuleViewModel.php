@@ -57,6 +57,12 @@ class ModuleViewModel
         return $this->getUrl('moduleInfo', $ref);
     }
 
+    public function getInstalledUrl(string $ref = ''): string
+    {
+        $module = $this->module->getInstalledVersion();
+        return $this->getUrl('moduleInfo', $ref, $module);
+    }
+
     public function getLoadModuleUrl(string $ref = ''): string
     {
         return $this->getUrl('loadRemoteModule', $ref);
@@ -181,12 +187,16 @@ class ModuleViewModel
         return $this->module->isChanged();
     }
 
-    private function getUrl(string $action, string $ref): string
+    private function getUrl(string $action, string $ref, ?Module $module = null): string
     {
+        if (!$module) {
+            $module = $this->module;
+        }
+
         return
             '?action=' . $action .
-            '&archiveName=' . $this->module->getArchiveName() .
-            '&version=' . $this->module->getVersion() .
+            '&archiveName=' . $module->getArchiveName() .
+            '&version=' . $module->getVersion() .
             '&ref=' . $ref;
     }
 

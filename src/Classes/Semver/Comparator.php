@@ -163,22 +163,39 @@ class Comparator
         return $this->greaterThanOrEqualTo($versionString1, $versionString2);
     }
 
-    public function satisfies(string $versionString1, string $constrain): bool
+    public function satisfies(string $versionString1, string $constraint): bool
     {
-        if ($constrain[0] == '^') { // Ist Buchstabe an Index 0 = ^
-            $versionString2 = str_replace('^', '', $constrain);
-            return $this->isCompatible($versionString1, $versionString2);
-        } elseif ($constrain[0] == '<' && $constrain[1] == '=') {
-            $versionString2 = str_replace('<=', '', $constrain);
+        if (strpos($constraint, '||')) {
+            return $this->satisfiesOr($versionString1, $constraint);
+        }
+
+        if (strpos($constraint, ',')) {
+            return $this->satisfiesAnd($versionString1, $constraint);
+        }
+
+        if (strpos($constraint, '<=') === 0) {
+            $versionString2 = str_replace('<=', '', $constraint);
             return $this->lessThanOrEqualTo($versionString1, $versionString2);
+        } elseif (strpos($constraint, '<') === 0) {
+            $versionString2 = str_replace('<', '', $constraint);
+            return $this->lessThan($versionString1, $versionString2);
+        } elseif (strpos($constraint, '>=') === 0) {
+            $versionString2 = str_replace('>=', '', $constraint);
+            return $this->greaterThanOrEqualTo($versionString1, $versionString2);
+        } elseif (strpos($constraint, '>') === 0) {
+            $versionString2 = str_replace('>', '', $constraint);
+            return $this->greaterThan($versionString1, $versionString2);
+        } elseif (strpos($constraint, '^') === 0) {
+            $versionString2 = str_replace('^', '', $constraint);
+            return $this->isCompatible($versionString1, $versionString2);
         } else {
-            $versionString2 = $constrain;
+            $versionString2 = $constraint;
             return $this->equalTo($versionString1, $versionString2);
         }
     }
 
     /**
-     * Can satisfy multiple constraints with OR / ||
+     * Can satisfy multiple constraints with OR (||)
      *
      * Example: ^7.4 || ^8.0
      */
@@ -192,5 +209,22 @@ class Comparator
             }
         }
         return false;
+    }
+
+    /**
+     * Can satisfy multiple constraints with AND (,)
+     *
+     * Example: ^7.4, ^8.0
+     */
+    public function satisfiesAnd(string $versionString1, string $constraintOrExpression): bool
+    {
+        $constraints = explode(',', $constraintOrExpression);
+        foreach ($constraints as $constraint) {
+            $constraint = trim($constraint);
+            if (!$this->satisfies($versionString1, $constraint)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
