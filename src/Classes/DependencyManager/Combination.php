@@ -15,10 +15,18 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 class Combination
 {
-    /** @var array */
-    public $combinations = [];
+    /** @var array<string, string> */
+    private $combinations = [];
 
-    public function add(string $archiveName, string $version)
+    /**
+     * @return array<string, string>
+     */
+    public function getAll(): array
+    {
+        return $this->combinations;
+    }
+
+    public function add(string $archiveName, string $version): void
     {
         if (array_key_exists($archiveName, $this->combinations)) {
             throw new DependencyException($archiveName . ' is already set.');
@@ -27,7 +35,7 @@ class Combination
         $this->combinations[$archiveName] = $version;
     }
 
-    public function overwrite(string $archiveName, string $version)
+    public function overwrite(string $archiveName, string $version): void
     {
         $this->combinations[$archiveName] = $version;
     }

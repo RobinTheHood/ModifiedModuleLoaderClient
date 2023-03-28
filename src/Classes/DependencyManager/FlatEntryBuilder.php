@@ -111,7 +111,7 @@ class FlatEntryBuilder
      */
     public function addFlatEntriesBySystemSet(array $flatEntries, SystemSet $systemSet): array
     {
-        foreach ($systemSet->systems as $archiveName => $version) {
+        foreach ($systemSet->getAll() as $archiveName => $version) {
             if ($this->findFatEntryByArchiveName($archiveName, $flatEntries)) {
                 continue;
             }
@@ -163,7 +163,7 @@ class FlatEntryBuilder
      */
     public function removeFlatEntriesBySystemSet(array $moduleFlatTreeEntries, SystemSet $systemSet): array
     {
-        foreach ($systemSet->systems as $archiveName => $version) {
+        foreach ($systemSet->getAll() as $archiveName => $version) {
             $versions = [$version];
             $moduleFlatTreeEntries = $this->removeModuleFlatEnty($moduleFlatTreeEntries, $archiveName, $versions);
         }

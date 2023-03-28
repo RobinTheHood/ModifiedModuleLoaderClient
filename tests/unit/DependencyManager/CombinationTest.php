@@ -24,7 +24,7 @@ class CombinationTest extends TestCase
         $combination = new Combination();
         $combination->add('foo/bar', '1.0.0');
 
-        $this->assertEquals(['foo/bar' => '1.0.0'], $combination->combinations);
+        $this->assertEquals(['foo/bar' => '1.0.0'], $combination->getAll());
     }
 
     public function testCanNotAddTwice()
@@ -42,7 +42,7 @@ class CombinationTest extends TestCase
         $combination->add('foo/bar', '1.0.0');
         $combination->overwrite('foo/bar', '2.0.0');
 
-        $this->assertEquals(['foo/bar' => '2.0.0'], $combination->combinations);
+        $this->assertEquals(['foo/bar' => '2.0.0'], $combination->getAll());
     }
 
     public function testGetVersion()
@@ -77,14 +77,14 @@ class CombinationTest extends TestCase
                 'foo' => '1.0.0',
                 'foo/bar' => '2.0.0'
             ],
-            $combination->combinations
+            $combination->getAll()
         );
 
         $this->assertEquals(
             [
                 'foo/bar' => '2.0.0'
             ],
-            $stripedCombination->combinations
+            $stripedCombination->getAll()
         );
     }
 }

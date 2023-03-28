@@ -64,7 +64,7 @@ class DependencyManager
         $moduleLoader->resetCache();
 
         $modules = [];
-        foreach ($combination->strip()->combinations as $archiveName => $version) {
+        foreach ($combination->strip()->getAll() as $archiveName => $version) {
             $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
             if (!$module) {
                 throw new DependencyException('Can not find Module ' . $archiveName . ' in version ' . $version);
