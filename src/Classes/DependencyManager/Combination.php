@@ -83,4 +83,14 @@ class Combination
 
         return true;
     }
+
+
+    public function __toString(): string
+    {
+        $strings = [];
+        foreach ($this->combinations as $archiveName => $version) {
+            $strings[] = "$archiveName v$version";
+        }
+        return implode(', ', $strings);
+    }
 }
