@@ -131,7 +131,7 @@ $notificationView = new NotificationViewModel();
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
                 <?php } elseif ($moduleView->hasInstalledVersion()) { ?>
-                    <a class="button button-default" href="<?= $moduleView->getModuleInfoUrl('moduleInfo') ?>">Zur installierten Version</a>
+                    <a class="button button-default" href="<?= $moduleView->getInstalledUrl('moduleInfo') ?>">Zur installierten Version</a>
                 <?php } ?>
 
                 <?php if (!$moduleView->isRemote() && $moduleView->isLoaded() && !$moduleView->isInstalled()) { ?>
