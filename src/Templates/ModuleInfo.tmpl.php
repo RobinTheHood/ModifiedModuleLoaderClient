@@ -39,6 +39,34 @@ $notificationView = new NotificationViewModel();
             <div class="content">
                 <?= $notificationView->renderFlashMessages() ?>
 
+                <?php if ($moduleView->isRepairable()) { ?>
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle fa-fw"></i>
+                        Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an
+                        diesen Anpassungen vorgenommen. <strong>Deinstallation</strong> und
+                        <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur Verfügung, damit
+                        deine Arbeit nicht verloren geht.
+                        <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
+                    </div>
+                <?php } ?>
+
+                <?php if (!$moduleView->isLoadable()) { ?>
+                    <div class="alert alert-primary" role="alert">
+                        <i class="fas fa-info-circle fa-fw"></i>
+                        Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann
+                        dir das Modul (z. B. nach einem Kauf) freischalten.
+                    </div>
+                <?php } ?>
+
+                <?php if (!$moduleView->isCompatible()) { ?>
+                    <?php foreach ($moduleView->getCompatibleStrings() as $string) { ?>
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle fa-fw"></i>
+                            <?= $string ?>
+                        </div>
+                    <?php } ?>
+                <?php } ?>
+
                 <div class="row">
                     <div class="col">
                         <div class="module-title">
@@ -57,34 +85,6 @@ $notificationView = new NotificationViewModel();
                                 </div>
                             <?php } ?>
                             </div>
-                        <?php } ?>
-
-                        <?php if ($moduleView->isRepairable()) { ?>
-                            <div class="alert alert-warning" role="alert">
-                                <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an
-                                diesen Anpassungen vorgenommen. <strong>Deinstallation</strong> und
-                                <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur Verfügung, damit
-                                deine Arbeit nicht verloren geht.
-                                <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
-                            </div>
-                        <?php } ?>
-
-                        <?php if (!$moduleView->isLoadable()) { ?>
-                            <div class="alert alert-primary" role="alert">
-                                <i class="fas fa-info-circle fa-fw"></i>
-                                Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann
-                                dir das Modul (z. B. nach einem Kauf) freischalten.
-                            </div>
-                        <?php } ?>
-
-                        <?php if (!$moduleView->isCompatible()) { ?>
-                            <?php foreach ($moduleView->getCompatibleStrings() as $string) { ?>
-                                <div class="alert alert-warning" role="alert">
-                                    <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                    <?= $string ?>
-                                </div>
-                            <?php } ?>
                         <?php } ?>
                     </div>
                 </div>
