@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -11,8 +9,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+declare(strict_types=1);
 
-class DependencyException extends \LogicException
+namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
+
+class ModuleVersion
 {
+    /** @var string */
+    public $version = '';
+
+    /** @var ModuleTree[] **/
+    public $require = [];
 }

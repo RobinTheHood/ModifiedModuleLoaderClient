@@ -17,11 +17,13 @@ use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Archive;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHashFileCreator;
+use RuntimeException;
 
 class ModuleInstaller
 {
@@ -49,7 +51,7 @@ class ModuleInstaller
             $archive = Archive::pullArchive($archiveUrl, $module->getArchiveName(), $module->getVersion());
             $archive->untarArchive();
             return true;
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             //Can not pull Archive
             return false;
         }
@@ -81,13 +83,37 @@ class ModuleInstaller
         }
     }
 
-    public function install(Module $module, $force = false): void
+    public function install(Module $module, bool $force = false): void
     {
         if (!$force) {
             $dependencyManager = new DependencyManager();
             $dependencyManager->canBeInstalled($module);
         }
 
+        $this->internalInstall($module);
+        $this->createAutoloadFile();
+    }
+
+    public function installWithDependencies(Module $module): void
+    {
+        $dependencyManager = new DependencyManager();
+        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module, ['']);
+
+        if (!$combinationSatisfyerResult->foundCombination) {
+            throw new RuntimeException(
+                "Can not install module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
+                . "No possible combination of versions found"
+            );
+        }
+
+        $this->uninstall($module);
+        $this->internalInstall($module);
+        $this->internalInstallDependencies($module, $combinationSatisfyerResult->foundCombination);
+        $this->createAutoloadFile();
+    }
+
+    private function internalInstall(Module $module): void
+    {
         // Install Source Files to Shop Root
         $files = $module->getSrcFilePaths();
 
@@ -120,51 +146,129 @@ class ModuleInstaller
         $moduleHashFileCreator = new ModuleHashFileCreator();
         $moduleHashFile = $moduleHashFileCreator->createHashFile($module);
         $moduleHashFile->writeTo($module->getHashPath());
+    }
 
+    private function internalPullAndInstall(Module $module): void
+    {
+        if (!$module->isLoaded()) {
+            $this->pull($module);
+        }
+
+        $reloaded = $this->reload($module);
+
+        if (!$reloaded->isLoaded()) {
+            throw new RuntimeException(
+                "Can not pull and install module {$module->getArchiveName()} {$module->getVersion()}. "
+                . "Module is not loaded."
+            );
+        }
+
+        if ($reloaded->isInstalled()) {
+            return;
+        }
+
+        $this->uninstall($module);
+        $this->internalInstall($module);
+    }
+
+    private function internalInstallDependencies(Module $parentModule, Combination $combination): void
+    {
+        $dependencyManager = new DependencyManager();
+        $modules = $dependencyManager->getAllModulesFromCombination($combination);
+
+        foreach ($modules as $module) {
+            if ($parentModule->getArchiveName() === $module->getArchiveName()) {
+                continue;
+            }
+            $this->internalPullAndInstall($module);
+        }
+    }
+
+    public function update(Module $module): ?Module
+    {
+        $installedModule = $module->getInstalledVersion();
+        $newModule = $module->getNewestVersion();
+
+        $dependencyManager = new DependencyManager();
+        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
+
+        if (!$combinationSatisfyerResult->foundCombination) {
+            throw new RuntimeException(
+                "Can not update module {$module->getArchiveName()} {$module->getVersion()}. "
+                . "No possible combination of versions found"
+            );
+        }
+
+        if ($installedModule) {
+            $this->uninstall($installedModule);
+        }
+
+        $this->pull($newModule);
+        $newModule = $this->reload($newModule);
+
+        $this->internalInstall($newModule);
         $this->createAutoloadFile();
+
+        return $newModule;
+    }
+
+    public function updateWithDependencies(Module $module): ?Module
+    {
+        $installedModule = $module->getInstalledVersion();
+        $newModule = $module->getNewestVersion();
+
+        $dependencyManager = new DependencyManager();
+        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
+
+        if (!$combinationSatisfyerResult->foundCombination) {
+            throw new RuntimeException(
+                "Can not update module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
+                . "No possible combination of versions found"
+            );
+        }
+
+        if ($installedModule) {
+            $this->uninstall($installedModule);
+        }
+
+        $this->pull($newModule);
+        $newModule = $this->reload($newModule);
+
+        $this->internalInstall($newModule);
+        $this->internalInstallDependencies($newModule, $combinationSatisfyerResult->foundCombination);
+        $this->createAutoloadFile();
+
+        return $newModule;
+    }
+
+    private function reload(Module $module): Module
+    {
+        $moduleLoader = new LocalModuleLoader();
+        $moduleLoader->resetCache();
+        $reloadedModule = $moduleLoader->loadByArchiveNameAndVersion(
+            $module->getArchiveName(),
+            $module->getVersion()
+        );
+
+        if (!$reloadedModule) {
+            throw new RuntimeException("Can not reload module {$module->getArchiveName()} {$module->getVersion()}");
+        }
+
+        return $reloadedModule;
     }
 
     public function revertChanges(Module $module): void
     {
         if (!$module->isInstalled()) {
-            throw new \RuntimeException('Can not revert changes because ' . $module->getArchiveName() . ' is not installed.');
+            throw new RuntimeException(
+                "Can not revert changes because {$module->getArchiveName()} {$module->getVersion()} is not installed."
+            );
         }
 
-        $this->install($module, true);
+        $this->internalInstall($module);
     }
 
-    public function installDependencies(Module $module): void
-    {
-        $dependencyManager = new DependencyManager();
-        $modules = $dependencyManager->getAllModules($module);
-
-        foreach ($modules as $depModule) {
-            if (!$depModule->isLoaded()) {
-                $this->pull($depModule);
-            }
-        }
-
-        $modules = $dependencyManager->getAllModules($module);
-        foreach ($modules as $depModule) {
-            $this->uninstall($depModule);
-            if ($depModule->isLoaded() && !$depModule->isInstalled()) {
-                $this->install($depModule);
-            }
-        }
-
-        $this->createAutoloadFile();
-    }
-
-    public function installWithDependencies(Module $module): void
-    {
-        $dependencyManager = new DependencyManager();
-        $dependencyManager->canBeInstalled($module);
-
-        $this->install($module);
-        $this->installDependencies($module);
-    }
-
-    public function createAutoloadFile(): void
+    private function createAutoloadFile(): void
     {
         $localModuleLoader = LocalModuleLoader::getModuleLoader();
         $localModuleLoader->resetCache();
@@ -207,18 +311,28 @@ class ModuleInstaller
         \file_put_contents(App::getShopRoot() . '/vendor-mmlc/autoload.php', $template);
     }
 
-    //TODO: Better return void type an thorw exception at error
-    public function uninstall(?Module $module): bool
+    public function uninstall(Module $module): bool
     {
-        if (!$module) {
+        $installedModule = $module->getInstalledVersion();
+        if (!$installedModule) {
             return false;
         }
 
-        $module = $module->getInstalledVersion();
-        if (!$module) {
-            return false;
+        if ($installedModule->isChanged()) {
+            throw new RuntimeException(
+                "Can not uninstall module {$installedModule->getArchiveName()} {$installedModule->getVersion()} "
+                . "because the module has changes."
+            );
         }
 
+        $this->internalUninstall($installedModule);
+        $this->createAutoloadFile();
+
+        return true;
+    }
+
+    private function internalUninstall(Module $module): void
+    {
         // Uninstall from shop-root
         $files = $module->getSrcFilePaths();
         foreach ($files as $file) {
@@ -239,49 +353,9 @@ class ModuleInstaller
         if (file_exists($module->getHashPath())) {
             unlink($module->getHashPath());
         }
-
-        $this->createAutoloadFile();
-
-        return true;
     }
 
-    public function update(Module $module): ?Module
-    {
-        $oldModule = $module->getInstalledVersion();
-        $newModule = $module->getNewestVersion();
-
-        $dependencyManager = new DependencyManager();
-        $dependencyManager->canBeInstalled($newModule);
-
-        $this->uninstall($oldModule);
-        $this->pull($newModule);
-
-        // Da nach $newModule->pull() das Modul noch nicht lokal inistailisiert
-        // sein kann, wird es noch einmal geladen.
-        $moduleLoader = new LocalModuleLoader();
-        $newModule = $moduleLoader->loadByArchiveNameAndVersion($newModule->getArchiveName(), $newModule->getVersion());
-
-        if (!$newModule) {
-            return null; //TODO: Better return not nullable type Module and thorw an exception
-        }
-
-        $this->install($newModule);
-
-        return $newModule;
-    }
-
-    public function updateWithDependencies(Module $module): ?Module
-    {
-        $newModule = $this->update($module);
-        if (!$newModule) {
-            return null; //TODO: Better return not nullable type Module and thorw an exception
-        }
-
-        $this->installDependencies($newModule);
-        return $newModule;
-    }
-
-    public function installFile(string $src, string $dest, bool $overwrite = false): bool
+    private function installFile(string $src, string $dest, bool $overwrite = false): bool
     {
         if (!file_exists($src)) {
             return false;
@@ -308,7 +382,7 @@ class ModuleInstaller
         return true;
     }
 
-    public function uninstallFile(string $dest): void
+    private function uninstallFile(string $dest): void
     {
         if (file_exists($dest)) {
             unlink($dest);

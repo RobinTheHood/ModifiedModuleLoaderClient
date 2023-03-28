@@ -11,15 +11,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSetFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
-class DependencyManager
+class DependencyManagerOld
 {
     protected $comparator;
 
@@ -53,20 +57,60 @@ class DependencyManager
         return $modules;
     }
 
-    public function canBeInstalled(Module $module): void
+    /**
+     * @param Combination $combination
+     *
+     * @return Module[]
+     */
+    public function getAllModulesFromCombination(Combination $combination): array
     {
-        $modules = $this->getAllModules($module);
-        $modules[] = $module;
-        foreach ($modules as $module) {
-            $this->canBeInstalledTestRequiers($module, $modules);
-            $this->canBeInstalledTestSelected($module, $modules);
-            $this->canBeInstalledTestInstalled($module);
-            $this->canBeInstalledTestChanged($module, $modules);
+        $moduleLoader = ModuleLoader::getModuleLoader();
+        $moduleLoader->resetCache();
+
+        $modules = [];
+        foreach ($combination->strip()->getAll() as $archiveName => $version) {
+            $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+            if (!$module) {
+                throw new DependencyException('Can not find Module ' . $archiveName . ' in version ' . $version);
+            }
+            $modules[] = $module;
         }
+        return $modules;
     }
 
     /**
-     * Test ob das Modul in $module installiert werden kann, ob das Modul $module
+     * @param Module $module
+     *
+     * @return combinationSatisfyerResult
+     */
+    public function canBeInstalled(Module $module): CombinationSatisfyerResult
+    {
+        // $modules = $this->getAllModules($module);
+        // $modules[] = $module;
+        // foreach ($modules as $subModule) {
+        //     // $this->canBeInstalledTestRequiers($module, $modules);
+        //     // $this->canBeInstalledTestSelected($module, $modules);
+        //     // $this->canBeInstalledTestInstalled($module);
+        //     $this->canBeInstalledTestChanged($subModule, $modules);
+        // }
+
+        $systemSetFactory = new SystemSetFactory();
+        $systemSet = $systemSetFactory->getSystemSet();
+
+        $dependencyBuilder = new DependencyBuilder();
+        $combinationSatisfyerResult = $dependencyBuilder->satisfies($module->getArchiveName(), $module->getVersion(), $systemSet);
+        if (!$combinationSatisfyerResult->foundCombination) {
+            throw new DependencyException("Can not install modul");
+        }
+
+        $modules = $this->getAllModulesFromCombination($combinationSatisfyerResult->foundCombination);
+        $this->canBeInstalledTestChanged($module, $modules);
+
+        return $combinationSatisfyerResult;
+    }
+
+    /**
+     * Testet, ob das Modul in $module installiert werden kann, ob das Modul $module
      * selbst oder eine Abhängigkeit in $modules im Status 'changed' ist.
      *
      * @param Module[] $modules
@@ -154,8 +198,6 @@ class DependencyManager
             }
         }
     }
-
-
 
     /**
      * Liefert eine Liste mit allen Modulen aus $selectedModules, die das Modul

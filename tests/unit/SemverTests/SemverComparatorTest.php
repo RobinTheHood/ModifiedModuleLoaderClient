@@ -130,7 +130,13 @@ class SemverComparatorTest extends TestCase
 
     public function testThatVersionASatisfiesOrConstraint()
     {
-        $this->assertTrue($this->comparator->satisfiesOr('3.3.3', '^2.2.2 || ^3.3.3'));
-        $this->assertFalse($this->comparator->satisfiesOr('4.4.4', '^2.2.2 || ^3.3.3'));
+        $this->assertTrue($this->comparator->satisfies('3.3.3', '^2.2.2 || ^3.3.3'));
+        $this->assertFalse($this->comparator->satisfies('4.4.4', '^2.2.2 || ^3.3.3'));
+    }
+
+    public function testThatVersionASatisfiesAndConstraint()
+    {
+        $this->assertFalse($this->comparator->satisfies('3.3.3', '^2.2.2, ^3.3.3'));
+        $this->assertTrue($this->comparator->satisfies('4.4.4', '^4.4.2, ^4.4.3'));
     }
 }
