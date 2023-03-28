@@ -11,6 +11,8 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Constraint;
@@ -19,8 +21,16 @@ class DependencyBuilder
 {
     private function logFile($value, $file)
     {
-        @mkdir(__DIR__ . '/logs/');
-        $path = __DIR__ . '/logs/' . $file;
+        if (!Config::getLogging()) {
+            return;
+        }
+
+        $logsRootPath = App::getLogsRoot();
+
+        @mkdir($logsRootPath);
+        @mkdir($logsRootPath . '/debug');
+        @mkdir($logsRootPath . '/debug/DependencyMananger/');
+        $path = $logsRootPath . '/debug/DependencyMananger/' . $file;
         file_put_contents($path, json_encode($value, JSON_PRETTY_PRINT));
     }
 
