@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Logger;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 
