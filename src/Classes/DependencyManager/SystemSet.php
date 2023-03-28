@@ -15,8 +15,30 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 class SystemSet
 {
-    /** @var array<string,string> */
-    public $systems = [];
+    /**
+     * SystemNames: mmlc, modified, php
+     *
+     * An array entry looks like
+     * array<archiveName, versionString>
+     * or
+     * array<systemName, versionString>
+     *
+     * @var array<string, string>
+     **/
+    private $systems = [];
+
+    /**
+     * @param array<string, string> $sytems
+     */
+    public function set(array $sytems): void
+    {
+        $this->systems = $sytems;
+    }
+
+    public function add(string $name, string $versionString): void
+    {
+        $this->systems[$name] = $versionString;
+    }
 
     /**
      * @return string[]
@@ -27,6 +49,14 @@ class SystemSet
             return strpos($name, '/') !== false;
         }));
         return $archiveNames;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getAll(): array
+    {
+        return $this->systems;
     }
 
     /**
@@ -44,10 +74,12 @@ class SystemSet
         return $archives;
     }
 
-    public function removeByArchiveName(string $archiveName): void
+    public function remove(string $name): void
     {
-        if (array_key_exists($archiveName, $this->systems)) {
-            unset($this->systems[$archiveName]);
+        if (!array_key_exists($name, $this->systems)) {
+            return;
         }
+
+        unset($this->systems[$name]);
     }
 }

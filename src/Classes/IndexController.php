@@ -22,6 +22,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
+use RuntimeException;
 
 class IndexController extends Controller
 {
@@ -318,10 +319,13 @@ class IndexController extends Controller
 
         try {
             $moduleInstaller = new ModuleInstaller();
-            //$moduleInstaller->install($module);
-            //$moduleInstaller->installDependencies($module);
             $moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -357,7 +361,7 @@ class IndexController extends Controller
                 'text' => $e->getMessage(),
                 'type' => 'error'
             ]);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -393,6 +397,11 @@ class IndexController extends Controller
                 'text' => $e->getMessage(),
                 'type' => 'error'
             ]);
+        } catch (RuntimeException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
 
         return $this->redirectRef($archiveName, $module->getVersion());
@@ -422,6 +431,11 @@ class IndexController extends Controller
             $moduleInstaller = new ModuleInstaller();
             $newModule = $moduleInstaller->updateWithDependencies($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -503,10 +517,13 @@ class IndexController extends Controller
 
         try {
             $moduleInstaller = new ModuleInstaller();
-            // $moduleInstaller->install($module);
-            // $moduleInstaller->installDependencies($module);
             $moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -538,6 +555,11 @@ class IndexController extends Controller
             $moduleInstaller = new ModuleInstaller();
             $moduleInstaller->delete($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'

@@ -76,13 +76,18 @@ class DependencyManager
 
     /**
      * @param Module $module
+     * @param string[] $doNotCheck
      *
      * @return CombinationSatisfyerResult
      */
-    public function canBeInstalled(Module $module): CombinationSatisfyerResult
+    public function canBeInstalled(Module $module, array $doNotCheck = []): CombinationSatisfyerResult
     {
         $systemSetFactory = new SystemSetFactory();
         $systemSet = $systemSetFactory->getSystemSet();
+
+        foreach ($doNotCheck as $name) {
+            $systemSet->remove($name);
+        }
 
         $dependencyBuilder = new DependencyBuilder();
         $combinationSatisfyerResult = $dependencyBuilder->satisfies(
@@ -91,17 +96,18 @@ class DependencyManager
             $systemSet
         );
 
-        if (!$combinationSatisfyerResult->foundCombination) {
+        if ($combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND) {
             throw new DependencyException(
                 "Can not install module {$module->getArchiveName()} in version {$module->getVersion()} "
                 . "because there are conflicting version contraints. "
                 . "Perhaps you have installed a module that requires a different version, "
-                . "or there is no compatible combination of dependencies."
+                . "or there is no compatible combination of dependencies. "
+                . " The following combination is required: {$combinationSatisfyerResult->failLog}"
             );
         }
 
-        $modules = $this->getAllModulesFromCombination($combinationSatisfyerResult->foundCombination);
-        $this->canBeInstalledTestChanged($module, $modules);
+        // $modules = $this->getAllModulesFromCombination($combinationSatisfyerResult->foundCombination);
+        // $this->canBeInstalledTestChanged($module, $modules);
 
         return $combinationSatisfyerResult;
     }

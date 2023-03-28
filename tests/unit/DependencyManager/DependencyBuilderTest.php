@@ -24,7 +24,7 @@ class DependencyBuilderTest extends TestCase
         $dependencyBuilder = new DependencyBuilder();
         $systemSet = new SystemSet();
 
-        $systemSet->systems = [
+        $systemSet->set([
             "modified" => '2.0.4.2',
             "php" => '7.4.0',
             "mmlc" => '1.20.0-beta.1',
@@ -33,7 +33,7 @@ class DependencyBuilderTest extends TestCase
             "robinthehood/modified-orm" => '1.8.1',
             "robinthehood/pdf-bill" => '0.17.0',
             "foo/bar" => '1.2.3'
-        ];
+        ]);
 
         $combinationSatisfyerResult = $dependencyBuilder->satisfies('firstweb/multi-order', '^1.0.0', $systemSet);
 
@@ -51,7 +51,7 @@ class DependencyBuilderTest extends TestCase
                 'firstweb/multi-order' => '1.13.3',
                 "foo/bar" => '1.2.3'
             ],
-            $combinationSatisfyerResult->testCombination->combinations
+            $combinationSatisfyerResult->testCombination->getAll()
         );
 
         $this->assertEqualsCanonicalizing(
@@ -65,7 +65,7 @@ class DependencyBuilderTest extends TestCase
                 "robinthehood/tfpdf" => '0.3.0',
                 'firstweb/multi-order' => '1.13.3',
             ],
-            $combinationSatisfyerResult->foundCombination->combinations
+            $combinationSatisfyerResult->foundCombination->getAll()
         );
     }
 

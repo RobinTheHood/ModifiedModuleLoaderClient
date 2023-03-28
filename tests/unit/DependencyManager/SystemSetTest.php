@@ -29,7 +29,7 @@ class SystemSetTest extends TestCase
             'systemD/2.1' => '2.1',
         ];
         $systemSet = new SystemSet();
-        $systemSet->systems = $systems;
+        $systemSet->set($systems);
 
         // Act
         $result = $systemSet->getArchiveNames();

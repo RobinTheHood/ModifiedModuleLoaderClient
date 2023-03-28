@@ -39,7 +39,7 @@ class DependencyBuilder
         }
 
         $systemSet = new SystemSet();
-        $systemSet->systems = [
+        $systemSet->set([
             "modified" => '2.0.4.2',
             "php" => '7.4.0',
             "mmlc" => '1.19.0',
@@ -47,7 +47,7 @@ class DependencyBuilder
             "robinthehood/modified-std-module" => '0.9.0',
             "robinthehood/modified-orm" => '1.8.1',
             "robinthehood/pdf-bill" => '0.17.0'
-        ];
+        ]);
 
         $this->log('TEST: satisfiesContraints1');
         $combinationSatisfyerResult = $this->satisfiesContraints1($module, $systemSet);
@@ -80,14 +80,20 @@ class DependencyBuilder
         $this->logFile($combinations, '1-combinations.json');
 
         $combinationSatisfyer = new CombinationSatisfyer();
-        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleTrees($moduleTrees, $combinations);
+        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleTrees(
+            $moduleTrees,
+            $combinations
+        );
 
         return $combinationSatisfyerResult;
     }
 
 
-    public function satisfiesContraints2(string $archiveName, string $constraint, SystemSet $systemSet): CombinationSatisfyerResult
-    {
+    public function satisfiesContraints2(
+        string $archiveName,
+        string $constraint,
+        SystemSet $systemSet
+    ): CombinationSatisfyerResult {
         $moduleTreeBuilder = new ModuleTreeBuilder();
         $moduleTree = $moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
         $this->logFile($moduleTree, '2-moduleTrees.json');
@@ -104,14 +110,17 @@ class DependencyBuilder
         $this->logFile($combinations, '2-combinations.json');
 
         $combinationSatisfyer = new CombinationSatisfyer();
-        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleTree($moduleTree, $combinations);
+        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleTree(
+            $moduleTree,
+            $combinations
+        );
 
         return $combinationSatisfyerResult;
     }
 
     public function satisfies(string $archiveName, string $constraint, SystemSet $systemSet): CombinationSatisfyerResult
     {
-        $systemSet->removeByArchiveName($archiveName);
+        $systemSet->remove($archiveName);
         $constraint = $this->createConstraint($archiveName, $constraint, $systemSet);
 
         $moduleTreeBuilder = new ModuleTreeBuilder();
@@ -127,8 +136,10 @@ class DependencyBuilder
 
         $combinationIterator = new CombinationIterator($flatEntries);
         $combinationSatisfyer = new CombinationSatisfyer();
-        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleWithIterator($moduleTree, $combinationIterator);
-
+        $combinationSatisfyerResult = $combinationSatisfyer->satisfiesCominationsFromModuleWithIterator(
+            $moduleTree,
+            $combinationIterator
+        );
         return $combinationSatisfyerResult;
     }
 

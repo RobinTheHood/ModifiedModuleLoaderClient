@@ -22,14 +22,14 @@ class SystemSetFactory
     public function getSystemSet(): SystemSet
     {
         $systemSet = new SystemSet();
-        $systemSet->systems['modified'] = ModifiedModuleLoaderClientShopInfo::getModifiedVersion();
-        $systemSet->systems['php'] = phpversion();
-        $systemSet->systems['mmlc'] = App::getMmlcVersion();
+        $systemSet->add('modified', ModifiedModuleLoaderClientShopInfo::getModifiedVersion());
+        $systemSet->add('php', phpversion());
+        $systemSet->add('mmlc', App::getMmlcVersion());
 
         $moduleLoader = LocalModuleLoader::getModuleLoader();
         $modules = $moduleLoader->loadAllInstalledVersions();
         foreach ($modules as $module) {
-            $systemSet->systems[$module->getArchiveName()] = $module->getVersion();
+            $systemSet->add($module->getArchiveName(), $module->getVersion());
         }
         return $systemSet;
     }

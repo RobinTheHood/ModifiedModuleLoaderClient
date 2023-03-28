@@ -15,14 +15,30 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 class CombinationSatisfyerResult
 {
+    public const RESULT_COMBINATION_NOT_FOUND = 0;
+    public const RESULT_COMBINATION_FOUND = 1;
+
+    /** @var int */
+    public $result = -1;
+
     /** @var ?Combination */
     public $testCombination = null;
+
     /** @var ?Combination */
     public $foundCombination = null;
 
-    public function __construct(?Combination $testCombination, ?Combination $foundCombination)
-    {
+    /** @var ?FailLog */
+    public $failLog = null;
+
+    public function __construct(
+        int $result,
+        ?Combination $testCombination,
+        ?Combination $foundCombination,
+        ?FailLog $failLog
+    ) {
+        $this->result = $result;
         $this->testCombination = $testCombination;
         $this->foundCombination = $foundCombination;
+        $this->failLog = $failLog;
     }
 }

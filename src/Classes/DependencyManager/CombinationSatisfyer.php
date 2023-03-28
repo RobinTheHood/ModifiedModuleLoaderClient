@@ -32,25 +32,41 @@ class CombinationSatisfyer
      *
      * @return CombinationSatisfyerResult
      */
-    public function satisfiesCominationsFromModuleTrees(array $moduleTrees, array $combinations): CombinationSatisfyerResult
-    {
+    public function satisfiesCominationsFromModuleTrees(
+        array $moduleTrees,
+        array $combinations
+    ): CombinationSatisfyerResult {
+        $testCombination = null;
         $foundCombination = new Combination();
+        $failLog = new FailLog();
 
         foreach ($combinations as $testCombination) {
             $foundCombination = new Combination();
-            $result = $this->satisfiesCominationFromModuleTrees($moduleTrees, $testCombination, $foundCombination);
+            $result = $this->satisfiesCominationFromModuleTrees(
+                $moduleTrees,
+                $testCombination,
+                $foundCombination,
+                $failLog
+            );
+
             if ($result) {
                 $combinationSatisfyerResult = new CombinationSatisfyerResult(
+                    CombinationSatisfyerResult::RESULT_COMBINATION_FOUND,
                     $testCombination,
-                    $foundCombination
+                    $foundCombination,
+                    $failLog
                 );
                 return $combinationSatisfyerResult;
             }
         }
+
         $combinationSatisfyerResult = new CombinationSatisfyerResult(
-            null,
-            null
+            CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND,
+            $testCombination,
+            $foundCombination,
+            $failLog
         );
+
         return $combinationSatisfyerResult;
     }
 
@@ -60,24 +76,40 @@ class CombinationSatisfyer
      *
      * @return CombinationSatisfyerResult
      */
-    public function satisfiesCominationsFromModuleTree(ModuleTree $moduleTree, array $combinations): CombinationSatisfyerResult
-    {
+    public function satisfiesCominationsFromModuleTree(
+        ModuleTree $moduleTree,
+        array $combinations
+    ): CombinationSatisfyerResult {
+        $testCombination = null;
         $foundCombination = new Combination();
+        $failLog = new FailLog();
 
         foreach ($combinations as $testCombination) {
-            $result = $this->satisfiesCominationFromModuleTree($moduleTree, $testCombination, $foundCombination);
+            $result = $this->satisfiesCominationFromModuleTree(
+                $moduleTree,
+                $testCombination,
+                $foundCombination,
+                $failLog
+            );
+
             if ($result) {
                 $combinationSatisfyerResult = new CombinationSatisfyerResult(
+                    CombinationSatisfyerResult::RESULT_COMBINATION_FOUND,
                     $testCombination,
-                    $foundCombination
+                    $foundCombination,
+                    $failLog
                 );
                 return $combinationSatisfyerResult;
             }
         }
+
         $combinationSatisfyerResult = new CombinationSatisfyerResult(
-            null,
-            null
+            CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND,
+            $testCombination,
+            $foundCombination,
+            $failLog
         );
+
         return $combinationSatisfyerResult;
     }
 
@@ -88,13 +120,21 @@ class CombinationSatisfyer
         $foundCombination = new Combination();
 
         while (true) {
+            $failLog = new FailLog();
             $testCombination = $combinationIterator->current();
-            $result = $this->satisfiesCominationFromModuleTree($moduleTree, $testCombination, $foundCombination);
+            $result = $this->satisfiesCominationFromModuleTree(
+                $moduleTree,
+                $testCombination,
+                $foundCombination,
+                $failLog
+            );
 
             if ($result) {
                 $combinationSatisfyerResult = new CombinationSatisfyerResult(
+                    CombinationSatisfyerResult::RESULT_COMBINATION_FOUND,
                     $testCombination,
-                    $foundCombination
+                    $foundCombination,
+                    $failLog
                 );
                 return $combinationSatisfyerResult;
             }
@@ -102,8 +142,10 @@ class CombinationSatisfyer
             $combinationIterator->next();
             if ($combinationIterator->isStart()) {
                 $combinationSatisfyerResult = new CombinationSatisfyerResult(
-                    null,
-                    null
+                    CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND,
+                    $testCombination,
+                    $foundCombination,
+                    $failLog
                 );
                 return $combinationSatisfyerResult;
             }
@@ -113,9 +155,19 @@ class CombinationSatisfyer
     /**
      * @param ModuleTree $moduleTree
      * @param Combination $combination
+     * @param Combination $foundCombination
+     * @param FailLog $failLog
+     * @param ModuleTree[] $moduleTreeChain
+     *
+     * @return bool
      */
-    public function satisfiesCominationFromModuleTree(ModuleTree $moduleTree, Combination $combination, Combination &$foundCombination): bool
-    {
+    public function satisfiesCominationFromModuleTree(
+        ModuleTree $moduleTree,
+        Combination $combination,
+        Combination &$foundCombination,
+        FailLog &$failLog,
+        array $moduleTreeChain = []
+    ): bool {
         // Context: Module
         $archiveName = $moduleTree->archiveName;
         try {
@@ -126,34 +178,69 @@ class CombinationSatisfyer
 
         // Es gibt keine weiteren Untermodule
         if (!$moduleTree->moduleVersions) {
-            //var_dump($selectedVersion . ' == ' . $moduleTree->versionConstraint);
-            return $this->comparator->satisfies($selectedVersion, $moduleTree->versionConstraint);
+            $result = $this->comparator->satisfies($selectedVersion, $moduleTree->versionConstraint);
+            if (!$result) {
+                $failLog->fail($moduleTreeChain, $archiveName, $selectedVersion, $moduleTree->versionConstraint);
+            } else {
+                $failLog->unfail($moduleTreeChain, $archiveName, $selectedVersion, $moduleTree->versionConstraint);
+            }
+            return $result;
         }
 
         foreach ($moduleTree->moduleVersions as $moduleVersion) {
             // Context: Version
-            //var_dump($archiveName . " {$moduleVersion->version} == {$selectedVersion}");
             if ($moduleVersion->version === $selectedVersion) {
                 $foundCombination->overwrite($archiveName, $moduleVersion->version);
-                return $this->satisfiesCominationFromModuleTrees($moduleVersion->require, $combination, $foundCombination);
+
+                $failLog->unfail(
+                    $moduleTreeChain,
+                    $archiveName,
+                    $moduleVersion->version,
+                    $moduleTree->versionConstraint
+                );
+
+                return $this->satisfiesCominationFromModuleTrees(
+                    $moduleVersion->require,
+                    $combination,
+                    $foundCombination,
+                    $failLog,
+                    array_merge($moduleTreeChain, [$moduleTree])
+                );
             }
+
+            $failLog->fail($moduleTreeChain, $archiveName, $moduleVersion->version, $moduleTree->versionConstraint);
         }
-        // var_dump('xxx');
-        // var_dump($moduleTree);
+
         return false;
     }
 
     /**
      * @param ModuleTree[] $moduleTrees
      * @param Combination $combination
+     * @param Combination $foundCombination
+     * @param FailLog $failLog
+     * @param ModuleTree[] $moduleTreeChain
+     *
+     * @return bool
      */
-    public function satisfiesCominationFromModuleTrees(array $moduleTrees, Combination $combination, Combination &$foundCombination): bool
-    {
+    public function satisfiesCominationFromModuleTrees(
+        array $moduleTrees,
+        Combination $combination,
+        Combination &$foundCombination,
+        FailLog &$failLog,
+        array $moduleTreeChain = []
+    ): bool {
         // Context: Expanded
         $moduleResult = true;
         foreach ($moduleTrees as $moduleTree) {
-            $moduleResult =
-                $moduleResult && $this->satisfiesCominationFromModuleTree($moduleTree, $combination, $foundCombination);
+            $result = $this->satisfiesCominationFromModuleTree(
+                $moduleTree,
+                $combination,
+                $foundCombination,
+                $failLog,
+                $moduleTreeChain
+            );
+            $moduleResult = $moduleResult && $result;
         }
         return $moduleResult;
     }
