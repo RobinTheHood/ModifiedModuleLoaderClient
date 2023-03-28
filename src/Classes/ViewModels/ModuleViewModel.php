@@ -16,6 +16,8 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\ViewModels;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
+use RobinTheHood\ModifiedModuleLoaderClient\Notification;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 
 class ModuleViewModel
@@ -209,17 +211,40 @@ class ModuleViewModel
 
         if (!$this->module->isCompatibleWithModified()) {
             $version = ShopInfo::getModifiedVersion();
-            $array[] = "Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed Version <strong>$version</strong> installiert.";
+            $array[] = [
+                'text' => "Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed Version <strong>$version</strong> installiert.",
+                'type' => 'warning'
+            ];
         }
 
-        if (!$this->module->isCompatibleWithPhp()) {
-            $version = phpversion();
-            $array[] = "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du verwendest die PHP Version <strong>$version</strong>.";
+        try {
+            if (!$this->module->isCompatibleWithPhp()) {
+                $version = phpversion();
+                $array[] = [
+                    'text' => "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du verwendest die PHP Version <strong>$version</strong>.",
+                    'type' => 'warning'
+                ];
+            }
+        } catch (ParseErrorException $e) {
+            $array[] = [
+                'text' => 'Error: Can not parse PHP version in moduleinfo.php',
+                'type' => 'error'
+            ];
         }
 
-        if (!$this->module->isCompatibleWithMmlc()) {
-            $version = App::getMmlcVersion();
-            $array[] = "Dieses Modul wurde noch nicht mit deiner MMLC Version getestet. Du verwendest die MMLC Version <strong>$version</strong>.";
+        try {
+            if (!$this->module->isCompatibleWithMmlc()) {
+                $version = App::getMmlcVersion();
+                $array[] = [
+                    'text' => "Dieses Modul wurde noch nicht mit deiner MMLC Version getestet. Du verwendest die MMLC Version <strong>$version</strong>.",
+                    'type' => 'warning'
+                ];
+            }
+        } catch (ParseErrorException $e) {
+            $array[] = [
+                'text' => 'Error: Can not parse MMLC version in moduleinfo.php',
+                'type' => 'error'
+            ];
         }
 
         return $array;

@@ -59,12 +59,7 @@ $notificationView = new NotificationViewModel();
                 <?php } ?>
 
                 <?php if (!$moduleView->isCompatible()) { ?>
-                    <?php foreach ($moduleView->getCompatibleStrings() as $string) { ?>
-                        <div class="alert alert-warning" role="alert">
-                            <i class="fas fa-exclamation-triangle fa-fw"></i>
-                            <?= $string ?>
-                        </div>
-                    <?php } ?>
+                    <?= $notificationView->renderMultibleFlashMessages($moduleView->getCompatibleStrings()) ?>
                 <?php } ?>
 
                 <div class="row">
