@@ -14,7 +14,7 @@ jobs:
       with:
         progress: yes
         version: 2
-        php_version: 7.4
+        php_version: "7.4"
     #- name: composer install missing files
     #  run: composer1 install
     - name: create directories
