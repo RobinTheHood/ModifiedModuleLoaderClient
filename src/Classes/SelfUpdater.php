@@ -98,13 +98,25 @@ class SelfUpdater
 
         $this->createRestore($mmlcVersionInfo);
         $this->download($mmlcVersionInfo);
-        $this->backup($mmlcVersionInfo);
         $this->untar($mmlcVersionInfo);
         $this->verifyUntar($mmlcVersionInfo);
-        $this->install($mmlcVersionInfo);
-        $this->setupConfig($mmlcVersionInfo);
-        $this->setupVersion($mmlcVersionInfo);
-        $this->verifyUpdate($mmlcVersionInfo);
+
+        $check = $this->systemCheck($mmlcVersionInfo);
+
+        if ($check['result'] === 'passed') {
+            $this->backup($mmlcVersionInfo);
+            $this->install($mmlcVersionInfo);
+            $this->setupConfig($mmlcVersionInfo);
+            $this->setupVersion($mmlcVersionInfo);
+            $this->verifyUpdate($mmlcVersionInfo);
+        } else {
+            Notification::pushFlashMessage([
+                'text' => "Can not update MMLC. Not all system requirements are met.",
+                'type' => Notification::TYPE_ERROR
+            ]);
+        }
+
+        $this->remove($mmlcVersionInfo);
         $this->removeRestore($mmlcVersionInfo);
 
         opcache_reset();
@@ -216,7 +228,11 @@ class SelfUpdater
 
         $files = FileHelper::scanDir($srcPath, FileHelper::FILES_AND_DIRS, true);
         FileHelper::moveFilesTo($files, $srcPath, $destPath);
+    }
 
+    private function remove(MmlcVersionInfo $mmlcVersionInfo): void
+    {
+        $srcPath = $this->appRoot . '/ModifiedModuleLoaderClient';
         system('rm -rf ' . $srcPath);
     }
 
@@ -283,6 +299,24 @@ class SelfUpdater
         }
 
         return true;
+    }
+
+    private function systemCheck(MmlcVersionInfo $mmlcVersionInfo): array
+    {
+        return [
+            'result' => 'passed'
+        ];
+
+        return [
+            'result' => 'failed',
+            'checks' => [
+                'php' =>  [
+                    'is' => '7.0.4',
+                    'require' => '^8.0',
+                    'result' => 'failed'
+                ]
+            ]
+        ];
     }
 
     private function postUpdateSteps(): void
