@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     steps:
     - name: checkout project
@@ -22,10 +22,10 @@ jobs:
     - name: copy config
       run: cp config/_config.php config/config.php
     - name: Display PHP version
-      run: php --version
+      run: php7.4 --version
     - name: run phpcs for PSR12 coding style checks
-      run: php ./vendor/bin/phpcs -np --standard=PSR12 --ignore=".src/Templates" ./src
+      run: php7.4 ./vendor/bin/phpcs -np --standard=PSR12 --ignore=".src/Templates" ./src
     - name: run test - php unit
-      run: php ./vendor/bin/phpunit --testdox
+      run: php7.4 ./vendor/bin/phpunit --testdox
     - name: run static code analysis - psalm
-      run: php ./vendor/bin/psalm
+      run: php7.4 ./vendor/bin/psalm
