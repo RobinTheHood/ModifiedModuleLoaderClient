@@ -21,6 +21,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Filter;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Sorter;
+use RuntimeException;
+use Throwable;
 
 class SelfUpdater
 {
@@ -103,17 +105,12 @@ class SelfUpdater
 
         $check = $this->systemCheck($mmlcVersionInfo);
 
-        if ($check['result'] === 'passed') {
+        if ($check) {
             $this->backup($mmlcVersionInfo);
             $this->install($mmlcVersionInfo);
             $this->setupConfig($mmlcVersionInfo);
             $this->setupVersion($mmlcVersionInfo);
             $this->verifyUpdate($mmlcVersionInfo);
-        } else {
-            Notification::pushFlashMessage([
-                'text' => "Can not update MMLC. Not all system requirements are met.",
-                'type' => Notification::TYPE_ERROR
-            ]);
         }
 
         $this->remove($mmlcVersionInfo);
@@ -301,22 +298,51 @@ class SelfUpdater
         return true;
     }
 
-    private function systemCheck(MmlcVersionInfo $mmlcVersionInfo): array
+    private function systemCheck(MmlcVersionInfo $mmlcVersionInfo): bool
     {
-        return [
-            'result' => 'passed'
-        ];
+        try {
+            $systemCheck = $this->getSystemCheckObj();
+            $check = $systemCheck->check();
+            if ($check['result'] === 'passed') {
+                return true;
+            } else {
+                Notification::pushFlashMessage([
+                    'text' => "Update canceled - Can not update MMLC. Not all system requirements are met.<br>\n"
+                    . json_encode($check['checks'], JSON_PRETTY_PRINT),
+                    'type' => Notification::TYPE_ERROR
+                ]);
+            }
+        } catch (RuntimeException $e) {
+            Notification::pushFlashMessage([
+                'text' => "Update canceled - " . $e->getMessage(),
+                'type' => Notification::TYPE_ERROR
+            ]);
+        }
 
-        return [
-            'result' => 'failed',
-            'checks' => [
-                'php' =>  [
-                    'is' => '7.0.4',
-                    'require' => '^8.0',
-                    'result' => 'failed'
-                ]
-            ]
-        ];
+        return false;
+    }
+
+    private function getSystemCheckObj()
+    {
+        $systemCheckFilePath = $this->appRoot . '/ModifiedModuleLoaderClient/src/Classes/SystemCheck.php';
+        // $systemCheckFilePath = $this->appRoot . '/src/Classes/SystemCheck.php'; // Für Testzwecke
+
+        if (!file_exists($systemCheckFilePath)) {
+            throw new RuntimeException("Can not find file $systemCheckFilePath in downloaded .tar file");
+        }
+
+        try {
+            $fileContent = file_get_contents($systemCheckFilePath);
+            $fileContent = str_replace('class SystemCheck', 'class SystemCheckNew', $fileContent);
+            $fileContent = str_replace('<?php', '', $fileContent);
+
+            eval($fileContent);
+
+            $classSystemCheckNew = 'RobinTheHood\ModifiedModuleLoaderClient\SystemCheckNew';
+            return new $classSystemCheckNew();
+        } catch (Throwable $t) {
+            throw new RuntimeException("Can not load file $systemCheckFilePath");
+        }
     }
 
     private function postUpdateSteps(): void
