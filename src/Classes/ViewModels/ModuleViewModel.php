@@ -203,7 +203,7 @@ class ModuleViewModel
     }
 
     /**
-     * @return string[]
+     * @return array<array>
      */
     public function getCompatibleStrings(): array
     {
