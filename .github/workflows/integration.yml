@@ -8,9 +8,9 @@ jobs:
 
     steps:
     - name: checkout project
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
     - name: install composer version2
-      uses: php-actions/composer@v5
+      uses: php-actions/composer@v6
       with:
         progress: yes
         version: 2
