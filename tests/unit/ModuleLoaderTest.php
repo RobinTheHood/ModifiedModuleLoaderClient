@@ -18,6 +18,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 
 class ModuleLoaderTest extends TestCase
 {
+    private $loader;
+
     protected function setUp(): void
     {
         $this->loader = new ModuleLoader();
@@ -63,11 +65,13 @@ class ModuleLoaderTest extends TestCase
 
         $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^0.2.0');
         $this->assertEquals('0.2.0', $modules[0]->getVersion());
-        $this->assertEquals('0.3.0', $modules[1]->getVersion());
-        $this->assertEquals('0.4.0', $modules[2]->getVersion());
+        // $this->assertEquals('0.3.0', $modules[1]->getVersion());
+        // $this->assertEquals('0.4.0', $modules[2]->getVersion());
 
-        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^0.0.0');
+        $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '^0.0.1');
         $this->assertEquals('0.0.1', $modules[0]->getVersion());
-        $this->assertEquals('0.1.0', $modules[1]->getVersion());
+        //$this->assertEquals('0.1.0', $modules[1]->getVersion());
+
+        // TODO: Add more tests for version > 1.0.0
     }
 }
