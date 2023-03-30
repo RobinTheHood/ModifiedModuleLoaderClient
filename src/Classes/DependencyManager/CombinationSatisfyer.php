@@ -117,9 +117,8 @@ class CombinationSatisfyer
         ModuleTree $moduleTree,
         CombinationIterator $combinationIterator
     ): CombinationSatisfyerResult {
-        $foundCombination = new Combination();
-
         while (true) {
+            $foundCombination = new Combination();
             $failLog = new FailLog();
             $testCombination = $combinationIterator->current();
             $result = $this->satisfiesCominationFromModuleTree(
