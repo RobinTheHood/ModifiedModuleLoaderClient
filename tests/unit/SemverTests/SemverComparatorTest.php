@@ -128,6 +128,36 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->satisfies('3.3.3', '3.2.3'));
     }
 
+    public function testCaretOperatorLess010()
+    {
+        // Test für Versionen kleiner als 0.1.0
+        $this->assertFalse($this->comparator->satisfies('0.0.9', '^0.0.0'));
+        $this->assertFalse($this->comparator->satisfies('0.0.9', '^0.1.0'));
+        $this->assertFalse($this->comparator->satisfies('0.0.9', '^1.0.0'));
+        $this->assertTrue($this->comparator->satisfies('0.0.9', '^0.0.9'));
+        $this->assertTrue($this->comparator->satisfies('0.0.9', '^0.0.9-beta.1'));
+    }
+
+    public function testCaretOperatorLess100()
+    {
+        // Test für Versionen kleiner als 1.0.0
+        $this->assertTrue($this->comparator->satisfies('0.9.9', '^0.9.0'));
+        $this->assertTrue($this->comparator->satisfies('0.9.9', '^0.9.9'));
+        $this->assertFalse($this->comparator->satisfies('0.9.9', '^0.10.0'));
+        $this->assertFalse($this->comparator->satisfies('0.9.9', '^1.0.0'));
+        $this->assertFalse($this->comparator->satisfies('0.10.0', '^0.9.0'));
+    }
+
+    public function testCaretOperatorUntil100()
+    {
+        // Test für Versionen ab 1.0.0
+        $this->assertTrue($this->comparator->satisfies('1.0.0', '^1.0.0'));
+        $this->assertFalse($this->comparator->satisfies('1.0.0', '^1.0.1'));
+        $this->assertTrue($this->comparator->satisfies('1.1.0', '^1.0.0'));
+        $this->assertFalse($this->comparator->satisfies('2.0.0', '^1.0.0'));
+    }
+
+
     public function testThatVersionASatisfiesOrConstraint()
     {
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^2.2.2 || ^3.3.3'));

@@ -156,8 +156,22 @@ class Comparator
         $version1 = $this->parser->parse($versionString1);
         $version2 = $this->parser->parse($versionString2);
 
-        if ($version1->getMajor() != $version2->getMajor()) {
-            return false;
+        $majorCheck = $version1->getMajor() == $version2->getMajor();
+        $minorCheck = $version1->getMinor() == $version2->getMinor();
+        $patchCheck = $version1->getPatch() == $version2->getPatch();
+
+        if ($version1->getMajor() >= 1) { // ^1.0.0
+            if (!$majorCheck) {
+                return false;
+            }
+        } elseif ($version1->getMajor() == 0 && $version1->getMinor() >= 1) { // ^0.1.0
+            if (!$majorCheck || !$minorCheck) {
+                return false;
+            }
+        } elseif ($version1->getMajor() == 0 && $version1->getMinor() == 0) { // ^0.0.0
+            if (!$majorCheck || !$minorCheck || !$patchCheck) {
+                return false;
+            }
         }
 
         return $this->greaterThanOrEqualTo($versionString1, $versionString2);
