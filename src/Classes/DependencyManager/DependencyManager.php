@@ -22,15 +22,16 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
+use RobinTheHood\ModifiedModuleLoaderClient\SemverComparatorFactory;
 
 class DependencyManager
 {
+    /** @var Comparator */
     protected $comparator;
 
     public function __construct()
     {
-        $this->comparator = new Comparator(new Parser());
+        $this->comparator = SemverComparatorFactory::createComparator();
     }
 
     /**

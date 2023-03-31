@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
+use RobinTheHood\ModifiedModuleLoaderClient\SemverComparatorFactory;
 
 class CombinationSatisfyer
 {
@@ -23,7 +23,7 @@ class CombinationSatisfyer
 
     public function __construct()
     {
-        $this->comparator = new Comparator(new Parser());
+        $this->comparator = SemverComparatorFactory::createComparator();
     }
 
     /**

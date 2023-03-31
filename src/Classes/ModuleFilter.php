@@ -124,7 +124,7 @@ class ModuleFilter
                     continue;
                 }
 
-                $comparator = new Comparator(new Parser());
+                $comparator = SemverComparatorFactory::createComparator();
                 if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
@@ -162,7 +162,7 @@ class ModuleFilter
                     break;
                 }
 
-                $comparator = new Comparator(new Parser());
+                $comparator = SemverComparatorFactory::createComparator();
                 if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
@@ -215,7 +215,7 @@ class ModuleFilter
     {
         $filteredModules = [];
         foreach ($modules as $module) {
-            $comparator = new Comparator(new Parser());
+            $comparator = SemverComparatorFactory::createComparator();
             if ($comparator->satisfies($module->getVersion(), $constrain)) {
                 $filteredModules[] = $module;
             }
@@ -230,7 +230,7 @@ class ModuleFilter
     {
         $selectedModule = null;
         foreach ($modules as $module) {
-            $comparator = new Comparator(new Parser());
+            $comparator = SemverComparatorFactory::createComparator();
             if (!$selectedModule || $comparator->greaterThan($module->getVersion(), $selectedModule->getVersion())) {
                 $selectedModule = $module;
             }
