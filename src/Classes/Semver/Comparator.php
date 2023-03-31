@@ -17,9 +17,16 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class Comparator
 {
+    public const CARET_MODE_LAX = 0;
+    public const CARET_MODE_STRICT = 1;
+
+    /** @var Parser */
     protected $parser;
 
-    public function __construct(Parser $parser)
+    /** @var int */
+    private $mode = self::CARET_MODE_STRICT;
+
+    public function __construct(Parser $parser, int $mode = self::CARET_MODE_STRICT)
     {
         $this->parser = $parser;
     }
@@ -156,8 +163,24 @@ class Comparator
         $version1 = $this->parser->parse($versionString1);
         $version2 = $this->parser->parse($versionString2);
 
-        if ($version1->getMajor() != $version2->getMajor()) {
-            return false;
+        $majorCheck = $version1->getMajor() == $version2->getMajor();
+        $minorCheck = $version1->getMinor() == $version2->getMinor();
+        $patchCheck = $version1->getPatch() == $version2->getPatch();
+
+        $strict = $this->mode === self::CARET_MODE_STRICT;
+
+        if ($version1->getMajor() >= 1) { // ^1.0.0
+            if (!$majorCheck) {
+                return false;
+            }
+        } elseif ($strict && $version1->getMajor() == 0 && $version1->getMinor() >= 1) { // ^0.1.0
+            if (!$majorCheck || !$minorCheck) {
+                return false;
+            }
+        } elseif ($strict && $version1->getMajor() == 0 && $version1->getMinor() == 0) { // ^0.0.0
+            if (!$majorCheck || !$minorCheck || !$patchCheck) {
+                return false;
+            }
         }
 
         return $this->greaterThanOrEqualTo($versionString1, $versionString2);

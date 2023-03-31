@@ -515,7 +515,7 @@ class Module extends ModuleInfo
         }
 
         $phpVersionInstalled = phpversion();
-        $comparator = new Comparator(new Parser());
+        $comparator = SemverComparatorFactory::createComparator();
         return $comparator->satisfies($phpVersionInstalled, $phpVersionContraint);
     }
 
@@ -532,7 +532,7 @@ class Module extends ModuleInfo
             return true;
         }
 
-        $comparator = new Comparator(new Parser());
+        $comparator = SemverComparatorFactory::createComparator();
         return $comparator->satisfies($mmlcVersionInstalled, $mmlcVersionContraint);
     }
 

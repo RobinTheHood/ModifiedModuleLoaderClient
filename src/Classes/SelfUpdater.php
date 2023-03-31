@@ -55,7 +55,7 @@ class SelfUpdater
         $this->appRoot = App::getRoot();
         $this->mmlcVersionInfoLoader = $mmlcVersionInfoLoader;
         $this->remoteUpdateServer = $this->getRomteUpdateServer();
-        $this->comparator = new Comparator(new Parser());
+        $this->comparator = new Comparator(new Parser(), Comparator::CARET_MODE_STRICT);
         $this->parser = new Parser();
         $this->filter = new Filter($this->parser, $this->comparator, new Sorter($this->comparator));
     }
