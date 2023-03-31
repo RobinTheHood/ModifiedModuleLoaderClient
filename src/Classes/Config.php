@@ -444,7 +444,7 @@ class Config
     /**
      * Get dependencyMode from config.
      *
-     * @return bool Returns logging from config or null.
+     * @return int Returns logging from config or null.
      */
     public static function getDependenyMode(): int
     {
