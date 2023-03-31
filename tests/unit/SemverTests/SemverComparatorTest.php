@@ -17,13 +17,14 @@ use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
+// TODO: test caret none strict mode
 class SemverComparatorTest extends TestCase
 {
     public $comparator;
 
     protected function setUp(): void
     {
-        $this->comparator = new Comparator(new Parser());
+        $this->comparator = new Comparator(new Parser(), Comparator::CARET_MODE_STRICT);
     }
 
     public function testSemverCanHandleGreaterThan()

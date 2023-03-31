@@ -27,8 +27,8 @@ class SemverFilterTest extends TestCase
     protected function setUp(): void
     {
         $parser = new Parser();
-        $comparator = new Comparator($parser);
-        $this->filter = new Filter($parser, new Comparator($parser), new Sorter($comparator));
+        $comparator = new Comparator($parser, Comparator::CARET_MODE_STRICT);
+        $this->filter = new Filter($parser, $comparator, new Sorter($comparator));
     }
 
     public function testSemverGetsHighestVersionString()
