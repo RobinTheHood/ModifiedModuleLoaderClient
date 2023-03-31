@@ -8,6 +8,7 @@
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
 
 $notificationView = new NotificationViewModel();
@@ -107,6 +108,17 @@ function viewIsSelected(bool $value): string
                                     <label for="inputModulesLocalDir">Module Pfad</label>
                                     <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?= Config::getModulesLocalDir(); ?>">
                                     <p>In diesem Ordner werden Module für den MMLC heruntergeladen.</p>
+                                </div>
+
+                                <!-- installMode -->
+                                <div class="form-group">
+                                    <label for="inputDependencyMode">Abhängigkeitsmodus</label>
+                                    <select name="dependencyMode" class="form-control" id="dependencyMode" size="1">
+                                        <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_STRICT) ?> value="strict">strict</option>
+                                        <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_LAX) ?> value="lax">lax</option>
+                                    </select>
+
+                                    <p>Du kannst zwischen <code>strict</code> und <code>lax</code> wählen. Mit <code>strict</code> werden die Abhänigkeiten von Modulen mit einer Version kleiner als 1.0.0 genauer kontrolliert. Wenn sich einige Module nicht installieren lassen, kannst du es mit <code>lax</code> versuchen. Beachte, dass im Lex-Modus die Wahrscheinlichkeit größer ist, dass verschiedene Module nicht miteinander harmonieren.</p>
                                 </div>
 
                                 <!-- installMode -->

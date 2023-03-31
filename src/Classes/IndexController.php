@@ -632,6 +632,10 @@ class IndexController extends Controller
                 Config::setInstallMode($parsedBody['installMode']);
             }
 
+            if (isset($parsedBody['dependencyMode'])) {
+                Config::setDependencyMode($parsedBody['dependencyMode']);
+            }
+
             Notification::pushFlashMessage([
                 'text' => 'Einstellungen erfolgreich gespeichert.',
                 'type' => 'success'
