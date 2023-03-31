@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @phpcs:disable PSR1.Files.SideEffects
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ */
+
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
