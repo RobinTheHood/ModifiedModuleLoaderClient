@@ -12,6 +12,7 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class Config
 {
@@ -410,5 +411,54 @@ class Config
     public static function setExceptionMonitorMail(string $newExceptionMonitorMail): void
     {
         self::writeConfiguration(['exceptionMonitorMail' => $newExceptionMonitorMail]);
+    }
+
+    /**
+     * Get logging from config.
+     *
+     * @return bool Returns logging from config or null.
+     */
+    public static function getLogging(): bool
+    {
+        /**
+         * Expect a string or null
+         * depending if the user specified an email address.
+         * You will not receive an empty string.
+         */
+        $logging = self::getOption('logging');
+
+        return $logging === 'true';
+    }
+
+
+    /**
+     * Set exceptionMonitorMail in config.
+     *
+     * @param string $newExceptionMonitorMail.
+     */
+    public static function setDependencyMode(string $dependencyMode): void
+    {
+        self::writeConfiguration(['dependencyMode' => $dependencyMode]);
+    }
+
+    /**
+     * Get dependencyMode from config.
+     *
+     * @return int Returns logging from config or null.
+     */
+    public static function getDependenyMode(): int
+    {
+        /**
+         * Expect a string or null
+         * depending if the user specified an email address.
+         * You will not receive an empty string.
+         */
+        $dependencyMode = self::getOption('dependencyMode');
+
+        if ($dependencyMode === 'strict') {
+            return Comparator::CARET_MODE_STRICT;
+        }
+
+        return Comparator::CARET_MODE_LAX;
     }
 }

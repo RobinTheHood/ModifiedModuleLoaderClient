@@ -23,6 +23,7 @@ class ModuleConverter
             'name' => $module->getName(),
             'archiveName' => $module->getArchiveName(),
             'sourceDir' => $module->getSourceDir(),
+            'sourceMmlcDir' => $module->getSourceMmlcDir(),
             'version' => $module->getVersion(),
             'shortDescription' => $module->getShortDescription(),
             'description' => $module->getDescription(),
@@ -37,7 +38,9 @@ class ModuleConverter
             'visibility' => $module->getVisibility(),
             'price' => $module->getPrice(),
             'autoload' => $module->getAutoload(),
-            'tags' => $module->getTags()
+            'tags' => $module->getTags(),
+            'php' => $module->getPhp(),
+            'mmlc' => $module->getMmlc()
         ];
 
         $moduleArray = [
@@ -50,6 +53,7 @@ class ModuleConverter
             'changelogPath' => $module->getChangelogPath(),
             'readmePath' => $module->getReadmePath(),
             'srcFilePaths' => $module->getSrcFilePaths(),
+            'srcMmlcFilePaths' => $module->getSrcMmlcFilePaths(),
             'isRemote' => $module->isRemote(),
             'isLoadable' => $module->isLoadable()
         ];

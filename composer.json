@@ -10,7 +10,7 @@
     ],
     "homepage": "https://module-loader.de",
     "require": {
-        "robinthehood/exception-monitor": "^0.1.10",
+        "robinthehood/exception-monitor": "^0.2.3",
         "robinthehood/debug": "^0.1.4",
         "erusev/parsedown": "^1.7",
         "sebastian/diff": "^4.0",

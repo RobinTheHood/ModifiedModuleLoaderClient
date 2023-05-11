@@ -17,9 +17,16 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class Comparator
 {
+    public const CARET_MODE_LAX = 0;
+    public const CARET_MODE_STRICT = 1;
+
+    /** @var Parser */
     protected $parser;
 
-    public function __construct(Parser $parser)
+    /** @var int */
+    private $mode = self::CARET_MODE_STRICT;
+
+    public function __construct(Parser $parser, int $mode = self::CARET_MODE_STRICT)
     {
         $this->parser = $parser;
     }
@@ -144,18 +151,6 @@ class Comparator
         return false;
     }
 
-    public function highest(array $versionStrings): string
-    {
-        $versionStrings = $this->rsort($versionStrings);
-        return $versionStrings[0];
-    }
-
-    public function lowest(array $versionStrings): string
-    {
-        $versionStrings = $this->sort($versionStrings);
-        return $versionStrings[0];
-    }
-
     // Testet ob Version1 mindestens das kann, was auch Version2 kann.
     // Version1 darf auch mehr können als das was Version2 kann,
     // aber nicht weniger.
@@ -168,51 +163,91 @@ class Comparator
         $version1 = $this->parser->parse($versionString1);
         $version2 = $this->parser->parse($versionString2);
 
-        if ($version1->getMajor() != $version2->getMajor()) {
-            return false;
+        $majorCheck = $version1->getMajor() == $version2->getMajor();
+        $minorCheck = $version1->getMinor() == $version2->getMinor();
+        $patchCheck = $version1->getPatch() == $version2->getPatch();
+
+        $strict = $this->mode === self::CARET_MODE_STRICT;
+
+        if ($version1->getMajor() >= 1) { // ^1.0.0
+            if (!$majorCheck) {
+                return false;
+            }
+        } elseif ($strict && $version1->getMajor() == 0 && $version1->getMinor() >= 1) { // ^0.1.0
+            if (!$majorCheck || !$minorCheck) {
+                return false;
+            }
+        } elseif ($strict && $version1->getMajor() == 0 && $version1->getMinor() == 0) { // ^0.0.0
+            if (!$majorCheck || !$minorCheck || !$patchCheck) {
+                return false;
+            }
         }
 
         return $this->greaterThanOrEqualTo($versionString1, $versionString2);
     }
 
-    public function satisfies(string $versionString1, string $constrain): bool
+    public function satisfies(string $versionString1, string $constraint): bool
     {
-        if ($constrain[0] == '^') { // Ist Buchstabe an Index 0 = ^
-            $versionString2 = str_replace('^', '', $constrain);
+        if (strpos($constraint, '||')) {
+            return $this->satisfiesOr($versionString1, $constraint);
+        }
+
+        if (strpos($constraint, ',')) {
+            return $this->satisfiesAnd($versionString1, $constraint);
+        }
+
+        if (strpos($constraint, '<=') === 0) {
+            $versionString2 = str_replace('<=', '', $constraint);
+            return $this->lessThanOrEqualTo($versionString1, $versionString2);
+        } elseif (strpos($constraint, '<') === 0) {
+            $versionString2 = str_replace('<', '', $constraint);
+            return $this->lessThan($versionString1, $versionString2);
+        } elseif (strpos($constraint, '>=') === 0) {
+            $versionString2 = str_replace('>=', '', $constraint);
+            return $this->greaterThanOrEqualTo($versionString1, $versionString2);
+        } elseif (strpos($constraint, '>') === 0) {
+            $versionString2 = str_replace('>', '', $constraint);
+            return $this->greaterThan($versionString1, $versionString2);
+        } elseif (strpos($constraint, '^') === 0) {
+            $versionString2 = str_replace('^', '', $constraint);
             return $this->isCompatible($versionString1, $versionString2);
         } else {
-            $versionString2 = $constrain;
+            $versionString2 = $constraint;
             return $this->equalTo($versionString1, $versionString2);
         }
     }
 
-    public function sort(array $versionStrings): array
+    /**
+     * Can satisfy multiple constraints with OR (||)
+     *
+     * Example: ^7.4 || ^8.0
+     */
+    public function satisfiesOr(string $versionString1, string $constraintOrExpression): bool
     {
-        usort($versionStrings, [$this, 'compareAsc']);
-        return $versionStrings;
-    }
-
-    public function rsort(array $versionStrings): array
-    {
-        usort($versionStrings, [$this, 'compareDes']);
-        return $versionStrings;
-    }
-
-    private function compareAsc(string $versionString1, string $versionString2): int
-    {
-        if ($this->greaterThan($versionString1, $versionString2)) {
-            return 1;
+        $constraints = explode('||', $constraintOrExpression);
+        foreach ($constraints as $constraint) {
+            $constraint = trim($constraint);
+            if ($this->satisfies($versionString1, $constraint)) {
+                return true;
+            }
         }
-
-        return -1;
+        return false;
     }
 
-    private function compareDes(string $versionString1, string $versionString2): int
+    /**
+     * Can satisfy multiple constraints with AND (,)
+     *
+     * Example: ^7.4, ^8.0
+     */
+    public function satisfiesAnd(string $versionString1, string $constraintOrExpression): bool
     {
-        if ($this->greaterThan($versionString1, $versionString2)) {
-            return -1;
+        $constraints = explode(',', $constraintOrExpression);
+        foreach ($constraints as $constraint) {
+            $constraint = trim($constraint);
+            if (!$this->satisfies($versionString1, $constraint)) {
+                return false;
+            }
         }
-
-        return 1;
+        return true;
     }
 }

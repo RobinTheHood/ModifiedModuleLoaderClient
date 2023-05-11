@@ -28,7 +28,7 @@ class TemplateHelper
         $attributes = [
             'rel' => 'stylesheet',
             'type' => 'text/css',
-            'href' => $stylesheetPath . '?v=' . hash('crc32', $absPath),
+            'href' => $stylesheetPath . '?v=' . hash_file('crc32', $absPath),
         ];
         $attributesToString = [];
 

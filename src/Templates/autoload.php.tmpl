@@ -1,5 +1,10 @@
 <?php
 
+if (strpos(__DIR__, 'vendor-no-composer') !== false) {
+    /** E_USER_DEPRECATED does not work */
+    trigger_error('Using file vendor-no-composer/autoload.php is deprecated. Use vendor-mmlc/autoload.php instead.', E_USER_NOTICE);
+}
+
 $rth_class = '\Composer\Autoload\ClassLoader';
 
 if (!class_exists($rth_class, false)) {

@@ -14,71 +14,79 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInfo;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\ChangedEntryCollection;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class Module extends ModuleInfo
 {
     /**
      * @var string
      */
-    private string $localRootPath;
+    private $localRootPath;
 
     /**
      * @var string
      */
-    private string $urlRootPath;
+    private $urlRootPath;
 
     /**
      * @var string
      */
-    private string $modulePath;
+    private $modulePath;
 
     /**
      * @var string
      */
-    private string $iconPath;
+    private $iconPath;
 
     /**
      * @var string[]
      */
-    private array $imagePaths;
+    private $imagePaths;
 
     /**
      * @var string[]
      */
-    private array $docFilePaths;
+    private $docFilePaths;
 
     /**
      * @var string
      */
-    private string $changelogPath;
+    private $changelogPath;
 
     /**
      * @var string
      */
-    private string $readmePath;
+    private $readmePath;
 
     /**
      * @var string[]
      */
-    private array $srcFilePaths;
+    private $srcFilePaths;
+
+    /**
+     * @var string[]
+     */
+    private $srcMmlcFilePaths;
 
     /**
      * @var bool
      */
-    private bool $isRemote;
+    private $isRemote;
 
     /**
      * @var bool
      */
-    private bool $isLoadable;
+    private $isLoadable;
 
     /**
      * Liefert den absoluten Pfad zum MMLC
@@ -234,7 +242,7 @@ class Module extends ModuleInfo
     }
 
     /**
-     * Liefert ein Array mit Dateienpfaden, die sich in 'new_files'
+     * Liefert ein Array mit Dateienpfaden, die sich in 'src'
      * befinden.
      *
      * Beispiel: [
@@ -251,6 +259,20 @@ class Module extends ModuleInfo
     public function setSrcFilePaths(array $value): void
     {
         $this->srcFilePaths = $value;
+    }
+
+    /**
+     * Liefert ein Array mit Dateienpfaden, die sich in 'src-mmlc'
+     * befinden.
+     */
+    public function getSrcMmlcFilePaths(): array
+    {
+        return $this->srcMmlcFilePaths;
+    }
+
+    public function setSrcMmlcFilePaths(array $value): void
+    {
+        $this->srcMmlcFilePaths = $value;
     }
 
     /**
@@ -295,11 +317,21 @@ class Module extends ModuleInfo
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
-     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/new_files
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/src
      */
     public function getSrcRootPath(): string
     {
         return $this->getModulePath() . '/' . $this->getSourceDir();
+    }
+
+    /**
+     * HIER FEHLT EINE BESCHREIBUNG
+     *
+     * /Modules/{VENDOR-NAME}/{MODULE-NAME}/src-mmlc
+     */
+    public function getSrcMmlcRootPath(): string
+    {
+        return $this->getModulePath() . '/' . $this->getSourceMmlcDir();
     }
 
     /**
@@ -404,7 +436,7 @@ class Module extends ModuleInfo
 
     public function isChanged(): bool
     {
-        if ($this->getChancedFiles()) {
+        if ($this->getChancedFiles()->changedEntries) {
             return true;
         } else {
             return false;
@@ -437,12 +469,30 @@ class Module extends ModuleInfo
         return false;
     }
 
+
+    public function isCompatible(): bool
+    {
+        if (!$this->isCompatibleWithModified()) {
+            return false;
+        }
+
+        if (!$this->isCompatibleWithPhp()) {
+            return false;
+        }
+
+        if (!$this->isCompatibleWithMmlc()) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Checks whether this module is compatible with the installed version of modified.
      *
      * @return bool Returns true if the module is compatible, otherwise false.
      */
-    public function isCompatible(): bool
+    public function isCompatibleWithModified(): bool
     {
         $installedVersion = ShopInfo::getModifiedVersion();
         $versions = $this->getModifiedCompatibility();
@@ -454,6 +504,36 @@ class Module extends ModuleInfo
         }
 
         return false;
+    }
+
+    public function isCompatibleWithPhp(): bool
+    {
+        $php = $this->getPhp();
+        $phpVersionContraint = $php['version'] ?? '';
+        if (!$phpVersionContraint) {
+            return true;
+        }
+
+        $phpVersionInstalled = phpversion();
+        $comparator = SemverComparatorFactory::createComparator();
+        return $comparator->satisfies($phpVersionInstalled, $phpVersionContraint);
+    }
+
+    public function isCompatibleWithMmlc(): bool
+    {
+        $mmlcVersionInstalled = App::getMmlcVersion();
+        if (!$mmlcVersionInstalled) {
+            return false;
+        }
+
+        $mmlc = $this->getMmlc();
+        $mmlcVersionContraint = $mmlc['version'] ?? '';
+        if (!$mmlcVersionContraint) {
+            return true;
+        }
+
+        $comparator = SemverComparatorFactory::createComparator();
+        return $comparator->satisfies($mmlcVersionInstalled, $mmlcVersionContraint);
     }
 
     public function getTemplateFiles($file): array
@@ -545,12 +625,10 @@ class Module extends ModuleInfo
     /**
      * HIER FEHLT EINE BESCHREIBUNG
      *
-     * @return string[]
+     * @return ChangedEntryCollection
      */
-    public function getChancedFiles(): array
+    public function getChancedFiles(): ChangedEntryCollection
     {
-        $moduleHasher = new ModuleHasher();
-        $changedFiles = $moduleHasher->getModuleChanges($this);
-        return $changedFiles;
+        return ModuleChangeManager::getChangedFiles($this);
     }
 }

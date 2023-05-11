@@ -13,8 +13,12 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\ViewModels;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
+use RobinTheHood\ModifiedModuleLoaderClient\Notification;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
+use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 
 class ModuleViewModel
 {
@@ -53,6 +57,12 @@ class ModuleViewModel
     public function getModuleInfoUrl(string $ref = ''): string
     {
         return $this->getUrl('moduleInfo', $ref);
+    }
+
+    public function getInstalledUrl(string $ref = ''): string
+    {
+        $module = $this->module->getInstalledVersion();
+        return $this->getUrl('moduleInfo', $ref, $module);
     }
 
     public function getLoadModuleUrl(string $ref = ''): string
@@ -179,12 +189,64 @@ class ModuleViewModel
         return $this->module->isChanged();
     }
 
-    private function getUrl(string $action, string $ref): string
+    private function getUrl(string $action, string $ref, ?Module $module = null): string
     {
+        if (!$module) {
+            $module = $this->module;
+        }
+
         return
             '?action=' . $action .
-            '&archiveName=' . $this->module->getArchiveName() .
-            '&version=' . $this->module->getVersion() .
+            '&archiveName=' . $module->getArchiveName() .
+            '&version=' . $module->getVersion() .
             '&ref=' . $ref;
+    }
+
+    /**
+     * @return array<array>
+     */
+    public function getCompatibleStrings(): array
+    {
+        $array = [];
+
+        if (!$this->module->isCompatibleWithModified()) {
+            $version = ShopInfo::getModifiedVersion();
+            $array[] = [
+                'text' => "Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed Version <strong>$version</strong> installiert.",
+                'type' => 'warning'
+            ];
+        }
+
+        try {
+            if (!$this->module->isCompatibleWithPhp()) {
+                $version = phpversion();
+                $array[] = [
+                    'text' => "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du verwendest die PHP Version <strong>$version</strong>.",
+                    'type' => 'warning'
+                ];
+            }
+        } catch (ParseErrorException $e) {
+            $array[] = [
+                'text' => 'Error: Can not parse PHP version in moduleinfo.php',
+                'type' => 'error'
+            ];
+        }
+
+        try {
+            if (!$this->module->isCompatibleWithMmlc()) {
+                $version = App::getMmlcVersion();
+                $array[] = [
+                    'text' => "Dieses Modul wurde noch nicht mit deiner MMLC Version getestet. Du verwendest die MMLC Version <strong>$version</strong>.",
+                    'type' => 'warning'
+                ];
+            }
+        } catch (ParseErrorException $e) {
+            $array[] = [
+                'text' => 'Error: Can not parse MMLC version in moduleinfo.php',
+                'type' => 'error'
+            ];
+        }
+
+        return $array;
     }
 }

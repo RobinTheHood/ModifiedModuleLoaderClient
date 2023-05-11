@@ -16,13 +16,13 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
+use RuntimeException;
 
 class IndexController extends Controller
 {
@@ -137,36 +137,32 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
-        $selfUpdater = new SelfUpdater();
-        $installedVersion = $selfUpdater->getInstalledVersion();
+        // Nächste mögliche MMLC Version ermittlen
         $latest = Config::getSelfUpdate() == 'latest';
-        $version = $selfUpdater->getNewestVersionInfo($latest);
+        $installedMmlcVersionString = App::getMmlcVersion();
+        $selfUpdater = new SelfUpdater(MmlcVersionInfoLoader::createLoader());
+        $mmlcVersionInfo = $selfUpdater->getNextMmlcVersionInfo($installedMmlcVersionString, $latest);
 
+        // Update durchführen, wenn ausgewählt und vorhanden
         $queryParams = $this->serverRequest->getQueryParams();
         $installVersion = $queryParams['install'] ?? '';
-
-        if ($installVersion) {
-            $selfUpdater->update($installVersion);
+        if ($mmlcVersionInfo && $mmlcVersionInfo->version === $installVersion) {
+            $selfUpdater->update($mmlcVersionInfo);
             return $this->redirect('/?action=selfUpdate');
         }
 
-        // Postupdate ausführen, falls erforderlich
-        $executed = $selfUpdater->checkAndDoPostUpdate();
+        // Postupdate ausführen. Kann immer aufgerufen werden. Die Methode entscheidet selbst,
+        // ob etwas getan werden muss oder nicht.
+        $postUpdateExecuted = $selfUpdater->postUpdate();
 
-        // Wenn der Postupdate durchgeführt werden musste, die Seite noch einmal
-        // automatisch neu laden
-        if ($executed) {
+        // Wenn ein Postupdate durchgeführt wurde, die Seite noch einmal automatisch neu laden.
+        if ($postUpdateExecuted) {
             return $this->redirect('/?action=selfUpdate');
         }
-
-        $checkUpdate = $selfUpdater->checkUpdate();
-
-        $comparator = new Comparator(new Parser());
 
         return $this->render('SelfUpdate', [
-            'comparator' => $comparator,
-            'version' => $version,
-            'installedVersion' => $installedVersion,
+            'mmlcVersionInfo' => $mmlcVersionInfo,
+            'installedVersionString' => $installedMmlcVersionString,
             'serverName' => $_SERVER['SERVER_NAME'] ?? 'unknown Server Name'
         ]);
     }
@@ -323,10 +319,13 @@ class IndexController extends Controller
 
         try {
             $moduleInstaller = new ModuleInstaller();
-            //$moduleInstaller->install($module);
-            //$moduleInstaller->installDependencies($module);
             $moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -362,7 +361,7 @@ class IndexController extends Controller
                 'text' => $e->getMessage(),
                 'type' => 'error'
             ]);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -398,6 +397,11 @@ class IndexController extends Controller
                 'text' => $e->getMessage(),
                 'type' => 'error'
             ]);
+        } catch (RuntimeException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
 
         return $this->redirectRef($archiveName, $module->getVersion());
@@ -427,6 +431,11 @@ class IndexController extends Controller
             $moduleInstaller = new ModuleInstaller();
             $newModule = $moduleInstaller->updateWithDependencies($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -508,9 +517,13 @@ class IndexController extends Controller
 
         try {
             $moduleInstaller = new ModuleInstaller();
-            $moduleInstaller->install($module);
-            $moduleInstaller->installDependencies($module);
+            $moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -542,6 +555,11 @@ class IndexController extends Controller
             $moduleInstaller = new ModuleInstaller();
             $moduleInstaller->delete($module);
         } catch (DependencyException $e) {
+            Notification::pushFlashMessage([
+                'text' => $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } catch (RuntimeException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
                 'type' => 'error'
@@ -614,6 +632,10 @@ class IndexController extends Controller
                 Config::setInstallMode($parsedBody['installMode']);
             }
 
+            if (isset($parsedBody['dependencyMode'])) {
+                Config::setDependencyMode($parsedBody['dependencyMode']);
+            }
+
             Notification::pushFlashMessage([
                 'text' => 'Einstellungen erfolgreich gespeichert.',
                 'type' => 'success'
@@ -645,8 +667,11 @@ class IndexController extends Controller
 
     public function calcSystemUpdateCount()
     {
-        $selfUpdater = new SelfUpdater();
-        $checkUpdate = $selfUpdater->checkUpdate();
+        $latest = Config::getSelfUpdate() == 'latest';
+        $installedMmlcVersionString = App::getMmlcVersion();
+
+        $selfUpdater = new SelfUpdater(MmlcVersionInfoLoader::createLoader());
+        $checkUpdate = $selfUpdater->updateAvailable($installedMmlcVersionString, $latest);
         if ($checkUpdate) {
             return 1;
         }

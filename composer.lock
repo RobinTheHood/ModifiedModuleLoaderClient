@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "461ae9ac555d9a2a6e3035e89035827b",
+    "content-hash": "9f1a996b9243fa6caa934e08506137e2",
     "packages": [
         {
             "name": "erusev/parsedown",
@@ -651,16 +651,16 @@
         },
         {
             "name": "robinthehood/exception-monitor",
-            "version": "0.1.10",
+            "version": "0.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RobinTheHood/ExceptionMonitor.git",
-                "reference": "a2b4f240bbf66f5203751d2cde9a3fa407539906"
+                "reference": "f7364214e8f223d389ecd44bc7893297d77929f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinTheHood/ExceptionMonitor/zipball/a2b4f240bbf66f5203751d2cde9a3fa407539906",
-                "reference": "a2b4f240bbf66f5203751d2cde9a3fa407539906",
+                "url": "https://api.github.com/repos/RobinTheHood/ExceptionMonitor/zipball/f7364214e8f223d389ecd44bc7893297d77929f8",
+                "reference": "f7364214e8f223d389ecd44bc7893297d77929f8",
                 "shasum": ""
             },
             "require": {
@@ -668,6 +668,9 @@
                 "robinthehood/syntax-highlighter": "^0.1.0",
                 "robinthehood/terminal": "^0.1.1",
                 "robinthehood/tokenizer": "^0.1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8"
             },
             "type": "library",
             "autoload": {
@@ -696,9 +699,9 @@
             ],
             "support": {
                 "issues": "https://github.com/RobinTheHood/ExceptionMonitor/issues",
-                "source": "https://github.com/RobinTheHood/ExceptionMonitor/tree/0.1.10"
+                "source": "https://github.com/RobinTheHood/ExceptionMonitor/tree/0.2.3"
             },
-            "time": "2022-04-19T13:14:22+00:00"
+            "time": "2023-03-20T17:49:25+00:00"
         },
         {
             "name": "robinthehood/syntax-highlighter",

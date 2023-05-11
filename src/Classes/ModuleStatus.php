@@ -136,7 +136,7 @@ class ModuleStatus
             return false;
         }
 
-        $comparator = new Comparator(new Parser());
+        $comparator = SemverComparatorFactory::createComparator();
         if (!$comparator->greaterThan($newestVersion->getVersion(), $installedVersion->getVersion())) {
             return false;
         }

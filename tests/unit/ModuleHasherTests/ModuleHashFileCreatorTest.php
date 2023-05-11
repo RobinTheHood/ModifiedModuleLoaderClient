@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
  *
@@ -11,19 +9,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
+declare(strict_types=1);
+
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\ModuleHahserTests;
 
 use PHPUnit\Framework\TestCase;
 
-class DependencyBuilderTest //extends TestCase
+class ModuleHashFileCreatorTest
 {
-
-    /*
-    public function invokeDependencyTest()
+    public function testCreateHashFile()
     {
-        $dpb = new DependencyBuilder();
-        $dpb->test();
-        die('TEST DONE');
+        // TODO: write test
     }
-    */
 }

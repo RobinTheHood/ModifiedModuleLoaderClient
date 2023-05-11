@@ -13,6 +13,11 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-class DependencyException extends \LogicException
+class MmlcVersionInfo
 {
+    /** @var string */
+    public $version;
+
+    /** @var string */
+    public $fileName;
 }

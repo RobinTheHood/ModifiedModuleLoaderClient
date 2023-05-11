@@ -39,11 +39,21 @@ class ModuleInfo
      * Das Verzeichnis, in dem sich die Quellcode Dateien des Moduls befinden,
      * die in den Shop kopiert/verlinkt werden sollen.
      *
-     * Beispiel: new_fieles
+     * Beispiel: src
      *
      * @var string
      */
     protected $sourceDir;
+
+    /**
+     * Das Verzeichnis, in dem sich die Quellcode Dateien des Moduls befinden,
+     * die in den Shop kopiert/verlinkt werden sollen.
+     *
+     * Beispiel: src-mmlc
+     *
+     * @var string
+     */
+    protected $sourceMmlcDir;
 
     /**
      * Die Version des Moduls. Die Version muss der Sermver konvention folgen.
@@ -165,6 +175,28 @@ class ModuleInfo
      */
     protected $tags;
 
+    /**
+     * Mit welchen Version von PHP ist das Modul kompatible.
+     *
+     * Beispiel: [
+     *     'version' => '^7.4.0 || ^8.0.0'
+     * ]
+     *
+     * @var array
+     */
+    protected $php;
+
+    /**
+     * Mit welchen Version von PHP ist das Modul kompatible.
+     *
+     * Beispiel: [
+     *     'version' => '^1.20.0'
+     * ]
+     *
+     * @var array
+     */
+    protected $mmlc;
+
     public function getName(): string
     {
         return $this->name;
@@ -193,6 +225,16 @@ class ModuleInfo
     public function setSourceDir(string $value): void
     {
         $this->sourceDir = $value;
+    }
+
+    public function getSourceMmlcDir(): string
+    {
+        return $this->sourceMmlcDir;
+    }
+
+    public function setSourceMmlcDir(string $value): void
+    {
+        $this->sourceMmlcDir = $value;
     }
 
     public function getVersion(): string
@@ -349,5 +391,25 @@ class ModuleInfo
     public function setTags(string $value): void
     {
         $this->tags = $value;
+    }
+
+    public function getPhp(): array
+    {
+        return $this->php;
+    }
+
+    public function setPhp(array $value): void
+    {
+        $this->php = $value;
+    }
+
+    public function getMmlc(): array
+    {
+        return $this->mmlc;
+    }
+
+    public function setMmlc(array $value): void
+    {
+        $this->mmlc = $value;
     }
 }

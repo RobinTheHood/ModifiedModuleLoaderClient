@@ -50,32 +50,30 @@ class ModuleCreator
         file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/docs/usage.md', '');
         file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/changelog.md', '');
 
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/extra');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/modules');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/modules/system');
-        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/modules/system/' . $fileName, '');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/extra');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules/system');
+        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules/system/' . $fileName, '');
 
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/includes');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/includes/extra');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/includes');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/includes/extra');
 
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/german');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/german/modules');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/german/modules/system');
-        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/german/modules/system/' . $fileName, '');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules/system');
+        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules/system/' . $fileName, '');
 
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/english');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/english/modules');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/english/modules/system');
-        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/english/modules/system/' . $fileName, '');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules/system');
+        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules/system/' . $fileName, '');
 
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer');
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer/' . $vendorName);
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer/' . $vendorName . '/' . $moduleNameCamelCase);
-        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/new_files/vendor-no-composer/' . $vendorName . '/' . $moduleNameCamelCase . '/Classes');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src-mmlc/vendor-no-composer');
+        @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src-mmlc/Classes');
     }
 
     public function createModuleInfoJsonFile($archiveName, $moduleName)
@@ -83,7 +81,7 @@ class ModuleCreator
         $info = [
             'name' => $moduleName,
             'archiveName' => $archiveName,
-            'sourceDir' => 'new_files',
+            'sourceDir' => 'src',
             'version' => 'auto',
 
             'shortDescription' => 'Kurzbeschreibung für ' . $moduleName,
@@ -104,6 +102,15 @@ class ModuleCreator
 
             'modifiedCompatibility' => [
                 '2.0.4.2'
+            ],
+
+            "mmlc" => [
+                "version" => "^1.21.0"
+            ],
+
+            "php" => [
+                "version" => "^7.4 || ^8.0",
+                "ext" => []
             ]
         ];
 
@@ -145,7 +152,7 @@ class ' . $className . ' extends StdModule
 }
 ';
 
-        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/admin/includes/modules/system/' . $fileName, $content);
+        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules/system/' . $fileName, $content);
     }
 
     public function createSystemModuleLanguageDeFile($archiveName, $fileName, $moduleConstName, $vendorName)
@@ -158,7 +165,7 @@ define(\'' . $moduleConstName . '_STATUS_TITLE\', \'' . $archiveName . ' Modul a
 define(\'' . $moduleConstName . '_STATUS_DESC\', \'\');
 ';
 
-        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/german/modules/system/' . $fileName, $content);
+        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules/system/' . $fileName, $content);
     }
 
     public function createSystemModuleLanguageEnFile($archiveName, $fileName, $moduleConstName, $vendorName)
@@ -171,6 +178,6 @@ define(\'' . $moduleConstName . '_STATUS_TITLE\', \'' . $archiveName . ' Modul a
 define(\'' . $moduleConstName . '_STATUS_DESC\', \'\');
 ';
 
-        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/new_files/lang/english/modules/system/' . $fileName, $content);
+        \file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules/system/' . $fileName, $content);
     }
 }

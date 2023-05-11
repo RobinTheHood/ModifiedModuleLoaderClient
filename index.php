@@ -27,18 +27,13 @@ if (file_exists('config/config.php')) {
     die('Fehler: Es konnte keine ./config/config.php Datei gefunden werden.');
 }
 
-use RobinTheHood\ExceptionMonitor\ExceptionMonitor;
 use RobinTheHood\Debug\Debug;
-
-use RobinTheHood\ModifiedModuleLoaderClient\IndexController;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\ExceptionMonitorFactory;
 
-ExceptionMonitor::register([
-    'ip' => Config::getExceptionMonitorIp() ?? '127.0.0.1',
-    'domain' => Config::getExceptionMonitorDomain() ?? 'modified.localhost',
-    'mail' => Config::getExceptionMonitorMail()
-]);
+$exceptionMonitor = ExceptionMonitorFactory::getExceptionMonitor();
+$exceptionMonitor->register();
 
 function debugOut($value)
 {

@@ -5,7 +5,8 @@ defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher;
+use RobinTheHood\ModifiedModuleLoaderClient\FileHasher\ChangedEntry;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleChangeManager;
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
 
@@ -38,6 +39,29 @@ $notificationView = new NotificationViewModel();
             <div class="content">
                 <?= $notificationView->renderFlashMessages() ?>
 
+                <?php if ($moduleView->isRepairable()) { ?>
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle fa-fw"></i>
+                        Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an
+                        diesen Anpassungen vorgenommen. <strong>Deinstallation</strong> und
+                        <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur Verfügung, damit
+                        deine Arbeit nicht verloren geht.
+                        <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
+                    </div>
+                <?php } ?>
+
+                <?php if (!$moduleView->isLoadable()) { ?>
+                    <div class="alert alert-primary" role="alert">
+                        <i class="fas fa-info-circle fa-fw"></i>
+                        Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann
+                        dir das Modul (z. B. nach einem Kauf) freischalten.
+                    </div>
+                <?php } ?>
+
+                <?php if (!$moduleView->isCompatible()) { ?>
+                    <?= $notificationView->renderMultibleFlashMessages($moduleView->getCompatibleStrings()) ?>
+                <?php } ?>
+
                 <div class="row">
                     <div class="col">
                         <div class="module-title">
@@ -55,33 +79,6 @@ $notificationView = new NotificationViewModel();
                                     </a>
                                 </div>
                             <?php } ?>
-                            </div>
-                        <?php } ?>
-
-                        <?php if ($moduleView->isRepairable()) { ?>
-                            <div class="alert alert-warning" role="alert">
-                                <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                Einige Dateien befinden sich nicht mehr im Originalzustand. Möglicherweise hast du an
-                                diesen Anpassungen vorgenommen. <strong>Deinstallation</strong> und
-                                <strong>Update</strong> stehen dir nur bei unveränderten Modulen zur Verfügung, damit
-                                deine Arbeit nicht verloren geht.
-                                <a href="#v-pills-tabContent" onclick="$('#v-pills-files-tab').tab('show');">Alle Änderungen ansehen</a>.
-                            </div>
-                        <?php } ?>
-
-                        <?php if (!$moduleView->isLoadable()) { ?>
-                            <div class="alert alert-primary" role="alert">
-                                <i class="fas fa-info-circle fa-fw"></i>
-                                Um dieses Modul zu verwenden, nimm bitte Kontakt zum Entwickler auf. Der Entwickler kann
-                                dir das Modul (z. B. nach einem Kauf) freischalten.
-                            </div>
-                        <?php } ?>
-
-                        <?php if (!$moduleView->isCompatible()) { ?>
-                            <div class="alert alert-warning" role="alert">
-                                <i class="fas fa-exclamation-triangle fa-fw"></i>
-                                Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed
-                                <strong><?= ShopInfo::getModifiedVersion()?></strong> installiert.
                             </div>
                         <?php } ?>
                     </div>
@@ -129,7 +126,7 @@ $notificationView = new NotificationViewModel();
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
                 <?php } elseif ($moduleView->hasInstalledVersion()) { ?>
-                    <a class="button button-default" href="<?= $moduleView->getModuleInfoUrl('moduleInfo') ?>">Zur installierten Version</a>
+                    <a class="button button-default" href="<?= $moduleView->getInstalledUrl('moduleInfo') ?>">Zur installierten Version</a>
                 <?php } ?>
 
                 <?php if (!$moduleView->isRemote() && $moduleView->isLoaded() && !$moduleView->isInstalled()) { ?>
@@ -270,6 +267,32 @@ $notificationView = new NotificationViewModel();
                                             </td>
                                         </tr>
 
+                                        <tr>
+                                            <td>Kompatibel mit PHP</td>
+                                            <td>
+                                                <?php if ($module->getPhp()) { ?>
+                                                    <?php foreach (explode('||', $module->getPhp()['version'] ?? '') as $version) { ?>
+                                                        <span class="badge badge-secondary"><?= trim($version); ?></span>
+                                                    <?php } ?>
+                                                <?php } else { ?>
+                                                    unbekannt
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Kompatibel mit MMLC</td>
+                                            <td>
+                                                <?php if (true || $module->getMmlc()) { ?>
+                                                    <?php foreach (explode('||', $module->getMmlc()['version'] ?? '') as $version) { ?>
+                                                        <span class="badge badge-secondary"><?= trim($version); ?></span>
+                                                    <?php } ?>
+                                                <?php } else { ?>
+                                                    unbekannt
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+
                                         <?php if ($module->getTags()) { ?>
                                             <tr>
                                                 <td>Tags</td>
@@ -364,10 +387,9 @@ $notificationView = new NotificationViewModel();
                             <h3>Geänderte Dateien</h3>
 
                             <?php if ($moduleView->isInstalled() && $moduleView->isChanged()) { ?>
-                                    <?php foreach ($module->getChancedFiles() as $file => $mode) { ?>
-                                        <?php $changes = htmlentities(ModuleHasher::getFileChanges($module, $file, $mode)); ?>
-
-                                        <div><?= $file ?><span>: <?= $mode ?></span></div>
+                                    <?php foreach ($module->getChancedFiles()->changedEntries as $changedEntry) { ?>
+                                        <?php $changes = htmlentities(ModuleChangeManager::getFileChanges($module, $changedEntry)); ?>
+                                        <div>(<?= $changedEntry->hashEntryA->scope ?>) <?= $changedEntry->hashEntryA->file ?><span>: <?= ChangedEntry::typeToString($changedEntry->type) ?></span></div>
                                         <?php if ($changes) { ?>
                                             <pre><code class="diff"><?= $changes ?></code></pre>
                                         <?php } ?>

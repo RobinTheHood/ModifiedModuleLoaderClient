@@ -2,7 +2,9 @@
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
 
+$notificationView = new NotificationViewModel();
 ?>
 
 <!DOCTYPE html>
@@ -15,13 +17,15 @@ use RobinTheHood\ModifiedModuleLoaderClient\Config;
         <?php include 'Navi.tmpl.php' ?>
 
         <div class="content" style="text-align: center">
+            <?= $notificationView->renderFlashMessages() ?>
+
             <div class="self-update">
                 <h2>MMLC - Modified Module Loader Client</h2>
-                <?= $installedVersion ?><br><br>
+                <?= $installedVersionString ?><br><br>
 
-                <?php if ($comparator->greaterThan($version['version'], $installedVersion)) { ?>
-                    Version <?= $version['version'] ?> verfügbar<br><br>
-                    <a class="button button-success" href="?action=selfUpdate&install=<?= $version['version'] ?>">
+                <?php if ($mmlcVersionInfo) { ?>
+                    Version <?= $mmlcVersionInfo->version ?> verfügbar<br><br>
+                    <a class="button button-success" href="?action=selfUpdate&install=<?= $mmlcVersionInfo->version ?>">
                         Update installieren
                     </a>
                 <?php } else { ?>

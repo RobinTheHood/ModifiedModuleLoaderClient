@@ -11,19 +11,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit\SemverTests;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
+// TODO: test caret none strict mode
 class SemverComparatorTest extends TestCase
 {
     public $comparator;
 
     protected function setUp(): void
     {
-        $this->comparator = new Comparator(new Parser());
+        $this->comparator = new Comparator(new Parser(), Comparator::CARET_MODE_STRICT);
     }
 
     public function testSemverCanHandleGreaterThan()
@@ -107,74 +108,6 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->notEqualTo('1.2.3', '1.2.3'));
     }
 
-    public function testSemverCanSortVersions()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $expected = [
-            '1.2.3',
-            '17.111.9',
-            '18.22.9',
-            '18.22.10',
-            '18.33.10'
-        ];
-
-        $this->assertEquals($expected, $this->comparator->sort($versions));
-    }
-
-    public function testSemverCanSortReverseVersions()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $expected = [
-            '18.33.10',
-            '18.22.10',
-            '18.22.9',
-            '17.111.9',
-            '1.2.3'
-        ];
-
-        $this->assertEquals($expected, $this->comparator->rsort($versions));
-    }
-
-    public function testSemverGetsHighestVersionString()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $this->assertEquals('18.33.10', $this->comparator->highest($versions));
-    }
-
-    public function testSemverGetsLowestVersionString()
-    {
-        $versions = [
-            '17.111.9',
-            '1.2.3',
-            '18.22.10',
-            '18.33.10',
-            '18.22.9'
-        ];
-
-        $this->assertEquals('1.2.3', $this->comparator->lowest($versions));
-    }
-
     public function testThatVersionAIsCompatibleWithVersionB()
     {
         $this->assertTrue($this->comparator->isCompatible('auto', '3.3.3'));
@@ -188,11 +121,53 @@ class SemverComparatorTest extends TestCase
         $this->assertFalse($this->comparator->isCompatible('3.3.3', '3.3.4'));
     }
 
-    public function testThatVersionASatisfiesContraint()
+    public function testThatVersionASatisfiesConstraint()
     {
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^3.3.3'));
         $this->assertTrue($this->comparator->satisfies('3.3.3', '^3.2.3'));
         $this->assertTrue($this->comparator->satisfies('3.3.3', '3.3.3'));
         $this->assertFalse($this->comparator->satisfies('3.3.3', '3.2.3'));
+    }
+
+    public function testCaretOperatorLess010()
+    {
+        // Test für Versionen kleiner als 0.1.0
+        $this->assertFalse($this->comparator->satisfies('0.0.9', '^0.0.0'));
+        $this->assertFalse($this->comparator->satisfies('0.0.9', '^0.1.0'));
+        $this->assertFalse($this->comparator->satisfies('0.0.9', '^1.0.0'));
+        $this->assertTrue($this->comparator->satisfies('0.0.9', '^0.0.9'));
+        $this->assertTrue($this->comparator->satisfies('0.0.9', '^0.0.9-beta.1'));
+    }
+
+    public function testCaretOperatorLess100()
+    {
+        // Test für Versionen kleiner als 1.0.0
+        $this->assertTrue($this->comparator->satisfies('0.9.9', '^0.9.0'));
+        $this->assertTrue($this->comparator->satisfies('0.9.9', '^0.9.9'));
+        $this->assertFalse($this->comparator->satisfies('0.9.9', '^0.10.0'));
+        $this->assertFalse($this->comparator->satisfies('0.9.9', '^1.0.0'));
+        $this->assertFalse($this->comparator->satisfies('0.10.0', '^0.9.0'));
+    }
+
+    public function testCaretOperatorUntil100()
+    {
+        // Test für Versionen ab 1.0.0
+        $this->assertTrue($this->comparator->satisfies('1.0.0', '^1.0.0'));
+        $this->assertFalse($this->comparator->satisfies('1.0.0', '^1.0.1'));
+        $this->assertTrue($this->comparator->satisfies('1.1.0', '^1.0.0'));
+        $this->assertFalse($this->comparator->satisfies('2.0.0', '^1.0.0'));
+    }
+
+
+    public function testThatVersionASatisfiesOrConstraint()
+    {
+        $this->assertTrue($this->comparator->satisfies('3.3.3', '^2.2.2 || ^3.3.3'));
+        $this->assertFalse($this->comparator->satisfies('4.4.4', '^2.2.2 || ^3.3.3'));
+    }
+
+    public function testThatVersionASatisfiesAndConstraint()
+    {
+        $this->assertFalse($this->comparator->satisfies('3.3.3', '^2.2.2, ^3.3.3'));
+        $this->assertTrue($this->comparator->satisfies('4.4.4', '^4.4.2, ^4.4.3'));
     }
 }
