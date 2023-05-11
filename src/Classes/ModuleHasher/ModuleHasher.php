@@ -41,7 +41,11 @@ class ModuleHasher
     {
         $files = $module->getSrcFilePaths();
         $root = $module->getLocalRootPath() . $module->getSrcRootPath() . '/';
-        return  $this->fileHasher->createHashes($files, $root, self::SCOPE_MODULE_SRC);
+        $hashEntryCollection = $this->fileHasher->createHashes($files, $root, self::SCOPE_MODULE_SRC);
+        foreach ($hashEntryCollection->hashEntries as $hashEntry) {
+            $hashEntry->file = ModulePathMapper::moduleSrcToShopRoot($hashEntry->file);
+        }
+        return $hashEntryCollection;
     }
 
     /**
