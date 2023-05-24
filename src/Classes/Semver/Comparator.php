@@ -163,34 +163,67 @@ class Comparator
         return $this->greaterThanOrEqualTo($versionString1, $versionString2);
     }
 
-    public function satisfies(string $versionString1, string $constrain): bool
+    public function satisfies(string $versionString1, string $constrainString): bool
     {
-        if ($constrain[0] == '^') { // Ist Buchstabe an Index 0 = ^
-            $versionString2 = str_replace('^', '', $constrain);
-            return $this->isCompatible($versionString1, $versionString2);
-        } elseif ($constrain[0] == '<' && $constrain[1] == '=') {
-            $versionString2 = str_replace('<=', '', $constrain);
-            return $this->lessThanOrEqualTo($versionString1, $versionString2);
-        } else {
-            $versionString2 = $constrain;
-            return $this->equalTo($versionString1, $versionString2);
+        $constraintParser = new ConstraintParser($this->parser);
+        try {
+            $constraint = $constraintParser->parse($constrainString);
+        } catch (ParseErrorException $e) {
+            return false;
         }
+
+        if ($constraint->type === Constraint::TYPE_OR) {
+            return $this->satisfiesOr($versionString1, $constraint);
+        }
+
+        if ($constraint->type === Constraint::TYPE_AND) {
+            return $this->satisfiesAnd($versionString1, $constraint);
+        }
+
+        if ($constraint->type === Constraint::TYPE_LESS_OR_EQUAL) {
+            return $this->lessThanOrEqualTo($versionString1, $constraint->versionString);
+        } elseif ($constraint->type === Constraint::TYPE_LESS) {
+            return $this->lessThan($versionString1, $constraint->versionString);
+        } elseif ($constraint->type === Constraint::TYPE_GREATER_OR_EQUAL) {
+            return $this->greaterThanOrEqualTo($versionString1, $constraint->versionString);
+        } elseif ($constraint->type === Constraint::TYPE_GREATER) {
+            return $this->greaterThan($versionString1, $constraint->versionString);
+        } elseif ($constraint->type === Constraint::TYPE_CARET) {
+            return $this->isCompatible($versionString1, $constraint->versionString);
+        } elseif ($constraint->type === Constraint::TYPE_EQUAL) {
+            return $this->equalTo($versionString1, $constraint->versionString);
+        }
+
+        return false;
     }
 
     /**
-     * Can satisfy multiple constraints with OR / ||
+     * Can satisfy multiple constraints with OR (||)
      *
      * Example: ^7.4 || ^8.0
      */
-    public function satisfiesOr(string $versionString1, string $constraintOrExpression): bool
+    public function satisfiesOr(string $versionString1, Constraint $constraint): bool
     {
-        $constraints = explode('||', $constraintOrExpression);
-        foreach ($constraints as $constraint) {
-            $constraint = trim($constraint);
-            if ($this->satisfies($versionString1, $constraint)) {
+        foreach ($constraint->constraints as $constraint) {
+            if ($this->satisfies($versionString1, $constraint->constraintString)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Can satisfy multiple constraints with AND (,)
+     *
+     * Example: ^7.4, ^8.0
+     */
+    public function satisfiesAnd(string $versionString1, Constraint $constraint): bool
+    {
+        foreach ($constraint->constraints as $constraint) {
+            if (!$this->satisfies($versionString1, $constraint->constraintString)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
