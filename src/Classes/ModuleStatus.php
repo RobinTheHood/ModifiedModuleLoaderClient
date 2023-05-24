@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\ConstraintParser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class ModuleStatus
@@ -142,5 +144,18 @@ class ModuleStatus
         }
 
         return $module->isInstalled();
+    }
+
+    public static function hasValidRequire(Module $module): string
+    {
+        $constraintParser = new ConstraintParser(new Parser());
+        foreach ($module->getRequire() as $module => $constraintString) {
+            try {
+                $constraintParser->parse($constraintString);
+            } catch (ParseErrorException $e) {
+                return $e->getMessage();
+            }
+        }
+        return '';
     }
 }
