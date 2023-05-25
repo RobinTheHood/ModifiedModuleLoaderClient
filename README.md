@@ -20,7 +20,7 @@ Folge der Installationsanleitung auf [module-loader.de](https://module-loader.de
 ...
 
 ## Requirements
-PHP 7.2 or above
+PHP 7.4 or above
 
 ## Authors
 - Robin Wieschendorf | <mail@robinwieschendorf.de> | [robinwieschendorf.de](https://robinwieschendorf.de)
