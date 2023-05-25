@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build-test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - name: checkout project
@@ -21,7 +21,9 @@ jobs:
       run: mkdir logs
     - name: copy config
       run: cp config/_config.php config/config.php
-    - name: run phpcs for PSR12 coding style checks 
+    - name: Display PHP version
+      run: php7.4 --version
+    - name: run phpcs for PSR12 coding style checks
       run: php7.4 ./vendor/bin/phpcs -np --standard=PSR12 --ignore=".src/Templates" ./src
     - name: run test - php unit
       run: php7.4 ./vendor/bin/phpunit --testdox
