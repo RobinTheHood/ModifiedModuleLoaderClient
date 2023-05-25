@@ -149,7 +149,7 @@ class ModuleStatus
     public static function hasValidRequire(Module $module): string
     {
         $constraintParser = new ConstraintParser(new Parser());
-        foreach ($module->getRequire() as $module => $constraintString) {
+        foreach ($module->getRequire() as $archiveName => $constraintString) {
             try {
                 $constraintParser->parse($constraintString);
             } catch (ParseErrorException $e) {
