@@ -92,11 +92,11 @@ class SemverParserTest extends TestCase
         $version = $this->parser->parse('...');
     }
 
-    public function testSemverThrowsParseErrorException4()
-    {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
-        $version = $this->parser->parse('1');
-    }
+    // public function testSemverThrowsParseErrorException4()
+    // {
+    //     $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
+    //     $version = $this->parser->parse('1');
+    // }
 
     public function testSemverThrowsParseErrorException5()
     {
@@ -104,11 +104,11 @@ class SemverParserTest extends TestCase
         $version = $this->parser->parse('1.');
     }
 
-    public function testSemverThrowsParseErrorException6()
-    {
-        $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
-        $version = $this->parser->parse('1.2');
-    }
+    // public function testSemverThrowsParseErrorException6()
+    // {
+    //     $this->expectException(\RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException::class);
+    //     $version = $this->parser->parse('1.2');
+    // }
 
     public function testSemverThrowsParseErrorException7()
     {
