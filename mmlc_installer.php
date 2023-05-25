@@ -1,4 +1,4 @@
-<?php
+<?php // @phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
 /*
  * This file is part of MMLC - ModifiedModuleLoaderClient.
@@ -7,6 +7,10 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
  */
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
