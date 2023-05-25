@@ -233,6 +233,14 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
+        if ($error = ModuleStatus::hasValidRequire($module)) {
+            Notification::pushFlashMessage([
+                'type' => 'error',
+                'text' => 'Error in require in moduleinfo.json of '
+                    . $module->getArchiveName() . ' ' . $module->getVersion() . ' - ' . $error
+            ]);
+        }
+
         return $this->render('ModuleInfo', [
             'module' => $module
         ]);
