@@ -87,7 +87,7 @@ class ConstraintParser
             $constraint->type = Constraint::TYPE_EQUAL;
             $versionString = substr($constraintString, 1);
             //$version = $this->parser->parse($versionString);
-            $constraint->version = null; //$version;
+            //$constraint->version = null; //$version;
             $constraint->versionString = 'auto';
             return $constraint;
         }
