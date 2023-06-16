@@ -56,17 +56,23 @@ class ExceptionMonitorFactory
 
     private static function createMessage(): string
     {
+        $domainString = $_SERVER['SERVER_NAME'] ? '(' . $_SERVER['SERVER_NAME'] . ')' : ' ';
+
         $errorMessage = ""
                     . "<h1>❌ An error has occurred</h1>\n"
                     . "No reason to panic.\n"
                     . "<h3>🛠️ What can you do:</h3>\n"
                     . "<ul>\n"
                     . "<li>Variant A: Activate the logs by entering the following in the config:<br>"
-                    . "<code>'logging' => 'true'</code>. "
-                    . "Check the logs in <code>SHOP-ROOT/ModifiedModuleLoaderClient/logs/</code></li>\n"
-                    . "<li>Variant B: Activate the ExceptionMonitor by entering your domain in the config:<br>"
+                    . "<code>'logging' => 'true'</code> "
+                    . "and check the logs in <code>SHOP-ROOT/ModifiedModuleLoaderClient/logs/</code></li>\n"
+                    . "<li>Variant B: Activate the ExceptionMonitor to display the error in your browser by "
+                    . "entering your domain $domainString in the config:<br>"
                     . "<code>'exceptionMonitorDomain' => 'www.your-domain.org'</code></li>\n"
-                    . "</ul>\n";
+                    . "</ul>\n"
+                    . "<h3>📖 Documentation</h3>\n"
+                    . "Follow the link to view the documentation for the config.php file in a new window: "
+                    . "<a target=\"_blank\" href=\"https://module-loader.de/docs/config_config.php\">module-loader.de/docs</a>";
 
         $css = "
             <style>
