@@ -35,6 +35,7 @@ class ExceptionMonitorFactory
         });
 
         $publicMessageHandler = new CallbackHandler(function (Throwable $exception) {
+            ob_end_clean();
             header("HTTP/1.0 500 Internal Server Error");
             echo self::createMessage();
             die();
