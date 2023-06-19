@@ -772,7 +772,7 @@ class IndexController extends Controller
                 return 'unkown branch';
         }
 
-        $output = trim(shell_exec($command));
+        $output = trim('' . shell_exec($command));
 
         if (empty($output)) {
             return null;
