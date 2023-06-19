@@ -129,7 +129,7 @@ function viewIsSelected(bool $value): string
                                 </div>
                                 <div class="form-group">
                                     <label for="inputDependencyMode">Abhängigkeitsmodus</label>
-                                    <select name="dependencyMode" class="form-control" id="dependencyMode" size="1">
+                                    <select name="dependencyMode" class="form-control" id="inputDependencyMode" size="1">
                                         <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_STRICT) ?> value="strict">strict</option>
                                         <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_LAX) ?> value="lax">lax</option>
                                     </select>
