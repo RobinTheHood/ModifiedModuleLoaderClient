@@ -18,6 +18,11 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\IntegerHelper;
 
 class Parser
 {
+    public static function create(): Parser
+    {
+        return new Parser();
+    }
+
     public function parse(string $string): Version
     {
         $string = $this->deletePrefix($string);
