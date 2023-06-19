@@ -20,6 +20,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class ModuleFilter
 {
+    public static $comparator;
+
     /**
      * @param Module[] $modules
      * @return Module[]
@@ -124,7 +126,7 @@ class ModuleFilter
                     continue;
                 }
 
-                $comparator = SemverComparatorFactory::createComparator();
+                $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
                 if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
@@ -162,7 +164,7 @@ class ModuleFilter
                     break;
                 }
 
-                $comparator = SemverComparatorFactory::createComparator();
+                $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
                 if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
@@ -215,7 +217,7 @@ class ModuleFilter
     {
         $filteredModules = [];
         foreach ($modules as $module) {
-            $comparator = SemverComparatorFactory::createComparator();
+            $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
             if ($comparator->satisfies($module->getVersion(), $constrain)) {
                 $filteredModules[] = $module;
             }
@@ -230,7 +232,7 @@ class ModuleFilter
     {
         $selectedModule = null;
         foreach ($modules as $module) {
-            $comparator = SemverComparatorFactory::createComparator();
+            $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
             if (!$selectedModule || $comparator->greaterThan($module->getVersion(), $selectedModule->getVersion())) {
                 $selectedModule = $module;
             }

@@ -15,6 +15,8 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class ModuleLoaderTest extends TestCase
 {
@@ -52,6 +54,8 @@ class ModuleLoaderTest extends TestCase
 
     public function testCanLoadAllVersionsByContraint()
     {
+        ModuleFilter::$comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
+
         $modules = $this->loader->loadAllByArchiveNameAndConstraint('robinthehood/modified-std-module', '1.0.0');
         $this->assertEquals(0, count($modules));
 
