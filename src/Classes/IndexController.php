@@ -612,6 +612,10 @@ class IndexController extends Controller
         if ($this->isPostRequest()) {
             $parsedBody = $this->serverRequest->getParsedBody();
 
+            if (isset($parsedBody['adminDir'])) {
+                Config::setAdminDir($parsedBody['adminDir']);
+            }
+
             if (isset($parsedBody['username'])) {
                 Config::setUsername($parsedBody['username']);
             }

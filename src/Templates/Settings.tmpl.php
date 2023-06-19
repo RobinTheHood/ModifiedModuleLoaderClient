@@ -64,6 +64,13 @@ function viewIsSelected(bool $value): string
                                     <p>Aus Sicherheitsgründen ist das Ändern des AccessTokens gesperrt. Der Wert kann unter <code style="word-break: break-all"><?= Config::path(); ?></code> geändert werden.</p>
                                 </div>
 
+                                <!-- adminDir -->
+                                <div class="form-group">
+                                    <label for="inputAdminDir">Admin-Verzeichnis</label>
+                                    <input type="text" name="adminDir" class="form-control" id="inputAdminDir" value="<?= Config::getAdminDir(); ?>">
+                                    <p>Der MMLC kann dein Admin-Verzeichnis automatischen finden, auch wenn es umbenannt wurde. Sollte das nicht funktionieren, kann hier der Namen des Admin-Verzeichnis eintragen werden. Lasse das Feld leer, wenn der MMLC automatisch veruschen soll, das Admin-Verzeichnis zu finden. Standard-Wert ist kein Wert oder <code>admin</code></p>
+                                </div>
+
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary">Speichern</button>
                                 </div>
