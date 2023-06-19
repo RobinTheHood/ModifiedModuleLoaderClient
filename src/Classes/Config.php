@@ -414,6 +414,16 @@ class Config
     }
 
     /**
+     * Set logging in config.
+     *
+     * @param string $logging.
+     */
+    public static function setLogging(string $logging): void
+    {
+        self::writeConfiguration(['logging' => $logging]);
+    }
+
+    /**
      * Get logging from config.
      *
      * @return bool Returns logging from config or null.

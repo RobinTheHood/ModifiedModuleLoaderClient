@@ -53,6 +53,8 @@ function viewIsSelected(bool $value): string
                         <div class="tab-pane fade show active" id="v-pills-general" role="tabpanel" aria-labelledby="v-pills-general-tab">
                             <h2>Allgemein</h2>
                             <form action="?action=settings&section=general" method="post">
+
+                                <!-- accessToken -->
                                 <div class="form-group">
                                     <label for="inputAccessToken">AccessToken</label>
                                     <div class="input-group mb-3">
@@ -62,6 +64,13 @@ function viewIsSelected(bool $value): string
                                         </div>
                                     </div>
                                     <p>Aus Sicherheitsgründen ist das Ändern des AccessTokens gesperrt. Der Wert kann unter <code style="word-break: break-all"><?= Config::path(); ?></code> geändert werden.</p>
+                                </div>
+
+                                <!-- adminDir -->
+                                <div class="form-group">
+                                    <label for="inputAdminDir">Admin-Verzeichnis</label>
+                                    <input type="text" name="adminDir" class="form-control" id="inputAdminDir" value="<?= Config::getAdminDir(); ?>">
+                                    <p>Der MMLC kann dein Admin-Verzeichnis automatischen finden, auch wenn es umbenannt wurde. Sollte das nicht funktionieren, kann hier der Namen des Admin-Verzeichnis eintragen werden. Lasse das Feld leer, wenn der MMLC automatisch veruschen soll, das Admin-Verzeichnis zu finden. Standard-Wert ist kein Wert oder <code>admin</code></p>
                                 </div>
 
                                 <div class="form-group">
@@ -107,13 +116,24 @@ function viewIsSelected(bool $value): string
                                 <div class="form-group">
                                     <label for="inputModulesLocalDir">Module Pfad</label>
                                     <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?= Config::getModulesLocalDir(); ?>">
-                                    <p>In diesem Ordner werden Module für den MMLC heruntergeladen.</p>
+                                    <p>In diesem Ordner werden Module für den MMLC heruntergeladen. Der Standard Wert ist <code>Modules</code></p>
                                 </div>
 
-                                <!-- installMode -->
+                                <!-- logging -->
+                                <div class="form-group">
+                                    <label for="inputLogging">Logging</label>
+                                    <select name="logging" class="form-control" id="inputLogging" size="1">
+                                        <option <?= viewIsSelected(Config::getLogging() === true) ?> value="true">true</option>
+                                        <option <?= viewIsSelected(Config::getLogging() === false) ?> value="false">false</option>
+                                    </select>
+
+                                    <p>Sollen (Fehler-) Meldungen im Verzeichnis <code>ModifiedModuleLoaderClient/logs</code> protokolliert werden?</p>
+                                </div>
+
+                                <!-- dependencyMode -->
                                 <div class="form-group">
                                     <label for="inputDependencyMode">Abhängigkeitsmodus</label>
-                                    <select name="dependencyMode" class="form-control" id="dependencyMode" size="1">
+                                    <select name="dependencyMode" class="form-control" id="inputDependencyMode" size="1">
                                         <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_STRICT) ?> value="strict">strict</option>
                                         <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_LAX) ?> value="lax">lax</option>
                                     </select>
@@ -130,6 +150,13 @@ function viewIsSelected(bool $value): string
                                     </select>
 
                                     <p>Du kannst zwischen <code>copy</code> und <code>link</code> wählen. Hast du den MMLC in einem Live-Shop im Einsatz, wähle <code>copy</code>. Wenn du mit dem MMLC Module entwickelst, wähle <code>link</code>.</p>
+                                </div>
+
+                                <!-- exceptionMonitorDomain -->
+                                <div class="form-group">
+                                    <label for="inputExceptionMonitorDomain">ExceptionMonitor Domain</label>
+                                    <input type="text" name="exceptionMonitorDomain" class="form-control" id="inputExceptionMonitorDomain" value="<?= Config::getExceptionMonitorDomain(); ?>">
+                                    <p>Wenn der MMLC programmierfehler im Browser anzeigen soll, kannst hier die Domain eintragen werden, für die dieses gilt. Der ExceptionMonitor wird bei Fehlern aktiv, sobald die Domain hinterlegte Domain die gleiche ist, von der der MMLC aufgerufen wird. Beispiel <code>www.example.org</code></p>
                                 </div>
 
                                 <div class="form-group">

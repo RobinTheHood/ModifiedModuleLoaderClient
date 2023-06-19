@@ -612,6 +612,10 @@ class IndexController extends Controller
         if ($this->isPostRequest()) {
             $parsedBody = $this->serverRequest->getParsedBody();
 
+            if (isset($parsedBody['adminDir'])) {
+                Config::setAdminDir($parsedBody['adminDir']);
+            }
+
             if (isset($parsedBody['username'])) {
                 Config::setUsername($parsedBody['username']);
             }
@@ -636,12 +640,20 @@ class IndexController extends Controller
                 Config::setModulesLocalDir($parsedBody['modulesLocalDir']);
             }
 
+            if (isset($parsedBody['logging'])) {
+                Config::setLogging($parsedBody['logging']);
+            }
+
             if (isset($parsedBody['installMode'])) {
                 Config::setInstallMode($parsedBody['installMode']);
             }
 
             if (isset($parsedBody['dependencyMode'])) {
                 Config::setDependencyMode($parsedBody['dependencyMode']);
+            }
+
+            if (isset($parsedBody['exceptionMonitorDomain'])) {
+                Config::setExceptionMonitorDomain($parsedBody['exceptionMonitorDomain']);
             }
 
             Notification::pushFlashMessage([
