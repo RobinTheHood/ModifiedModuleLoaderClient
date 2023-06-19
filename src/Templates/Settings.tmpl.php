@@ -110,7 +110,16 @@ function viewIsSelected(bool $value): string
                                     <p>In diesem Ordner werden Module für den MMLC heruntergeladen.</p>
                                 </div>
 
-                                <!-- installMode -->
+                                <!-- logging -->
+                                <div class="form-group">
+                                    <label for="inputLogging">Logging</label>
+                                    <select name="logging" class="form-control" id="inputLogging" size="1">
+                                        <option <?= viewIsSelected(Config::getLogging() === true) ?> value="true">true</option>
+                                        <option <?= viewIsSelected(Config::getLogging() === false) ?> value="false">false</option>
+                                    </select>
+
+                                    <p>Sollen (Fehler-) Meldungen im Verzeichnis <code>ModifiedModuleLoaderClient/logs</code> protokolliert werden?</p>
+                                </div>
                                 <div class="form-group">
                                     <label for="inputDependencyMode">Abhängigkeitsmodus</label>
                                     <select name="dependencyMode" class="form-control" id="dependencyMode" size="1">

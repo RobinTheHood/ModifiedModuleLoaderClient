@@ -636,6 +636,10 @@ class IndexController extends Controller
                 Config::setModulesLocalDir($parsedBody['modulesLocalDir']);
             }
 
+            if (isset($parsedBody['logging'])) {
+                Config::setLogging($parsedBody['logging']);
+            }
+
             if (isset($parsedBody['installMode'])) {
                 Config::setInstallMode($parsedBody['installMode']);
             }
