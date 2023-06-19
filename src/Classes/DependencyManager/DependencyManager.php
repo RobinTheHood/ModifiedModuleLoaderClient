@@ -17,6 +17,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSetFactory;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
@@ -138,5 +139,41 @@ class DependencyManager
                 throw new DependencyException("Required Module $a can not be installed because the Module has changes");
             }
         }
+    }
+
+    /**
+     * Liefert alle fehlenden (nicht installierte) Abhängigkeiten zu einem Modul
+     *
+     * @return array<string, string>
+     */
+    public function getMissingDependencies(Module $module): array
+    {
+        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $moduleLoader->resetCache();
+        $missing = [];
+
+        foreach ($module->getRequire() as $archiveName => $version) {
+            $found = false;
+            $depModules = $moduleLoader->loadAllVersionsByArchiveName($archiveName);
+            foreach ($depModules as $depModule) {
+                if (!$depModule->isInstalled()) {
+                    continue;
+                }
+
+                if (!$this->comparator->satisfies($depModule->getVersion(), $version)) {
+                    continue;
+                }
+
+                $found = true;
+                $missing += $this->getMissingDependencies($depModule);
+                break;
+            }
+
+            if (!$found) {
+                $missing += [$archiveName => $version];
+            }
+        }
+
+        return $missing;
     }
 }
