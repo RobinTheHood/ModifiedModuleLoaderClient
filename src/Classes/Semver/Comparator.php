@@ -23,12 +23,33 @@ class Comparator
     /** @var Parser */
     protected $parser;
 
+    /** @var ConstraintParser */
+    protected $constraintParser;
+
+    /** @var TagComparator */
+    protected $tagComparator;
+
     /** @var int */
     private $mode = self::CARET_MODE_STRICT;
 
-    public function __construct(Parser $parser, int $mode = self::CARET_MODE_STRICT)
+    public static function create(int $mode): Comparator
     {
+        $parser = Parser::create();
+        $constraintParser = ConstraintParser::create($mode);
+        $tagComparator = TagComparator::create();
+        return new Comparator($parser, $constraintParser, $tagComparator, $mode);
+    }
+
+    public function __construct(
+        Parser $parser,
+        ConstraintParser $constraintParser,
+        TagComparator $tagComparator,
+        int $mode
+    ) {
         $this->parser = $parser;
+        $this->constraintParser = $constraintParser;
+        $this->tagComparator = $tagComparator;
+        $this->mode = $mode;
     }
 
     public function greaterThan(string $versionString1, string $versionString2): bool
@@ -71,7 +92,7 @@ class Comparator
             $version1->getMajor() == $version2->getMajor() &&
             $version1->getMinor() == $version2->getMinor() &&
             $version1->getPatch() == $version2->getPatch() &&
-            (new TagComparator())->greaterThan($version1->getTag(), $version2->getTag())
+            $this->tagComparator->greaterThan($version1->getTag(), $version2->getTag())
         ) {
             return true;
         }
@@ -188,9 +209,8 @@ class Comparator
 
     public function satisfies(string $versionString1, string $constrainString): bool
     {
-        $constraintParser = new ConstraintParser($this->parser);
         try {
-            $constraint = $constraintParser->parse($constrainString);
+            $constraint = $this->constraintParser->parse($constrainString);
         } catch (ParseErrorException $e) {
             return false;
         }
