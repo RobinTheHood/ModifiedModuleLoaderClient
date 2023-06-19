@@ -33,15 +33,10 @@ class MmlcVersionInfoLoader
 
     public static function createLoader(): MmlcVersionInfoLoader
     {
-        $parser = new Parser();
-        $comparator = new Comparator($parser, Comparator::CARET_MODE_STRICT);
-        $sorter = new Sorter($comparator);
-        $filter = new Filter($parser, $comparator, $sorter);
-
         $mmlcVersionInfoLoader = new MmlcVersionInfoLoader(
             new ApiRequest(),
-            $parser,
-            $filter
+            Parser::create(),
+            Filter::create(Comparator::CARET_MODE_STRICT)
         );
 
         return $mmlcVersionInfoLoader;
