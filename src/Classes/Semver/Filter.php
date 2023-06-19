@@ -23,6 +23,15 @@ class Filter
 
     private $parser;
 
+    public static function create(int $mode): Filter
+    {
+        $parser = Parser::create();
+        $comparator = Comparator::create($mode);
+        $sorter = Sorter::create($mode);
+        $filter = new Filter($parser, $comparator, $sorter);
+        return $filter;
+    }
+
     public function __construct(Parser $parser, Comparator $comparator, Sorter $sorter)
     {
         $this->parser = $parser;
