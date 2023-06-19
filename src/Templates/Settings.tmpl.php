@@ -114,7 +114,7 @@ function viewIsSelected(bool $value): string
                                 <div class="form-group">
                                     <label for="inputModulesLocalDir">Module Pfad</label>
                                     <input type="text" name="modulesLocalDir" class="form-control" id="inputModulesLocalDir" value="<?= Config::getModulesLocalDir(); ?>">
-                                    <p>In diesem Ordner werden Module für den MMLC heruntergeladen.</p>
+                                    <p>In diesem Ordner werden Module für den MMLC heruntergeladen. Der Standard Wert ist <code>Modules</code></p>
                                 </div>
 
                                 <!-- logging -->
