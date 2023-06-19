@@ -53,6 +53,8 @@ function viewIsSelected(bool $value): string
                         <div class="tab-pane fade show active" id="v-pills-general" role="tabpanel" aria-labelledby="v-pills-general-tab">
                             <h2>Allgemein</h2>
                             <form action="?action=settings&section=general" method="post">
+
+                                <!-- accessToken -->
                                 <div class="form-group">
                                     <label for="inputAccessToken">AccessToken</label>
                                     <div class="input-group mb-3">
@@ -127,6 +129,8 @@ function viewIsSelected(bool $value): string
 
                                     <p>Sollen (Fehler-) Meldungen im Verzeichnis <code>ModifiedModuleLoaderClient/logs</code> protokolliert werden?</p>
                                 </div>
+
+                                <!-- dependencyMode -->
                                 <div class="form-group">
                                     <label for="inputDependencyMode">Abhängigkeitsmodus</label>
                                     <select name="dependencyMode" class="form-control" id="inputDependencyMode" size="1">
