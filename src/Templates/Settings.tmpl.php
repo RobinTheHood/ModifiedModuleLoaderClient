@@ -148,6 +148,13 @@ function viewIsSelected(bool $value): string
                                     <p>Du kannst zwischen <code>copy</code> und <code>link</code> wählen. Hast du den MMLC in einem Live-Shop im Einsatz, wähle <code>copy</code>. Wenn du mit dem MMLC Module entwickelst, wähle <code>link</code>.</p>
                                 </div>
 
+                                <!-- exceptionMonitorDomain -->
+                                <div class="form-group">
+                                    <label for="inputExceptionMonitorDomain">ExceptionMonitor Domain</label>
+                                    <input type="text" name="exceptionMonitorDomain" class="form-control" id="inputExceptionMonitorDomain" value="<?= Config::getExceptionMonitorDomain(); ?>">
+                                    <p>Wenn der MMLC programmierfehler im Browser anzeigen soll, kannst hier die Domain eintragen werden, für die dieses gilt. Der ExceptionMonitor wird bei Fehlern aktiv, sobald die Domain hinterlegte Domain die gleiche ist, von der der MMLC aufgerufen wird. Beispiel <code>www.example.org</code></p>
+                                </div>
+
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary">Speichern</button>
                                 </div>

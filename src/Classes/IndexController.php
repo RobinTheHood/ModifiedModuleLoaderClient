@@ -652,6 +652,10 @@ class IndexController extends Controller
                 Config::setDependencyMode($parsedBody['dependencyMode']);
             }
 
+            if (isset($parsedBody['exceptionMonitorDomain'])) {
+                Config::setExceptionMonitorDomain($parsedBody['exceptionMonitorDomain']);
+            }
+
             Notification::pushFlashMessage([
                 'text' => 'Einstellungen erfolgreich gespeichert.',
                 'type' => 'success'
