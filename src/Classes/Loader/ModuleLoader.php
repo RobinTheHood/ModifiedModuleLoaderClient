@@ -13,20 +13,46 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 
 class ModuleLoader
 {
-    private static $moduleLoader = null;
-    private $cachedModules;
+    /** @var Module[] */
+    private static $cachedModules = [];
 
-    public static function getModuleLoader(): ModuleLoader
+    /** @var LocalModuleLoader */
+    private $localModuleLoader;
+
+    /** @var RemoteModuleLoader */
+    private $remoteModuleLoader;
+
+    /** @var ModuleFilter */
+    private $moduleFilter;
+
+    public static function create(int $mode): ModuleLoader
     {
-        if (!self::$moduleLoader) {
-            self::$moduleLoader = new ModuleLoader();
-        }
-        return self::$moduleLoader;
+        $moduleFilter = ModuleFilter::create($mode);
+        $localModuleLoader = LocalModuleLoader::create($mode);
+        $remoteModuleLoader = RemoteModuleLoader::create();
+        $moduleLoader = new ModuleLoader($localModuleLoader, $remoteModuleLoader, $moduleFilter);
+        return $moduleLoader;
+    }
+
+    public static function createFromConfig(): ModuleLoader
+    {
+        return self::create(Config::getDependenyMode());
+    }
+
+    public function __construct(
+        LocalModuleLoader $localModuleLoader,
+        RemoteModuleLoader $remoteModuleLoader,
+        ModuleFilter $moduleFilter
+    ) {
+        $this->localModuleLoader = $localModuleLoader;
+        $this->remoteModuleLoader = $remoteModuleLoader;
+        $this->moduleFilter = $moduleFilter;
     }
 
     /**
@@ -37,13 +63,9 @@ class ModuleLoader
      */
     public function resetCache()
     {
-        $this->cachedModules = null;
-
-        $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $localModuleLoader->resetCache();
-
-        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-        $remoteModuleLoader->resetCache();
+        self::$cachedModules = [];
+        $this->localModuleLoader->resetCache();
+        $this->remoteModuleLoader->resetCache();
     }
 
     /**
@@ -53,21 +75,18 @@ class ModuleLoader
      */
     public function loadAllVersionsWithLatestRemote(): array
     {
-        if (isset($this->cachedModules)) {
-            return $this->cachedModules;
+        if (self::$cachedModules) {
+            return self::$cachedModules;
         }
 
-        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-        $remoteModules = $remoteModuleLoader->loadAllLatestVersions();
-
-        $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $localModules = $localModuleLoader->loadAllVersions();
+        $remoteModules = $this->remoteModuleLoader->loadAllLatestVersions();
+        $localModules = $this->localModuleLoader->loadAllVersions();
 
         $modules = array_merge($localModules, $remoteModules);
-        $modules = ModuleFilter::filterValid($modules);
-        $this->cachedModules = $modules;
+        $modules = $this->moduleFilter->filterValid($modules);
+        self::$cachedModules = $modules;
 
-        return $this->cachedModules;
+        return self::$cachedModules;
     }
 
     /**
@@ -77,14 +96,11 @@ class ModuleLoader
      */
     public function loadAllVersionsByArchiveName(string $archiveName): array
     {
-        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-        $remoteModules = $remoteModuleLoader->loadAllVersionsByArchiveName($archiveName);
-
-        $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
+        $remoteModules = $this->remoteModuleLoader->loadAllVersionsByArchiveName($archiveName);
+        $localModules = $this->localModuleLoader->loadAllVersionsByArchiveName($archiveName);
 
         $modules = array_merge($localModules, $remoteModules);
-        $modules = ModuleFilter::filterValid($modules);
+        $modules = $this->moduleFilter->filterValid($modules);
 
         return $modules;
     }
@@ -96,18 +112,15 @@ class ModuleLoader
      */
     public function loadAllVersionsByArchiveNameWithLatestRemote(string $archiveName): array
     {
-        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-        $remoteModule = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
-
-        $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $localModules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
+        $remoteModule = $this->remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
+        $localModules = $this->localModuleLoader->loadAllVersionsByArchiveName($archiveName);
 
         $modules = $localModules;
         if ($remoteModule) {
             $modules[] = $remoteModule;
         }
 
-        $modules = ModuleFilter::filterValid($modules);
+        $modules = $this->moduleFilter->filterValid($modules);
         return $modules;
     }
 
@@ -119,15 +132,13 @@ class ModuleLoader
      */
     public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
     {
-        $moduleLoader = LocalModuleLoader::getModuleLoader();
-        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+        $module = $this->localModuleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if ($module) {
             return $module;
         }
 
-        $moduleLoader = RemoteModuleLoader::getModuleLoader();
-        $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+        $module = $this->remoteModuleLoader->loadByArchiveNameAndVersion($archiveName, $version);
         return $module;
     }
 
@@ -139,19 +150,17 @@ class ModuleLoader
     public function loadLatestVersionByArchiveName(string $archiveName): ?Module
     {
         $modules = [];
-        $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $module = $localModuleLoader->loadLatestVersionByArchiveName($archiveName);
+        $module = $this->localModuleLoader->loadLatestVersionByArchiveName($archiveName);
         if ($module) {
             $modules[] = $module;
         }
 
-        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
-        $module = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
+        $module = $this->remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
         if ($module) {
             $modules[] = $module;
         }
 
-        $latestVersion = ModuleFilter::getLatestVersion($modules);
+        $latestVersion = $this->moduleFilter->getLatestVersion($modules);
         return $latestVersion;
     }
 
@@ -163,7 +172,7 @@ class ModuleLoader
     public function loadAllByArchiveNameAndConstraint(string $archiveName, string $versionConstraint): array
     {
         $modules = $this->loadAllVersionsByArchiveName($archiveName);
-        $modules = ModuleFilter::filterByVersionConstrain($modules, $versionConstraint);
+        $modules = $this->moduleFilter->filterByVersionConstrain($modules, $versionConstraint);
         return $modules;
     }
 
@@ -174,7 +183,7 @@ class ModuleLoader
     public function loadLatestByArchiveNameAndConstraint(string $archiveName, string $versionConstraint): ?Module
     {
         $modules = $this->loadAllByArchiveNameAndConstraint($archiveName, $versionConstraint);
-        $module = ModuleFilter::getLatestVersion($modules);
+        $module = $this->moduleFilter->getLatestVersion($modules);
         return $module;
     }
 }

@@ -29,6 +29,39 @@ use RuntimeException;
 
 class ModuleInstaller
 {
+    /** @var DependencyManager */
+    private $dependencyManager;
+
+    /** @var ModuleFilter */
+    private $moduleFilter;
+
+    /** @var LocalModuleLoader */
+    private $localModuleLoader;
+
+    public static function create(int $mode): ModuleInstaller
+    {
+        $dependencyManager = DependencyManager::create($mode);
+        $moduleFilter = ModuleFilter::create($mode);
+        $localModuleLoader = LocalModuleLoader::create($mode);
+        $moduleInstaller = new ModuleInstaller($dependencyManager, $moduleFilter, $localModuleLoader);
+        return $moduleInstaller;
+    }
+
+    public static function createFromConfig(): ModuleInstaller
+    {
+        return self::create(Config::getDependenyMode());
+    }
+
+    public function __construct(
+        DependencyManager $dependencyManager,
+        ModuleFilter $moduleFilter,
+        LocalModuleLoader $localModuleLoader
+    ) {
+        $this->dependencyManager = $dependencyManager;
+        $this->moduleFilter = $moduleFilter;
+        $this->localModuleLoader = $localModuleLoader;
+    }
+
     public function pull(Module $module): bool
     {
         if ($module->isLoaded()) {
@@ -88,8 +121,7 @@ class ModuleInstaller
     public function install(Module $module, bool $force = false): void
     {
         if (!$force) {
-            $dependencyManager = new DependencyManager();
-            $dependencyManager->canBeInstalled($module);
+            $this->dependencyManager->canBeInstalled($module);
         }
 
         $this->internalInstall($module);
@@ -98,8 +130,7 @@ class ModuleInstaller
 
     public function installWithDependencies(Module $module): void
     {
-        $dependencyManager = new DependencyManager();
-        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module, ['']);
+        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module, ['']);
 
         if (!$combinationSatisfyerResult->foundCombination) {
             $message =
@@ -177,8 +208,7 @@ class ModuleInstaller
 
     private function internalInstallDependencies(Module $parentModule, Combination $combination): void
     {
-        $dependencyManager = new DependencyManager();
-        $modules = $dependencyManager->getAllModulesFromCombination($combination);
+        $modules = $this->dependencyManager->getAllModulesFromCombination($combination);
 
         foreach ($modules as $module) {
             if ($parentModule->getArchiveName() === $module->getArchiveName()) {
@@ -193,8 +223,7 @@ class ModuleInstaller
         $installedModule = $module->getInstalledVersion();
         $newModule = $module->getNewestVersion();
 
-        $dependencyManager = new DependencyManager();
-        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
+        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
 
         if (!$combinationSatisfyerResult->foundCombination) {
             $message =
@@ -222,8 +251,7 @@ class ModuleInstaller
         $installedModule = $module->getInstalledVersion();
         $newModule = $module->getNewestVersion();
 
-        $dependencyManager = new DependencyManager();
-        $combinationSatisfyerResult = $dependencyManager->canBeInstalled($module);
+        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
 
         if (!$combinationSatisfyerResult->foundCombination) {
             $message =
@@ -249,9 +277,8 @@ class ModuleInstaller
 
     private function reload(Module $module): Module
     {
-        $moduleLoader = new LocalModuleLoader();
-        $moduleLoader->resetCache();
-        $reloadedModule = $moduleLoader->loadByArchiveNameAndVersion(
+        $this->localModuleLoader->resetCache();
+        $reloadedModule = $this->localModuleLoader->loadByArchiveNameAndVersion(
             $module->getArchiveName(),
             $module->getVersion()
         );
@@ -279,10 +306,9 @@ class ModuleInstaller
 
     private function createAutoloadFile(): void
     {
-        $localModuleLoader = LocalModuleLoader::getModuleLoader();
-        $localModuleLoader->resetCache();
-        $localModules = $localModuleLoader->loadAllVersions();
-        $installedLocalModules = ModuleFilter::filterInstalled($localModules);
+        $this->localModuleLoader->resetCache();
+        $localModules = $this->localModuleLoader->loadAllVersions();
+        $installedLocalModules = $this->moduleFilter->filterInstalled($localModules);
 
         $namespaceEntrys = [];
         foreach ($installedLocalModules as $module) {

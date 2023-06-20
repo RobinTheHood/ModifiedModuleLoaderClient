@@ -23,6 +23,26 @@ class ModuleTreeBuilder
     /** @var array<string, Module[]> */
     private $moduleCache = [];
 
+    /** @var ModuleFilter */
+    private $moduleFilter;
+
+    /** @var ModuleLoader */
+    private $moduleLoader;
+
+    public static function create(int $mode): ModuleTreeBuilder
+    {
+        $moduleFilter = ModuleFilter::create($mode);
+        $moduleLoader = ModuleLoader::create($mode);
+        $moduleTreeBuilder = new ModuleTreeBuilder($moduleFilter, $moduleLoader);
+        return $moduleTreeBuilder;
+    }
+
+    public function __construct(ModuleFilter $moduleFilter, ModuleLoader $moduleLoader)
+    {
+        $this->moduleFilter = $moduleFilter;
+        $this->moduleLoader = $moduleLoader;
+    }
+
     /**
      * @param string $archiveName
      * @param string $versionConstraint
@@ -32,13 +52,12 @@ class ModuleTreeBuilder
     {
         $modules = $this->moduleCache[$archiveName] ?? [];
         if (!$modules) {
-            $moduleLoader = ModuleLoader::getModuleLoader();
-            $modules = $moduleLoader->loadAllVersionsByArchiveName($archiveName);
+            $modules = $this->moduleLoader->loadAllVersionsByArchiveName($archiveName);
             $modules = ModuleSorter::sortByVersion($modules);
             $this->moduleCache[$archiveName] = $modules;
         }
 
-        return ModuleFilter::filterByVersionConstrain($modules, $versionConstraint);
+        return $this->moduleFilter->filterByVersionConstrain($modules, $versionConstraint);
     }
 
     /**
