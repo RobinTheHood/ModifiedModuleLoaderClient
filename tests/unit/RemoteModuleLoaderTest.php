@@ -17,14 +17,19 @@ use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class RemoteModuleLoaderTest extends TestCase
 {
     private $loader;
 
+    /** @var ModuleFilter */
+    private $moduleFilter;
+
     protected function setUp(): void
     {
-        $this->loader = RemoteModuleLoader::getModuleLoader();
+        $this->loader = RemoteModuleLoader::create();
+        $this->moduleFilter = ModuleFilter::create(Comparator::CARET_MODE_STRICT);
     }
 
     public function testCanLoadAllVersions()
@@ -34,10 +39,10 @@ class RemoteModuleLoaderTest extends TestCase
         $this->assertContainsOnlyInstancesOf(Module::class, $modules);
         $this->assertGreaterThan(150, count($modules));
 
-        $filteredModules = ModuleFilter::filterByArchiveName($modules, 'composer/autoload');
+        $filteredModules = $this->moduleFilter->filterByArchiveName($modules, 'composer/autoload');
         $this->assertGreaterThan(1, count($filteredModules));
 
-        $filteredModules = ModuleFilter::filterByArchiveName($modules, 'robinthehood/modified-std-module');
+        $filteredModules = $this->moduleFilter->filterByArchiveName($modules, 'robinthehood/modified-std-module');
         $this->assertGreaterThan(2, count($filteredModules));
     }
 
@@ -48,10 +53,10 @@ class RemoteModuleLoaderTest extends TestCase
         $this->assertContainsOnlyInstancesOf(Module::class, $modules);
         $this->assertGreaterThan(30, count($modules));
 
-        $filteredModules = ModuleFilter::filterNewestVersion($modules);
+        $filteredModules = $this->moduleFilter->filterNewestVersion($modules);
         $this->assertEquals(count($filteredModules), count($modules));
 
-        $filteredModules = ModuleFilter::filterByArchiveName($modules, 'robinthehood/modified-std-module');
+        $filteredModules = $this->moduleFilter->filterByArchiveName($modules, 'robinthehood/modified-std-module');
         $this->assertEquals(1, count($filteredModules));
     }
 

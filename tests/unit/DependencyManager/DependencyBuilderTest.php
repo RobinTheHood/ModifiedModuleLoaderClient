@@ -24,9 +24,7 @@ class DependencyBuilderTest extends TestCase
 {
     public function testSatisfies1()
     {
-        ModuleFilter::$comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
-
-        $dependencyBuilder = new DependencyBuilder();
+        $dependencyBuilder = DependencyBuilder::create(Comparator::CARET_MODE_STRICT);
         $systemSet = new SystemSet();
 
         $systemSet->set([
@@ -76,9 +74,7 @@ class DependencyBuilderTest extends TestCase
 
     public function testSatisfies2()
     {
-        ModuleFilter::$comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
-
-        $dependencyBuilder = new DependencyBuilder();
+        $dependencyBuilder = DependencyBuilder::create(Comparator::CARET_MODE_STRICT);
         $systemSet = new SystemSet();
 
         $systemSet->set([
@@ -129,7 +125,7 @@ class DependencyBuilderTest extends TestCase
 
     public function atestInvokeDependency()
     {
-        $dpb = new DependencyBuilder();
+        $dpb = DependencyBuilder::create(Comparator::CARET_MODE_STRICT);
         $dpb->test();
         die('TEST DONE');
     }

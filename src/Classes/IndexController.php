@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use Psr\Http\Message\ServerRequestInterface;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
@@ -28,6 +29,20 @@ use RuntimeException;
 class IndexController extends Controller
 {
     private const REQUIRED_PHP_VERSION = '7.4.0';
+
+    /** @var ModuleInstaller */
+    private $moduleInstaller;
+
+    /** @var ModuleFilter */
+    private $moduleFilter;
+
+    public function __construct(ServerRequestInterface $serverRequest, array $session = [])
+    {
+        parent::__construct($serverRequest, $session);
+
+        $this->moduleInstaller = ModuleInstaller::createFromConfig();
+        $this->moduleFilter = ModuleFilter::createFromConfig();
+    }
 
     public function invoke()
     {
@@ -174,9 +189,9 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
-        $moduleLoader = ModuleLoader::getModuleLoader();
+        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
         $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
-        $modules = ModuleFilter::filterNewestOrInstalledVersion($modules);
+        $modules = $this->moduleFilter->filterNewestOrInstalledVersion($modules);
 
         $heading = 'Alle Module';
 
@@ -184,19 +199,19 @@ class IndexController extends Controller
         $filterModules = $queryParams['filterModules'] ?? '';
 
         if ($filterModules == 'loaded') {
-            $modules = ModuleFilter::filterLoaded($modules);
+            $modules = $this->moduleFilter->filterLoaded($modules);
             $heading = 'Geladene Module';
         } elseif ($filterModules == 'installed') {
-            $modules = ModuleFilter::filterInstalled($modules);
+            $modules = $this->moduleFilter->filterInstalled($modules);
             $heading = 'Installierte Module';
         } elseif ($filterModules == 'updatable') {
-            $modules = ModuleFilter::filterUpdatable($modules);
+            $modules = $this->moduleFilter->filterUpdatable($modules);
             $heading = 'Aktualisierbare Module';
         } elseif ($filterModules == 'changed') {
-            $modules = ModuleFilter::filterRepairable($modules);
+            $modules = $this->moduleFilter->filterRepairable($modules);
             $heading = 'Geänderte Module';
         } elseif ($filterModules == 'notloaded') {
-            $modules = ModuleFilter::filterNotLoaded($modules);
+            $modules = $this->moduleFilter->filterNotLoaded($modules);
             $heading = 'Nicht geladene Module';
         }
 
@@ -221,12 +236,12 @@ class IndexController extends Controller
         $version = $queryParams['version'] ?? '';
 
         if ($version) {
-            $moduleLoader = ModuleLoader::getModuleLoader();
+            $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
             $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
         } else {
-            $moduleLoader = ModuleLoader::getModuleLoader();
+            $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
             $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($archiveName);
-            $module = ModuleFilter::getLatestVersion($modules);
+            $module = $this->moduleFilter->getLatestVersion($modules);
         }
 
         if (!$module) {
@@ -242,7 +257,7 @@ class IndexController extends Controller
             ]);
         }
 
-        $dependencyManger = new DependencyManager();
+        $dependencyManger = DependencyManager::createFromConfig();
         $missingDependencies = $dependencyManger->getMissingDependencies($module);
         if ($missingDependencies) {
             $string = '';
@@ -275,7 +290,7 @@ class IndexController extends Controller
         $version = $queryParams['version'] ?? '';
         $data = $queryParams['data'] ?? '';
 
-        $moduleLoader = ModuleLoader::getModuleLoader();
+        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if ($data == 'installationMd') {
@@ -335,7 +350,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = new LocalModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -344,8 +359,7 @@ class IndexController extends Controller
         }
 
         try {
-            $moduleInstaller = new ModuleInstaller();
-            $moduleInstaller->installWithDependencies($module);
+            $this->moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
@@ -371,7 +385,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = new LocalModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -380,8 +394,7 @@ class IndexController extends Controller
         }
 
         try {
-            $moduleInstaller = new ModuleInstaller();
-            $moduleInstaller->revertChanges($module);
+            $this->moduleInstaller->revertChanges($module);
         } catch (DependencyException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
@@ -407,7 +420,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = new LocalModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -416,8 +429,7 @@ class IndexController extends Controller
         }
 
         try {
-            $moduleInstaller = new ModuleInstaller();
-            $moduleInstaller->uninstall($module);
+            $this->moduleInstaller->uninstall($module);
         } catch (DependencyException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
@@ -443,7 +455,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = new LocalModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -454,8 +466,7 @@ class IndexController extends Controller
         $newModule = $module;
 
         try {
-            $moduleInstaller = new ModuleInstaller();
-            $newModule = $moduleInstaller->updateWithDependencies($module);
+            $newModule = $this->moduleInstaller->updateWithDependencies($module);
         } catch (DependencyException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
@@ -487,7 +498,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = RemoteModuleLoader::getModuleLoader();
+        $moduleLoader = RemoteModuleLoader::create();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -495,8 +506,7 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleInstaller = new ModuleInstaller();
-        if (!$moduleInstaller->pull($module)) {
+        if (!$this->moduleInstaller->pull($module)) {
             Notification::pushFlashMessage([
                 'text' => "Fehler: Das Module <strong>$archiveName - $version</strong> konnte nicht geladen werden.",
                 'type' => 'error'
@@ -516,7 +526,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = RemoteModuleLoader::getModuleLoader();
+        $moduleLoader = RemoteModuleLoader::create();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -524,8 +534,7 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleInstaller = new ModuleInstaller();
-        if (!$moduleInstaller->pull($module)) {
+        if (!$this->moduleInstaller->pull($module)) {
             Notification::pushFlashMessage([
                 'text' => "Fehler: Das Module <strong>$archiveName - $version</strong> konnte nicht geladen werden.",
                 'type' => 'error'
@@ -533,7 +542,7 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleLoader = new LocalModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -542,8 +551,7 @@ class IndexController extends Controller
         }
 
         try {
-            $moduleInstaller = new ModuleInstaller();
-            $moduleInstaller->installWithDependencies($module);
+            $this->moduleInstaller->installWithDependencies($module);
         } catch (DependencyException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
@@ -569,7 +577,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = new LocalModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -578,8 +586,7 @@ class IndexController extends Controller
         }
 
         try {
-            $moduleInstaller = new ModuleInstaller();
-            $moduleInstaller->delete($module);
+            $this->moduleInstaller->delete($module);
         } catch (DependencyException $e) {
             Notification::pushFlashMessage([
                 'text' => $e->getMessage(),
@@ -690,17 +697,17 @@ class IndexController extends Controller
 
     public function calcModuleUpdateCount()
     {
-        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $modules = $moduleLoader->loadAllVersions();
-        $modules = ModuleFilter::filterInstalled($modules);
-        return count(ModuleFilter::filterUpdatable($modules));
+        $modules = $this->moduleFilter->filterInstalled($modules);
+        return count($this->moduleFilter->filterUpdatable($modules));
     }
 
     public function calcModuleChangeCount()
     {
-        $moduleLoader = LocalModuleLoader::getModuleLoader();
+        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $modules = $moduleLoader->loadAllVersions();
-        return count(ModuleFilter::filterRepairable($modules));
+        return count($this->moduleFilter->filterRepairable($modules));
     }
 
     public function calcSystemUpdateCount()

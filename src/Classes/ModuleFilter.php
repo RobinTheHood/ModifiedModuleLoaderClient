@@ -16,17 +16,34 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class ModuleFilter
 {
-    public static $comparator;
+    /** @var Comparator */
+    public $comparator;
+
+    public static function create(int $mode): ModuleFilter
+    {
+        $comparator = Comparator::create($mode);
+        $moduleFilter = new ModuleFilter($comparator);
+        return $moduleFilter;
+    }
+
+    public static function createFromConfig(): ModuleFilter
+    {
+        return self::create(Config::getDependenyMode());
+    }
+
+    public function __construct(Comparator $comparator)
+    {
+        $this->comparator = $comparator;
+    }
 
     /**
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterLoaded(array $modules): array
+    public function filterLoaded(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -41,7 +58,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterInstalled(array $modules): array
+    public function filterInstalled(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -56,7 +73,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterUpdatable(array $modules): array
+    public function filterUpdatable(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -71,7 +88,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterRepairable(array $modules): array
+    public function filterRepairable(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -86,7 +103,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterNotLoaded(array $modules): array
+    public function filterNotLoaded(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -101,7 +118,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterValid(array $modules): array
+    public function filterValid(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -116,7 +133,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterNewestVersion(array $modules): array
+    public function filterNewestVersion(array $modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -126,8 +143,7 @@ class ModuleFilter
                     continue;
                 }
 
-                $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
-                if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
+                if ($this->comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
                 }
@@ -145,7 +161,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterNewestOrInstalledVersion($modules): array
+    public function filterNewestOrInstalledVersion($modules): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -164,8 +180,7 @@ class ModuleFilter
                     break;
                 }
 
-                $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
-                if ($comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
+                if ($this->comparator->lessThan($module->getVersion(), $filteredModule->getVersion())) {
                     $insertOrReplace = false;
                     break;
                 }
@@ -183,7 +198,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterByArchiveName(array $modules, string $archiveName): array
+    public function filterByArchiveName(array $modules, string $archiveName): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -198,7 +213,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterByVersion(array $modules, string $version): array
+    public function filterByVersion(array $modules, string $version): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
@@ -213,12 +228,11 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module[]
      */
-    public static function filterByVersionConstrain(array $modules, string $constrain): array
+    public function filterByVersionConstrain(array $modules, string $constrain): array
     {
         $filteredModules = [];
         foreach ($modules as $module) {
-            $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
-            if ($comparator->satisfies($module->getVersion(), $constrain)) {
+            if ($this->comparator->satisfies($module->getVersion(), $constrain)) {
                 $filteredModules[] = $module;
             }
         }
@@ -228,12 +242,14 @@ class ModuleFilter
     /**
      * @param Module[] $modules
      */
-    public static function getLatestVersion(array $modules): ?Module
+    public function getLatestVersion(array $modules): ?Module
     {
         $selectedModule = null;
         foreach ($modules as $module) {
-            $comparator = self::$comparator ?? SemverComparatorFactory::createComparator();
-            if (!$selectedModule || $comparator->greaterThan($module->getVersion(), $selectedModule->getVersion())) {
+            if (
+                !$selectedModule
+                || $this->comparator->greaterThan($module->getVersion(), $selectedModule->getVersion())
+            ) {
                 $selectedModule = $module;
             }
         }
@@ -244,7 +260,7 @@ class ModuleFilter
      * @param Module[] $modules
      * @return Module|null
      */
-    public static function getByArchiveNameAndVersion(array $modules, string $archiveName, string $version): ?Module
+    public function getByArchiveNameAndVersion(array $modules, string $archiveName, string $version): ?Module
     {
         foreach ($modules as $module) {
             if ($module->getArchiveName() != $archiveName) {
