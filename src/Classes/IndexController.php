@@ -254,7 +254,8 @@ class IndexController extends Controller
                 'type' => 'warning',
                 'text' =>
                     'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern bei der
-                    Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten: ' . nl2br($string)
+                    Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten:<br>'
+                    . nl2br($string)
             ]);
         }
 
