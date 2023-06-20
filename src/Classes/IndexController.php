@@ -22,6 +22,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RuntimeException;
 
 class IndexController extends Controller
@@ -238,6 +239,22 @@ class IndexController extends Controller
                 'type' => 'error',
                 'text' => 'Error in require in moduleinfo.json of '
                     . $module->getArchiveName() . ' ' . $module->getVersion() . ' - ' . $error
+            ]);
+        }
+
+        $dependencyManger = new DependencyManager();
+        $missingDependencies = $dependencyManger->getMissingDependencies($module);
+        if ($missingDependencies) {
+            $string = '';
+            foreach ($missingDependencies as $archiveName => $version) {
+                $string .= '▶️ ' . $archiveName . ' ' . $version . "\n";
+            }
+
+            Notification::pushFlashMessage([
+                'type' => 'warning',
+                'text' =>
+                    'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern bei der
+                    Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten: ' . nl2br($string)
             ]);
         }
 
