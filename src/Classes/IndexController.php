@@ -257,21 +257,23 @@ class IndexController extends Controller
             ]);
         }
 
-        $dependencyManger = DependencyManager::createFromConfig();
-        $missingDependencies = $dependencyManger->getMissingDependencies($module);
-        if ($missingDependencies) {
-            $string = '';
-            foreach ($missingDependencies as $archiveName => $version) {
-                $string .= '▶️ ' . $archiveName . ' ' . $version . "\n";
-            }
+        if ($module->isInstalled()) {
+            $dependencyManger = DependencyManager::createFromConfig();
+            $missingDependencies = $dependencyManger->getMissingDependencies($module);
+            if ($missingDependencies) {
+                $string = '';
+                foreach ($missingDependencies as $archiveName => $version) {
+                    $string .= '▶️ ' . $archiveName . ' ' . $version . "\n";
+                }
 
-            Notification::pushFlashMessage([
-                'type' => 'warning',
-                'text' =>
-                    'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern bei der
-                    Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten:<br>'
-                    . nl2br($string)
-            ]);
+                Notification::pushFlashMessage([
+                    'type' => 'warning',
+                    'text' =>
+                        'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern bei der
+                        Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten:<br>'
+                        . nl2br($string)
+                ]);
+            }
         }
 
         return $this->render('ModuleInfo', [
