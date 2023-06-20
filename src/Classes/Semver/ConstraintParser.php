@@ -20,6 +20,12 @@ class ConstraintParser
     /** @var Parser $parser */
     private $parser;
 
+    public static function create(int $mode): ConstraintParser
+    {
+        $parser = Parser::create();
+        return new ConstraintParser($parser);
+    }
+
     public function __construct(Parser $parser)
     {
         $this->parser = $parser;

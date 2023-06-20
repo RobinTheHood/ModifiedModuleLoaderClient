@@ -23,7 +23,6 @@ class SemverComparatorFactory
      */
     public static function createComparator()
     {
-        $comparator = new Comparator(new Parser(), Config::getDependenyMode());
-        return $comparator;
+        return Comparator::create(Config::getDependenyMode());
     }
 }

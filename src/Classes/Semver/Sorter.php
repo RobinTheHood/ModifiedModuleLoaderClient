@@ -18,6 +18,13 @@ class Sorter
     /** @var Comparator */
     private $comparator;
 
+    public static function create(int $mode): Sorter
+    {
+        $comparator = Comparator::create($mode);
+        $sorter = new Sorter($comparator);
+        return $sorter;
+    }
+
     public function __construct(Comparator $comparator)
     {
         $this->comparator = $comparator;

@@ -17,11 +17,15 @@ use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSet;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class DependencyBuilderTest extends TestCase
 {
     public function testSatisfies1()
     {
+        ModuleFilter::$comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
+
         $dependencyBuilder = new DependencyBuilder();
         $systemSet = new SystemSet();
 
@@ -72,6 +76,8 @@ class DependencyBuilderTest extends TestCase
 
     public function testSatisfies2()
     {
+        ModuleFilter::$comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
+
         $dependencyBuilder = new DependencyBuilder();
         $systemSet = new SystemSet();
 
