@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use Exception;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 
@@ -99,30 +100,17 @@ class ShopInfo
      */
     public static function scanForAdminDir(): string
     {
-        $resultDirectory = 'admin'; // Set default
+        $adminDirScanner = new AdminDirScanner();
+        $adminDirPaths = $adminDirScanner->getAll(App::getShopRoot());
 
-        $knownAdminPath = App::getShopRoot() . '/admin';
-
-        if (\file_exists($knownAdminPath) && \is_dir($knownAdminPath)) {
-            return $resultDirectory;
+        if (count($adminDirPaths) <= 0) {
+            throw new Exception("No valid admin directory found in " . App::getShopRoot());
         }
 
-        $directorys = FileHelper::scanDir(App::getShopRoot(), FileHelper::DIRS_ONLY, false);
-
-        // List of Files, that the admin dire
-        $files = [
-            'check_update.php'
-        ];
-
-        foreach ($directorys as $directory) {
-            if (!FileHelper::containsAllFiles($files, $directory)) {
-                continue;
-            }
-
-            $resultDirectory = $directory;
-            break;
+        if (count($adminDirPaths) >= 2) {
+            throw new Exception("More than one valid admin directory found in " . App::getShopRoot());
         }
 
-        return basename($resultDirectory);
+        return basename($adminDirPaths[0]);
     }
 }

@@ -20,6 +20,12 @@ class ConstraintParser
     /** @var Parser $parser */
     private $parser;
 
+    public static function create(int $mode): ConstraintParser
+    {
+        $parser = Parser::create();
+        return new ConstraintParser($parser);
+    }
+
     public function __construct(Parser $parser)
     {
         $this->parser = $parser;
@@ -87,7 +93,7 @@ class ConstraintParser
             $constraint->type = Constraint::TYPE_EQUAL;
             $versionString = substr($constraintString, 1);
             //$version = $this->parser->parse($versionString);
-            $constraint->version = null; //$version;
+            //$constraint->version = null; //$version;
             $constraint->versionString = 'auto';
             return $constraint;
         }

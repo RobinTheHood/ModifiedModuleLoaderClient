@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
@@ -22,16 +23,46 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\SemverComparatorFactory;
 
 class DependencyManager
 {
-    /** @var Comparator */
-    protected $comparator;
+    /** @var dependencyBuilder */
+    private $dependencyBuilder;
 
-    public function __construct()
+    /** @var Comparator */
+    private $comparator;
+
+    /** @var ModuleLoader */
+    private $moduleLoader;
+
+    /** @var SystemSetFactory */
+    private $systemSetFactory;
+
+    public static function create(int $mode): DependencyManager
     {
-        $this->comparator = SemverComparatorFactory::createComparator();
+        $dependencyBuilder = DependencyBuilder::create($mode);
+        $comparator = Comparator::create($mode);
+        $moduleLoader = ModuleLoader::create($mode);
+        $systemSetFactory = SystemSetFactory::create($mode);
+        $dependencyManager = new DependencyManager($dependencyBuilder, $comparator, $moduleLoader, $systemSetFactory);
+        return $dependencyManager;
+    }
+
+    public static function createFromConfig(): DependencyManager
+    {
+        return self::create(Config::getDependenyMode());
+    }
+
+    public function __construct(
+        DependencyBuilder $dependencyBuilder,
+        Comparator $comparator,
+        ModuleLoader $moduleLoader,
+        SystemSetFactory $systemSetFactory
+    ) {
+        $this->dependencyBuilder = $dependencyBuilder;
+        $this->comparator = $comparator;
+        $this->moduleLoader = $moduleLoader;
+        $this->systemSetFactory = $systemSetFactory;
     }
 
     /**
@@ -63,12 +94,11 @@ class DependencyManager
      */
     public function getAllModulesFromCombination(Combination $combination): array
     {
-        $moduleLoader = ModuleLoader::getModuleLoader();
-        $moduleLoader->resetCache();
+        $this->moduleLoader->resetCache();
 
         $modules = [];
         foreach ($combination->strip()->getAll() as $archiveName => $version) {
-            $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+            $module = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
             if (!$module) {
                 $message = "Can not find Module {$archiveName} in version {$version}";
                 StaticLogger::log(LogLevel::WARNING, $message);
@@ -87,15 +117,13 @@ class DependencyManager
      */
     public function canBeInstalled(Module $module, array $doNotCheck = []): CombinationSatisfyerResult
     {
-        $systemSetFactory = new SystemSetFactory();
-        $systemSet = $systemSetFactory->getSystemSet();
+        $systemSet = $this->systemSetFactory->getSystemSet();
 
         foreach ($doNotCheck as $name) {
             $systemSet->remove($name);
         }
 
-        $dependencyBuilder = new DependencyBuilder();
-        $combinationSatisfyerResult = $dependencyBuilder->satisfies(
+        $combinationSatisfyerResult = $this->dependencyBuilder->satisfies(
             $module->getArchiveName(),
             $module->getVersion(),
             $systemSet
@@ -138,5 +166,40 @@ class DependencyManager
                 throw new DependencyException("Required Module $a can not be installed because the Module has changes");
             }
         }
+    }
+
+    /**
+     * Liefert alle fehlenden (nicht installierte) Abhängigkeiten zu einem Modul
+     *
+     * @return array<string, string>
+     */
+    public function getMissingDependencies(Module $module): array
+    {
+        $this->moduleLoader->resetCache();
+        $missing = [];
+
+        foreach ($module->getRequire() as $archiveName => $version) {
+            $found = false;
+            $depModules = $this->moduleLoader->loadAllVersionsByArchiveName($archiveName);
+            foreach ($depModules as $depModule) {
+                if (!$depModule->isInstalled()) {
+                    continue;
+                }
+
+                if (!$this->comparator->satisfies($depModule->getVersion(), $version)) {
+                    continue;
+                }
+
+                $found = true;
+                $missing += $this->getMissingDependencies($depModule);
+                break;
+            }
+
+            if (!$found) {
+                $missing += [$archiveName => $version];
+            }
+        }
+
+        return $missing;
     }
 }

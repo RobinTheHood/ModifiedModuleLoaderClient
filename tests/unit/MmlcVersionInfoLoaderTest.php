@@ -20,7 +20,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\MmlcVersionInfoLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Filter;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Sorter;
 
 class MmlcVersionInfoLoaderTest extends TestCase
 {
@@ -73,15 +72,10 @@ class MmlcVersionInfoLoaderTest extends TestCase
 
     private function getMmlcVersionInfoLoader(): MmlcVersionInfoLoader
     {
-        $parser = new Parser();
-        $comparator = new Comparator($parser, Comparator::CARET_MODE_STRICT);
-        $sorter = new Sorter($comparator);
-        $filter = new Filter($parser, $comparator, $sorter);
-
         $mmlcVersionInfoLoader = new MmlcVersionInfoLoader(
             $this->getMockedApiRequest(),
-            $parser,
-            $filter
+            Parser::create(),
+            Filter::create(Comparator::CARET_MODE_STRICT)
         );
 
         return $mmlcVersionInfoLoader;

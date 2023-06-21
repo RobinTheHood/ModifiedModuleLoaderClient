@@ -15,12 +15,9 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Filter;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Sorter;
 use RuntimeException;
 use Throwable;
 
@@ -33,16 +30,10 @@ class SelfUpdater
     private $remoteUpdateServer;
 
     /** @var Comparator */
-    protected $comparator;
-
-    /** @var Parser */
-    protected $parser;
-
-    /** @var Filter */
-    protected $filter;
+    private $comparator;
 
     /** @var MmlcVersionInfoLoader */
-    protected $mmlcVersionInfoLoader;
+    private $mmlcVersionInfoLoader;
 
     /**
      * Während der Installtion werden Dateien und damit auch die Pfade von Klassen verschoben.
@@ -55,9 +46,7 @@ class SelfUpdater
         $this->appRoot = App::getRoot();
         $this->mmlcVersionInfoLoader = $mmlcVersionInfoLoader;
         $this->remoteUpdateServer = $this->getRomteUpdateServer();
-        $this->comparator = new Comparator(new Parser(), Comparator::CARET_MODE_STRICT);
-        $this->parser = new Parser();
-        $this->filter = new Filter($this->parser, $this->comparator, new Sorter($this->comparator));
+        $this->comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
     }
 
     /**

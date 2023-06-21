@@ -17,12 +17,14 @@ use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSet;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class DependencyBuilderTest extends TestCase
 {
     public function testSatisfies1()
     {
-        $dependencyBuilder = new DependencyBuilder();
+        $dependencyBuilder = DependencyBuilder::create(Comparator::CARET_MODE_STRICT);
         $systemSet = new SystemSet();
 
         $systemSet->set([
@@ -72,7 +74,7 @@ class DependencyBuilderTest extends TestCase
 
     public function testSatisfies2()
     {
-        $dependencyBuilder = new DependencyBuilder();
+        $dependencyBuilder = DependencyBuilder::create(Comparator::CARET_MODE_STRICT);
         $systemSet = new SystemSet();
 
         $systemSet->set([
@@ -123,7 +125,7 @@ class DependencyBuilderTest extends TestCase
 
     public function atestInvokeDependency()
     {
-        $dpb = new DependencyBuilder();
+        $dpb = DependencyBuilder::create(Comparator::CARET_MODE_STRICT);
         $dpb->test();
         die('TEST DONE');
     }

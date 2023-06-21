@@ -18,9 +18,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 
 class RemoteModuleLoader
 {
-    private static $moduleLoader = null;
-
-    private $cachedModules;
+    /** @var Module[] */
+    private static $cachedModules = [];
 
     /** @var ApiRequest */
     private $apiRequest;
@@ -28,21 +27,16 @@ class RemoteModuleLoader
     /** @var ApiV1ModuleConverter */
     protected $moduleConverter;
 
+    public static function create(): RemoteModuleLoader
+    {
+        $remoteModuleLoader = new RemoteModuleLoader(new ApiRequest(), new ApiV1ModuleConverter());
+        return $remoteModuleLoader;
+    }
+
     public function __construct(ApiRequest $apiRequest, ApiV1ModuleConverter $moduleConverter)
     {
         $this->apiRequest = $apiRequest;
         $this->moduleConverter = $moduleConverter;
-    }
-
-    public static function getModuleLoader(): RemoteModuleLoader
-    {
-        if (!self::$moduleLoader) {
-            self::$moduleLoader = new RemoteModuleLoader(
-                new ApiRequest(),
-                new ApiV1ModuleConverter()
-            );
-        }
-        return self::$moduleLoader;
     }
 
     /**
@@ -53,7 +47,7 @@ class RemoteModuleLoader
      */
     public function resetCache()
     {
-        $this->cachedModules = null;
+        self::$cachedModules = [];
     }
 
     /**
@@ -75,15 +69,15 @@ class RemoteModuleLoader
      */
     public function loadAllLatestVersions(): array
     {
-        if (isset($this->cachedModules)) {
-            return $this->cachedModules;
+        if (self::$cachedModules) {
+            return self::$cachedModules;
         }
 
         $result = $this->apiRequest->getModules(['filter' => 'latestVersion']);
         $modules = $this->moduleConverter->convertToModules($result);
 
-        $this->cachedModules = $modules;
-        return $this->cachedModules;
+        self::$cachedModules = $modules;
+        return self::$cachedModules;
     }
 
     /**

@@ -47,9 +47,11 @@ class HttpRequest
             "Send POST request to $url\n[OPTIONS]\n" . print_r($options, true) . "[DATA]\n" . print_r($data, true)
         );
 
+        $timeBeforeRequest = microtime(true);
         $result = @file_get_contents($url, false, $context);
+        $time = microtime(true) - $timeBeforeRequest;
 
-        StaticLogger::log(LogLevel::DEBUG, "Response from $url\n" . print_r($result, true));
+        StaticLogger::log(LogLevel::DEBUG, "Response from $url ($time sec)\n" . print_r($result, true));
 
         return $result;
     }

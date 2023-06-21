@@ -74,41 +74,8 @@ class Config
         $configOld = file_get_contents($configPath);
         $configNew = '';
 
-        foreach ($options as $key => $lineNewValue) {
-            $matches = [];
-
-            /**
-             * Look for line in config which matches:
-             * '$key' => 'foobar' (i. e.: 'username' => 'root')
-             *
-             * Look for $lineNewValue in found line and replace it:
-             * '$key' => 'foobar' becomes '$key' => '$lineNewValue'
-             */
-            $regex = '/(\'' . $key . '\')[ ]*=>[ ]*(\'.*\')/';
-
-            preg_match($regex, $configOld, $matches);
-
-            switch (count($matches)) {
-                case 3:
-                    $lineOld = $matches[0];
-                    $lineOldValue = $matches[2];
-                    $lineNewValue = '\'' . $lineNewValue . '\'';
-                    $lineNew = str_replace($lineOldValue, $lineNewValue, $lineOld);
-
-                    $configNew = str_replace($lineOld, $lineNew, $configOld);
-                    $configOld = $configNew;
-                    break;
-
-                case 0:
-                    /**
-                     * To do: add option if it doesn't exist
-                     * instead of showing an error.
-                     */
-                    $configNew = $configOld;
-                    throw new \RuntimeException('Cannot write option. Option "' . $key . '" does not not exist in ' . $configPath . '.');
-                    break;
-            }
-        }
+        $configBuilder = new ConfigBuilder();
+        $configNew = $configBuilder->update($configOld, $options);
 
         file_put_contents($configPath, $configNew);
 
@@ -411,6 +378,16 @@ class Config
     public static function setExceptionMonitorMail(string $newExceptionMonitorMail): void
     {
         self::writeConfiguration(['exceptionMonitorMail' => $newExceptionMonitorMail]);
+    }
+
+    /**
+     * Set logging in config.
+     *
+     * @param string $logging.
+     */
+    public static function setLogging(string $logging): void
+    {
+        self::writeConfiguration(['logging' => $logging]);
     }
 
     /**

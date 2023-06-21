@@ -24,7 +24,7 @@ class SemverComparatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->comparator = new Comparator(new Parser(), Comparator::CARET_MODE_STRICT);
+        $this->comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
     }
 
     public function testSemverCanHandleGreaterThan()

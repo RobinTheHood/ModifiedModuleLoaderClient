@@ -15,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class ModuleLoaderTest extends TestCase
 {
@@ -22,7 +23,7 @@ class ModuleLoaderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->loader = new ModuleLoader();
+        $this->loader = ModuleLoader::create(Comparator::CARET_MODE_STRICT);
     }
 
     public function testCanLoadAllVersionsByContraintWithLocalAuto()

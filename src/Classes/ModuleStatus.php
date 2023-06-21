@@ -148,7 +148,8 @@ class ModuleStatus
 
     public static function hasValidRequire(Module $module): string
     {
-        $constraintParser = new ConstraintParser(new Parser());
+        $constraintParser = ConstraintParser::create(Config::getDependenyMode());
+
         foreach ($module->getRequire() as $archiveName => $constraintString) {
             try {
                 $constraintParser->parse($constraintString);
