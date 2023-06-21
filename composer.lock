@@ -651,16 +651,16 @@
         },
         {
             "name": "robinthehood/exception-monitor",
-            "version": "0.2.3",
+            "version": "0.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RobinTheHood/ExceptionMonitor.git",
-                "reference": "f7364214e8f223d389ecd44bc7893297d77929f8"
+                "reference": "366329a28fe3dbe89a8f0415c60ddaff6ab35ed5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinTheHood/ExceptionMonitor/zipball/f7364214e8f223d389ecd44bc7893297d77929f8",
-                "reference": "f7364214e8f223d389ecd44bc7893297d77929f8",
+                "url": "https://api.github.com/repos/RobinTheHood/ExceptionMonitor/zipball/366329a28fe3dbe89a8f0415c60ddaff6ab35ed5",
+                "reference": "366329a28fe3dbe89a8f0415c60ddaff6ab35ed5",
                 "shasum": ""
             },
             "require": {
@@ -699,9 +699,9 @@
             ],
             "support": {
                 "issues": "https://github.com/RobinTheHood/ExceptionMonitor/issues",
-                "source": "https://github.com/RobinTheHood/ExceptionMonitor/tree/0.2.3"
+                "source": "https://github.com/RobinTheHood/ExceptionMonitor/tree/0.2.4"
             },
-            "time": "2023-03-20T17:49:25+00:00"
+            "time": "2023-06-21T20:30:31+00:00"
         },
         {
             "name": "robinthehood/syntax-highlighter",
