@@ -308,6 +308,10 @@ class IndexController extends Controller
         $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
+        if (!$module) {
+            return ['content' => ''];
+        }
+
         $description = $module->getDescriptionMd() !== '' ? $module->getDescriptionMd() : $module->getDescription();
 
         if ($data == 'installationMd') {
