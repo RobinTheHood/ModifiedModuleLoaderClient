@@ -416,6 +416,19 @@ class Module extends ModuleInfo
     }
 
     /**
+     * Liefert die description.md als HTML.
+     */
+    public function getDescriptionMd(): string
+    {
+        $docFilePath = $this->getDocFilePath('description.md');
+        if (!$docFilePath) {
+            return '';
+        }
+        $path = $this->getUrlOrLocalRootPath() . $docFilePath;
+        return FileHelper::readMarkdown($path);
+    }
+
+    /**
      * Liefert den absoluten Pfad zur modulehash.json
      *
      * Beispiel:

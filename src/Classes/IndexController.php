@@ -308,6 +308,8 @@ class IndexController extends Controller
         $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
+        $description = $module->getDescriptionMd() !== '' ? $module->getDescriptionMd() : $module->getDescription();
+
         if ($data == 'installationMd') {
             return ['content' => $module->getInstallationMd()];
         } elseif ($data == 'usageMd') {
@@ -316,6 +318,8 @@ class IndexController extends Controller
             return ['content' => $module->getChangeLogMd()];
         } elseif ($data == 'readmeMd') {
             return ['content' => $module->getReadmeMd()];
+        } elseif ($data == 'descriptionMd') {
+            return ['content' => $description];
         }
     }
 
