@@ -18,6 +18,10 @@ use RobinTheHood\ModifiedModuleLoaderClient\Archive;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\Archive as ArchiveArchive;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchiveHandler;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchiveName;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchivePuller;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
@@ -38,12 +42,29 @@ class ModuleInstaller
     /** @var LocalModuleLoader */
     private $localModuleLoader;
 
+    /** @var ArchivePuller */
+    private $archivePuller;
+
+    /** @var ArchiveHandler */
+    private $archiveHandler;
+
+
+
+    // new ArchiveHandler($this->localModuleLoader, App::getModulesRoot());
     public static function create(int $mode): ModuleInstaller
     {
         $dependencyManager = DependencyManager::create($mode);
         $moduleFilter = ModuleFilter::create($mode);
         $localModuleLoader = LocalModuleLoader::create($mode);
-        $moduleInstaller = new ModuleInstaller($dependencyManager, $moduleFilter, $localModuleLoader);
+        $archivePuller = ArchivePuller::create();
+        $archiveHandler = ArchiveHandler::create($mode);
+        $moduleInstaller = new ModuleInstaller(
+            $dependencyManager,
+            $moduleFilter,
+            $localModuleLoader,
+            $archivePuller,
+            $archiveHandler
+        );
         return $moduleInstaller;
     }
 
@@ -55,11 +76,15 @@ class ModuleInstaller
     public function __construct(
         DependencyManager $dependencyManager,
         ModuleFilter $moduleFilter,
-        LocalModuleLoader $localModuleLoader
+        LocalModuleLoader $localModuleLoader,
+        ArchivePuller $archivePuller,
+        ArchiveHandler $archiveHandler
     ) {
         $this->dependencyManager = $dependencyManager;
         $this->moduleFilter = $moduleFilter;
         $this->localModuleLoader = $localModuleLoader;
+        $this->archivePuller = $archivePuller;
+        $this->archiveHandler = $archiveHandler;
     }
 
     public function pull(Module $module): bool
@@ -83,6 +108,12 @@ class ModuleInstaller
         }
 
         try {
+            // New
+            $archive = $this->archivePuller->pull($module->getArchiveName(), $module->getVersion(), $archiveUrl);
+            $this->archiveHandler->extract($archive);
+            return true;
+
+            // Old
             $archive = Archive::pullArchive($archiveUrl, $module->getArchiveName(), $module->getVersion());
             $archive->untarArchive();
             return true;
