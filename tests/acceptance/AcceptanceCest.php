@@ -53,6 +53,23 @@ class AcceptanceCest
     /**
      * @after signInSuccessfully
      */
+    public function seeModuleDetails(AcceptanceTester $I)
+    {
+        $this->_login($I);
+
+        $I->amOnPage('/?action=moduleInfo&archiveName=grandeljay/ups&version=0.2.4');
+        $I->see('grandeljay/ups');
+
+        $I->see('Version        0.2.4');
+        $I->see('Kompatibel mit Modified        2.0.7.2');
+        $I->see('Kompatibel mit PHP        ^8.0.0');
+        $I->see('Kompatibel mit MMLC        ^1.21.0');
+        $I->see('Benötigt        composer/autoload: ^1.3.0');
+    }
+
+    /**
+     * @after signInSuccessfully
+     */
     public function seeLoadedModules(AcceptanceTester $I)
     {
         $this->_login($I);
