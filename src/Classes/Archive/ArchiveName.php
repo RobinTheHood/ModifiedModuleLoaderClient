@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
 
 class ArchiveName
 {

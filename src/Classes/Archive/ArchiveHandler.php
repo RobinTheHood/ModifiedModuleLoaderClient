@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 
 class ArchiveHandler
 {
@@ -13,13 +15,24 @@ class ArchiveHandler
 
     private string $modulesRootPath;
 
+
+    public static function create(int $mode): ArchiveHandler
+    {
+        $localModuleLoader = LocalModuleLoader::create($mode);
+        $archiveHandler = new ArchiveHandler(
+            $localModuleLoader,
+            App::getModulesRoot()
+        );
+        return $archiveHandler;
+    }
+
     public function __construct(LocalModuleLoader $localModuleLoader, string $modulesRootPath)
     {
         $this->localModuleLoader = $localModuleLoader;
         $this->modulesRootPath = $modulesRootPath;
     }
 
-    public function pack(ArchiveNew $archive): void
+    public function pack(Archive $archive): void
     {
         $module = $this->localModuleLoader->loadByArchiveNameAndVersion(
             (string) $archive->getArchiveName(),
@@ -48,7 +61,7 @@ class ArchiveHandler
         }
     }
 
-    public function extract(ArchiveNew $archive, bool $external = false): void
+    public function extract(Archive $archive, bool $external = false): void
     {
         $modulePath = $this->getModulePathFromArchive($archive);
         if (file_exists($modulePath)) {
@@ -74,7 +87,7 @@ class ArchiveHandler
         }
     }
 
-    private function getModulePathFromArchive(ArchiveNew $archiveNew): string
+    private function getModulePathFromArchive(Archive $archiveNew): string
     {
         return $this->modulesRootPath . '/' . $archiveNew->getArchiveName() . '/' . $archiveNew->getVersion();
     }

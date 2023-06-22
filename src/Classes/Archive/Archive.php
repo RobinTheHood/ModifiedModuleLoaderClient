@@ -2,16 +2,26 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Version;
 
-class ArchiveNew
+class Archive
 {
     private ArchiveName $archiveName;
     private Version $version;
     private string $archivesRootPath;
     // private string $urlRootPath;
+
+    public static function create(string $archiveName, string $version, string $archivesRootPath): Archive
+    {
+        $archiveNameObj = new ArchiveName($archiveName);
+        $semverParser = Parser::create();
+        $versionObj = $semverParser->parse($version);
+
+        return new Archive($archiveNameObj, $versionObj, $archivesRootPath);
+    }
 
     public function __construct(
         ArchiveName $archiveName,

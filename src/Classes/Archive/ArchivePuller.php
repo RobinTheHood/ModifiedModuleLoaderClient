@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RuntimeException;
 
@@ -29,7 +30,7 @@ class ArchivePuller
         $this->archivesRootPath = $archivesRootPath;
     }
 
-    public function pull(string $archiveName, string $version, string $url): ArchiveNew
+    public function pull(string $archiveName, string $version, string $url): Archive
     {
         $archive = $this->createArchive($archiveName, $version);
 
@@ -45,21 +46,21 @@ class ArchivePuller
         return $archive;
     }
 
-    private function createArchive(string $archiveName, string $version): ArchiveNew
+    private function createArchive(string $archiveName, string $version): Archive
     {
         $archiveNameObj = new ArchiveName($archiveName);
         $versionObj = $this->parser->parse($version);
 
-        return new ArchiveNew($archiveNameObj, $versionObj, $this->archivesRootPath);
+        return new Archive($archiveNameObj, $versionObj, $this->archivesRootPath);
     }
 
     private function isTarArchive($content): bool
     {
-        // Überprüfen, ob $content mit der Tarball-Signatur beginnt
-        $tarballSignature = "\x1f\x8b\x08";
-        $firstBytes = substr($content, 0, 3);
+        // Überprüfen, ob $content die Tarball-Signatur beinhaltet
+        $tarballSignature = "ustar";
+        $magic = substr($content, 257, 5);
 
-        return ($firstBytes === $tarballSignature);
+        return ($magic === $tarballSignature);
     }
 
     private function createDirIfNotExists(string $path): void
