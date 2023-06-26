@@ -104,10 +104,18 @@ class ShopInfo
         $adminDirPaths = $adminDirScanner->getAll(App::getShopRoot());
 
         if (count($adminDirPaths) <= 0) {
-            throw new Exception("No valid admin directory found in " . App::getShopRoot());
+            // NOTE: Vielleicht neue class InvalidAdminDirectoryException hinzufügen
+            throw new Exception(
+                "No valid admin directory found in " . App::getShopRoot()
+                . ". A valid admin directory must be named 'admin' or start with 'admin_'."
+                . " It should also contain a valid 'check_update.php' file."
+                . " If you have a different named admin directory, please refer to"
+                . " 'https://module-loader.de/docs/config_config.php#adminDir' for more information."
+            );
         }
 
         if (count($adminDirPaths) >= 2) {
+            // NOTE: Vielleicht neue class InvalidAdminDirectoryException hinzufügen
             throw new Exception("More than one valid admin directory found in " . App::getShopRoot());
         }
 

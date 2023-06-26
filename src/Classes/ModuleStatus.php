@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ConstraintParser;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 
 class ModuleStatus
 {

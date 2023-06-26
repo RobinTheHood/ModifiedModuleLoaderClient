@@ -153,6 +153,19 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
+        $gitBranch = $this->getCurrentGitBranch(App::getRoot() . '/.git');
+
+        if ($gitBranch) {
+            Notification::pushFlashMessage([
+                'text' =>
+                    'Der MMLC wurde über Git installiert.<br>
+                    🔀 Branch: <strong>' . $gitBranch . '</strong><br>
+                    Bitte führe die Aktualisierung des MMLC über Git durch. Beachte, dass ein Update über den MMLC
+                    möglicherweise zu Fehlern führen kann.',
+                'type' => 'warning'
+            ]);
+        }
+
         // Nächste mögliche MMLC Version ermittlen
         $latest = Config::getSelfUpdate() == 'latest';
         $installedMmlcVersionString = App::getMmlcVersion();
@@ -295,6 +308,12 @@ class IndexController extends Controller
         $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
+        if (!$module) {
+            return ['content' => ''];
+        }
+
+        $description = $module->getDescriptionMd() !== '' ? $module->getDescriptionMd() : $module->getDescription();
+
         if ($data == 'installationMd') {
             return ['content' => $module->getInstallationMd()];
         } elseif ($data == 'usageMd') {
@@ -303,6 +322,8 @@ class IndexController extends Controller
             return ['content' => $module->getChangeLogMd()];
         } elseif ($data == 'readmeMd') {
             return ['content' => $module->getReadmeMd()];
+        } elseif ($data == 'descriptionMd') {
+            return ['content' => $description];
         }
     }
 
@@ -763,5 +784,35 @@ class IndexController extends Controller
             'text' => "Fehler: Das Module <strong>$archiveName - $version</strong> wurde nicht gefunden.",
             'type' => 'error'
         ]);
+    }
+
+    private function getCurrentGitBranch(string $gitPath): ?string
+    {
+        if (!is_dir($gitPath)) {
+            return null;
+        }
+
+        $os = strtoupper(substr(PHP_OS, 0, 3));
+        $command = '';
+
+        switch ($os) {
+            case 'WIN':
+                $command = 'cd /d "' . $gitPath . '" & git symbolic-ref --short HEAD 2>NUL';
+                break;
+            case 'LIN':
+            case 'DAR':
+                $command = 'cd "' . $gitPath . '" && git symbolic-ref --short HEAD 2>/dev/null';
+                break;
+            default:
+                return 'unkown branch';
+        }
+
+        $output = trim('' . shell_exec($command));
+
+        if (empty($output)) {
+            return null;
+        }
+
+        return $output;
     }
 }

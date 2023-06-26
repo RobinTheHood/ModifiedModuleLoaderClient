@@ -137,6 +137,7 @@ class ModuleInstaller
                 "Can not install module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
                 . "No possible combination of versions found";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -195,6 +196,7 @@ class ModuleInstaller
                 "Can not pull and install module {$module->getArchiveName()} {$module->getVersion()}. "
                 . "Module is not loaded.";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleOperationException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -230,6 +232,7 @@ class ModuleInstaller
                 "Can not update module {$module->getArchiveName()} {$module->getVersion()}. "
                 . "No possible combination of versions found";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -258,6 +261,7 @@ class ModuleInstaller
                 "Can not update module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
                 . "No possible combination of versions found";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -286,6 +290,7 @@ class ModuleInstaller
         if (!$reloadedModule) {
             $message = "Can not reload module {$module->getArchiveName()} {$module->getVersion()}";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -298,6 +303,7 @@ class ModuleInstaller
             $message =
                 "Can not revert changes because {$module->getArchiveName()} {$module->getVersion()} is not installed.";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -358,6 +364,7 @@ class ModuleInstaller
                 "Can not uninstall module {$installedModule->getArchiveName()} {$installedModule->getVersion()} "
                 . "because the module has changes.";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 

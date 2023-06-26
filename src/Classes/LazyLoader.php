@@ -46,6 +46,12 @@ class LazyLoader
         return self::createScript($target, $url, $default);
     }
 
+    public static function loadModuleDescription($module, $target, $default = '')
+    {
+        $url = self::createUrl($module, 'descriptionMd');
+        return self::createScript($target, $url, $default);
+    }
+
     public static function loadModuleInstallation($module, $target, $default = '')
     {
         $url = self::createUrl($module, 'installationMd');
