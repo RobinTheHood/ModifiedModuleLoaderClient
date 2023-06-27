@@ -54,7 +54,7 @@ class ArchiveName
 
     private function isValidArchiveName(string $archiveName): bool
     {
-        $pattern = '/^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)$/';
+        $pattern = '/^([A-Za-z0-9_-]+)\/([A-Za-z0-9_-]+)$/';
 
         return preg_match($pattern, $archiveName) === 1;
     }
