@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
 
+/**
+ * Eine VO (Value Object) Klasse
+ */
 class ArchiveName
 {
     private string $value;

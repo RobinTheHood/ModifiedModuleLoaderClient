@@ -54,15 +54,24 @@ class ArchivePuller
         return new Archive($archiveNameObj, $versionObj, $this->archivesRootPath);
     }
 
-    private function isTarArchive($content): bool
+    /**
+     * Überprüft, ob $content die Tarball-Signatur beinhaltet
+     *
+     * @param string $content .tar File as string
+     *
+     * // TODO: Man könnte diese Methode als eigenständige Klasse TarFileVerifier auslagern
+     */
+    private function isTarArchive(string $content): bool
     {
-        // Überprüfen, ob $content die Tarball-Signatur beinhaltet
         $tarballSignature = "ustar";
         $magic = substr($content, 257, 5);
 
         return ($magic === $tarballSignature);
     }
 
+    /**
+     * // TODO: Man könnte diese Methode in die Klasse FileHelper auslagern
+     */
     private function createDirIfNotExists(string $path): void
     {
         if (!@mkdir($path) && !is_dir($path)) {

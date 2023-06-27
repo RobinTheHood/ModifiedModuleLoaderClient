@@ -53,6 +53,10 @@ class Archive
         return $this->version;
     }
 
+    /**
+     * Liefert den Root Path zum Archive Ordner
+     * z. B. /.../ModifiedModuleLoaderClient/Archives/
+     */
     public function getArchivesRootPath(): string
     {
         return $this->archivesRootPath;
@@ -63,6 +67,10 @@ class Archive
     //     return $this->urlRootPath;
     // }
 
+    /**
+     * Liefert den Dateinamen der .tar Datei
+     * z. B. robinthehood_modified-std-module_0.1.0.tar
+     */
     public function getFileName(): string
     {
         return
@@ -72,6 +80,10 @@ class Archive
             . '.tar';
     }
 
+    /**
+     * Liefert den gesamten Path der .tar Datei.
+     * z. B. /.../ModifiedModuleLoaderClient/Archives/robinthehood_modified-std-module_0.1.0.tar
+     */
     public function getFilePath(): string
     {
         return $this->getArchivesRootPath() . '/' . $this->getFileName();
