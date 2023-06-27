@@ -16,8 +16,8 @@ class ArchiveHandler
 {
     private LocalModuleLoader $localModuleLoader;
 
+    /** @var string /.../ModifiedModuleLoaderClient/Modules */
     private string $modulesRootPath;
-
 
     public static function create(int $mode): ArchiveHandler
     {

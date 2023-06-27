@@ -89,8 +89,7 @@ class Module extends ModuleInfo
     private $isLoadable;
 
     /**
-     * Liefert den absoluten Pfad zum MMLC
-     * MMLC-Root Verzeichnis.
+     * Liefert den absoluten Pfad zum MMLC-Root Verzeichnis.
      *
      * Beispiel:
      * /root/dir1/dir2/.../ModifiedModuleLoaderClient
