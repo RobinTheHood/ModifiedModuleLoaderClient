@@ -126,7 +126,7 @@ class ArchiveHandler
      */
     private function getModulePathFromModule(Module $module): string
     {
-        return $module->getLocalRootPath() . DIRECTORY_SEPARATOR . $module->getModulePath();
+        return $module->getLocalRootPath() . '/' . $module->getModulePath();
     }
 
     /**
