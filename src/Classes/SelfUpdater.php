@@ -15,12 +15,11 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\HttpRequest;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Filter;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Sorter;
+use RuntimeException;
+use Throwable;
 
 class SelfUpdater
 {
@@ -31,16 +30,10 @@ class SelfUpdater
     private $remoteUpdateServer;
 
     /** @var Comparator */
-    protected $comparator;
-
-    /** @var Parser */
-    protected $parser;
-
-    /** @var Filter */
-    protected $filter;
+    private $comparator;
 
     /** @var MmlcVersionInfoLoader */
-    protected $mmlcVersionInfoLoader;
+    private $mmlcVersionInfoLoader;
 
     /**
      * Während der Installtion werden Dateien und damit auch die Pfade von Klassen verschoben.
@@ -53,9 +46,7 @@ class SelfUpdater
         $this->appRoot = App::getRoot();
         $this->mmlcVersionInfoLoader = $mmlcVersionInfoLoader;
         $this->remoteUpdateServer = $this->getRomteUpdateServer();
-        $this->comparator = new Comparator(new Parser());
-        $this->parser = new Parser();
-        $this->filter = new Filter($this->parser, $this->comparator, new Sorter($this->comparator));
+        $this->comparator = Comparator::create(Comparator::CARET_MODE_STRICT);
     }
 
     /**
@@ -98,13 +89,20 @@ class SelfUpdater
 
         $this->createRestore($mmlcVersionInfo);
         $this->download($mmlcVersionInfo);
-        $this->backup($mmlcVersionInfo);
         $this->untar($mmlcVersionInfo);
         $this->verifyUntar($mmlcVersionInfo);
-        $this->install($mmlcVersionInfo);
-        $this->setupConfig($mmlcVersionInfo);
-        $this->setupVersion($mmlcVersionInfo);
-        $this->verifyUpdate($mmlcVersionInfo);
+
+        $check = $this->systemCheck($mmlcVersionInfo);
+
+        if ($check) {
+            $this->backup($mmlcVersionInfo);
+            $this->install($mmlcVersionInfo);
+            $this->setupConfig($mmlcVersionInfo);
+            $this->setupVersion($mmlcVersionInfo);
+            $this->verifyUpdate($mmlcVersionInfo);
+        }
+
+        $this->remove($mmlcVersionInfo);
         $this->removeRestore($mmlcVersionInfo);
 
         opcache_reset();
@@ -216,7 +214,11 @@ class SelfUpdater
 
         $files = FileHelper::scanDir($srcPath, FileHelper::FILES_AND_DIRS, true);
         FileHelper::moveFilesTo($files, $srcPath, $destPath);
+    }
 
+    private function remove(MmlcVersionInfo $mmlcVersionInfo): void
+    {
+        $srcPath = $this->appRoot . '/ModifiedModuleLoaderClient';
         system('rm -rf ' . $srcPath);
     }
 
@@ -283,6 +285,53 @@ class SelfUpdater
         }
 
         return true;
+    }
+
+    private function systemCheck(MmlcVersionInfo $mmlcVersionInfo): bool
+    {
+        try {
+            $systemCheck = $this->getSystemCheckObj();
+            $check = $systemCheck->check();
+            if ($check['result'] === 'passed') {
+                return true;
+            } else {
+                Notification::pushFlashMessage([
+                    'text' => "Update canceled - Can not update MMLC. Not all system requirements are met.<br>\n"
+                    . json_encode($check['checks'], JSON_PRETTY_PRINT),
+                    'type' => Notification::TYPE_ERROR
+                ]);
+            }
+        } catch (RuntimeException $e) {
+            Notification::pushFlashMessage([
+                'text' => "Update canceled - " . $e->getMessage(),
+                'type' => Notification::TYPE_ERROR
+            ]);
+        }
+
+        return false;
+    }
+
+    private function getSystemCheckObj()
+    {
+        $systemCheckFilePath = $this->appRoot . '/ModifiedModuleLoaderClient/src/Classes/SystemCheck.php';
+        // $systemCheckFilePath = $this->appRoot . '/src/Classes/SystemCheck.php'; // Für Testzwecke
+
+        if (!file_exists($systemCheckFilePath)) {
+            throw new RuntimeException("Can not find file $systemCheckFilePath in downloaded .tar file");
+        }
+
+        try {
+            $fileContent = file_get_contents($systemCheckFilePath);
+            $fileContent = str_replace('class SystemCheck', 'class SystemCheckNew', $fileContent);
+            $fileContent = str_replace('<?php', '', $fileContent);
+
+            eval($fileContent);
+
+            $classSystemCheckNew = 'RobinTheHood\ModifiedModuleLoaderClient\SystemCheckNew';
+            return new $classSystemCheckNew();
+        } catch (Throwable $t) {
+            throw new RuntimeException("Can not load file $systemCheckFilePath");
+        }
     }
 
     private function postUpdateSteps(): void

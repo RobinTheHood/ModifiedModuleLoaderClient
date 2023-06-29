@@ -38,4 +38,13 @@ class NotificationViewModel
         }
         return '<div class="alert alert-info" role="alert">' . $message . '</div>';
     }
+
+    public function renderMultibleFlashMessages(array $messages): string
+    {
+        $html = '';
+        foreach ($messages as $message) {
+            $html .= self::renderFlashMessage($message['text'], $message['type']) . "\n";
+        }
+        return $html;
+    }
 }

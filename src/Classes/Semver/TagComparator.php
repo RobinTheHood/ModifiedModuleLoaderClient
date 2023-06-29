@@ -55,6 +55,11 @@ class TagComparator
         '' => 100
     ];
 
+    public static function create(): TagComparator
+    {
+        return new TagComparator();
+    }
+
     public function equalTo(string $string1, string $string2): bool
     {
         if ($string1 === $string2) {

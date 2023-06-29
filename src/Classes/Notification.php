@@ -15,6 +15,9 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 class Notification
 {
+    public const TYPE_ERROR = 'error';
+    public const TYPE_WARNING = 'warning';
+
     private const MMLC_SESSION_NAME = 'mmlc';
 
     /**

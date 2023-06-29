@@ -26,7 +26,7 @@ class Logger
     public function log(string $logLevel, string $message): void
     {
         $logEntry = $this->createLogEntry($logLevel, $message);
-        $this->writeLogEntry($logEntry);
+        $this->writeLogEntry($logEntry, $logLevel);
     }
 
     private function createLogEntry(string $logLevel, string $message): string
@@ -38,14 +38,18 @@ class Logger
         return $string;
     }
 
-    private function writeLogEntry(string $message): void
+    private function writeLogEntry(string $message, string $logLevel): void
     {
         if (!file_exists($this->logDir)) {
             mkdir($this->logDir);
         }
 
+        if (!file_exists($this->logDir . $logLevel)) {
+            mkdir($this->logDir . $logLevel);
+        }
+
         $fileName = date('Y-m-d') . '.log';
-        $filePath = $this->logDir . $fileName;
+        $filePath = $this->logDir . $logLevel . '/' . $fileName;
 
         file_put_contents($filePath, $message, FILE_APPEND);
     }

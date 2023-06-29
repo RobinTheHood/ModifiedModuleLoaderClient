@@ -15,6 +15,30 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Semver;
 
 class Constraint
 {
+    public const TYPE_EQUAL = '=';
+    public const TYPE_OR = '||';
+    public const TYPE_AND = ',';
+    public const TYPE_CARET = '^';
+    public const TYPE_LESS_OR_EQUAL = '<=';
+    public const TYPE_LESS = '<';
+    public const TYPE_GREATER_OR_EQUAL = '>=';
+    public const TYPE_GREATER = '>';
+
+    /** @var string $type */
+    public $type;
+
+    /** @var string $constraintString */
+    public $constraintString;
+
+    /** @var Version $version */
+    public $version;
+
+    /** @var string $versionString */
+    public $versionString;
+
+    /** @var Constraint[] $constraints */
+    public $constraints = [];
+
     public static function createConstraintFromConstraints(array $constraints): string
     {
         $constraint = '';

@@ -21,15 +21,22 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 
 class LocalModuleLoader
 {
-    private static $moduleLoader = null;
-    private $modules;
+    /** @var Module[] */
+    private static $cachedModules = [];
 
-    public static function getModuleLoader(): LocalModuleLoader
+    /** @var ModuleFilter */
+    private $moduleFilter;
+
+    public static function create(int $mode): LocalModuleLoader
     {
-        if (!self::$moduleLoader) {
-            self::$moduleLoader = new LocalModuleLoader();
-        }
-        return self::$moduleLoader;
+        $moduleFilter = ModuleFilter::create($mode);
+        $localModuleLoader = new LocalModuleLoader($moduleFilter);
+        return $localModuleLoader;
+    }
+
+    public function __construct(ModuleFilter $moduleFilter)
+    {
+        $this->moduleFilter = $moduleFilter;
     }
 
     /**
@@ -40,7 +47,7 @@ class LocalModuleLoader
      */
     public function resetCache()
     {
-        $this->modules = null;
+        self::$cachedModules = null;
     }
 
     /**
@@ -50,8 +57,8 @@ class LocalModuleLoader
      */
     public function loadAllVersions(): array
     {
-        if (isset($this->modules)) {
-            return $this->modules;
+        if (self::$cachedModules) {
+            return self::$cachedModules;
         }
 
         $moduleDirs = $this->getModuleDirs();
@@ -66,8 +73,8 @@ class LocalModuleLoader
             }
         }
 
-        $this->modules = $modules;
-        return $this->modules;
+        self::$cachedModules = $modules;
+        return self::$cachedModules;
     }
 
     /**
@@ -78,7 +85,7 @@ class LocalModuleLoader
     public function loadAllVersionsByArchiveName(string $archiveName): array
     {
         $modules = $this->loadAllVersions();
-        $modules = ModuleFilter::filterByArchiveName($modules, $archiveName);
+        $modules = $this->moduleFilter->filterByArchiveName($modules, $archiveName);
         return $modules;
     }
 
@@ -90,7 +97,7 @@ class LocalModuleLoader
     public function loadByArchiveNameAndVersion(string $archiveName, string $version): ?Module
     {
         $modules = $this->loadAllVersions();
-        $module = ModuleFilter::getByArchiveNameAndVersion($modules, $archiveName, $version);
+        $module = $this->moduleFilter->getByArchiveNameAndVersion($modules, $archiveName, $version);
         return $module;
     }
 
@@ -102,7 +109,7 @@ class LocalModuleLoader
     public function loadLatestVersionByArchiveName(string $archiveName): ?Module
     {
         $modules = $this->loadAllVersionsByArchiveName($archiveName);
-        $module = ModuleFilter::getLatestVersion($modules);
+        $module = $this->moduleFilter->getLatestVersion($modules);
         return $module;
     }
 
@@ -114,7 +121,7 @@ class LocalModuleLoader
     public function loadAllInstalledVersions(): array
     {
         $modules = $this->loadAllVersions();
-        $installedModules = ModuleFilter::filterInstalled($modules);
+        $installedModules = $this->moduleFilter->filterInstalled($modules);
         return $installedModules;
     }
 

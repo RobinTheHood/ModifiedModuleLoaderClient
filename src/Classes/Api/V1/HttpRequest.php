@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V1;
 
-use Exception;
+use RuntimeException;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 
@@ -30,25 +30,15 @@ class HttpRequest
 
     public function sendPostRequest(string $url, $data): string
     {
-        try {
-            // HTTP POST-Request konfigurieren und senden
-            $result = $this->sendCurlPostRequest($url, $data);
-            return $result;
-        } catch (Exception $e) {
-            return '';
-        }
+        $result = $this->sendCurlPostRequest($url, $data);
+        return $result;
     }
 
 
     public function sendGetRequest(string $url): string
     {
-        try {
-            // HTTP GET-Request konfigurieren und senden
-            $result = $this->sendCurlGetRequest($url);
-            return $result;
-        } catch (Exception $e) {
-            return '';
-        }
+        $result = $this->sendCurlGetRequest($url);
+        return $result;
     }
 
     public static function createQuery(array $queryValues): string
@@ -60,7 +50,10 @@ class HttpRequest
         return $query;
     }
 
-    private function sendCurlGetRequest(string $url)
+    /**
+     * @throws RuntimeException
+     */
+    private function sendCurlGetRequest(string $url): string
     {
         // HTTP GET-Request konfigurieren
         $curl = curl_init($url);
@@ -81,11 +74,11 @@ class HttpRequest
             $error = curl_error($curl);
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
-            throw new Exception('Fehler beim Senden des GET-Requests: ' . $error);
+            throw new RuntimeException('Fehler beim Senden des GET-Requests: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
-            throw new Exception('Fehler beim Senden des GET-Requests: HTTP-Statuscode ' . $httpCode);
+            throw new RuntimeException('Fehler beim Senden des GET-Requests: HTTP-Statuscode ' . $httpCode);
         }
 
         // Request beenden
@@ -96,7 +89,10 @@ class HttpRequest
         return $result;
     }
 
-    private function sendCurlPostRequest(string $url, $data)
+    /**
+     * @throws RuntimeException
+     */
+    private function sendCurlPostRequest(string $url, $data): string
     {
         // HTTP POST-Request konfigurieren
         $curl = curl_init($url);
@@ -119,11 +115,11 @@ class HttpRequest
             $error = curl_error($curl);
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
-            throw new Exception('Fehler beim Senden des POST-Requests: ' . $error);
+            throw new RuntimeException('Fehler beim Senden des POST-Requests: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
-            throw new Exception('Fehler beim Senden des POST-Requests: HTTP-Statuscode ' . $httpCode);
+            throw new RuntimeException('Fehler beim Senden des POST-Requests: HTTP-Statuscode ' . $httpCode);
         }
 
         // Request beenden

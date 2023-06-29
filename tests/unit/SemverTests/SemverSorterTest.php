@@ -25,8 +25,7 @@ class SemverSorterTest extends TestCase
 
     protected function setUp(): void
     {
-        $comparator = new Comparator(new Parser());
-        $this->sorter = new Sorter($comparator);
+        $this->sorter = Sorter::create(Comparator::CARET_MODE_STRICT);
     }
 
     public function testSemverCanSortVersions()

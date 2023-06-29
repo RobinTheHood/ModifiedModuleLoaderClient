@@ -11,16 +11,47 @@
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\DependencyManager;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Constraint;
 
 class DependencyBuilder
 {
+    /** @var ModuleTreeBuilder*/
+    private $moduleTreeBuilder;
+
+    /** @var ModuleLoader*/
+    private $moduleLoader;
+
+    public static function create(int $mode): DependencyBuilder
+    {
+        $moduleTreeBuilder = ModuleTreeBuilder::create($mode);
+        $moduleLoader = ModuleLoader::create($mode);
+        $dependencyBuilder = new DependencyBuilder($moduleTreeBuilder, $moduleLoader);
+        return $dependencyBuilder;
+    }
+
+    public function __construct(ModuleTreeBuilder $moduleTreeBuilder, ModuleLoader $moduleLoader)
+    {
+        $this->moduleTreeBuilder = $moduleTreeBuilder;
+        $this->moduleLoader = $moduleLoader;
+    }
+
     private function logFile($value, $file)
     {
-        @mkdir(__DIR__ . '/logs/');
-        $path = __DIR__ . '/logs/' . $file;
+        if (!Config::getLogging()) {
+            return;
+        }
+
+        $logsRootPath = App::getLogsRoot();
+
+        @mkdir($logsRootPath);
+        @mkdir($logsRootPath . '/debug');
+        @mkdir($logsRootPath . '/debug/DependencyMananger/');
+        $path = $logsRootPath . '/debug/DependencyMananger/' . $file;
         file_put_contents($path, json_encode($value, JSON_PRETTY_PRINT));
     }
 
@@ -31,7 +62,7 @@ class DependencyBuilder
 
     public function test()
     {
-        $moduleLoader = ModuleLoader::getModuleLoader();
+        $moduleLoader = ModuleLoader::create(Comparator::CARET_MODE_STRICT);
         $module = $moduleLoader->loadLatestVersionByArchiveName('firstweb/multi-order');
 
         if (!$module) {
@@ -64,8 +95,7 @@ class DependencyBuilder
 
     public function satisfiesContraints1(Module $module, SystemSet $systemSet): CombinationSatisfyerResult
     {
-        $moduleTreeBuilder = new ModuleTreeBuilder();
-        $moduleTrees = $moduleTreeBuilder->buildListByConstraints($module);
+        $moduleTrees = $this->moduleTreeBuilder->buildListByConstraints($module);
         $this->logFile($moduleTrees, '1-moduleTrees.json');
 
         $flatEntryBuilder = new FlatEntryBuilder();
@@ -94,8 +124,7 @@ class DependencyBuilder
         string $constraint,
         SystemSet $systemSet
     ): CombinationSatisfyerResult {
-        $moduleTreeBuilder = new ModuleTreeBuilder();
-        $moduleTree = $moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
+        $moduleTree = $this->moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
         $this->logFile($moduleTree, '2-moduleTrees.json');
 
         $flatEntryBuilder = new FlatEntryBuilder();
@@ -123,8 +152,7 @@ class DependencyBuilder
         $systemSet->remove($archiveName);
         $constraint = $this->createConstraint($archiveName, $constraint, $systemSet);
 
-        $moduleTreeBuilder = new ModuleTreeBuilder();
-        $moduleTree = $moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
+        $moduleTree = $this->moduleTreeBuilder->buildByConstraints($archiveName, $constraint);
         $this->logFile($moduleTree, '3-moduleTrees.json');
 
         $flatEntryBuilder = new FlatEntryBuilder();
@@ -174,8 +202,7 @@ class DependencyBuilder
 
     private function getModuleByArchiveNameAndVersion(string $archiveName, string $version): ?Module
     {
-        $moduleLoader = ModuleLoader::getModuleLoader();
-        return $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+        return $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
     }
 
     private function getRequiredConstraint(Module $installedModule, string $archiveName): string

@@ -73,7 +73,7 @@ class ModuleSorter
     public static function sortByVersion(array $modules): array
     {
         usort($modules, function (Module $moduleA, Module $moduleB): int {
-            $comparator = new Comparator(new Parser());
+            $comparator = SemverComparatorFactory::createComparator();
             if ($comparator->lessThan($moduleA->getVersion(), $moduleB->getVersion())) {
                 return 1;
             } else {

@@ -4,24 +4,26 @@ on: [push, pull_request]
 
 jobs:
   build-test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - name: checkout project
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
     - name: install composer version2
-      uses: php-actions/composer@v5
+      uses: php-actions/composer@v6
       with:
         progress: yes
         version: 2
-        php_version: 7.4
+        php_version: "7.4"
     #- name: composer install missing files
     #  run: composer1 install
     - name: create directories
       run: mkdir logs
     - name: copy config
       run: cp config/_config.php config/config.php
-    - name: run phpcs for PSR12 coding style checks 
+    - name: Display PHP version
+      run: php7.4 --version
+    - name: run phpcs for PSR12 coding style checks
       run: php7.4 ./vendor/bin/phpcs -np --standard=PSR12 --ignore=".src/Templates" ./src
     - name: run test - php unit
       run: php7.4 ./vendor/bin/phpunit --testdox

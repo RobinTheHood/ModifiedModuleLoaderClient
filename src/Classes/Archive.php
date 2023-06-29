@@ -83,7 +83,7 @@ class Archive
 
     public function tarArchive(): bool
     {
-        $localModuleLoader = new LocalModuleLoader();
+        $localModuleLoader = LocalModuleLoader::create(Config::getDependenyMode());
         $module = $localModuleLoader->loadByArchiveNameAndVersion($this->getArchiveName(), $this->getVersion());
 
         if (!$module) {

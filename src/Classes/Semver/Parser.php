@@ -18,6 +18,11 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\IntegerHelper;
 
 class Parser
 {
+    public static function create(): Parser
+    {
+        return new Parser();
+    }
+
     public function parse(string $string): Version
     {
         $string = $this->deletePrefix($string);
@@ -56,7 +61,11 @@ class Parser
     {
         $parts = explode('.', $string);
 
-        if (count($parts) != 3) {
+        $parts[0] = $parts[0] ?? '0';
+        $parts[1] = $parts[1] ?? '0';
+        $parts[2] = $parts[2] ?? '0';
+
+        if (count($parts) > 3) {
             throw new ParseErrorException('Can not parse string to version array');
         }
 

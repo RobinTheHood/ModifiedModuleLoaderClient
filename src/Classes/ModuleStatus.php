@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\ConstraintParser;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 
 class ModuleStatus
 {
@@ -136,11 +136,25 @@ class ModuleStatus
             return false;
         }
 
-        $comparator = new Comparator(new Parser());
+        $comparator = SemverComparatorFactory::createComparator();
         if (!$comparator->greaterThan($newestVersion->getVersion(), $installedVersion->getVersion())) {
             return false;
         }
 
         return $module->isInstalled();
+    }
+
+    public static function hasValidRequire(Module $module): string
+    {
+        $constraintParser = ConstraintParser::create(Config::getDependenyMode());
+
+        foreach ($module->getRequire() as $archiveName => $constraintString) {
+            try {
+                $constraintParser->parse($constraintString);
+            } catch (ParseErrorException $e) {
+                return $e->getMessage();
+            }
+        }
+        return '';
     }
 }

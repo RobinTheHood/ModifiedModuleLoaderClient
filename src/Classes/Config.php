@@ -12,6 +12,7 @@
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class Config
 {
@@ -73,41 +74,8 @@ class Config
         $configOld = file_get_contents($configPath);
         $configNew = '';
 
-        foreach ($options as $key => $lineNewValue) {
-            $matches = [];
-
-            /**
-             * Look for line in config which matches:
-             * '$key' => 'foobar' (i. e.: 'username' => 'root')
-             *
-             * Look for $lineNewValue in found line and replace it:
-             * '$key' => 'foobar' becomes '$key' => '$lineNewValue'
-             */
-            $regex = '/(\'' . $key . '\')[ ]*=>[ ]*(\'.*\')/';
-
-            preg_match($regex, $configOld, $matches);
-
-            switch (count($matches)) {
-                case 3:
-                    $lineOld = $matches[0];
-                    $lineOldValue = $matches[2];
-                    $lineNewValue = '\'' . $lineNewValue . '\'';
-                    $lineNew = str_replace($lineOldValue, $lineNewValue, $lineOld);
-
-                    $configNew = str_replace($lineOld, $lineNew, $configOld);
-                    $configOld = $configNew;
-                    break;
-
-                case 0:
-                    /**
-                     * To do: add option if it doesn't exist
-                     * instead of showing an error.
-                     */
-                    $configNew = $configOld;
-                    throw new \RuntimeException('Cannot write option. Option "' . $key . '" does not not exist in ' . $configPath . '.');
-                    break;
-            }
-        }
+        $configBuilder = new ConfigBuilder();
+        $configNew = $configBuilder->update($configOld, $options);
 
         file_put_contents($configPath, $configNew);
 
@@ -413,6 +381,16 @@ class Config
     }
 
     /**
+     * Set logging in config.
+     *
+     * @param string $logging.
+     */
+    public static function setLogging(string $logging): void
+    {
+        self::writeConfiguration(['logging' => $logging]);
+    }
+
+    /**
      * Get logging from config.
      *
      * @return bool Returns logging from config or null.
@@ -427,5 +405,37 @@ class Config
         $logging = self::getOption('logging');
 
         return $logging === 'true';
+    }
+
+
+    /**
+     * Set exceptionMonitorMail in config.
+     *
+     * @param string $newExceptionMonitorMail.
+     */
+    public static function setDependencyMode(string $dependencyMode): void
+    {
+        self::writeConfiguration(['dependencyMode' => $dependencyMode]);
+    }
+
+    /**
+     * Get dependencyMode from config.
+     *
+     * @return int Returns logging from config or null.
+     */
+    public static function getDependenyMode(): int
+    {
+        /**
+         * Expect a string or null
+         * depending if the user specified an email address.
+         * You will not receive an empty string.
+         */
+        $dependencyMode = self::getOption('dependencyMode');
+
+        if ($dependencyMode === 'strict') {
+            return Comparator::CARET_MODE_STRICT;
+        }
+
+        return Comparator::CARET_MODE_LAX;
     }
 }
