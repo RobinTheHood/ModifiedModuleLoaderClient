@@ -72,6 +72,24 @@ class ArchivePullerTest extends TestCase
         $this->assertSame($archivesRootPath . '/robinthehood_modified-std-module_0.9.0.tar', $archive->getFilePath());
     }
 
+    public function testPullArchiveFromInvalidUrl(): void
+    {
+        $archivesRootPath = $this->testDir . 'Archives';
+
+        $archivePuller = new ArchivePuller(
+            new HttpRequest(),
+            Parser::create(),
+            $archivesRootPath
+        );
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Fehler beim Senden des GET-Requests: Could not resolve host: this-is-a-not-working-url.local'
+        );
+
+        $archivePuller->pull('robinthehood/modified-std-module', '0.9.0', 'this-is-a-not-working-url.local');
+    }
+
     public function testPullInvalidArchive(): void
     {
         $archivesRootPath = $this->testDir . 'Archives';
@@ -85,6 +103,6 @@ class ArchivePullerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to pull Archive: robinthehood/modified-std-module:0.9.0');
 
-        $archivePuller->pull('robinthehood/modified-std-module', '0.9.0', 'this-is-a-not-working-url.local');
+        $archivePuller->pull('robinthehood/modified-std-module', '0.9.0', 'https://postman-echo.com/get');
     }
 }
