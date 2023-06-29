@@ -62,6 +62,7 @@ class ArchivePullerTest extends TestCase
 
         $apiRequest = new ApiRequest();
         $result = $apiRequest->getArchive('robinthehood/modified-std-module', '0.9.0');
+        var_dump($result);
         $content = $result['content'] ?? [];
         $archiveUrl = $content['archiveUrl'] ?? '';
         $archive = $archivePuller->pull('robinthehood/modified-std-module', '0.9.0', $archiveUrl);
