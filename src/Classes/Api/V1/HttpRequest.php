@@ -45,7 +45,7 @@ class HttpRequest
     {
         $query = '';
         foreach ($queryValues as $name => $value) {
-            $query .= $name . '=' . urlencode($value) . '&';
+            $query .= $name . '=' . urlencode((string) $value) . '&';
         }
         return $query;
     }
