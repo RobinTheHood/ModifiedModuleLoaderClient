@@ -127,4 +127,60 @@ class HttpRequest
 
         return (string) $result;
     }
+
+    private function sendFileGetContentsPostRequest(string $url, $data): string
+    {
+        // http verwenden, auch wenn die Url mit https://... beginnt
+        $options = [
+            'http' => [
+                'user_agent' => 'Modified Module Loader Client',
+                'method' => 'POST',
+                'header' => implode("\r\n", [
+                    'Content-type: application/x-www-form-urlencoded;'
+                ]),
+                'content' => http_build_query($data)
+            ]
+        ];
+        $context  = stream_context_create($options);
+
+        StaticLogger::log(
+            LogLevel::DEBUG,
+            "Send POST request to $url\n[OPTIONS]\n" . print_r($options, true) . "[DATA]\n" . print_r($data, true)
+        );
+
+        $timeBeforeRequest = microtime(true);
+        $result = @file_get_contents($url, false, $context);
+        $time = microtime(true) - $timeBeforeRequest;
+
+        StaticLogger::log(LogLevel::DEBUG, "Response from $url ($time sec)\n" . print_r($result, true));
+
+        return $result;
+    }
+
+    private function sendFileGetContentsGetRequest(string $url): string
+    {
+        // http verwenden, auch wenn die Url mit https://... beginnt
+        $options = [
+            'http' => [
+                'user_agent' => 'Modified Module Loader Client',
+                'method' => "GET",
+                'header' => implode("\r\n", [
+                    'Content-type: text/plain;'
+                ])
+            ]
+        ];
+
+        $context = stream_context_create($options);
+
+        StaticLogger::log(
+            LogLevel::DEBUG,
+            "Send GET request to $url\n[OPTIONS]\n" . print_r($options, true)
+        );
+
+        $result = @file_get_contents($url, false, $context);
+
+        StaticLogger::log(LogLevel::DEBUG, "Response from $url\n" . print_r($result, true));
+
+        return $result;
+    }
 }
