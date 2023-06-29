@@ -104,6 +104,7 @@ class ShopInfo
         $adminDirPaths = $adminDirScanner->getAll(App::getShopRoot());
 
         if (count($adminDirPaths) <= 0) {
+            // NOTE: Vielleicht neue class InvalidAdminDirectoryException hinzufügen
             throw new Exception(
                 "No valid admin directory found in " . App::getShopRoot()
                 . ". A valid admin directory must be named 'admin' or start with 'admin_'."
@@ -114,6 +115,7 @@ class ShopInfo
         }
 
         if (count($adminDirPaths) >= 2) {
+            // NOTE: Vielleicht neue class InvalidAdminDirectoryException hinzufügen
             throw new Exception("More than one valid admin directory found in " . App::getShopRoot());
         }
 
