@@ -31,6 +31,11 @@ class HttpRequestTest extends TestCase
 
     public function testSendPostRequestFailure()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Fehler beim Senden des POST-Requests: Could not resolve host: this-url-does-not-exist.com'
+        );
+
         $httpClient = new HttpRequest();
         $response = $httpClient->sendPostRequest('https://this-url-does-not-exist.com', []);
         $this->assertIsString($response);
