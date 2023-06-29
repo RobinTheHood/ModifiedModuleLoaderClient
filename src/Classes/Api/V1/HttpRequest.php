@@ -86,7 +86,7 @@ class HttpRequest
 
         StaticLogger::log(LogLevel::DEBUG, "$httpCode Response from $url\n" . print_r($result, true));
 
-        return $result;
+        return (string) $result;
     }
 
     /**
@@ -125,6 +125,6 @@ class HttpRequest
         // Request beenden
         curl_close($curl);
 
-        return $result;
+        return (string) $result;
     }
 }
