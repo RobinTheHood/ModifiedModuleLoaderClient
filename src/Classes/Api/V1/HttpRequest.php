@@ -136,7 +136,7 @@ class HttpRequest
                 'user_agent' => 'Modified Module Loader Client',
                 'method' => 'POST',
                 'header' => implode("\r\n", [
-                    'Content-type: application/x-www-form-urlencoded;'
+                    'Content-type: application/x-www-form-urlencoded'
                 ]),
                 'content' => http_build_query($data)
             ]
@@ -165,7 +165,7 @@ class HttpRequest
                 'user_agent' => 'Modified Module Loader Client',
                 'method' => "GET",
                 'header' => implode("\r\n", [
-                    'Content-type: text/plain;'
+                    'Content-type: text/plain'
                 ])
             ]
         ];
