@@ -74,11 +74,11 @@ class HttpRequest
             $error = curl_error($curl);
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
-            throw new RuntimeException('Fehler beim Senden des GET-Requests: ' . $error);
+            throw new RuntimeException('Error sending the GET request: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
-            throw new RuntimeException('Fehler beim Senden des GET-Requests: HTTP-Statuscode ' . $httpCode);
+            throw new RuntimeException('Error sending the GET request: HTTP-Statuscode ' . $httpCode);
         }
 
         // Request beenden
@@ -115,11 +115,11 @@ class HttpRequest
             $error = curl_error($curl);
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
-            throw new RuntimeException('Fehler beim Senden des POST-Requests: ' . $error);
+            throw new RuntimeException('Error sending the POST request: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
-            throw new RuntimeException('Fehler beim Senden des POST-Requests: HTTP-Statuscode ' . $httpCode);
+            throw new RuntimeException('Error sending the POST request: HTTP-Statuscode ' . $httpCode);
         }
 
         // Request beenden
