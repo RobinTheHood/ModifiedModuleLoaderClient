@@ -28,16 +28,24 @@ class HttpRequest
         return false;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public function sendPostRequest(string $url, $data): string
     {
-        $result = $this->sendCurlPostRequest($url, $data);
+        //$result = $this->sendCurlPostRequest($url, $data);
+        $result = $this->sendFileGetContentsPostRequest($url, $data);
         return $result;
     }
 
 
+    /**
+     * @throws RuntimeException
+     */
     public function sendGetRequest(string $url): string
     {
-        $result = $this->sendCurlGetRequest($url);
+        //$result = $this->sendCurlGetRequest($url);
+        $result = $this->sendFileGetContentsGetRequest($url);
         return $result;
     }
 
@@ -45,7 +53,7 @@ class HttpRequest
     {
         $query = '';
         foreach ($queryValues as $name => $value) {
-            $query .= $name . '=' . urlencode($value) . '&';
+            $query .= $name . '=' . urlencode((string) $value) . '&';
         }
         return $query;
     }
@@ -74,11 +82,11 @@ class HttpRequest
             $error = curl_error($curl);
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
-            throw new RuntimeException('Fehler beim Senden des GET-Requests: ' . $error);
+            throw new RuntimeException('Error sending the GET request: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
-            throw new RuntimeException('Fehler beim Senden des GET-Requests: HTTP-Statuscode ' . $httpCode);
+            throw new RuntimeException('Error sending the GET request: HTTP-Statuscode ' . $httpCode);
         }
 
         // Request beenden
@@ -115,11 +123,11 @@ class HttpRequest
             $error = curl_error($curl);
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url\n$error");
-            throw new RuntimeException('Fehler beim Senden des POST-Requests: ' . $error);
+            throw new RuntimeException('Error sending the POST request: ' . $error);
         } elseif ($httpCode < 200 || $httpCode >= 300) {
             curl_close($curl);
             StaticLogger::log(LogLevel::ERROR, "$httpCode Error-Response from $url");
-            throw new RuntimeException('Fehler beim Senden des POST-Requests: HTTP-Statuscode ' . $httpCode);
+            throw new RuntimeException('Error sending the POST request: HTTP-Statuscode ' . $httpCode);
         }
 
         // Request beenden
@@ -128,6 +136,9 @@ class HttpRequest
         return (string) $result;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     private function sendFileGetContentsPostRequest(string $url, $data): string
     {
         // http verwenden, auch wenn die Url mit https://... beginnt
@@ -136,7 +147,7 @@ class HttpRequest
                 'user_agent' => 'Modified Module Loader Client',
                 'method' => 'POST',
                 'header' => implode("\r\n", [
-                    'Content-type: application/x-www-form-urlencoded;'
+                    'Content-type: application/x-www-form-urlencoded'
                 ]),
                 'content' => http_build_query($data)
             ]
@@ -149,7 +160,15 @@ class HttpRequest
         );
 
         $timeBeforeRequest = microtime(true);
+
         $result = @file_get_contents($url, false, $context);
+        if ($result === false) {
+            $error = error_get_last();
+            $errorMessage = $error['message'] ?? '';
+            StaticLogger::log(LogLevel::ERROR, "Error-Response from $url\n$errorMessage");
+            throw new RuntimeException('Error sending the POST request: ' . $errorMessage);
+        }
+
         $time = microtime(true) - $timeBeforeRequest;
 
         StaticLogger::log(LogLevel::DEBUG, "Response from $url ($time sec)\n" . print_r($result, true));
@@ -157,6 +176,9 @@ class HttpRequest
         return $result;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     private function sendFileGetContentsGetRequest(string $url): string
     {
         // http verwenden, auch wenn die Url mit https://... beginnt
@@ -165,7 +187,7 @@ class HttpRequest
                 'user_agent' => 'Modified Module Loader Client',
                 'method' => "GET",
                 'header' => implode("\r\n", [
-                    'Content-type: text/plain;'
+                    'Content-type: text/plain'
                 ])
             ]
         ];
@@ -178,6 +200,12 @@ class HttpRequest
         );
 
         $result = @file_get_contents($url, false, $context);
+        if ($result === false) {
+            $error = error_get_last();
+            $errorMessage = $error['message'] ?? '';
+            StaticLogger::log(LogLevel::ERROR, "Error-Response from $url\n$errorMessage");
+            throw new RuntimeException('Error sending the GET request: ' . $errorMessage);
+        }
 
         StaticLogger::log(LogLevel::DEBUG, "Response from $url\n" . print_r($result, true));
 
