@@ -83,8 +83,8 @@ class ArchivePullerTest extends TestCase
         );
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Fehler beim Senden des GET-Requests: Could not resolve host: this-is-a-not-working-url.local'
+        $this->expectExceptionMessageMatches(
+            '/Error sending the GET request:/'
         );
 
         $archivePuller->pull('robinthehood/modified-std-module', '0.9.0', 'this-is-a-not-working-url.local');
