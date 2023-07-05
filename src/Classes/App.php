@@ -16,6 +16,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 use Psr\Http\Message\ServerRequestInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
+use RobinTheHood\ModifiedModuleLoaderClient\Controllers\IndexController;
 
 class App
 {
