@@ -39,7 +39,7 @@ class ArchivePuller
      */
     public function pull(string $archiveName, string $version, string $url): Archive
     {
-        $archive = $this->createArchive($archiveName, $version);
+        $archive = $this->createArchiveObjFromStrings($archiveName, $version);
 
         $tarArchiveContent = $this->httpRequest->sendGetRequest($url);
 
@@ -53,7 +53,7 @@ class ArchivePuller
         return $archive;
     }
 
-    private function createArchive(string $archiveName, string $version): Archive
+    private function createArchiveObjFromStrings(string $archiveName, string $version): Archive
     {
         $archiveNameObj = new ArchiveName($archiveName);
         $versionObj = $this->parser->parse($version);
