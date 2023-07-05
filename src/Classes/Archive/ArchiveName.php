@@ -15,6 +15,10 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
 
 /**
  * Eine VO (Value Object) Klasse
+ *
+ * Da der Name eines Archives nicht willkührlich gewählt sein darf, wir der Name eines Archives durch diese Klasse
+ * repräsentiert. Der Konstruktor kann beim Erstellen eines Objekts zudem überprüfen, ob es sich um einen validen
+ * ArchiveNamen-String handelt.
  */
 class ArchiveName
 {

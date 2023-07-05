@@ -7,6 +7,10 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Version;
 
+/**
+ * Diese Klasse repräsentiert ein Modul gepackt als .tar Datei. Die .tar Datei befindet sich im Datei System und nicht
+ * als Data-String einem Objekt dieser Klasse. Die Methode getFilePath() liefert die Pfad zu .tar Datei.
+ */
 class Archive
 {
     private ArchiveName $archiveName;

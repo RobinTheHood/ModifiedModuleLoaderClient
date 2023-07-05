@@ -9,6 +9,10 @@ use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
 use RuntimeException;
 
+/**
+ * Die Klasse ist für das Herunterladen von Archiven vom Server zuständig. Ein Archive repräsentiert ein Modul
+ * gepackt als .tar Datei.
+ */
 class ArchivePuller
 {
     private HttpRequest $httpRequest;
@@ -30,6 +34,9 @@ class ArchivePuller
         $this->archivesRootPath = $archivesRootPath;
     }
 
+    /**
+     * @throws RuntimeException wenn das Archive nicht vom Server geladen werden konnte.
+     */
     public function pull(string $archiveName, string $version, string $url): Archive
     {
         $archive = $this->createArchive($archiveName, $version);
