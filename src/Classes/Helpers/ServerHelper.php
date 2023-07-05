@@ -18,7 +18,9 @@ class ServerHelper
     public static function getUri(): string
     {
         $http = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
-        $url = $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];
+        $serverName = $_SERVER['SERVER_NAME'] ?? 'unknown-server-name.de';
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/unknown-scriptname.php';
+        $url = $serverName . $scriptName;
         $parts = pathinfo($url);
         return $http . $parts['dirname'];
     }

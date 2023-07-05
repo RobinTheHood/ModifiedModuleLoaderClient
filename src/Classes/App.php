@@ -63,11 +63,17 @@ class App
         return self::getRoot() . '/' . self::$configDir;
     }
 
+    /**
+     * <MMLC-ROOT>/Archives/
+     */
     public static function getArchivesRoot(): string
     {
         return self::getRoot() . '/' . self::$archivesDir;
     }
 
+    /**
+     * <MMLC-ROOT>/Modules/
+     */
     public static function getModulesRoot(): string
     {
         return self::getRoot() . '/' . self::getModulesDirName();
