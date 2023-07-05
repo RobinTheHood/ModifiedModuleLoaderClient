@@ -12,7 +12,6 @@ class Archive
     private ArchiveName $archiveName;
     private Version $version;
     private string $archivesRootPath;
-    // private string $urlRootPath;
 
     public static function create(string $archiveName, string $version, string $archivesRootPath): Archive
     {
@@ -27,19 +26,13 @@ class Archive
         ArchiveName $archiveName,
         Version $version,
         string $archivesRootPath
-        // string $urlRootPath,
     ) {
         if (empty($archivesRootPath)) {
             throw new \InvalidArgumentException('archivesRootPath cannot be empty.');
         }
 
-        // if (empty($urlRootPath)) {
-        //     throw new \InvalidArgumentException('urlRootPath cannot be empty.');
-        // }
-
         $this->archiveName = $archiveName;
         $this->archivesRootPath = $archivesRootPath;
-        // $this->urlRootPath = $urlRootPath;
         $this->version = $version;
     }
 
@@ -61,11 +54,6 @@ class Archive
     {
         return $this->archivesRootPath;
     }
-
-    // public function getUrlRootPath(): string
-    // {
-    //     return $this->urlRootPath;
-    // }
 
     /**
      * Liefert den Dateinamen der .tar Datei
