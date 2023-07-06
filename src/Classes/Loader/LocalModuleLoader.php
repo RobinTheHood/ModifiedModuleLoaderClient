@@ -27,6 +27,9 @@ class LocalModuleLoader
     /** @var ModuleFilter */
     private $moduleFilter;
 
+    /** @var string */
+    private $modulesRootPath;
+
     public static function create(int $mode): LocalModuleLoader
     {
         $moduleFilter = ModuleFilter::create($mode);
@@ -37,6 +40,12 @@ class LocalModuleLoader
     public function __construct(ModuleFilter $moduleFilter)
     {
         $this->moduleFilter = $moduleFilter;
+        $this->modulesRootPath = App::getModulesRoot();
+    }
+
+    public function setModulesRootPath(string $path): void
+    {
+        $this->modulesRootPath = $path;
     }
 
     /**
@@ -127,11 +136,11 @@ class LocalModuleLoader
 
     public function getVendorDirs()
     {
-        return FileHelper::scanDir(App::getModulesRoot(), FileHelper::DIRS_ONLY);
+        return FileHelper::scanDir($this->modulesRootPath, FileHelper::DIRS_ONLY);
     }
 
     public function getModuleDirs()
     {
-        return FileHelper::scanDirRecursive(App::getModulesRoot(), FileHelper::DIRS_ONLY, false, 3);
+        return FileHelper::scanDirRecursive($this->modulesRootPath, FileHelper::DIRS_ONLY, false, 3);
     }
 }

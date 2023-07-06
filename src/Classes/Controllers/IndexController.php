@@ -11,9 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
+use RobinTheHood\ModifiedModuleLoaderClient\AccessFileCreator;
+use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
@@ -24,6 +26,11 @@ use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
+use RobinTheHood\ModifiedModuleLoaderClient\MmlcVersionInfoLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
+use RobinTheHood\ModifiedModuleLoaderClient\Notification;
+use RobinTheHood\ModifiedModuleLoaderClient\SelfUpdater;
 use RuntimeException;
 
 class IndexController extends Controller
@@ -97,14 +104,18 @@ class IndexController extends Controller
 
         if (!ini_get('allow_url_fopen')) {
             Notification::pushFlashMessage([
-                'text' => 'Warnung: Keine Verbindung zum Server. <strong>allow_url_fopen</strong> ist in der php.ini deaktiviert.',
+                'text' =>
+                    'Warnung: Keine Verbindung zum Server.
+                    <strong>allow_url_fopen</strong> ist in der php.ini deaktiviert.',
                 'type' => 'warning'
             ]);
         }
 
         if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
             Notification::pushFlashMessage([
-                'text' => 'Warnung: Die PHP Version ' . PHP_VERSION . ' wird nicht unterstützt. Der MMLC benötigt ' . self::REQUIRED_PHP_VERSION . ' oder höher.',
+                'text' =>
+                    'Warnung: Die PHP Version ' . PHP_VERSION . ' wird nicht unterstützt. Der MMLC benötigt '
+                    . self::REQUIRED_PHP_VERSION . ' oder höher.',
                 'type' => 'warning'
             ]);
         }
@@ -282,8 +293,8 @@ class IndexController extends Controller
                 Notification::pushFlashMessage([
                     'type' => 'warning',
                     'text' =>
-                        'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern bei der
-                        Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten:<br>'
+                        'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern
+                        bei der Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten:<br>'
                         . nl2br($string)
                 ]);
             }
