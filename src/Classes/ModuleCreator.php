@@ -115,6 +115,32 @@ class ModuleCreator
         return $version;
     }
 
+    private function getCurrentModifiedVersion(): string
+    {
+        $version = '2.0.7.2';
+
+        $shopRoot = App::getShopRoot();
+        $modifiedVersionCachePath = $shopRoot . '/cache/version.cache';
+
+        if (!\file_exists($modifiedVersionCachePath)) {
+            return $version;
+        }
+
+        $modifiedVersionCacheJson = \file_get_contents($modifiedVersionCachePath);
+
+        if (false === $modifiedVersionCacheJson) {
+            return $version;
+        }
+
+        $modifiedVersionCache = \json_decode($modifiedVersionCacheJson, $associative = true);
+
+        if (isset($modifiedVersionCache['details']['Shop']['shop']['version'])) {
+            $version = $modifiedVersionCache['details']['Shop']['shop']['version'];
+        }
+
+        return $version;
+    }
+
     public function createModuleInfoJsonFile($vendorName, $moduleName)
     {
         $archiveName = $vendorName . '/' . $moduleName;
@@ -142,7 +168,7 @@ class ModuleCreator
             ],
 
             'modifiedCompatibility' => [
-                '2.0.4.2'
+                $this->getCurrentModifiedVersion(),
             ],
 
             "mmlc" => [
