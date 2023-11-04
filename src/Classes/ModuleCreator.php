@@ -129,9 +129,9 @@ class ModuleCreator
             'description' => 'Beschreibung für ' . $moduleName,
             'installation' => 'Installationsanleitung für ' . $moduleName,
 
-            'developerWebsite' => 'https://...',
             'website' => 'https://...',
             'developer' => $vendorName,
+            'developerWebsite' => 'https://github.com/' . $vendorName,
 
             'category' => '',
             'price' => '',
