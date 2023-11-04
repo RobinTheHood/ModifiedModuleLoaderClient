@@ -35,7 +35,7 @@ class ModuleCreator
         $moduleConstName = str_replace('-', '_', strtoupper('MODULE_' . $vendorPrefix . '_' . $moduleName));
 
         $this->createFolders($archiveName, $fileName, $vendorName, $moduleNameCamelCase);
-        $this->createModuleInfoJsonFile($archiveName, $moduleName);
+        $this->createModuleInfoJsonFile($vendorName, $moduleName);
         $this->createSystemModuleFile($archiveName, $fileName, $className, $moduleConstName);
         $this->createSystemModuleLanguageDeFile($archiveName, $fileName, $moduleConstName, $vendorName);
         $this->createSystemModuleLanguageEnFile($archiveName, $fileName, $moduleConstName, $vendorName);
@@ -76,8 +76,49 @@ class ModuleCreator
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src-mmlc/Classes');
     }
 
-    public function createModuleInfoJsonFile($archiveName, $moduleName)
+    private function getLatestVersion(string $archiveName): string
     {
+        $version = '0.1.0';
+
+        /**
+         * Create GitHub API reqest.
+         *
+         * GitHub requries a `User-Agent` header or it will respond with HTTP
+         * 403.
+         */
+        $requestOptions = [
+            'http' => [
+                'header' => [
+                    'User-Agent: PHP',
+                ],
+            ],
+        ];
+        $requestContext  = stream_context_create($requestOptions);
+        $requestResponse = file_get_contents(
+            sprintf(
+                'https://api.github.com/repos/%s/tags',
+                $archiveName
+            ),
+            $use_include_path = false,
+            $requestContext
+        );
+
+        if (false !== $requestResponse) {
+            $archiveTags       = json_decode($requestResponse, $associative = true);
+            $archiveTagsLatest = reset($archiveTags);
+
+            if (isset($archiveTagsLatest['name'])) {
+                $version = $archiveTagsLatest['name'];
+            }
+        }
+
+        return $version;
+    }
+
+    public function createModuleInfoJsonFile($vendorName, $moduleName)
+    {
+        $archiveName = $vendorName . '/' . $moduleName;
+
         $info = [
             'name' => $moduleName,
             'archiveName' => $archiveName,
@@ -96,8 +137,8 @@ class ModuleCreator
             'price' => '',
 
             'require' => [
-                'composer/autoload' => '^1.1.0',
-                'robinthehood/modified-std-module' => '^0.1.0'
+                'composer/autoload' => '^' . $this->getLatestVersion('RobinTheHood/modified-composer-autoload'),
+                'robinthehood/modified-std-module' => '^' . $this->getLatestVersion('RobinTheHood/modified-std-module'),
             ],
 
             'modifiedCompatibility' => [
