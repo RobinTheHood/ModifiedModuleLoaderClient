@@ -1,0 +1,3 @@
+#!/bin/sh
+
+php src/Classes/Cli/Run.php "$@"
