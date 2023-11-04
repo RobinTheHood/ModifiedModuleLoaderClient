@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
 class ModuleCreator
 {
@@ -35,7 +36,7 @@ class ModuleCreator
         $moduleConstName = str_replace('-', '_', strtoupper('MODULE_' . $vendorPrefix . '_' . $moduleName));
 
         $this->createFolders($archiveName, $fileName, $vendorName, $moduleNameCamelCase);
-        $this->createModuleInfoJsonFile($archiveName, $moduleName);
+        $this->createModuleInfoJsonFile($vendorName, $moduleName);
         $this->createSystemModuleFile($archiveName, $fileName, $className, $moduleConstName);
         $this->createSystemModuleLanguageDeFile($archiveName, $fileName, $moduleConstName, $vendorName);
         $this->createSystemModuleLanguageEnFile($archiveName, $fileName, $moduleConstName, $vendorName);
@@ -76,8 +77,25 @@ class ModuleCreator
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src-mmlc/Classes');
     }
 
-    public function createModuleInfoJsonFile($archiveName, $moduleName)
+    private function getLatestVersion(string $archiveName): string
     {
+        $remoteModuleLoader = RemoteModuleLoader::create();
+        $module = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
+
+        /**
+         * Usually the module does not exist yet, so `$module` is `null`.
+         */
+        if (null === $module) {
+            return '0.1.0';
+        }
+
+        return $module->getVersion();
+    }
+
+    public function createModuleInfoJsonFile($vendorName, $moduleName)
+    {
+        $archiveName = $vendorName . '/' . $moduleName;
+
         $info = [
             'name' => $moduleName,
             'archiveName' => $archiveName,
@@ -96,8 +114,8 @@ class ModuleCreator
             'price' => '',
 
             'require' => [
-                'composer/autoload' => '^1.1.0',
-                'robinthehood/modified-std-module' => '^0.1.0'
+                'composer/autoload' => '^' . $this->getLatestVersion('RobinTheHood/modified-composer-autoload'),
+                'robinthehood/modified-std-module' => '^' . $this->getLatestVersion('RobinTheHood/modified-std-module'),
             ],
 
             'modifiedCompatibility' => [
