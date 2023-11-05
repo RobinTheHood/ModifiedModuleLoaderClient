@@ -69,8 +69,8 @@ class MmlcCli
                         $this->createModule();
                     }
                     break;
-                case 'listen':
-                    $this->listenForFileChanges();
+                case 'watch':
+                    $this->watchForFileChanges();
                     break;
                 case 'discard':
                     $archiveName = $this->getArgument(2);
@@ -148,9 +148,10 @@ class MmlcCli
         // Implement interactive module creation logic
     }
 
-    private function listenForFileChanges()
+    private function watchForFileChanges()
     {
-        // Implement file change detection logic
+        $command = new CommandWatch();
+        $command->run();
     }
 
     private function discardChanges($archiveName, $force = false)
