@@ -90,7 +90,7 @@ class Help
         $this->renderCommand('info', 'Display information and details for a specific module.');
         $this->renderCommand('status', 'Show the status of all installed modules in MMLC.');
         $this->renderCommand('create', 'Create a new module in MMLC. Use the -i option for the interactive mode.');
-        $this->renderCommand('listen', 'Automatically detect and apply file changes for module development.');
+        $this->renderCommand('watch', 'Automatically detect and apply file changes for module development.');
         $this->renderCommand('discard', 'Discard changes to a module. Use the -f or --force option to enforce.');
         $this->renderCommand('self-update', 'Updates MMLC to the latest version.');
     }
@@ -132,8 +132,8 @@ class Help
                 echo "Options:\n";
                 echo "  -i, --interactive  Start the interactive mode for module creation, where MMLC will ask questions that you need to answer.\n";
                 break;
-            case 'listen':
-                echo "Usage: mmlc listen                  Automatically detect and apply file changes for module development.\n";
+            case 'watch':
+                echo "Usage: mmlc watch                  Automatically detect and apply file changes for module development.\n";
                 break;
             case 'discard':
                 echo "Usage: mmlc discard <archiveName>   Discard changes to a module. Use the -f or --force option to enforce.\n";
@@ -170,7 +170,7 @@ class Help
         echo "  \e[32mstatus\e[0m                  Show the status of all installed modules in MMLC.\n";
         echo "  \e[32mcreate\e[0m                  Create a new module in MMLC. Use the -i option for the\n";
         echo "                          interactive mode.\n";
-        echo "  \e[32mlisten\e[0m                  Automatically detect and apply file changes for module\n";
+        echo "  \e[32mwatch\e[0m                  Automatically detect and apply file changes for module\n";
         echo "                          development.\n";
         echo "  \e[32mdiscard\e[0m <archiveName>   Discard changes to a module. Use the -f or --force\n";
         echo "                          option to enforce.\n";
