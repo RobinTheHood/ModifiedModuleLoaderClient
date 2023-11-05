@@ -145,7 +145,7 @@ class ModuleCreator
             ],
 
             'modifiedCompatibility' => [
-                $this->getCurrentModifiedVersion(),
+                $this->getCurrentModifiedVersion() . ',',
             ],
 
             "mmlc" => [
