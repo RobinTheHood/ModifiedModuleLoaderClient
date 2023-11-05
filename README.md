@@ -21,6 +21,42 @@ Folge der Installationsanleitung auf [module-loader.de](https://module-loader.de
 ## Installationsanleitung für Developer
 ...
 
+## MMLC - Modified Module Loader Client CLI
+
+🚀 The Modified Module Loader Client (MMLC) CLI is a powerful command-line tool for managing modules in your modified eCommerce shop. It simplifies the process of installing, updating, and uninstalling modules, making it a breeze for both shop owners and developers.
+
+### Features
+
+- **📦 Effortless Module Management**: MMLC CLI allows you to easily install and uninstall modules over the terminal.
+- **💻 Developer-Friendly**: For developers, MMLC CLI makes module development more enjoyable. You can create, update, and manage modules effortlessly.
+- **🧰 Interactive Module Creation**: Create new modules in MMLC CLI with ease. The interactive mode guides you through the module creation process.
+- **👀 Wachting for Changes**: The `watch` command automatically detects and applies file changes, making it invaluable for module development.
+- **🗑️ Discard Changes**: If you need to revert changes to a module, the `discard` command lets you do it quickly, with the option to enforce the discard.
+
+## Getting Started
+
+1. **Installation**: Install MMLC by following the installation instructions in the [documentation](link-to-documentation).
+2. **Setup**: Open your shell and go into the ModifiyModuleLoaderClient directory.
+3. **Usage**: Use MMLC's simple commands to manage your modules. Enter the following command into the shell to display a list of all available commands.
+
+```bash
+./mmlc
+```
+
+#### Nativ PHP-Host Environment 
+```bash
+./mmlc
+./mmlc watch
+```
+
+#### DDEV Envionment
+If you have a DDEV development environment, some file transactions in link mode may not be synchronized with your Docker container. If you are working in MMLC link mode, try calling the MMLC CLI via DDEV.
+
+```bash
+ddev exec --dir=/var/www/html/ModifiedModuleLoaderClient ./mmlc
+ddev exec --dir=/var/www/html/ModifiedModuleLoaderClient ./mmlc watch
+```
+
 ## Requirements
 PHP 7.4 or above
 
