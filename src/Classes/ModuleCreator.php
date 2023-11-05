@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\{App, ShopInfo};
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
 class ModuleCreator
@@ -119,7 +119,7 @@ class ModuleCreator
             ],
 
             'modifiedCompatibility' => [
-                '2.0.4.2'
+                ShopInfo::getModifiedVersion() . ',',
             ],
 
             "mmlc" => [
