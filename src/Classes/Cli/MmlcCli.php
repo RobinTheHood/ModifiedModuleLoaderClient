@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandCreate;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandList;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandWatch;
@@ -67,11 +68,7 @@ class MmlcCli
                     $this->moduleStatus();
                     break;
                 case 'create':
-                    if ($this->hasOption('-i')) {
-                        $this->createModuleInteractive();
-                    } else {
-                        $this->createModule();
-                    }
+                    $this->createModule();
                     break;
                 case 'watch':
                     $this->watchForFileChanges();
@@ -144,12 +141,8 @@ class MmlcCli
 
     private function createModule()
     {
-        // Implement module creation logic
-    }
-
-    private function createModuleInteractive()
-    {
-        // Implement interactive module creation logic
+        $command = new CommandCreate();
+        $command->run($this);
     }
 
     private function watchForFileChanges()
@@ -168,19 +161,19 @@ class MmlcCli
         // Implement self-update logic
     }
 
-    private function getCommand()
+    public function getCommand()
     {
         global $argv;
         return isset($argv[1]) ? $argv[1] : 'help';
     }
 
-    private function getArgument($index)
+    public function getArgument($index)
     {
         global $argv;
         return isset($argv[$index]) ? $argv[$index] : null;
     }
 
-    private function hasOption($option)
+    public function hasOption($option)
     {
         global $argv;
         return in_array($option, $argv);

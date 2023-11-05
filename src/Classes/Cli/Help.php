@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandCreate;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandList;
 
@@ -130,9 +131,8 @@ class Help
                 echo "Usage: mmlc status                  Show the status of all installed modules in MMLC.\n";
                 break;
             case 'create':
-                echo "Usage: mmlc create                  Create a new module in MMLC.\n";
-                echo "Options:\n";
-                echo "  -i, --interactive  Start the interactive mode for module creation, where MMLC will ask questions that you need to answer.\n";
+                $command = new CommandCreate();
+                $command->help();
                 break;
             case 'watch':
                 echo "Usage: mmlc watch                  Automatically detect and apply file changes for module development.\n";
