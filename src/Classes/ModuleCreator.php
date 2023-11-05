@@ -127,8 +127,8 @@ class ModuleCreator
             ],
 
             "php" => [
-                "version" => "^7.4 || ^8.0",
                 "ext" => []
+                "version" => '^' . \phpversion(),
             ]
         ];
 
