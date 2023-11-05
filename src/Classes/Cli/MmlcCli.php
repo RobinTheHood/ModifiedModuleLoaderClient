@@ -118,7 +118,8 @@ class MmlcCli
 
     private function listModules()
     {
-        // Implement listing available modules
+        $command = new CommandList();
+        $command->run();
     }
 
     private function searchModules($searchTerm)
@@ -128,7 +129,8 @@ class MmlcCli
 
     private function moduleInfo($archiveName)
     {
-        // Implement displaying module information
+        $command = new CommandInfo();
+        $command->run($archiveName);
     }
 
     private function moduleStatus()
