@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
+
 class Help
 {
     public function addCommand(string $name, string $description): void
@@ -63,9 +65,13 @@ class Help
 
     public function showHelp()
     {
+        $mmlcVersion = App::getMmlcVersion();
+        $gitBranch = $this->getCurrentGitBranch(App::getRoot() . '/.git');
+        $extra = $gitBranch ? "git branch \e[33m$gitBranch\e[0m" : '';
+
         $this->shopHelpLogo();
         echo "\n";
-        echo "\e[32mMMLC cli\e[0m version \e[33m1.21.0\e[0m\n";
+        echo "\e[32mMMLC cli\e[0m version \e[33m$mmlcVersion\e[0m $extra\n";
         echo "\n";
         $this->renderHeading('Usage:');
         echo "  command [options]\n";
@@ -173,5 +179,35 @@ class Help
         echo "Options:\n";
         echo "  -h, --help     Show this help.\n";
         echo "  -v, --version  Show the MMLC version.\n";
+    }
+
+    private function getCurrentGitBranch(string $gitPath): ?string
+    {
+        if (!is_dir($gitPath)) {
+            return null;
+        }
+
+        $os = strtoupper(substr(PHP_OS, 0, 3));
+        $command = '';
+
+        switch ($os) {
+            case 'WIN':
+                $command = 'cd /d "' . $gitPath . '" & git symbolic-ref --short HEAD 2>NUL';
+                break;
+            case 'LIN':
+            case 'DAR':
+                $command = 'cd "' . $gitPath . '" && git symbolic-ref --short HEAD 2>/dev/null';
+                break;
+            default:
+                return 'unkown branch';
+        }
+
+        $output = trim('' . shell_exec($command));
+
+        if (empty($output)) {
+            return null;
+        }
+
+        return $output;
     }
 }
