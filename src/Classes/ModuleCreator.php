@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
 class ModuleCreator
 {
@@ -78,41 +79,17 @@ class ModuleCreator
 
     private function getLatestVersion(string $archiveName): string
     {
-        $version = '0.1.0';
+        $remoteModuleLoader = RemoteModuleLoader::create();
+        $module = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
 
         /**
-         * Create GitHub API reqest.
-         *
-         * GitHub requries a `User-Agent` header or it will respond with HTTP
-         * 403.
+         * Usually the module does not exist yet, so `$module` is `null`.
          */
-        $requestOptions = [
-            'http' => [
-                'header' => [
-                    'User-Agent: PHP',
-                ],
-            ],
-        ];
-        $requestContext  = stream_context_create($requestOptions);
-        $requestResponse = file_get_contents(
-            sprintf(
-                'https://api.github.com/repos/%s/tags',
-                $archiveName
-            ),
-            $use_include_path = false,
-            $requestContext
-        );
-
-        if (false !== $requestResponse) {
-            $archiveTags       = json_decode($requestResponse, $associative = true);
-            $archiveTagsLatest = reset($archiveTags);
-
-            if (isset($archiveTagsLatest['name'])) {
-                $version = $archiveTagsLatest['name'];
-            }
+        if (null === $module) {
+            return '0.1.0';
         }
 
-        return $version;
+        return $module->getVersion();
     }
 
     private function getCurrentModifiedVersion(): string

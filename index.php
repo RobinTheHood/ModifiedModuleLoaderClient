@@ -17,16 +17,6 @@ error_reporting(E_ALL);
 
 require 'vendor/autoload.php';
 
-if (file_exists('config/config.php')) {
-    // >= Version 1.12.0
-    require_once 'config/config.php';
-} elseif (file_exists('config.php')) {
-    // <= Version 1.11.0
-    require_once 'config.php';
-} else {
-    die('Fehler: Es konnte keine ./config/config.php Datei gefunden werden.');
-}
-
 use RobinTheHood\Debug\Debug;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
