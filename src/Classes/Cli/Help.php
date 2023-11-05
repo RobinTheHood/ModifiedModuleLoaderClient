@@ -15,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandList;
 
 class Help
 {
@@ -115,7 +116,8 @@ class Help
                 echo "Usage: mmlc uninstall <archiveName> Uninstall a module from your shop. Use the -f or --force option to enforce.\n";
                 break;
             case 'list':
-                echo "Usage: mmlc list                    List all available modules that can be used with MMLC.\n";
+                $command = new CommandList();
+                $command->help();
                 break;
             case 'search':
                 echo "Usage: mmlc search <searchTerm>     Search for modules based on a specific search term.\n";
