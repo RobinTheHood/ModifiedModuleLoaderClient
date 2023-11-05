@@ -34,6 +34,8 @@ class DirectoryWatcher
 
     public function watch(callable $callback, int $intervalInSeconds = 5): void
     {
+        $intervalInSecondsPositiv = max(0, $intervalInSeconds);
+
         if (!$this->initialized) {
             throw new Exception("The 'init' method must be called first to initialize the directory.");
         }
@@ -41,7 +43,7 @@ class DirectoryWatcher
         while (true) {
             $changes = $this->scann();
             $callback($changes);
-            sleep($intervalInSeconds);
+            sleep($intervalInSecondsPositiv);
         }
     }
 
