@@ -116,13 +116,13 @@ class CommandWatch
 
         $parts = explode(\DIRECTORY_SEPARATOR, $relativeFilePath);
         $vendorName = $parts[0] ?? '';
-        $modueName = $parts[1] ?? '';
+        $moduleName = $parts[1] ?? '';
 
         if (!$vendorName) {
             return '';
         }
 
-        if (!$modueName) {
+        if (!$moduleName) {
             return '';
         }
 
