@@ -112,9 +112,9 @@ class CommandWatch
     {
         $basePath = App::getModulesRoot();
         $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
-        $relativeFilePath = ltrim($relativeFilePath, '/');
+        $relativeFilePath = ltrim($relativeFilePath, \DIRECTORY_SEPARATOR);
 
-        $parts = explode('/', $relativeFilePath);
+        $parts = explode(\DIRECTORY_SEPARATOR, $relativeFilePath);
         $vendorName = $parts[0] ?? '';
         $modueName = $parts[1] ?? '';
 
