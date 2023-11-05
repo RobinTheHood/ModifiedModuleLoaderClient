@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
-use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\{App, ShopInfo};
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
 class ModuleCreator
@@ -92,32 +92,6 @@ class ModuleCreator
         return $module->getVersion();
     }
 
-    private function getCurrentModifiedVersion(): string
-    {
-        $version = '2.0.7.2';
-
-        $shopRoot = App::getShopRoot();
-        $modifiedVersionCachePath = $shopRoot . '/cache/version.cache';
-
-        if (!\file_exists($modifiedVersionCachePath)) {
-            return $version;
-        }
-
-        $modifiedVersionCacheJson = \file_get_contents($modifiedVersionCachePath);
-
-        if (false === $modifiedVersionCacheJson) {
-            return $version;
-        }
-
-        $modifiedVersionCache = \json_decode($modifiedVersionCacheJson, $associative = true);
-
-        if (isset($modifiedVersionCache['details']['Shop']['shop']['version'])) {
-            $version = $modifiedVersionCache['details']['Shop']['shop']['version'];
-        }
-
-        return $version;
-    }
-
     public function createModuleInfoJsonFile($vendorName, $moduleName)
     {
         $archiveName = $vendorName . '/' . $moduleName;
@@ -145,7 +119,7 @@ class ModuleCreator
             ],
 
             'modifiedCompatibility' => [
-                $this->getCurrentModifiedVersion() . ',',
+                ShopInfo::getModifiedVersion() . ',',
             ],
 
             "mmlc" => [
