@@ -16,6 +16,11 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\DirectoryWatcher;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
+use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class CommandWatch
 {
@@ -32,7 +37,9 @@ class CommandWatch
 
         $dircectoryWatcher = new DirectoryWatcher();
         $dircectoryWatcher->init($directory);
-        $dircectoryWatcher->watch(function ($changes) use ($basePath) {
+        $dircectoryWatcher->watch(function ($directoryWatcher) use ($basePath) {
+            $changes = $directoryWatcher->getChanges();
+
             if (!$changes) {
                 return;
             }
@@ -47,7 +54,77 @@ class CommandWatch
                 } elseif ($status === DirectoryWatcher::STATUS_DELETED) {
                     echo "\033[31mFile deleted:\033[0m $relativeFilePath\n";
                 }
+
+                if (basename($filePath) === 'modulehash.json') {
+                    echo "do nothing, modulehash.json it is a ignored file\n";
+                    continue;
+                }
+
+                $module = $this->getInstalledModulByFilePath($filePath);
+
+                if (!$module) {
+                    return;
+                }
+
+                echo 'Detected installed module: '
+                    . $module->getArchiveName() . ' version: ' . $module->getVersion() . "\n";
+
+                // Apply changes
+                echo 'Apply changes to ' . $module->getArchiveName() . "\n";
+                $moduleInstaller = ModuleInstaller::createFromConfig();
+                $moduleInstaller->revertChanges($module);
+                $directoryWatcher->reset();
             }
         });
+    }
+
+    /**
+     * Liefert ein lokales Modul anhand eines Dateipfades. Die Methode überprüft, ob die angegebene Datei zu einem
+     * lokale installierten Modul gehört und liefert ein Modul Objekt zurück oder null.
+     */
+    private function getInstalledModulByFilePath(string $filePath): ?Module
+    {
+        $archiveName = $this->getArchiveNameFromFilePath($filePath);
+
+        if (!$archiveName) {
+            return null;
+        }
+
+        $localModuleLoader = LocalModuleLoader::create(Comparator::CARET_MODE_STRICT);
+        $localModuleLoader->resetCache();
+        $modules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
+
+        $moduleFilter = ModuleFilter::create(Comparator::CARET_MODE_STRICT);
+        $installedModules = $moduleFilter->filterInstalled($modules);
+
+        if (!$installedModules) {
+            return null;
+        }
+
+        return $installedModules[0];
+    }
+
+    /**
+     * Liefert den archiveName von einem Dateipath.
+     */
+    private function getArchiveNameFromFilePath(string $filePath): string
+    {
+        $basePath = App::getModulesRoot();
+        $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
+        $relativeFilePath = ltrim($relativeFilePath, '/');
+
+        $parts = explode('/', $relativeFilePath);
+        $vendorName = $parts[0] ?? '';
+        $modueName = $parts[1] ?? '';
+
+        if (!$vendorName) {
+            return '';
+        }
+
+        if (!$modueName) {
+            return '';
+        }
+
+        return $vendorName . '/' . $modueName;
     }
 }

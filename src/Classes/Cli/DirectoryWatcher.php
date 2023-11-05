@@ -21,14 +21,27 @@ class DirectoryWatcher
     public const STATUS_CHANGED = 2;
     public const STATUS_DELETED = 3;
 
+    /** @var string */
     private $directoryPath;
+
+    /** @var array */
     private $lastFiles = [];
+
+    /** @var bool */
     private $initialized = false;
+
+    /** @var array */
+    private $changes = [];
 
     public function init(string $directoryPath): void
     {
         $this->directoryPath = $directoryPath;
         $this->initialized = true;
+        $this->scann();
+    }
+
+    public function reset()
+    {
         $this->scann();
     }
 
@@ -41,10 +54,15 @@ class DirectoryWatcher
         }
 
         while (true) {
-            $changes = $this->scann();
-            $callback($changes);
+            $this->scann();
+            $callback($this);
             sleep($intervalInSecondsPositiv);
         }
+    }
+
+    public function getChanges(): array
+    {
+        return $this->changes;
     }
 
     private function scann(): array
@@ -75,6 +93,7 @@ class DirectoryWatcher
             }
         }
 
+        $this->changes = $changes;
         return $changes;
     }
 
