@@ -94,6 +94,7 @@ class CommandWatch
         $localModuleLoader->resetCache();
         $modules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
 
+        // Check if the module is installed
         $moduleFilter = ModuleFilter::create(Comparator::CARET_MODE_STRICT);
         $installedModules = $moduleFilter->filterInstalled($modules);
 
