@@ -56,7 +56,7 @@ class CommandWatch
                 }
 
                 if (basename($filePath) === 'modulehash.json') {
-                    echo "do nothing, modulehash.json it is a ignored file\n";
+                    echo "do nothing, modulehash.json is a ignored file\n";
                     continue;
                 }
 
