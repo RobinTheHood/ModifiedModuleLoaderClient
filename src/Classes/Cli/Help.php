@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
 
 class Help
 {
@@ -98,8 +99,6 @@ class Help
 
     public function showCommandHelp($command)
     {
-        echo "MMLC - Modified Module Loader Client - cli\n";
-        echo "\n";
         switch ($command) {
             case 'download':
                 echo "Usage: mmlc download <archiveName>  Download the latest version of a module.\n";
@@ -122,7 +121,8 @@ class Help
                 echo "Usage: mmlc search <searchTerm>     Search for modules based on a specific search term.\n";
                 break;
             case 'info':
-                echo "Usage: mmlc info <archiveName>      Display information and details for a specific module.\n";
+                $command = new CommandInfo();
+                $command->help();
                 break;
             case 'status':
                 echo "Usage: mmlc status                  Show the status of all installed modules in MMLC.\n";

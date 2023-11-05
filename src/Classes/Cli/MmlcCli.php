@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandList;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandWatch;
+
 class MmlcCli
 {
     public function __construct()
