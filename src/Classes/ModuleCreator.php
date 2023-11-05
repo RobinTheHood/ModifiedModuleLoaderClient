@@ -122,13 +122,13 @@ class ModuleCreator
                 ShopInfo::getModifiedVersion() . ',',
             ],
 
-            "mmlc" => [
-                "version" => '^' . App::getMmlcVersion() . ','
+            'mmlc' => [
+                'version' => '^' . App::getMmlcVersion() . ','
             ],
 
-            "php" => [
-                "version" => "^7.4 || ^8.0",
-                "ext" => []
+            'php' => [
+                'version' => '^' . \phpversion(),
+                'ext' => [],
             ]
         ];
 
