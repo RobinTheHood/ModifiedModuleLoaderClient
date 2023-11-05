@@ -122,13 +122,13 @@ class ModuleCreator
                 '2.0.4.2'
             ],
 
-            "mmlc" => [
-                "version" => "^1.21.0"
+            'mmlc' => [
+                'version' => '^' . App::getMmlcVersion() . ','
             ],
 
-            "php" => [
-                "ext" => []
-                "version" => '^' . \phpversion(),
+            'php' => [
+                'version' => '^7.4 || ^8.0',
+                'ext' => [],
             ]
         ];
 
