@@ -125,6 +125,8 @@ class CommandWatch
             return '';
         }
 
-        return $vendorName . '/' . $modueName;
+        // Now we can create our archiveName
+        $archiveName = $vendorName . '/' . $moduleName;
+        return $archiveName;
     }
 }
