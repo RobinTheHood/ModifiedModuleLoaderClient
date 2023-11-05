@@ -123,7 +123,7 @@ class ModuleCreator
             ],
 
             "mmlc" => [
-                "version" => "^1.21.0"
+                "version" => '^' . App::getMmlcVersion() . ','
             ],
 
             "php" => [
