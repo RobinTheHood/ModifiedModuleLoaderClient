@@ -15,6 +15,8 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\DirectoryWatcher;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
@@ -22,13 +24,18 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
-class CommandWatch
+class CommandWatch implements CommandInterface
 {
     public function __construct()
     {
     }
 
-    public function run()
+    public function getName(): string
+    {
+        return 'watch';
+    }
+
+    public function run(MmlcCli $cli): void
     {
         $basePath = App::getModulesRoot();
         $directory = App::getModulesRoot();
@@ -48,11 +55,12 @@ class CommandWatch
                 $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
 
                 if ($status === DirectoryWatcher::STATUS_NEW) {
-                    echo "\033[32mFile added:\033[0m $relativeFilePath\n";
+                    echo TextRenderer::color('File added:', TextRenderer::COLOR_GREEN) . " $relativeFilePath\n";
                 } elseif ($status === DirectoryWatcher::STATUS_CHANGED) {
+                    echo TextRenderer::color('File modified:', TextRenderer::COLOR_YELLOW) . " $relativeFilePath\n";
                     echo "\033[33mFile modified:\033[0m $relativeFilePath\n";
                 } elseif ($status === DirectoryWatcher::STATUS_DELETED) {
-                    echo "\033[31mFile deleted:\033[0m $relativeFilePath\n";
+                    echo TextRenderer::color('File deleted:', TextRenderer::COLOR_RED) . " $relativeFilePath\n";
                 }
 
                 if (basename($filePath) === 'modulehash.json') {
@@ -76,6 +84,16 @@ class CommandWatch
                 $directoryWatcher->reset();
             }
         });
+    }
+
+    public function runHelp(MmlcCli $cli): void
+    {
+        echo TextRenderer::renderHelpHeading('Description:');
+        echo "  Lorem ...\n";
+        echo "\n";
+
+        echo TextRenderer::renderHelpHeading('Usage:');
+        echo "  watch ...\n";
     }
 
     /**

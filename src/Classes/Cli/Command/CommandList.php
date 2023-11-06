@@ -13,30 +13,37 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
-class CommandList
+class CommandList implements CommandInterface
 {
     public function __construct()
     {
     }
 
-    public function run()
+    public function getName(): string
+    {
+        return 'list';
+    }
+
+    public function run(MmlcCli $cli): void
     {
         $remoteModuleLoader = RemoteModuleLoader::create();
         $modules = $remoteModuleLoader->loadAllLatestVersions();
         foreach ($modules as $module) {
-            //echo $module->getArchiveName() . ' ' . $module->getVersion() . "\n";
             echo $module->getArchiveName() . "\n";
         }
     }
 
-    public function help()
+    public function runHelp(MmlcCli $cli): void
     {
-        echo "\e[33mDescription:\e[0m\n";
+        echo TextRenderer::renderHelpHeading('Description:');
         echo "  List all available modules that can be used with MMLC.\n";
         echo "\n";
-        echo "\e[33mUsage:\e[0m\n";
+
+        echo TextRenderer::renderHelpHeading('Usage:');
         echo "  list\n";
     }
 }

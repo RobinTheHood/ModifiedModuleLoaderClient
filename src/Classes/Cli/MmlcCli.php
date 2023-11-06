@@ -13,176 +13,106 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
+use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandDownload;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInterface;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandList;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandWatch;
 
-class MmlcCli
+class MmlcCli extends Cli
 {
     public function __construct()
     {
-        //TODO: Initialize the application here ...
+        $this->addCommand(new CommandDownload());
+        $this->addCommand(new CommandList());
+        $this->addCommand(new CommandInfo());
+        $this->addCommand(new CommandWatch());
     }
 
     public function run()
     {
         $command = $this->getCommand();
 
-        if ($this->hasOption('--help')) {
-            $help = new Help();
-            $help->showCommandHelp($command);
+        if (!$command && ($this->hasOption('--version') || $this->hasOption('-v'))) {
+            $this->showVersion();
+        } elseif ($command && ($this->hasOption('--help') || $this->hasOption('-h'))) {
+            $command->runHelp($this);
+            return;
+        } elseif ($command) {
+            $command->run($this);
+            return;
         } else {
-            switch ($command) {
-                case 'download':
-                    $archiveName = $this->getArgument(2);
-                    $this->downloadModule($archiveName);
-                    break;
-                case 'install':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->installModule($archiveName, $force);
-                    break;
-                case 'update':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->updateModule($archiveName, $force);
-                    break;
-                case 'uninstall':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->uninstallModule($archiveName, $force);
-                    break;
-                case 'list':
-                    $this->listModules();
-                    break;
-                case 'search':
-                    $searchTerm = $this->getArgument(2);
-                    $this->searchModules($searchTerm);
-                    break;
-                case 'info':
-                    $archiveName = $this->getArgument(2);
-                    $this->moduleInfo($archiveName);
-                    break;
-                case 'status':
-                    $this->moduleStatus();
-                    break;
-                case 'create':
-                    if ($this->hasOption('-i')) {
-                        $this->createModuleInteractive();
-                    } else {
-                        $this->createModule();
-                    }
-                    break;
-                case 'watch':
-                    $this->watchForFileChanges();
-                    break;
-                case 'discard':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->discardChanges($archiveName, $force);
-                    break;
-                case 'self-update':
-                    $this->selfUpdate();
-                    break;
-                default:
-                    $this->showHelp();
-                    break;
-            }
+            $this->runHelp();
         }
     }
 
-    private function showHelp()
+    private function runHelp()
     {
-        $help = new Help();
-        $help->showHelp();
+        TextRenderer::renderLogo();
+        echo "\n";
+        $this->showVersion();
+        echo "\n";
+        TextRenderer::renderHelpHeading('Usage:');
+        echo "  command [options]\n";
+        echo "\n";
+        TextRenderer::renderHelpHeading('Options:');
+        echo "  -h, --help     Display help for the given command.\n";
+        echo "  -v, --version  Display this application version.\n";
+        echo "\n";
+        TextRenderer::renderHelpHeading('Commands:');
+        TextRenderer::renderHelpCommand('download', 'Download the latest version of module.');
+        TextRenderer::renderHelpCommand('install', 'Download and install a module in your shop. Use the -f or --force option to enforce.');
+        TextRenderer::renderHelpCommand('update', 'Update an already installed module to the latest version. Use the -f or --force option to enforce.');
+        TextRenderer::renderHelpCommand('uninstall', 'Uninstall a module from your shop. Use the -f or --force option to enforce.');
+        TextRenderer::renderHelpCommand('list', 'List all available modules that can be used with MMLC.');
+        TextRenderer::renderHelpCommand('search', 'Search for modules based on a specific search term.');
+        TextRenderer::renderHelpCommand('info', 'Display information and details for a specific module.');
+        TextRenderer::renderHelpCommand('status', 'Show the status of all installed modules in MMLC.');
+        TextRenderer::renderHelpCommand('create', 'Create a new module in MMLC. Use the -i option for the interactive mode.');
+        TextRenderer::renderHelpCommand('watch', 'Automatically detect and apply file changes for module development.');
+        TextRenderer::renderHelpCommand('discard', 'Discard changes to a module. Use the -f or --force option to enforce.');
+        TextRenderer::renderHelpCommand('self-update', 'Updates MMLC to the latest version.');
     }
 
-
-    // Placeholder functions, replace with your actual implementation for each command
-
-    private function downloadModule($archiveName)
+    private function showVersion()
     {
-        // Implement module download logic
+        $mmlcVersion = App::getMmlcVersion();
+        $gitBranch = $this->getCurrentGitBranch(App::getRoot() . '/.git');
+        $extra = $gitBranch ? "git branch " . TextRenderer::color($gitBranch, TextRenderer::COLOR_YELLOW) : '';
+
+        echo TextRenderer::color('MMLC cli', TextRenderer::COLOR_GREEN)
+            . ' version ' . TextRenderer::color($mmlcVersion, TextRenderer::COLOR_YELLOW)
+            . ' ' . $extra . "\n";
     }
 
-    private function installModule($archiveName, $force = false)
+    private function getCurrentGitBranch(string $gitPath): ?string
     {
-        // Implement module installation logic
-    }
+        if (!is_dir($gitPath)) {
+            return null;
+        }
 
-    private function updateModule($archiveName, $force = false)
-    {
-        // Implement module update logic
-    }
+        $os = strtoupper(substr(PHP_OS, 0, 3));
+        $command = '';
 
-    private function uninstallModule($archiveName, $force = false)
-    {
-        // Implement module uninstallation logic
-    }
+        switch ($os) {
+            case 'WIN':
+                $command = 'cd /d "' . $gitPath . '" & git symbolic-ref --short HEAD 2>NUL';
+                break;
+            case 'LIN':
+            case 'DAR':
+                $command = 'cd "' . $gitPath . '" && git symbolic-ref --short HEAD 2>/dev/null';
+                break;
+            default:
+                return 'unkown branch';
+        }
 
-    private function listModules()
-    {
-        $command = new CommandList();
-        $command->run();
-    }
+        $output = trim('' . shell_exec($command));
 
-    private function searchModules($searchTerm)
-    {
-        // Implement module search logic
-    }
+        if (empty($output)) {
+            return null;
+        }
 
-    private function moduleInfo($archiveName)
-    {
-        $command = new CommandInfo();
-        $command->run($archiveName);
-    }
-
-    private function moduleStatus()
-    {
-        // Implement displaying module status
-    }
-
-    private function createModule()
-    {
-        // Implement module creation logic
-    }
-
-    private function createModuleInteractive()
-    {
-        // Implement interactive module creation logic
-    }
-
-    private function watchForFileChanges()
-    {
-        $command = new CommandWatch();
-        $command->run();
-    }
-
-    private function discardChanges($archiveName, $force = false)
-    {
-        // Implement discard changes logic
-    }
-
-    private function selfUpdate()
-    {
-        // Implement self-update logic
-    }
-
-    private function getCommand()
-    {
-        global $argv;
-        return isset($argv[1]) ? $argv[1] : 'help';
-    }
-
-    private function getArgument($index)
-    {
-        global $argv;
-        return isset($argv[$index]) ? $argv[$index] : null;
-    }
-
-    private function hasOption($option)
-    {
-        global $argv;
-        return in_array($option, $argv);
+        return $output;
     }
 }
