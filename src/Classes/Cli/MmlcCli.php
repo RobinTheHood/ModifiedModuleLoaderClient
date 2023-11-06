@@ -24,9 +24,10 @@ class MmlcCli extends Cli
 {
     public function __construct()
     {
+        $this->addCommand(new CommandCreate());
         $this->addCommand(new CommandDownload());
-        $this->addCommand(new CommandList());
         $this->addCommand(new CommandInfo());
+        $this->addCommand(new CommandList());
         $this->addCommand(new CommandWatch());
     }
 
@@ -43,58 +44,6 @@ class MmlcCli extends Cli
             $command->run($this);
             return;
         } else {
-            switch ($command) {
-                case 'download':
-                    $archiveName = $this->getArgument(2);
-                    $this->downloadModule($archiveName);
-                    break;
-                case 'install':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->installModule($archiveName, $force);
-                    break;
-                case 'update':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->updateModule($archiveName, $force);
-                    break;
-                case 'uninstall':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->uninstallModule($archiveName, $force);
-                    break;
-                case 'list':
-                    $this->listModules();
-                    break;
-                case 'search':
-                    $searchTerm = $this->getArgument(2);
-                    $this->searchModules($searchTerm);
-                    break;
-                case 'info':
-                    $archiveName = $this->getArgument(2);
-                    $this->moduleInfo($archiveName);
-                    break;
-                case 'status':
-                    $this->moduleStatus();
-                    break;
-                case 'create':
-                    $this->createModule();
-                    break;
-                case 'watch':
-                    $this->watchForFileChanges();
-                    break;
-                case 'discard':
-                    $archiveName = $this->getArgument(2);
-                    $force = $this->hasOption('-f') || $this->hasOption('--force');
-                    $this->discardChanges($archiveName, $force);
-                    break;
-                case 'self-update':
-                    $this->selfUpdate();
-                    break;
-                default:
-                    $this->showHelp();
-                    break;
-            }
             $this->runHelp();
         }
     }
@@ -171,79 +120,7 @@ class MmlcCli extends Cli
         if (empty($output)) {
             return null;
         }
-    }
 
-    private function moduleInfo($archiveName)
-    {
-        $command = new CommandInfo();
-        $command->run($archiveName);
-    }
-
-    private function moduleStatus()
-    {
-        // Implement displaying module status
-    }
-
-    private function createModule()
-    {
-        $command = new CommandCreate();
-        $command->run($this);
-    }
-
-    private function watchForFileChanges()
-    {
-        $command = new CommandWatch();
-        $command->run();
-    }
-
-    private function discardChanges($archiveName, $force = false)
-    {
-        // Implement discard changes logic
-    }
-
-    private function selfUpdate()
-    {
-        // Implement self-update logic
-    }
-
-    public function getCommand()
-    {
-        global $argv;
-        return isset($argv[1]) ? $argv[1] : 'help';
-    }
-
-    public function getArgument($index)
-    {
-        global $argv;
-        return isset($argv[$index]) ? $argv[$index] : null;
-    }
-
-    public function getFilteredArgument(int $argumentIndex): string
-    {
-        global $argv;
-
-        $arguments = $argv;
-        $filteredArguments = array();
-
-        foreach ($arguments as $index => $argument) {
-            if (0 === $index || 1 === $index) {
-                continue;
-            }
-
-            if ('-' === \substr($argument, 0, 1)) {
-                continue;
-            }
-
-            $filteredArguments[] = $argument;
-        }
-
-        return $filteredArguments[$argumentIndex] ?? '';
-    }
-
-    public function hasOption($option)
-    {
-        global $argv;
-        return in_array($option, $argv);
         return $output;
     }
 }
