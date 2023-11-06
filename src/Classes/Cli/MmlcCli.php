@@ -42,11 +42,11 @@ class MmlcCli extends Cli
             $command->run($this);
             return;
         } else {
-            $this->runHelp();
+            $this->getHelp();
         }
     }
 
-    private function runHelp()
+    private function getHelp()
     {
         $this->writeLine(
             $this->renderLogo()
