@@ -40,11 +40,11 @@ class CommandWatch implements CommandInterface
         $basePath = App::getModulesRoot();
         $directory = App::getModulesRoot();
 
-        echo "Watching the directory " . TextRenderer::color('Modules', TextRenderer::COLOR_GREEN) . " ...\n";
+        $cli->writeLine("Watching the directory " . TextRenderer::color('Modules', TextRenderer::COLOR_GREEN) . " ...");
 
         $dircectoryWatcher = new DirectoryWatcher();
         $dircectoryWatcher->init($directory);
-        $dircectoryWatcher->watch(function ($directoryWatcher) use ($basePath) {
+        $dircectoryWatcher->watch(function ($directoryWatcher) use ($cli, $basePath) {
             $changes = $directoryWatcher->getChanges();
 
             if (!$changes) {
@@ -55,15 +55,15 @@ class CommandWatch implements CommandInterface
                 $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
 
                 if ($status === DirectoryWatcher::STATUS_NEW) {
-                    echo TextRenderer::color('File added:', TextRenderer::COLOR_GREEN) . " $relativeFilePath\n";
+                    $cli->writeLine(TextRenderer::color('File added:', TextRenderer::COLOR_GREEN) . " $relativeFilePath");
                 } elseif ($status === DirectoryWatcher::STATUS_CHANGED) {
-                    echo TextRenderer::color('File modified:', TextRenderer::COLOR_YELLOW) . " $relativeFilePath\n";
+                    $cli->writeLine(TextRenderer::color('File modified:', TextRenderer::COLOR_YELLOW) . " $relativeFilePath");
                 } elseif ($status === DirectoryWatcher::STATUS_DELETED) {
-                    echo TextRenderer::color('File deleted:', TextRenderer::COLOR_RED) . " $relativeFilePath\n";
+                    $cli->writeLine(TextRenderer::color('File deleted:', TextRenderer::COLOR_RED) . " $relativeFilePath");
                 }
 
                 if (basename($filePath) === 'modulehash.json') {
-                    echo "do nothing, modulehash.json is a ignored file\n";
+                    $cli->writeLine("do nothing, modulehash.json is a ignored file");
                     continue;
                 }
 
@@ -73,33 +73,38 @@ class CommandWatch implements CommandInterface
                     return;
                 }
 
-                echo 'Detected installed module: '
-                    . $module->getArchiveName() . ' version: ' . $module->getVersion() . "\n";
+                $cli->writeLine(
+                    'Detected installed module: '
+                    . $module->getArchiveName() . ' version: ' . $module->getVersion()
+                );
 
                 // Apply changes
-                echo 'Apply changes to ' . $module->getArchiveName() . "\n";
+                $cli->writeLine('Apply changes to ' . $module->getArchiveName());
                 $moduleInstaller = ModuleInstaller::createFromConfig();
                 $moduleInstaller->revertChanges($module);
                 $directoryWatcher->reset();
             }
         });
+
+        return;
     }
 
-    public function runHelp(MmlcCli $cli): void
+    public function getHelp(MmlcCli $cli): string
     {
-        TextRenderer::renderHelpHeading('Description:');
-        echo "  Lorem ...\n";
-        echo "\n";
+        return
+            TextRenderer::renderHelpHeading('Description:')
+            . "  Lorem ...\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Usage:');
-        echo "  watch ...\n";
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Usage:')
+            . "  watch ...\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Options:');
-        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Options:')
+            . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
+            . "\n"
 
-        echo "Read more at https://module-loader.de/documentation.php\n";
+            . "Read more at https://module-loader.de/documentation.php\n";
     }
 
     /**

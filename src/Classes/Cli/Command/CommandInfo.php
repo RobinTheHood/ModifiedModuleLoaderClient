@@ -32,7 +32,7 @@ class CommandInfo implements CommandInterface
     {
         $archiveName = $cli->getFilteredArgument(0);
         if (!$archiveName) {
-            echo "No archiveName specified. \n";
+            $cli->writeLine("No archiveName specified.");
             return;
         }
 
@@ -40,30 +40,33 @@ class CommandInfo implements CommandInterface
         $module = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
 
         if (!$module) {
-            echo "Module $archiveName not found. \n";
+            $cli->writeLine("Module $archiveName not found.");
             return;
         }
 
-        echo "name:              " . $module->getName() . "\n";
-        echo "archiveName:       " . $module->getArchiveName() . "\n";
-        echo "latestVersion:     " . $module->getVersion() . "\n";
-        echo "shortDescription:  " . $module->getShortDescription() . "\n";
+        $cli->writeLine("name:              " . $module->getName());
+        $cli->writeLine("archiveName:       " . $module->getArchiveName());
+        $cli->writeLine("latestVersion:     " . $module->getVersion());
+        $cli->writeLine("shortDescription:  " . $module->getShortDescription());
+
+        return;
     }
 
-    public function runHelp(MmlcCli $cli): void
+    public function getHelp(MmlcCli $cli): string
     {
-        TextRenderer::renderHelpHeading('Description:');
-        echo "  Display information and details for a specific module.\n";
-        echo "\n";
+        return
+            TextRenderer::renderHelpHeading('Description:')
+            . "  Display information and details for a specific module.\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Usage:');
-        echo "  info <archiveName>\n";
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Usage:')
+            . "  info <archiveName>\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Options:');
-        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Options:')
+            . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
+            . "\n"
 
-        echo "Read more at https://module-loader.de/documentation.php\n";
+            . "Read more at https://module-loader.de/documentation.php\n";
     }
 }
