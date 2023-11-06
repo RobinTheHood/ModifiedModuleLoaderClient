@@ -31,8 +31,9 @@ class CommandInfo implements CommandInterface
     public function run(MmlcCli $cli): void
     {
         $archiveName = $cli->getFilteredArgument(0);
+
         if (!$archiveName) {
-            $cli->writeLine("No archiveName specified.");
+            $cli->writeLine($this->getHelp($cli));
             return;
         }
 
