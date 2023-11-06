@@ -68,6 +68,6 @@ class CommandInfo implements CommandInterface
             . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
             . "\n"
 
-            . "Read more at https://module-loader.de/documentation.php\n";
+            . "Read more at https://module-loader.de/documentation.php";
     }
 }
