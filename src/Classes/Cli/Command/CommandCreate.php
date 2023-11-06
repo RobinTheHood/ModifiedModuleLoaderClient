@@ -78,17 +78,25 @@ class CommandCreate implements CommandInterface
 
     public function runHelp(MmlcCli $cli): void
     {
+        $padding = 27;
+
+        echo "\n";
         TextRenderer::renderHelpHeading('Description:');
         echo "  Creates a new module. Can be done interactively.\n";
         echo "\n";
-        TextRenderer::rederHelpArgument('Usage:');
-        echo "  create [options] <archiveName> \n";
+
+        TextRenderer::renderHelpArgument('Usage:', 'create [options] <archiveName>', $padding);
         echo "\n";
+
         TextRenderer::renderHelpHeading('Arguments:');
-        TextRenderer::renderHelpOption('archiveName', 'The name of the archive (vendorName/moduleName).');
+        TextRenderer::renderHelpOption('', 'archiveName', 'The name of the archive (vendorName/moduleName).', $padding);
         echo "\n";
+
         TextRenderer::renderHelpHeading('Options:');
-        TextRenderer::renderHelpOption('', '--prefix=VENDOR_PREFIX', 'Usually an abbreviated vendorName. Can also be vendorName.');
-        TextRenderer::renderHelpOption('-i, --interactive', 'Whether to create the module interactively (by answering questions).');
+        TextRenderer::renderHelpOption('', 'prefix=VENDOR_PREFIX', 'Usually an abbreviated vendorName. Can also be vendorName.', $padding);
+        TextRenderer::renderHelpOption('i', 'interactive', 'Whether to create the module interactively (by answering questions).', $padding);
+        echo "\n";
+
+        echo "Read more at https://module-loader.de/documentation.php\n";
     }
 }
