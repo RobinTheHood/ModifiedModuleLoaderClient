@@ -15,7 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 
 class CommandInfo implements CommandInterface
 {
@@ -37,8 +37,8 @@ class CommandInfo implements CommandInterface
             return;
         }
 
-        $remoteModuleLoader = RemoteModuleLoader::create();
-        $module = $remoteModuleLoader->loadLatestVersionByArchiveName($archiveName);
+        $moduleLoader = ModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadLatestVersionByArchiveName($archiveName);
 
         if (!$module) {
             $cli->writeLine("Module $archiveName not found.");
