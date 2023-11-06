@@ -49,6 +49,28 @@ class TextRenderer
         echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 
+    public static function renderHelpArgument(string $name, string $description, int $pad = 20)
+    {
+        $name = self::rightPad($name, 20);
+        echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+    }
+
+    public static function renderHelpOption(string $shortName, string $longName, string $description, int $pad = 20)
+    {
+        $name = '';
+
+        if ($shortName && $longName) {
+            $name = "-$shortName, --$longName";
+        } elseif ($shortName) {
+            $name = "-$shortName";
+        } elseif ($longName) {
+            $name = "    --$longName";
+        }
+
+        $name = self::rightPad($name, 20);
+        echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+    }
+
     public static function renderLogo()
     {
         // echo "    __  _____  _____    ______   ________    ____\n";
