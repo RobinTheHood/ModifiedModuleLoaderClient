@@ -383,14 +383,14 @@ class ModuleInstaller
         \file_put_contents(App::getShopRoot() . '/vendor-mmlc/autoload.php', $template);
     }
 
-    public function uninstall(Module $module): bool
+    public function uninstall(Module $module, bool $force = false): bool
     {
         $installedModule = $module->getInstalledVersion();
         if (!$installedModule) {
             return false;
         }
 
-        if ($installedModule->isChanged()) {
+        if ($installedModule->isChanged() && $force === false) {
             $message =
                 "Can not uninstall module {$installedModule->getArchiveName()} {$installedModule->getVersion()} "
                 . "because the module has changes.";
