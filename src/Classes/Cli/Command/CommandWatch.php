@@ -40,7 +40,7 @@ class CommandWatch implements CommandInterface
         $basePath = App::getModulesRoot();
         $directory = App::getModulesRoot();
 
-        echo "Watching the directory \033[32mModules\033[0m ...\n";
+        echo "Watching the directory " . TextRenderer::color('Modules', TextRenderer::COLOR_GREEN) . " ...\n";
 
         $dircectoryWatcher = new DirectoryWatcher();
         $dircectoryWatcher->init($directory);
@@ -58,7 +58,6 @@ class CommandWatch implements CommandInterface
                     echo TextRenderer::color('File added:', TextRenderer::COLOR_GREEN) . " $relativeFilePath\n";
                 } elseif ($status === DirectoryWatcher::STATUS_CHANGED) {
                     echo TextRenderer::color('File modified:', TextRenderer::COLOR_YELLOW) . " $relativeFilePath\n";
-                    echo "\033[33mFile modified:\033[0m $relativeFilePath\n";
                 } elseif ($status === DirectoryWatcher::STATUS_DELETED) {
                     echo TextRenderer::color('File deleted:', TextRenderer::COLOR_RED) . " $relativeFilePath\n";
                 }

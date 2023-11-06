@@ -40,7 +40,6 @@ class TextRenderer
 
     public static function renderHelpHeading(string $heading): void
     {
-        //echo "\e[33m$heading\e[0m\n";
         echo self::color($heading, self::COLOR_YELLOW) . "\n";
     }
 

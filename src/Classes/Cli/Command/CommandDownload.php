@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
 class CommandDownload implements CommandInterface
 {
