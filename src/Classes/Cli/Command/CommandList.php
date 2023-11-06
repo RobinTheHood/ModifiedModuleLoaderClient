@@ -45,5 +45,12 @@ class CommandList implements CommandInterface
 
         TextRenderer::renderHelpHeading('Usage:');
         echo "  list\n";
+        echo "\n";
+
+        TextRenderer::renderHelpHeading('Options:');
+        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
+        echo "\n";
+
+        echo "Read more at https://module-loader.de/documentation.php\n";
     }
 }

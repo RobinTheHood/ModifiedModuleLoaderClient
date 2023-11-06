@@ -50,15 +50,19 @@ class MmlcCli extends Cli
     {
         TextRenderer::renderLogo();
         echo "\n";
+
         $this->showVersion();
         echo "\n";
+
         TextRenderer::renderHelpHeading('Usage:');
         echo "  command [options]\n";
         echo "\n";
+
         TextRenderer::renderHelpHeading('Options:');
-        echo "  -h, --help     Display help for the given command.\n";
-        echo "  -v, --version  Display this application version.\n";
+        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
+        TextRenderer::renderHelpOption('v', 'version', 'Display this application version.');
         echo "\n";
+
         TextRenderer::renderHelpHeading('Commands:');
         TextRenderer::renderHelpCommand('download', 'Download the latest version of module.');
         TextRenderer::renderHelpCommand('install', 'Download and install a module in your shop. Use the -f or --force option to enforce.');
@@ -72,6 +76,9 @@ class MmlcCli extends Cli
         TextRenderer::renderHelpCommand('watch', 'Automatically detect and apply file changes for module development.');
         TextRenderer::renderHelpCommand('discard', 'Discard changes to a module. Use the -f or --force option to enforce.');
         TextRenderer::renderHelpCommand('self-update', 'Updates MMLC to the latest version.');
+        echo "\n";
+
+        echo "Read more at https://module-loader.de/documentation.php\n";
     }
 
     private function showVersion()
