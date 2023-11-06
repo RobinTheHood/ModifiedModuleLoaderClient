@@ -20,6 +20,11 @@ class Cli
     /** @var CommandInterface[] */
     private $commands = [];
 
+    public function writeLine($string): void
+    {
+        echo $string . PHP_EOL;
+    }
+
     protected function addCommand(CommandInterface $command): void
     {
         $this->commands[$command->getName()] = $command;
