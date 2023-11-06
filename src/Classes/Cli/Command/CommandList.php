@@ -32,8 +32,17 @@ class CommandList implements CommandInterface
     {
         $remoteModuleLoader = RemoteModuleLoader::create();
         $modules = $remoteModuleLoader->loadAllLatestVersions();
-        foreach ($modules as $module) {
-            $cli->writeLine($module->getArchiveName());
+
+        if ($cli->hasOption('--downloadable') || $cli->hasOption('-d')) {
+            foreach ($modules as $module) {
+                if ($module->isLoadable()) {
+                    $cli->writeLine($module->getArchiveName());
+                }
+            }
+        } else {
+            foreach ($modules as $module) {
+                $cli->writeLine($module->getArchiveName());
+            }
         }
 
         return;
@@ -51,6 +60,7 @@ class CommandList implements CommandInterface
             . "\n"
 
             . TextRenderer::renderHelpHeading('Options:')
+            . TextRenderer::renderHelpOption('d', 'downloadable', 'Only show modules that are downloadable.')
             . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
             . "\n"
 
