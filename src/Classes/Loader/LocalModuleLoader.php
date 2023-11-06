@@ -140,6 +140,19 @@ class LocalModuleLoader
         return $installedModules;
     }
 
+    /**
+     * Loads the installed module version by a given archiveName
+     *
+     * @return Module|null Returns a array of installed module versions.
+     */
+    public function loadInstalledVersionByArchiveName(string $arhciveName): ?Module
+    {
+        $modules = $this->loadAllVersions();
+        $installedModules = $this->moduleFilter->filterInstalled($modules);
+        $installedModules = $this->moduleFilter->filterByArchiveName($installedModules, $arhciveName);
+        return $installedModules[0] ?? null;
+    }
+
     public function getVendorDirs()
     {
         return FileHelper::scanDir($this->modulesRootPath, FileHelper::DIRS_ONLY);
