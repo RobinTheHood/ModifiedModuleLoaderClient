@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
@@ -29,6 +30,11 @@ class LocalModuleLoader
 
     /** @var string */
     private $modulesRootPath;
+
+    public static function createFromConfig(): LocalModuleLoader
+    {
+        return self::create(Config::getDependenyMode());
+    }
 
     public static function create(int $mode): LocalModuleLoader
     {
