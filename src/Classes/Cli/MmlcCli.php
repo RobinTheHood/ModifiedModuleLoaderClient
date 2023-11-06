@@ -173,6 +173,28 @@ class MmlcCli
         return isset($argv[$index]) ? $argv[$index] : null;
     }
 
+    public function getFilteredArgument(int $argumentIndex): string
+    {
+        global $argv;
+
+        $arguments = $argv;
+        $filteredArguments = array();
+
+        foreach ($arguments as $index => $argument) {
+            if (0 === $index || 1 === $index) {
+                continue;
+            }
+
+            if ('-' === \substr($argument, 0, 1)) {
+                continue;
+            }
+
+            $filteredArguments[] = $argument;
+        }
+
+        return $filteredArguments[$argumentIndex] ?? '';
+    }
+
     public function hasOption($option)
     {
         global $argv;

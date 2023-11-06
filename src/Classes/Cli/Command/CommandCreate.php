@@ -14,9 +14,12 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\Create\Argument;
 
 class CommandCreate
 {
+    private const ARGUMENT_ARCHIVE_NAME = 0;
+
     public function __construct()
     {
     }
@@ -28,11 +31,6 @@ class CommandCreate
         } else {
             $this->create($cli);
         }
-
-        var_dump($cli->getArgument(0));
-        var_dump($cli->getArgument(1));
-        var_dump($cli->getArgument(2));
-        var_dump($cli->getArgument(3));
     }
 
     private function create(MmlcCli $cli): void
@@ -42,15 +40,35 @@ class CommandCreate
 
     private function createInteractive(MmlcCli $cli): void
     {
-        echo "👾 \n";
-        echo "Type you module name: \n";
-        $input = '';
-        while (!$input) {
-            $input = readline();
-            echo "Try again: ";
+        $archiveName = $cli->getFilteredArgument(self::ARGUMENT_ARCHIVE_NAME);
+
+        if (!$archiveName) {
+            $vendorName = '';
+
+            while (!$vendorName) {
+                echo "1. What is the vendor name?\n";
+                echo "   Vendor name: ";
+
+                $vendorName = readline();
+
+                echo "\n";
+            }
+
+            $moduleName = '';
+
+            while (!$moduleName) {
+                echo "2. What is the module name?\n";
+                echo "   Module name: ";
+
+                $moduleName = readline();
+
+                echo "\n";
+            }
+
+            $archiveName = $vendorName . '/' . $moduleName;
         }
-        echo \PHP_EOL;
-        echo "Your module name is $input\n";
+
+        $this->create($cli);
     }
 
     public function help()
