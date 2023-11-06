@@ -13,16 +13,24 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
-class CommandInfo
+class CommandInfo implements CommandInterface
 {
     public function __construct()
     {
     }
 
-    public function run($archiveName): void
+    public function getName(): string
     {
+        return 'info';
+    }
+
+    public function run(MmlcCli $cli): void
+    {
+        $archiveName = $cli->getFilteredArgument(0);
         if (!$archiveName) {
             echo "No archiveName specified. \n";
             return;
@@ -36,18 +44,26 @@ class CommandInfo
             return;
         }
 
+        echo "name:              " . $module->getName() . "\n";
         echo "archiveName:       " . $module->getArchiveName() . "\n";
         echo "latestVersion:     " . $module->getVersion() . "\n";
-        echo "moduleName:        " . $module->getName() . "\n";
         echo "shortDescription:  " . $module->getShortDescription() . "\n";
     }
 
-    public function help()
+    public function runHelp(MmlcCli $cli): void
     {
-        echo "\e[33mDescription:\e[0m\n";
+        TextRenderer::renderHelpHeading('Description:');
         echo "  Display information and details for a specific module.\n";
         echo "\n";
-        echo "\e[33mUsage:\e[0m\n";
+
+        TextRenderer::renderHelpHeading('Usage:');
         echo "  info <archiveName>\n";
+        echo "\n";
+
+        TextRenderer::renderHelpHeading('Options:');
+        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
+        echo "\n";
+
+        echo "Read more at https://module-loader.de/documentation.php\n";
     }
 }

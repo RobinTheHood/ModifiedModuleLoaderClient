@@ -15,6 +15,8 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\DirectoryWatcher;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
@@ -22,18 +24,23 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
-class CommandWatch
+class CommandWatch implements CommandInterface
 {
     public function __construct()
     {
     }
 
-    public function run()
+    public function getName(): string
+    {
+        return 'watch';
+    }
+
+    public function run(MmlcCli $cli): void
     {
         $basePath = App::getModulesRoot();
         $directory = App::getModulesRoot();
 
-        echo "Watching the directory \033[32mModules\033[0m ...\n";
+        echo "Watching the directory " . TextRenderer::color('Modules', TextRenderer::COLOR_GREEN) . " ...\n";
 
         $dircectoryWatcher = new DirectoryWatcher();
         $dircectoryWatcher->init($directory);
@@ -48,15 +55,15 @@ class CommandWatch
                 $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
 
                 if ($status === DirectoryWatcher::STATUS_NEW) {
-                    echo "\033[32mFile added:\033[0m $relativeFilePath\n";
+                    echo TextRenderer::color('File added:', TextRenderer::COLOR_GREEN) . " $relativeFilePath\n";
                 } elseif ($status === DirectoryWatcher::STATUS_CHANGED) {
-                    echo "\033[33mFile modified:\033[0m $relativeFilePath\n";
+                    echo TextRenderer::color('File modified:', TextRenderer::COLOR_YELLOW) . " $relativeFilePath\n";
                 } elseif ($status === DirectoryWatcher::STATUS_DELETED) {
-                    echo "\033[31mFile deleted:\033[0m $relativeFilePath\n";
+                    echo TextRenderer::color('File deleted:', TextRenderer::COLOR_RED) . " $relativeFilePath\n";
                 }
 
                 if (basename($filePath) === 'modulehash.json') {
-                    echo "do nothing, modulehash.json it is a ignored file\n";
+                    echo "do nothing, modulehash.json is a ignored file\n";
                     continue;
                 }
 
@@ -78,6 +85,23 @@ class CommandWatch
         });
     }
 
+    public function runHelp(MmlcCli $cli): void
+    {
+        TextRenderer::renderHelpHeading('Description:');
+        echo "  Lorem ...\n";
+        echo "\n";
+
+        TextRenderer::renderHelpHeading('Usage:');
+        echo "  watch ...\n";
+        echo "\n";
+
+        TextRenderer::renderHelpHeading('Options:');
+        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
+        echo "\n";
+
+        echo "Read more at https://module-loader.de/documentation.php\n";
+    }
+
     /**
      * Liefert ein lokales Modul anhand eines Dateipfades. Die Methode überprüft, ob die angegebene Datei zu einem
      * lokale installierten Modul gehört und liefert ein Modul Objekt zurück oder null.
@@ -94,6 +118,7 @@ class CommandWatch
         $localModuleLoader->resetCache();
         $modules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
 
+        // Check if the module is installed
         $moduleFilter = ModuleFilter::create(Comparator::CARET_MODE_STRICT);
         $installedModules = $moduleFilter->filterInstalled($modules);
 
@@ -111,20 +136,22 @@ class CommandWatch
     {
         $basePath = App::getModulesRoot();
         $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
-        $relativeFilePath = ltrim($relativeFilePath, '/');
+        $relativeFilePath = ltrim($relativeFilePath, \DIRECTORY_SEPARATOR);
 
-        $parts = explode('/', $relativeFilePath);
+        $parts = explode(\DIRECTORY_SEPARATOR, $relativeFilePath);
         $vendorName = $parts[0] ?? '';
-        $modueName = $parts[1] ?? '';
+        $moduleName = $parts[1] ?? '';
 
         if (!$vendorName) {
             return '';
         }
 
-        if (!$modueName) {
+        if (!$moduleName) {
             return '';
         }
 
-        return $vendorName . '/' . $modueName;
+        // Now we can create our archiveName
+        $archiveName = $vendorName . '/' . $moduleName;
+        return $archiveName;
     }
 }
