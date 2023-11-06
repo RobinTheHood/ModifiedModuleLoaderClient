@@ -56,7 +56,7 @@ class CommandWatch
                 }
 
                 if (basename($filePath) === 'modulehash.json') {
-                    echo "do nothing, modulehash.json it is a ignored file\n";
+                    echo "do nothing, modulehash.json is a ignored file\n";
                     continue;
                 }
 
@@ -94,6 +94,7 @@ class CommandWatch
         $localModuleLoader->resetCache();
         $modules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
 
+        // Check if the module is installed
         $moduleFilter = ModuleFilter::create(Comparator::CARET_MODE_STRICT);
         $installedModules = $moduleFilter->filterInstalled($modules);
 
@@ -111,20 +112,22 @@ class CommandWatch
     {
         $basePath = App::getModulesRoot();
         $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
-        $relativeFilePath = ltrim($relativeFilePath, '/');
+        $relativeFilePath = ltrim($relativeFilePath, \DIRECTORY_SEPARATOR);
 
-        $parts = explode('/', $relativeFilePath);
+        $parts = explode(\DIRECTORY_SEPARATOR, $relativeFilePath);
         $vendorName = $parts[0] ?? '';
-        $modueName = $parts[1] ?? '';
+        $moduleName = $parts[1] ?? '';
 
         if (!$vendorName) {
             return '';
         }
 
-        if (!$modueName) {
+        if (!$moduleName) {
             return '';
         }
 
-        return $vendorName . '/' . $modueName;
+        // Now we can create our archiveName
+        $archiveName = $vendorName . '/' . $moduleName;
+        return $archiveName;
     }
 }
