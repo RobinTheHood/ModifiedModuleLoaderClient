@@ -39,11 +39,11 @@ class CommandList implements CommandInterface
 
     public function runHelp(MmlcCli $cli): void
     {
-        echo TextRenderer::renderHelpHeading('Description:');
+        TextRenderer::renderHelpHeading('Description:');
         echo "  List all available modules that can be used with MMLC.\n";
         echo "\n";
 
-        echo TextRenderer::renderHelpHeading('Usage:');
+        TextRenderer::renderHelpHeading('Usage:');
         echo "  list\n";
     }
 }

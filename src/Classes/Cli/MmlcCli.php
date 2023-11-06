@@ -15,7 +15,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandDownload;
-use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInterface;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandList;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandWatch;

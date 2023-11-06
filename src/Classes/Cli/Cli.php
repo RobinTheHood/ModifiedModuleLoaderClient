@@ -17,7 +17,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInterface;
 
 class Cli
 {
-    /** @var CommandInterace[] */
+    /** @var CommandInterface[] */
     private $commands = [];
 
     protected function addCommand(CommandInterface $command): void

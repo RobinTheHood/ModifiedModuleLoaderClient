@@ -52,11 +52,11 @@ class CommandInfo implements CommandInterface
 
     public function runHelp(MmlcCli $cli): void
     {
-        echo TextRenderer::renderHelpHeading('Description:');
+        TextRenderer::renderHelpHeading('Description:');
         echo "  Display information and details for a specific module.\n";
         echo "\n";
 
-        echo TextRenderer::renderHelpHeading('Usage:');
+        TextRenderer::renderHelpHeading('Usage:');
         echo "  info <archiveName>\n";
     }
 }

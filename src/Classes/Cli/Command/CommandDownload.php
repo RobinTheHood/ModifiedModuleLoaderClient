@@ -34,11 +34,11 @@ class CommandDownload implements CommandInterface
 
     public function runHelp(MmlcCli $cli): void
     {
-        echo TextRenderer::renderHelpHeading('Description:');
+        TextRenderer::renderHelpHeading('Description:');
         echo "  Lorem\n";
         echo "\n";
 
-        echo TextRenderer::renderHelpHeading('Usage:');
+        TextRenderer::renderHelpHeading('Usage:');
         echo "  download ...\n";
     }
 }
