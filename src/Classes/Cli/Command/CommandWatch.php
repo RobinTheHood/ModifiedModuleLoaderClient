@@ -119,12 +119,12 @@ class CommandWatch implements CommandInterface
             return null;
         }
 
-        $localModuleLoader = LocalModuleLoader::create(Comparator::CARET_MODE_STRICT);
+        $localModuleLoader = LocalModuleLoader::createFromConfig();
         $localModuleLoader->resetCache();
         $modules = $localModuleLoader->loadAllVersionsByArchiveName($archiveName);
 
         // Check if the module is installed
-        $moduleFilter = ModuleFilter::create(Comparator::CARET_MODE_STRICT);
+        $moduleFilter = ModuleFilter::createFromConfig();
         $installedModules = $moduleFilter->filterInstalled($modules);
 
         if (!$installedModules) {
