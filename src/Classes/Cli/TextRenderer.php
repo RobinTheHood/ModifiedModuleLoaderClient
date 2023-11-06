@@ -45,13 +45,13 @@ class TextRenderer
 
     public static function renderHelpCommand(string $name, string $description, int $pad = 20)
     {
-        $name = self::rightPad($name, 20);
+        $name = self::rightPad($name, $pad);
         echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 
     public static function renderHelpArgument(string $name, string $description, int $pad = 20)
     {
-        $name = self::rightPad($name, 20);
+        $name = self::rightPad($name, $pad);
         echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 
@@ -67,7 +67,7 @@ class TextRenderer
             $name = "    --$longName";
         }
 
-        $name = self::rightPad($name, 20);
+        $name = self::rightPad($name, $pad);
         echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 
