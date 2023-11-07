@@ -18,6 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandCreate;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandDownload;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandList;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandUninstall;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandWatch;
 
 class MmlcCli extends Cli
@@ -26,6 +27,8 @@ class MmlcCli extends Cli
     {
         $this->addCommand(new CommandCreate());
         $this->addCommand(new CommandDownload());
+        $this->addCommand(new CommandUninstall());
+        $this->addCommand(new CommandList());
         $this->addCommand(new CommandInfo());
         $this->addCommand(new CommandList());
         $this->addCommand(new CommandWatch());
@@ -36,60 +39,81 @@ class MmlcCli extends Cli
         $command = $this->getCommand();
 
         if (!$command && ($this->hasOption('--version') || $this->hasOption('-v'))) {
-            $this->showVersion();
+            $this->writeLine($this->renderVersion());
         } elseif ($command && ($this->hasOption('--help') || $this->hasOption('-h'))) {
-            $command->runHelp($this);
+            $this->writeLine($command->getHelp($this));
             return;
         } elseif ($command) {
             $command->run($this);
             return;
         } else {
-            $this->runHelp();
+            $this->getHelp();
         }
     }
 
-    private function runHelp()
+    private function getHelp()
     {
-        TextRenderer::renderLogo();
-        echo "\n";
+        $this->writeLine(
+            $this->renderLogo()
+                . "\n"
 
-        $this->showVersion();
-        echo "\n";
+                . $this->renderVersion()
+                . "\n"
 
-        TextRenderer::renderHelpHeading('Usage:');
-        echo "  command [options]\n";
-        echo "\n";
+                . TextRenderer::renderHelpHeading('Usage:')
+                . "  command [options]\n"
+                . "\n"
 
-        TextRenderer::renderHelpHeading('Options:');
-        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
-        TextRenderer::renderHelpOption('v', 'version', 'Display this application version.');
-        echo "\n";
+                . TextRenderer::renderHelpHeading('Options:')
+                . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
+                . TextRenderer::renderHelpOption('v', 'version', 'Display this application version.')
+                . "\n"
 
-        TextRenderer::renderHelpHeading('Commands:');
-        TextRenderer::renderHelpCommand('download', 'Download the latest version of module.');
-        TextRenderer::renderHelpCommand('install', 'Download and install a module in your shop. Use the -f or --force option to enforce.');
-        TextRenderer::renderHelpCommand('update', 'Update an already installed module to the latest version. Use the -f or --force option to enforce.');
-        TextRenderer::renderHelpCommand('uninstall', 'Uninstall a module from your shop. Use the -f or --force option to enforce.');
-        TextRenderer::renderHelpCommand('list', 'List all available modules that can be used with MMLC.');
-        TextRenderer::renderHelpCommand('search', 'Search for modules based on a specific search term.');
-        TextRenderer::renderHelpCommand('info', 'Display information and details for a specific module.');
-        TextRenderer::renderHelpCommand('status', 'Show the status of all installed modules in MMLC.');
-        TextRenderer::renderHelpCommand('create', 'Create a new module in MMLC. Use the -i option for the interactive mode.');
-        TextRenderer::renderHelpCommand('watch', 'Automatically detect and apply file changes for module development.');
-        TextRenderer::renderHelpCommand('discard', 'Discard changes to a module. Use the -f or --force option to enforce.');
-        TextRenderer::renderHelpCommand('self-update', 'Updates MMLC to the latest version.');
-        echo "\n";
+                . TextRenderer::renderHelpHeading('Commands:')
+                . TextRenderer::renderHelpCommand('download', 'Download the latest version of module.')
+                . TextRenderer::renderHelpCommand('install', 'Download and install a module in your shop. Use the -f or --force option to enforce.')
+                . TextRenderer::renderHelpCommand('update', 'Update an already installed module to the latest version. Use the -f or --force option to enforce.')
+                . TextRenderer::renderHelpCommand('uninstall', 'Uninstall a module from your shop. Use the -f or --force option to enforce.')
+                . TextRenderer::renderHelpCommand('list', 'List all available modules that can be used with MMLC.')
+                . TextRenderer::renderHelpCommand('search', 'Search for modules based on a specific search term.')
+                . TextRenderer::renderHelpCommand('info', 'Display information and details for a specific module.')
+                . TextRenderer::renderHelpCommand('status', 'Show the status of all installed modules in MMLC.')
+                . TextRenderer::renderHelpCommand('create', 'Create a new module in MMLC. Use the -i option for the interactive mode.')
+                . TextRenderer::renderHelpCommand('watch', 'Automatically detect and apply file changes for module development.')
+                . TextRenderer::renderHelpCommand('discard', 'Discard changes to a module. Use the -f or --force option to enforce.')
+                . TextRenderer::renderHelpCommand('self-update', 'Updates MMLC to the latest version.')
+                . "\n"
 
-        echo "Read more at https://module-loader.de/documentation.php\n";
+                . "Read more at https://module-loader.de/documentation.php"
+        );
     }
 
-    private function showVersion()
+    public function renderLogo(): string
+    {
+        // return ''
+        //     . "    __  _____  _____    ______   ________    ____\n"
+        //     . "   /  |/  /  |/  / /   / ____/  / ____/ /   /  _/\n"
+        //     . "  / /|_/ / /|_/ / /   / /      / /   / /    / /  \n"
+        //     . " / /  / / /  / / /___/ /___   / /___/ /____/ /   \n"
+        //     . "/_/  /_/_/  /_/_____/\____/   \____/_____/___/   \n";
+        // created with: https://patorjk.com/software/taag/#p=display&f=Slant&t=MMLC%20CLI
+
+        return ''
+            . "    __  ___ __  ___ __    ______   ______ __     ____\n"
+            . "   /  |/  //  |/  // /   / ____/  / ____// /    /  _/\n"
+            . "  / /|_/ // /|_/ // /   / /      / /    / /     / /  \n"
+            . " / /  / // /  / // /___/ /___   / /___ / /___ _/ /   \n"
+            . "/_/  /_//_/  /_//_____/\____/   \____//_____//___/   \n";
+        // cretated with: https://patorjk.com/software/taag/#p=display&h=1&f=Slant&t=MMLC%20CLI
+    }
+
+    private function renderVersion(): string
     {
         $mmlcVersion = App::getMmlcVersion();
         $gitBranch = $this->getCurrentGitBranch(App::getRoot() . '/.git');
         $extra = $gitBranch ? "git branch " . TextRenderer::color($gitBranch, TextRenderer::COLOR_YELLOW) : '';
 
-        echo TextRenderer::color('MMLC cli', TextRenderer::COLOR_GREEN)
+        return TextRenderer::color('MMLC cli', TextRenderer::COLOR_GREEN)
             . ' version ' . TextRenderer::color($mmlcVersion, TextRenderer::COLOR_YELLOW)
             . ' ' . $extra . "\n";
     }

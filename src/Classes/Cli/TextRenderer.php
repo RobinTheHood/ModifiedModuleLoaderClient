@@ -38,24 +38,24 @@ class TextRenderer
         return $text . $padding;
     }
 
-    public static function renderHelpHeading(string $heading): void
+    public static function renderHelpHeading(string $heading): string
     {
-        echo self::color($heading, self::COLOR_YELLOW) . "\n";
+        return self::color($heading, self::COLOR_YELLOW) . "\n";
     }
 
-    public static function renderHelpCommand(string $name, string $description, int $pad = 20)
-    {
-        $name = self::rightPad($name, $pad);
-        echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
-    }
-
-    public static function renderHelpArgument(string $name, string $description, int $pad = 20)
+    public static function renderHelpCommand(string $name, string $description, int $pad = 20): string
     {
         $name = self::rightPad($name, $pad);
-        echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 
-    public static function renderHelpOption(string $shortName, string $longName, string $description, int $pad = 20)
+    public static function renderHelpArgument(string $name, string $description, int $pad = 20): string
+    {
+        $name = self::rightPad($name, $pad);
+        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+    }
+
+    public static function renderHelpOption(string $shortName, string $longName, string $description, int $pad = 20): string
     {
         $name = '';
 
@@ -68,23 +68,6 @@ class TextRenderer
         }
 
         $name = self::rightPad($name, $pad);
-        echo "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
-    }
-
-    public static function renderLogo()
-    {
-        // echo "    __  _____  _____    ______   ________    ____\n";
-        // echo "   /  |/  /  |/  / /   / ____/  / ____/ /   /  _/\n";
-        // echo "  / /|_/ / /|_/ / /   / /      / /   / /    / /  \n";
-        // echo " / /  / / /  / / /___/ /___   / /___/ /____/ /   \n";
-        // echo "/_/  /_/_/  /_/_____/\____/   \____/_____/___/   \n";
-        // created with: https://patorjk.com/software/taag/#p=display&f=Slant&t=MMLC%20CLI
-
-        echo "    __  ___ __  ___ __    ______   ______ __     ____\n";
-        echo "   /  |/  //  |/  // /   / ____/  / ____// /    /  _/\n";
-        echo "  / /|_/ // /|_/ // /   / /      / /    / /     / /  \n";
-        echo " / /  / // /  / // /___/ /___   / /___ / /___ _/ /   \n";
-        echo "/_/  /_//_/  /_//_____/\____/   \____//_____//___/   \n";
-        // cretated with: https://patorjk.com/software/taag/#p=display&h=1&f=Slant&t=MMLC%20CLI
+        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 }

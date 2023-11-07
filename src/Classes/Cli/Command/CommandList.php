@@ -32,25 +32,38 @@ class CommandList implements CommandInterface
     {
         $remoteModuleLoader = RemoteModuleLoader::create();
         $modules = $remoteModuleLoader->loadAllLatestVersions();
-        foreach ($modules as $module) {
-            echo $module->getArchiveName() . "\n";
+
+        if ($cli->hasOption('--downloadable') || $cli->hasOption('-d')) {
+            foreach ($modules as $module) {
+                if ($module->isLoadable()) {
+                    $cli->writeLine($module->getArchiveName());
+                }
+            }
+        } else {
+            foreach ($modules as $module) {
+                $cli->writeLine($module->getArchiveName());
+            }
         }
+
+        return;
     }
 
-    public function runHelp(MmlcCli $cli): void
+    public function getHelp(MmlcCli $cli): string
     {
-        TextRenderer::renderHelpHeading('Description:');
-        echo "  List all available modules that can be used with MMLC.\n";
-        echo "\n";
+        return
+            TextRenderer::renderHelpHeading('Description:')
+            . "  List all available modules that can be used with MMLC.\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Usage:');
-        echo "  list\n";
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Usage:')
+            . "  list\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Options:');
-        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Options:')
+            . TextRenderer::renderHelpOption('d', 'downloadable', 'Only show modules that are downloadable.')
+            . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
+            . "\n"
 
-        echo "Read more at https://module-loader.de/documentation.php\n";
+            . "Read more at https://module-loader.de/documentation.php";
     }
 }

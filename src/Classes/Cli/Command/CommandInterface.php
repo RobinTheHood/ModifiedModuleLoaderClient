@@ -21,5 +21,5 @@ interface CommandInterface
 
     public function run(MmlcCli $cli): void;
 
-    public function runHelp(MmlcCli $cli): void;
+    public function getHelp(MmlcCli $cli): string;
 }

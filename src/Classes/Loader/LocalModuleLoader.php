@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Loader;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
@@ -29,6 +30,11 @@ class LocalModuleLoader
 
     /** @var string */
     private $modulesRootPath;
+
+    public static function createFromConfig(): LocalModuleLoader
+    {
+        return self::create(Config::getDependenyMode());
+    }
 
     public static function create(int $mode): LocalModuleLoader
     {
@@ -132,6 +138,19 @@ class LocalModuleLoader
         $modules = $this->loadAllVersions();
         $installedModules = $this->moduleFilter->filterInstalled($modules);
         return $installedModules;
+    }
+
+    /**
+     * Loads the installed module version by a given archiveName
+     *
+     * @return Module|null Returns a array of installed module versions.
+     */
+    public function loadInstalledVersionByArchiveName(string $arhciveName): ?Module
+    {
+        $modules = $this->loadAllVersions();
+        $installedModules = $this->moduleFilter->filterInstalled($modules);
+        $installedModules = $this->moduleFilter->filterByArchiveName($installedModules, $arhciveName);
+        return $installedModules[0] ?? null;
     }
 
     public function getVendorDirs()

@@ -34,7 +34,7 @@ class CommandDownload implements CommandInterface
         $archiveName = $cli->getFilteredArgument(0);
 
         if (!$archiveName) {
-            $this->runHelp($cli);
+            $cli->writeLine($this->getHelp($cli));
             return;
         }
 
@@ -42,49 +42,60 @@ class CommandDownload implements CommandInterface
         $module = $moduleLoader->loadLatestVersionByArchiveName($archiveName);
 
         if (!$module) {
-            echo "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN) . " not found.\n";
+            $cli->writeLine(
+                "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN) . " not found."
+            );
             return;
         }
 
         if ($module->isLoaded()) {
-            echo "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
+            $cli->writeLine(
+                "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
                 . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW)
-                . " is already downloaded.\n";
+                . " is already downloaded."
+            );
             return;
         }
 
-        echo "Download module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
+        $cli->writeLine(
+            "Download module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
             . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW)
-            . " ...\n";
+            . " ..."
+        );
 
         $moduleInstaller = ModuleInstaller::createFromConfig();
 
         if (!$moduleInstaller->pull($module)) {
-            echo TextRenderer::color('Error:', TextRenderer::COLOR_RED)
-                . " the module $archiveName could not be loaded. \n";
+            $cli->writeLine(
+                TextRenderer::color('Error:', TextRenderer::COLOR_RED)
+                . " the module $archiveName could not be loaded."
+            );
+            return;
         }
 
-        echo TextRenderer::color('ready', TextRenderer::COLOR_GREEN) . "\n";
+        $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
+        return;
     }
 
-    public function runHelp(MmlcCli $cli): void
+    public function getHelp(MmlcCli $cli): string
     {
-        TextRenderer::renderHelpHeading('Description:');
-        echo "  Downloads a available MMLC Module from the Internet.\n";
-        echo "\n";
+        return
+            TextRenderer::renderHelpHeading('Description:')
+            . "  Downloads a available MMLC Module from the Internet.\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Usage:');
-        echo "  download <archiveName>\n";
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Usage:')
+            . "  download <archiveName>\n"
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Arguments:');
-        TextRenderer::renderHelpArgument('archiveName', 'The archiveName of the module to be loaded.');
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Arguments:')
+            . TextRenderer::renderHelpArgument('archiveName', 'The archiveName of the module to be loaded.')
+            . "\n"
 
-        TextRenderer::renderHelpHeading('Options:');
-        TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.');
-        echo "\n";
+            . TextRenderer::renderHelpHeading('Options:')
+            . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
+            . "\n"
 
-        echo "Read more at https://module-loader.de/documentation.php\n";
+            . "Read more at https://module-loader.de/documentation.php";
     }
 }
