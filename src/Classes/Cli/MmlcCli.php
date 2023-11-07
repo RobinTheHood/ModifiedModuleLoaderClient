@@ -55,36 +55,36 @@ class MmlcCli extends Cli
     {
         $this->writeLine(
             $this->renderLogo()
-                . "\n"
+            . "\n"
 
-                . $this->renderVersion()
-                . "\n"
+            . $this->renderVersion()
+            . "\n"
 
-                . TextRenderer::renderHelpHeading('Usage:')
-                . "  command [options]\n"
-                . "\n"
+            . TextRenderer::renderHelpHeading('Usage:')
+            . "  command [options]\n"
+            . "\n"
 
-                . TextRenderer::renderHelpHeading('Options:')
-                . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
-                . TextRenderer::renderHelpOption('v', 'version', 'Display this application version.')
-                . "\n"
+            . TextRenderer::renderHelpHeading('Options:')
+            . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
+            . TextRenderer::renderHelpOption('v', 'version', 'Display this application version.')
+            . "\n"
 
-                . TextRenderer::renderHelpHeading('Commands:')
-                . TextRenderer::renderHelpCommand('download', 'Download the latest version of module.')
-                . TextRenderer::renderHelpCommand('install', 'Download and install a module in your shop. Use the -f or --force option to enforce.')
-                . TextRenderer::renderHelpCommand('update', 'Update an already installed module to the latest version. Use the -f or --force option to enforce.')
-                . TextRenderer::renderHelpCommand('uninstall', 'Uninstall a module from your shop. Use the -f or --force option to enforce.')
-                . TextRenderer::renderHelpCommand('list', 'List all available modules that can be used with MMLC.')
-                . TextRenderer::renderHelpCommand('search', 'Search for modules based on a specific search term.')
-                . TextRenderer::renderHelpCommand('info', 'Display information and details for a specific module.')
-                . TextRenderer::renderHelpCommand('status', 'Show the status of all installed modules in MMLC.')
-                . TextRenderer::renderHelpCommand('create', 'Create a new module in MMLC. Use the -i option for the interactive mode.')
-                . TextRenderer::renderHelpCommand('watch', 'Automatically detect and apply file changes for module development.')
-                . TextRenderer::renderHelpCommand('discard', 'Discard changes to a module. Use the -f or --force option to enforce.')
-                . TextRenderer::renderHelpCommand('self-update', 'Updates MMLC to the latest version.')
-                . "\n"
+            . TextRenderer::renderHelpHeading('Commands:')
+            . TextRenderer::renderHelpCommand('download', 'Download the latest version of module.')
+            . TextRenderer::renderHelpCommand('install', 'Download and install a module in your shop. Use the -f or --force option to enforce.')
+            . TextRenderer::renderHelpCommand('update', 'Update an already installed module to the latest version. Use the -f or --force option to enforce.')
+            . TextRenderer::renderHelpCommand('uninstall', 'Uninstall a module from your shop. Use the -f or --force option to enforce.')
+            . TextRenderer::renderHelpCommand('list', 'List all available modules that can be used with MMLC.')
+            . TextRenderer::renderHelpCommand('search', 'Search for modules based on a specific search term.')
+            . TextRenderer::renderHelpCommand('info', 'Display information and details for a specific module.')
+            . TextRenderer::renderHelpCommand('status', 'Show the status of all installed modules in MMLC.')
+            . TextRenderer::renderHelpCommand('create', 'Create a new module in MMLC. Use the -i option for the interactive mode.')
+            . TextRenderer::renderHelpCommand('watch', 'Automatically detect and apply file changes for module development.')
+            . TextRenderer::renderHelpCommand('discard', 'Discard changes to a module. Use the -f or --force option to enforce.')
+            . TextRenderer::renderHelpCommand('self-update', 'Updates MMLC to the latest version.')
+            . "\n"
 
-                . "Read more at https://module-loader.de/documentation.php"
+            . "Read more at https://module-loader.de/documentation.php"
         );
     }
 
