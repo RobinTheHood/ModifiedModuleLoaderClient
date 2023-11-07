@@ -24,6 +24,14 @@ use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
 use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
+/**
+ * The DependencyManager class provides functionality for managing and analyzing module dependencies within the
+ * MMLC - ModifiedModuleLoaderClient.
+ *
+ * This class is responsible for handling and verifying the dependencies of modules, ensuring compatibility with the
+ * current system configuration. It offers methods for identifying dependencies, determining whether a module can be
+ * installed, retrieving missing dependencies, and more.
+ */
 class DependencyManager
 {
     /** @var dependencyBuilder */
@@ -66,11 +74,22 @@ class DependencyManager
     }
 
     /**
-     * Liefert eine Liste mit allen Modulen aus $selectedModules, die das Modul
-     * $module verwenden.
+     * Retrieves a list of modules from the given array of $selectedModules that depend on the specified $module.
      *
-     * @param Module[] $selectedModules
-    */
+     * This method identifies and returns all modules within the provided $selectedModules array that have a dependency
+     * on the given $module. It returns an array of array entries where each entry consists of a dependent Module and
+     * the required version string. This information is useful for understanding and managing module relationships.
+     *
+     * @param Module $module The module for which dependencies need to be identified.
+     * @param Module[] $selectedModules An array of modules to search for dependencies.
+     *
+     * @return array[]
+     *      An array of associative arrays, where each entry has two keys:
+     *          - 'module': Represents a Module object.
+     *          - 'requiredVersion': Represents a string denoting the required version.
+     *
+     *      Each entry includes a dependent Module and the required version string.
+     */
     public function getUsedByEntrys(Module $module, array $selectedModules): array
     {
         $usedByEntrys = [];
@@ -88,9 +107,19 @@ class DependencyManager
     }
 
     /**
-     * @param Combination $combination
+     * Returns a list of Module objects corresponding to a provided Combination.
      *
-     * @return Module[]
+     * This method takes a Combination object as input and returns an array of Module objects. It is responsible for
+     * loading all modules specified in the given Combination, where each module is identified by its archive name and
+     * version.
+     *
+     * @param Combination $combination The Combination object representing a set of modules to be loaded.
+     *
+     * @return Module[] An array of Module objects that correspond to the modules in the provided Combination.
+     *
+     * @throws DependencyException
+     *      If any module specified in the Combination cannot be found, a DependencyException is thrown with a detailed
+     *      error message.
      */
     public function getAllModulesFromCombination(Combination $combination): array
     {
@@ -110,10 +139,33 @@ class DependencyManager
     }
 
     /**
+     * Checks whether a module can be installed and returns a CombinationSatisfyerResult object
+     * containing information about the installable combination if the module can be installed.
+     *
+     * This method allows the verification of the installability of a module with respect to a given SystemSet,
+     * optionally excluding specific systems to perform the check. It takes into consideration the module's dependencies
+     * and their compatibility with the specified SystemSet. If the module is installable, the returned
+     * CombinationSatisfyerResult object provides details about the compatible combination of dependencies.
+     *
+     * @see SystemSet
+     *
      * @param Module $module
+     *      The module that needs to be checked for installability.
+     *
      * @param string[] $doNotCheck
+     *      An array of SystemSet names that should be excluded from the verification. This array is useful when you
+     *      want to skip the check for specific systems, such as 'mmlc', 'php', 'modified' or archiveNames like
+     *      'robinthehood/stripe' etc. If this array is empty, the method will check all SystemSet dependencies, which
+     *      includes all installed module versions and the current PHP, MMLC and modified version.
      *
      * @return CombinationSatisfyerResult
+     *      A CombinationSatisfyerResult object that contains the result of the verification. It includes information
+     *      about the installability status, the tested combination, the found combination (if installable), and any
+     *      associated failure logs.
+     *
+     * @throws DependencyException
+     *      If the module cannot be installed due to conflicting version constraints or missing dependencies, a
+     *      DependencyException will be thrown with a detailed error message.
      */
     public function canBeInstalled(Module $module, array $doNotCheck = []): CombinationSatisfyerResult
     {
