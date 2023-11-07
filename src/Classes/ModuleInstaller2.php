@@ -13,23 +13,40 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use Exception;
+use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
 use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchiveHandler;
 use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchivePuller;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
+use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\LogLevel;
+use RobinTheHood\ModifiedModuleLoaderClient\Logger\StaticLogger;
+use RuntimeException;
 
-class ModuleInstaller
+class ModuleInstaller2
 {
-    public static function create(int $mode): ModuleInstaller
+    /** @var DependencyManager */
+    private $dependencyManager;
+
+    /** @var LocalModuleLoader */
+    private $localModuleLoader;
+
+    /** @var ArchivePuller */
+    private $archivePuller;
+
+    /** @var ArchiveHandler */
+    private $archiveHandler;
+
+    public static function create(int $mode): ModuleInstaller2
     {
         $dependencyManager = DependencyManager::create($mode);
-        $moduleFilter = ModuleFilter::create($mode);
         $localModuleLoader = LocalModuleLoader::create($mode);
         $archivePuller = ArchivePuller::create();
         $archiveHandler = ArchiveHandler::create($mode);
-        $moduleInstaller = new ModuleInstaller(
+        $moduleInstaller = new ModuleInstaller2(
             $dependencyManager,
-            $moduleFilter,
             $localModuleLoader,
             $archivePuller,
             $archiveHandler
@@ -37,63 +54,81 @@ class ModuleInstaller
         return $moduleInstaller;
     }
 
-    public static function createFromConfig(): ModuleInstaller
+    public static function createFromConfig(): ModuleInstaller2
     {
         return self::create(Config::getDependenyMode());
     }
 
-    public function __construct()
-    {
+    public function __construct(
+        DependencyManager $dependencyManager,
+        LocalModuleLoader $localModuleLoader,
+        ArchivePuller $archivePuller,
+        ArchiveHandler $archiveHandler
+    ) {
+        $this->dependencyManager = $dependencyManager;
+        $this->localModuleLoader = $localModuleLoader;
+        $this->archivePuller = $archivePuller;
+        $this->archiveHandler = $archiveHandler;
     }
 
     /**
-     * Lädt ein Modul (archiveName, Version) herunter.
-     *
+     * Lädt ein Modul (archiveName, Version) vom Server herunter.
      *
      * Mögliche Fehler und Exceptions
-     * - Keine Verbindung zum Server - NoServerConnectionException extends PullException
-     * - Nicht genügent Speicherplatz - InsufficientDiskSpaceException extends PullException
-     * - Zip Datei kann nicht entpackt werden - UnzipFailedException extends PullException
-     * - Keine Schreibrechte für Archives - NoWritePermissionForArchivesException extends PullException
-     * - Keine Schreibrechte für Modules - NoWritePermissionForModulesException extends PullException
-     * - Das Modul ist bereits geladen - ModuleAlreadyLoadedException extends PullException
+     * - [ ] Keine Verbindung zum Server - NoServerConnectionException extends PullException
+     * - [ ] Nicht genügent Speicherplatz - InsufficientDiskSpaceException extends PullException
+     * - [ ] Zip Datei kann nicht entpackt werden - UnzipFailedException extends PullException
+     * - [ ] Keine Schreibrechte für Archives - NoWritePermissionForArchivesException extends PullException
+     * - [ ] Keine Schreibrechte für Modules - NoWritePermissionForModulesException extends PullException
+     * - [x] Das Modul ist bereits geladen - ModuleAlreadyLoadedException extends PullException
      */
     public function pull(Module $module)
     {
+        if ($module->isLoaded()) {
+            throw new Exception("Can not pull module {$module->getArchiveName()}. Modul is already loaded.");
+        }
+
+        $archiveUrl = $this->getArchiveUrl($module);
+
+        try {
+            $archive = $this->archivePuller->pull($module->getArchiveName(), $module->getVersion(), $archiveUrl);
+            $this->archiveHandler->extract($archive);
+            return true;
+        } catch (RuntimeException $e) {
+            //Can not pull Archive
+            return false;
+        }
     }
 
     /**
      * Löscht ein Modul (archiveName, Version) das bereits heruntergeladen wurde.
      *
      * Mögliche Fehler und Exceptions
-     * - Das Modul ist noch installiert und kann deswegen nicht gelöscht werden
-     * - Keine Schreibrechte für Modules
+     * - [ ] Es ist ein reines lokael Modul und kann deswegen nicht gelöscht werden
+     * - [x] Das Modul ist nicht geladen und kann deswegen nicht gelöscht werden
+     * - [x] Das Modul ist noch installiert und kann deswegen nicht gelöscht werden
+     * - [ ] Keine Schreibrechte für Modules
      *
      * Fragen
      * - Was passiert, wenn nicht alle Datein gelöscht werden konnten, dann ist das Modul in einem defekten Zustand
      */
-    public function delete(Module $module)
+    public function delete(Module $module): void
     {
+        if (!$module->isLoaded()) {
+            throw new Exception("Can not delete module {$module->getArchiveName()}. Module is not loaded.");
+        }
+
+        if ($module->isInstalled()) {
+            throw new Exception("Can not delete module {$module->getArchiveName()}. Module is installed.");
+        }
+
+        $this->deleteModuleFiles($module);
     }
 
     /**
-     * Installiert ein Modul (archiveName, Version) in das Shop System. ABER lädt und installiert keine Abhänigkeiten /
-     * abhängige Module nach.
+     * //TODO: Umbenennen in install()
      *
-     * Mögliche Fehler und Exceptions
-     * - alle Fehler aus internalInstall()
-     * - Nicht alle Abhängigkeiten sind vorhanden
-     * - Keine Schreibrechte im Shop
-     * - Nicht alle Datein konnten im Shop installiert werden.
-     * - Autoload kann nicht aktuallisiert werden
-     * - Das Modull ist bereits installiert
-     */
-    public function install(Module $module, bool $force = false): void
-    {
-    }
-
-    /**
-     * Installiert ein Modul (archiveName, Version) in das Shop System. UND lädt und installiert alle Abhänigketen /
+     * Installiert ein Modul (archiveName, Version) in das Shop System UND lädt und installiert alle Abhängigkeiten /
      * abhängige Module nach.
      *
      * Mögliche Fehler und Exceptions
@@ -103,67 +138,230 @@ class ModuleInstaller
      * - Autoload kann nicht aktuallisiert werden
      * - Das Modull ist bereits installiert
      */
-    public function installWithDependencies(Module $module): void
+    public function installWithtDependencies(Module $module): void
     {
-    }
-
-    /**
-     * (Re-) Installiert / Überschreibt ein Modul (archive, Version) ohne dabei auf Abhänigkeiten und Modulstatus zu
-     * achten. Es wird nur auf Dateiebene kontrolliert, ob alle Dateien geschrieben werden konnten. Die Autoload Datei
-     * wird NICHT erzeugt / erneuert.
-     */
-    private function internalInstall(Module $module): void
-    {
-        $this->installFiles($module);
-        $this->createHashFile($module);
-    }
-
-    /**
-     * (Re-) Installiert / Überschreibt nur die Datei zu einem Modul (archive, Version). Es wird nur auf Datei-Ebene
-     * kontrolliert, ob alle Dateien geschrieben werden konnten. Die `modulehash.json` Datei wird NICHT erzeugt /
-     * erneuert.
-     */
-    private function installFiles(Module $module): void
-    {
-        // Install Source Files to Shop Root
-        $files = $module->getSrcFilePaths();
-
-        foreach ($files as $file) {
-            $src = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $file;
-
-            $files = $module->getTemplateFiles($file);
-            foreach ($files as $file) {
-                $overwrite = false;
-                if (!FileInfo::isTemplateFile($file)) {
-                    $overwrite = true;
-                }
-
-                $file = ModulePathMapper::moduleSrcToShopRoot($file);
-
-                $dest = App::getShopRoot() . $file;
-                $this->installFile($src, $dest, $overwrite);
-            }
+        if ($module->isInstalled()) {
+            throw new Exception(
+                "Can not install module {$module->getArchiveName()} {$module->getVersion()}. "
+                . "Module is already installed."
+            );
         }
 
-        // Install Source Mmlc Files to shop vendor-mmlc
-        $files = $module->getSrcMmlcFilePaths();
-        foreach ($files as $file) {
-            $src = $module->getLocalRootPath() . $module->getSrcMmlcRootPath() . '/' . $file;
-            $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
-            $dest = App::getShopRoot() . '/' . $file;
-            $this->installFile($src, $dest, true);
+        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module, ['']);
+
+        if (!$combinationSatisfyerResult->foundCombination) {
+            $message =
+                "Can not install module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
+                . "No possible combination of versions found";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleInstallerException hinzufügen
+            throw new RuntimeException($message);
         }
+
+        $this->uninstall($module);
+
+        $moduleFileInstaller = new ModuleFileInstaller();
+        $moduleFileInstaller->install($module);
+
+        $this->internalInstallDependencies($module, $combinationSatisfyerResult->foundCombination);
+
+        $autoloadFileCreator = new AutoloadFileCreator();
+        $autoloadFileCreator->createAutoloadFile();
     }
 
     /**
-     * Erzeugt / Überschreibt die `modulehash.json zu einem Modul (archive, Version)` Es wird nur auf Datei-Ebene
-     * kontrolliert, ob alle Dateien geschrieben werden konnten.
+     * //TODO: Umbennen in installWithoutDependencies()
+     *
+     * Installiert ein Modul (archiveName, Version) in das Shop System ABER lädt und installiert KEINE Abhängigkeiten /
+     * abhängige Module nach. Sind nicht alle Abhängigkeiten erfüllt, wird nicht installiert und eine Exception
+     * geworfen.
+     *
+     * @param bool $force skip dependency check.
+     *
+     * Mögliche Fehler und Exceptions
+     * - [ ] alle Fehler aus internalInstall()
+     * - [x] Nicht alle Abhängigkeiten sind vorhanden
+     * - [ ] Keine Schreibrechte im Shop
+     * - [ ] Nicht alle Datein konnten im Shop installiert werden.
+     * - [ ] Autoload kann nicht aktuallisiert werden
+     * - [x] Das Modull ist bereits installiert
      */
-    private function createHashFile(Module $module): void
+    public function install(Module $module, bool $force = false): void
     {
-        $moduleHashFileCreator = new ModuleHashFileCreator();
-        $moduleHashFile = $moduleHashFileCreator->createHashFile($module);
-        $moduleHashFile->writeTo($module->getHashPath());
+        if ($module->isInstalled()) {
+            throw new Exception("Can not install module {$module->getArchiveName()}. Module is already installed.");
+        }
+
+        if (!$force) {
+            // Wirft eine DependencyException, wenn dass Modul nicht installiert werden kann.
+            $this->dependencyManager->canBeInstalled($module);
+        }
+
+        $moduleFileInstaller = new ModuleFileInstaller();
+        // Wirft eine Exception, wenn es nicht installiert werden konnte.
+        $moduleFileInstaller->install($module);
+
+        $autoloadFileCreator = new AutoloadFileCreator();
+        // TODO: In createAutoloadFile() Exceptions werfen im Fehlerfall
+        $autoloadFileCreator->createAutoloadFile();
+    }
+
+    /**
+     * //TODO: Nicht zur Neusten sondern zu höchst möglichsten Version aktualisieren.
+     * //TODU: Umbennen in updateWithoutInstallDependencies()
+     *
+     * Aktualiseirt NUR das Modul (vendorName) auf die neuste Version. Es werden keine fehlenden Abhänggigkeiten
+     * installiert. Es werden keine Abhänggigkeiten aktualisiert. Können nicht alle Abhängigkeiten erfüllt werten,
+     * wird nicht aktualisiert und eine Exception geworfen.
+     */
+    public function update(Module $module): ?Module
+    {
+        $installedModule = $module->getInstalledVersion();
+        $newModule = $module->getNewestVersion();
+
+        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
+
+        if (!$combinationSatisfyerResult->foundCombination) {
+            $message =
+                "Can not update module {$module->getArchiveName()} {$module->getVersion()}. "
+                . "No possible combination of versions found";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
+            throw new RuntimeException($message);
+        }
+
+        if ($installedModule) {
+            $this->uninstall($installedModule);
+        }
+
+        $this->pull($newModule);
+        $newModule = $this->reload($newModule);
+
+        $moduleFileInstaller = new ModuleFileInstaller();
+        $moduleFileInstaller->install($newModule);
+
+        $autoloadFileCreator = new AutoloadFileCreator();
+        $autoloadFileCreator->createAutoloadFile();
+
+        return $newModule;
+    }
+
+    /**
+     * //TODO: Nicht zur Neusten sondern zu höchst möglichsten Version aktualisieren.
+     * //TODO: Umbennen in update()
+     *
+     * Aktuallisiert das Modul (vendorName) auf die neuste Version. Dabei werden keine Abhänggigkeiten
+     * aktualisiert. Kommen durch das Update jedoch neue Abhänigkeiten hinzu, werden diese installt. Können nicht alle
+     * Abhängigkeiten erfüllt werten, wird nicht aktualisiert und eine Exception geworfen.
+     */
+    public function updateWithDependencies(Module $module): ?Module
+    {
+        $installedModule = $module->getInstalledVersion();
+        $newModule = $module->getNewestVersion();
+
+        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
+
+        if (!$combinationSatisfyerResult->foundCombination) {
+            $message =
+                "Can not update module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
+                . "No possible combination of versions found";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
+            throw new RuntimeException($message);
+        }
+
+        if ($installedModule) {
+            $this->uninstall($installedModule);
+        }
+
+        $this->pull($newModule);
+        $newModule = $this->reload($newModule);
+
+        $moduleFileInstaller = new ModuleFileInstaller();
+        $moduleFileInstaller->install($newModule);
+        $this->internalInstallDependencies($newModule, $combinationSatisfyerResult->foundCombination);
+
+        $autoloadFileCreator = new AutoloadFileCreator();
+        $autoloadFileCreator->createAutoloadFile();
+
+        return $newModule;
+    }
+
+    /**
+     * //TODO: Umbennen in discard
+     *
+     * Entfernt alle Änderungen die an den Modul-Dateien im Shop gemacht wurden. Änderungen an Template Dateien werden
+     * nicht rückgängig gemacht.
+     *
+     * //TODO: bool $force Parameter einführen der auch Änderungen am Template entfernt.
+     */
+    public function revertChanges(Module $module): void
+    {
+        if (!$module->isInstalled()) {
+            $message =
+                "Can not revert changes because {$module->getArchiveName()} {$module->getVersion()} is not installed.";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
+            throw new RuntimeException($message);
+        }
+
+        $moduleFileInstaller = new ModuleFileInstaller();
+        $moduleFileInstaller->install($module);
+    }
+
+    /**
+     * Deinstalliert nur das Modul (versionName, Version), wenn es installiert und nicht mehr als abhänigkeit von einem
+     * anderen Modul benötigt wird. Es werden keine Abhängigkeiten deinstalliert.
+     *
+     * Mit der force Option, kann der Abhängigkeits check übersprungen werden und das Modul wird trozdem deinstalliert.
+     * Das kann aber zur folge haben, dass andere Module nicht mehr funktionieren.
+     */
+    public function uninstall(Module $module, bool $force = false): bool
+    {
+        $installedModule = $module->getInstalledVersion();
+        if (!$installedModule) {
+            return false;
+        }
+
+        if ($installedModule->isChanged() && $force === false) {
+            $message =
+                "Can not uninstall module {$installedModule->getArchiveName()} {$installedModule->getVersion()} "
+                . "because the module has changes.";
+            StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
+            throw new RuntimeException($message);
+        }
+
+        $moduleFileInstaller = new ModuleFileInstaller();
+        $moduleFileInstaller->uninstall($installedModule);
+
+        $autoloadFileCreator = new AutoloadFileCreator();
+        $autoloadFileCreator->createAutoloadFile();
+
+        return true;
+    }
+
+
+
+
+
+
+    private function getArchiveUrl(Module $module): string
+    {
+        $apiRequest = new ApiRequest();
+        $result = $apiRequest->getArchive($module->getArchiveName(), $module->getVersion());
+
+        $content = $result['content'] ?? [];
+        if (!$content) {
+            throw new Exception("Can not pull module {$module->getArchiveName()}. archiveUrl is empty");
+        }
+
+        $archiveUrl = $content['archiveUrl'] ?? '';
+        if (!$archiveUrl) {
+            throw new Exception("Can not pull module {$module->getArchiveName()}. archiveUrl is empty");
+        }
+
+        return $archiveUrl;
     }
 
     /**
@@ -192,7 +390,9 @@ class ModuleInstaller
         }
 
         $this->uninstall($module);
-        $this->internalInstall($module);
+
+        $moduleFileInstaller = new ModuleFileInstaller();
+        $moduleFileInstaller->install($module);
     }
 
     private function internalInstallDependencies(Module $parentModule, Combination $combination): void
@@ -207,63 +407,34 @@ class ModuleInstaller
         }
     }
 
-    public function update(Module $module): ?Module
+    /**
+     * Löscht alle Module Dateien aus dem Verzeichnis Modules. Es wird nicht kontrolliert ob das Modul geladen oder
+     * installiert ist.
+     */
+    private function deleteModuleFiles(Module $module): void
     {
-        $installedModule = $module->getInstalledVersion();
-        $newModule = $module->getNewestVersion();
+        $path = $module->getLocalRootPath() . $module->getModulePath();
 
-        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
+        $filePaths = FileHelper::scanDirRecursive($path, FileHelper::FILES_ONLY);
 
-        if (!$combinationSatisfyerResult->foundCombination) {
-            $message =
-                "Can not update module {$module->getArchiveName()} {$module->getVersion()}. "
-                . "No possible combination of versions found";
-            StaticLogger::log(LogLevel::WARNING, $message);
-            // NOTE: Vielleicht neue class ModuleException hinzufügen
-            throw new RuntimeException($message);
+        $dirPaths = FileHelper::scanDirRecursive($path, FileHelper::DIRS_ONLY);
+        $dirPaths = array_reverse($dirPaths);
+        $dirPaths[] = $path;
+        $dirPaths[] = dirname($path);
+
+        // Delete Files
+        foreach ($filePaths as $path) {
+            if (file_exists($path)) {
+                unlink($path);
+            }
         }
 
-        if ($installedModule) {
-            $this->uninstall($installedModule);
+        // Delete Folders
+        foreach ($dirPaths as $path) {
+            if (file_exists($path)) {
+                @rmdir($path);
+            }
         }
-
-        $this->pull($newModule);
-        $newModule = $this->reload($newModule);
-
-        $this->internalInstall($newModule);
-        $this->createAutoloadFile();
-
-        return $newModule;
-    }
-
-    public function updateWithDependencies(Module $module): ?Module
-    {
-        $installedModule = $module->getInstalledVersion();
-        $newModule = $module->getNewestVersion();
-
-        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
-
-        if (!$combinationSatisfyerResult->foundCombination) {
-            $message =
-                "Can not update module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
-                . "No possible combination of versions found";
-            StaticLogger::log(LogLevel::WARNING, $message);
-            // NOTE: Vielleicht neue class ModuleException hinzufügen
-            throw new RuntimeException($message);
-        }
-
-        if ($installedModule) {
-            $this->uninstall($installedModule);
-        }
-
-        $this->pull($newModule);
-        $newModule = $this->reload($newModule);
-
-        $this->internalInstall($newModule);
-        $this->internalInstallDependencies($newModule, $combinationSatisfyerResult->foundCombination);
-        $this->createAutoloadFile();
-
-        return $newModule;
     }
 
     private function reload(Module $module): Module
@@ -282,150 +453,5 @@ class ModuleInstaller
         }
 
         return $reloadedModule;
-    }
-
-    public function revertChanges(Module $module): void
-    {
-        if (!$module->isInstalled()) {
-            $message =
-                "Can not revert changes because {$module->getArchiveName()} {$module->getVersion()} is not installed.";
-            StaticLogger::log(LogLevel::WARNING, $message);
-            // NOTE: Vielleicht neue class ModuleException hinzufügen
-            throw new RuntimeException($message);
-        }
-
-        $this->internalInstall($module);
-    }
-
-    private function createAutoloadFile(): void
-    {
-        $this->localModuleLoader->resetCache();
-        $localModules = $this->localModuleLoader->loadAllVersions();
-        $installedLocalModules = $this->moduleFilter->filterInstalled($localModules);
-
-        $namespaceEntrys = [];
-        foreach ($installedLocalModules as $module) {
-            $autoload = $module->getAutoload();
-
-            if (!$autoload) {
-                continue;
-            }
-
-            if (!$autoload['psr-4']) {
-                continue;
-            }
-
-            foreach ($autoload['psr-4'] as $namespace => $path) {
-                $path = str_replace($module->getSourceMmlcDir(), 'vendor-mmlc/' . $module->getArchiveName(), $path);
-                $namespaceEntrys[] =
-                    '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
-            }
-        }
-
-        $namespaceEntrys = array_unique($namespaceEntrys);
-        $namespaceMapping = implode("\n", $namespaceEntrys);
-
-        $template = \file_get_contents(App::getTemplatesRoot() . '/autoload.php.tmpl');
-        $template = \str_replace('{VENDOR_PSR4_NAMESPACE_MAPPINGS}', $namespaceMapping, $template);
-
-        if (!file_exists(App::getShopRoot() . '/vendor-no-composer')) {
-            mkdir(App::getShopRoot() . '/vendor-no-composer');
-        }
-        \file_put_contents(App::getShopRoot() . '/vendor-no-composer/autoload.php', $template);
-
-        if (!file_exists(App::getShopRoot() . '/vendor-mmlc')) {
-            mkdir(App::getShopRoot() . '/vendor-mmlc');
-        }
-        \file_put_contents(App::getShopRoot() . '/vendor-mmlc/autoload.php', $template);
-    }
-
-    public function uninstall(Module $module, bool $force = false): bool
-    {
-        $installedModule = $module->getInstalledVersion();
-        if (!$installedModule) {
-            return false;
-        }
-
-        if ($installedModule->isChanged() && $force === false) {
-            $message =
-                "Can not uninstall module {$installedModule->getArchiveName()} {$installedModule->getVersion()} "
-                . "because the module has changes.";
-            StaticLogger::log(LogLevel::WARNING, $message);
-            // NOTE: Vielleicht neue class ModuleException hinzufügen
-            throw new RuntimeException($message);
-        }
-
-        $this->internalUninstall($installedModule);
-        $this->createAutoloadFile();
-
-        return true;
-    }
-
-    private function internalUninstall(Module $module): void
-    {
-        $this->uninstallFiles();
-        $this->removeModuleHashFile();
-    }
-
-    private function uninstallFiles(Module $module): void
-    {
-        // Uninstall from shop-root
-        $files = $module->getSrcFilePaths();
-        foreach ($files as $file) {
-            $file = ModulePathMapper::moduleSrcToShopRoot($file);
-            $dest = App::getShopRoot() . $file;
-            $this->uninstallFile($dest);
-        }
-
-        // Uninstall from shop-vendor-mmlc
-        $files = $module->getSrcMmlcFilePaths();
-        foreach ($files as $file) {
-            $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
-            $dest = App::getShopRoot() . $file;
-            $this->uninstallFile($dest);
-            FileHelper::deletePathIsEmpty($dest);
-        }
-    }
-
-    private function removeModuleHashFile(Module $module): void
-    {
-        if (file_exists($module->getHashPath())) {
-            unlink($module->getHashPath());
-        }
-    }
-
-
-    private function installFile(string $src, string $dest, bool $overwrite = false): bool
-    {
-        if (!file_exists($src)) {
-            return false;
-        }
-
-        if ($overwrite == false && (file_exists($dest) || is_link($dest))) {
-            return false;
-        } elseif ($overwrite == true && (file_exists($dest) || is_link($dest))) {
-            unlink($dest);
-        }
-
-        FileHelper::makeDirIfNotExists($dest);
-
-        if (file_exists($dest) || is_link($dest)) {
-            return false;
-        }
-
-        if (Config::getInstallMode() == 'link') {
-            symlink($src, $dest);
-        } else {
-            copy($src, $dest);
-        }
-
-        return true;
-    }
-
-    private function uninstallFile(string $dest): void
-    {
-        if (file_exists($dest)) {
-            unlink($dest);
-        }
     }
 }

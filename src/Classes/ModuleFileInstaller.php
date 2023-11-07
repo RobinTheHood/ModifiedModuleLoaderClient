@@ -13,15 +13,16 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
+use Exception;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHashFileCreator;
 
 class ModuleFileInstaller
 {
     /**
-     * (Re-) Installiert / Überschreibt ein Modul (archive, Version) ohne dabei auf Abhänigkeiten und Modulstatus zu
-     * achten. Es wird nur auf Dateiebene kontrolliert, ob alle Dateien geschrieben werden konnten. Die Autoload Datei
-     * wird NICHT erzeugt / erneuert.
+     * (Re-) Installiert / überschreibt ein Modul (archiveName, Version) ohne dabei auf Abhänigkeiten und den
+     * Modulstatus zu achten. Es wird nur auf Dateiebene kontrolliert, ob alle Dateien geschrieben werden konnten.
+     * Die Autoload Datei wird NICHT erzeugt / erneuert.
      */
     public function install(Module $module): void
     {
@@ -30,16 +31,18 @@ class ModuleFileInstaller
     }
 
     /**
-     * Lorem
+     * Deinstalliert / entfernt ein Modul (archiveName, Version) ohne dabei auf Abhängigkeiten und den Modulstatus zu
+     * achten. Es wird nur auf Dateiebene kontrolliert, ob alles Datien entfernt werden konnten. Die Autoload Datei
+     * wird NICHT aktualisiert.
      */
     public function uninstall(Module $module): void
     {
         $this->uninstallFiles($module);
-        $this->deleteHashFile($module);
+        $this->removeHashFile($module);
     }
 
     /**
-     * (Re-) Installiert / Überschreibt nur die Datei zu einem Modul (archive, Version). Es wird nur auf Datei-Ebene
+     * (Re-) Installiert / Überschreibt nur die Datei zu einem Modul (archiveName, Version). Es wird nur auf Datei-Ebene
      * kontrolliert, ob alle Dateien geschrieben werden konnten. Die `modulehash.json` Datei wird NICHT erzeugt /
      * erneuert.
      */
@@ -79,28 +82,41 @@ class ModuleFileInstaller
     private function installFile(string $src, string $dest, bool $overwrite = false): bool
     {
         if (!file_exists($src)) {
-            return false;
+            throw new Exception("Can not install file $src - File not exists.");
         }
 
-        if ($overwrite == false && (file_exists($dest) || is_link($dest))) {
+        if ($this->fileOrLinkExists($dest) && $overwrite === false) {
+            // Die Datei existiert bereits und soll NICHT überschrieben werden.
             return false;
-        } elseif ($overwrite == true && (file_exists($dest) || is_link($dest))) {
-            unlink($dest);
+        } elseif ($this->fileOrLinkExists($dest) && $overwrite === true) {
+            // Die Datei existiert bereits soll überschrieben.
+            // Wir löschen die Datei zuerst, bevor wir sie überschreiben.
+            $this->removeFile($dest);
         }
 
         FileHelper::makeDirIfNotExists($dest);
 
-        if (file_exists($dest) || is_link($dest)) {
+        // TODO: Kontrollieren ob hier eine Exception geworfen werden muss, wenn die Datei existiert.
+        if ($this->fileOrLinkExists($dest)) {
             return false;
         }
 
-        if (Config::getInstallMode() == 'link') {
-            symlink($src, $dest);
-        } else {
-            copy($src, $dest);
-        }
+        $this->copyFile($src, $dest);
 
         return true;
+    }
+
+    private function copyFile(string $srcPath, string $destPath): void
+    {
+        if (Config::getInstallMode() === 'link') {
+            $result = symlink($srcPath, $destPath);
+        } else {
+            $result = copy($srcPath, $destPath);
+        }
+
+        if (!$result) {
+            throw new Exception("Can not copy file $srcPath to $destPath");
+        }
     }
 
     /**
@@ -121,7 +137,7 @@ class ModuleFileInstaller
         foreach ($files as $file) {
             $file = ModulePathMapper::moduleSrcToShopRoot($file);
             $dest = App::getShopRoot() . $file;
-            $this->uninstallFile($dest);
+            $this->removeIfFileExists($dest);
         }
 
         // Uninstall from shop-vendor-mmlc
@@ -129,22 +145,34 @@ class ModuleFileInstaller
         foreach ($files as $file) {
             $file = ModulePathMapper::moduleSrcMmlcToShopVendorMmlc($file, $module->getArchiveName());
             $dest = App::getShopRoot() . $file;
-            $this->uninstallFile($dest);
+            $this->removeIfFileExists($dest);
             FileHelper::deletePathIsEmpty($dest);
         }
     }
 
-    private function uninstallFile(string $dest): void
+    private function fileOrLinkExists(string $path): bool
     {
-        if (file_exists($dest)) {
-            unlink($dest);
+        return file_exists($path) || is_link($path);
+    }
+
+    private function removeIfFileExists(string $path): void
+    {
+        if (file_exists($path)) {
+            $this->removeFile($path);
         }
     }
 
-    private function deleteHashFile(Module $module): void
+    private function removeFile(string $path): void
     {
-        if (file_exists($module->getHashPath())) {
-            unlink($module->getHashPath());
+        $result = unlink($path);
+        if (!$result) {
+            throw new Exception("Can not remove file $path");
         }
+    }
+
+    private function removeHashFile(Module $module): void
+    {
+        $path = $module->getHashPath();
+        $this->removeIfFileExists($path);
     }
 }
