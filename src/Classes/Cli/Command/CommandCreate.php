@@ -15,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\HelpRenderer;
 
 class CommandCreate implements CommandInterface
 {
@@ -76,27 +77,15 @@ class CommandCreate implements CommandInterface
         $this->create($cli);
     }
 
-    public function runHelp(MmlcCli $cli): void
+    public function getHelp(MmlcCli $cli): string
     {
-        $padding = 27;
+        $renderer = new HelpRenderer();
+        $renderer->setDescription('Creates a new module. Can be done interactively. Read more at https://module-loader.de/documentation.php.');
+        $renderer->addArgument('description', 'Usage:', 'create [options] <archiveName>');
+        $renderer->addArgument('arguments', 'archiveName:', 'The name of the archive (vendorName/moduleName).');
+        $renderer->addArgument('options', '--prefix=VENDOR_PREFIX:', 'Usually an abbreviated vendorName. Can also be vendorName.');
+        $renderer->addArgument('options', '-i, --interactive', 'Whether to create the module interactively (by answering questions).');
 
-        echo "\n";
-        TextRenderer::renderHelpHeading('Description:');
-        echo "  Creates a new module. Can be done interactively.\n";
-        echo "\n";
-
-        TextRenderer::renderHelpArgument('Usage:', 'create [options] <archiveName>', $padding);
-        echo "\n";
-
-        TextRenderer::renderHelpHeading('Arguments:');
-        TextRenderer::renderHelpOption('', 'archiveName', 'The name of the archive (vendorName/moduleName).', $padding);
-        echo "\n";
-
-        TextRenderer::renderHelpHeading('Options:');
-        TextRenderer::renderHelpOption('', 'prefix=VENDOR_PREFIX', 'Usually an abbreviated vendorName. Can also be vendorName.', $padding);
-        TextRenderer::renderHelpOption('i', 'interactive', 'Whether to create the module interactively (by answering questions).', $padding);
-        echo "\n";
-
-        echo "Read more at https://module-loader.de/documentation.php\n";
+        return $renderer->getRender();
     }
 }

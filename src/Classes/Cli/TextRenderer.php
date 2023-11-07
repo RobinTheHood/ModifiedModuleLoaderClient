@@ -24,50 +24,39 @@ class TextRenderer
         return "\e[" . $color . "m" . $text . "\e[0m";
     }
 
-    public static function rightPad(string $text, int $totalLength): string
+    public static function rightPad(string $text, int $length): string
     {
-        $textLength = strlen($text);
+        return \str_pad($text, $length, ' ', \STR_PAD_RIGHT);
+    }
 
-        if ($textLength >= $totalLength) {
-            return $text;
+    public static function renderLogo()
+    {
+        // echo "    __  _____  _____    ______   ________    ____\n";
+        // echo "   /  |/  /  |/  / /   / ____/  / ____/ /   /  _/\n";
+        // echo "  / /|_/ / /|_/ / /   / /      / /   / /    / /  \n";
+        // echo " / /  / / /  / / /___/ /___   / /___/ /____/ /   \n";
+        // echo "/_/  /_/_/  /_/_____/\____/   \____/_____/___/   \n";
+        // created with: https://patorjk.com/software/taag/#p=display&f=Slant&t=MMLC%20CLI
+
+        echo "    __  ___ __  ___ __    ______   ______ __     ____\n";
+        echo "   /  |/  //  |/  // /   / ____/  / ____// /    /  _/\n";
+        echo "  / /|_/ // /|_/ // /   / /      / /    / /     / /  \n";
+        echo " / /  / // /  / // /___/ /___   / /___ / /___ _/ /   \n";
+        echo "/_/  /_//_/  /_//_____/\____/   \____//_____//___/   \n";
+        // cretated with: https://patorjk.com/software/taag/#p=display&h=1&f=Slant&t=MMLC%20CLI
+    }
+
+    public static function getPadding(array $items): int
+    {
+        $padding = 0;
+
+        foreach ($items as $item) {
+            $itemLength = \mb_strlen($item);
+            $padding = \max($padding, $itemLength);
         }
 
-        $paddingLength = $totalLength - $textLength;
-        $padding = str_repeat(' ', $paddingLength);
+        $padding += 1;
 
-        return $text . $padding;
-    }
-
-    public static function renderHelpHeading(string $heading): string
-    {
-        return self::color($heading, self::COLOR_YELLOW) . "\n";
-    }
-
-    public static function renderHelpCommand(string $name, string $description, int $pad = 20): string
-    {
-        $name = self::rightPad($name, $pad);
-        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
-    }
-
-    public static function renderHelpArgument(string $name, string $description, int $pad = 20): string
-    {
-        $name = self::rightPad($name, $pad);
-        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
-    }
-
-    public static function renderHelpOption(string $shortName, string $longName, string $description, int $pad = 20): string
-    {
-        $name = '';
-
-        if ($shortName && $longName) {
-            $name = "-$shortName, --$longName";
-        } elseif ($shortName) {
-            $name = "-$shortName";
-        } elseif ($longName) {
-            $name = "    --$longName";
-        }
-
-        $name = self::rightPad($name, $pad);
-        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+        return $padding;
     }
 }
