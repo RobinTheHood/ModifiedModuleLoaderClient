@@ -11,11 +11,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleManager;
 
-use Exception;
+use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleHasher\ModuleHashFileCreator;
+use RobinTheHood\ModifiedModuleLoaderClient\ModulePathMapper;
+use RuntimeException;
 
 class ModuleFileInstaller
 {
@@ -82,7 +87,7 @@ class ModuleFileInstaller
     private function installFile(string $src, string $dest, bool $overwrite = false): bool
     {
         if (!file_exists($src)) {
-            throw new Exception("Can not install file $src - File not exists.");
+            throw new RuntimeException("Can not install file $src - File not exists.");
         }
 
         if ($this->fileOrLinkExists($dest) && $overwrite === false) {
@@ -115,7 +120,7 @@ class ModuleFileInstaller
         }
 
         if (!$result) {
-            throw new Exception("Can not copy file $srcPath to $destPath");
+            throw new RuntimeException("Can not copy file $srcPath to $destPath");
         }
     }
 
@@ -166,7 +171,7 @@ class ModuleFileInstaller
     {
         $result = unlink($path);
         if (!$result) {
-            throw new Exception("Can not remove file $path");
+            throw new RuntimeException("Can not remove file $path");
         }
     }
 
