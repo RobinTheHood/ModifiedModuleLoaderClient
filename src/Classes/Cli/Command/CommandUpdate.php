@@ -15,12 +15,11 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManager;
 use RuntimeException;
 
-class CommandDownload implements CommandInterface
+class CommandUpdate implements CommandInterface
 {
     public function __construct()
     {
@@ -28,7 +27,7 @@ class CommandDownload implements CommandInterface
 
     public function getName(): string
     {
-        return 'download';
+        return 'update';
     }
 
     public function run(MmlcCli $cli): void
@@ -40,11 +39,13 @@ class CommandDownload implements CommandInterface
             return;
         }
 
-        $moduleLoader = ModuleLoader::createFromConfig();
-        $module = $moduleLoader->loadLatestVersionByArchiveName($archiveName);
+        $moduleLoader = LocalModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
 
         if (!$module) {
-            $cli->writeLine("Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN) . " not found.");
+            $cli->writeLine(
+                "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN) . " is not installed."
+            );
             return;
         }
 
@@ -52,24 +53,30 @@ class CommandDownload implements CommandInterface
             "module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
             . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
 
-        if ($module->isLoaded()) {
-            $cli->writeLine("Can not download $moduleText, because is it already downloaded.");
-            return;
-        }
+        // if ($module->is()) {
+        //     $cli->writeLine("Can not update $moduleText because it is installed.");
+        //     return;
+        // }
 
-        $cli->writeLine("Download $moduleText ...");
+        $cli->writeLine("Update $moduleText ...");
 
         try {
             $moduleManager = ModuleManager::createFromConfig();
-            $moduleManager->pull($module);
+            $newModule = $moduleManager->update($module);
         } catch (RuntimeException $e) {
             $cli->writeLine(
                 TextRenderer::color('Error:', TextRenderer::COLOR_RED)
-                . " can not download $moduleText."
+                . " can not delete $moduleText."
                 . " Message: " . $e->getMessage()
             );
-            return;
+            die();
         }
+
+        $newModulText =
+            "module " . TextRenderer::color($newModule->getArchiveName(), TextRenderer::COLOR_GREEN)
+            . " version " . TextRenderer::color($newModule->getVersion(), TextRenderer::COLOR_YELLOW);
+
+        $cli->writeLine("Updated $moduleText to $newModulText.");
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
         return;
@@ -79,15 +86,16 @@ class CommandDownload implements CommandInterface
     {
         return
             TextRenderer::renderHelpHeading('Description:')
-            . "  Downloads a available MMLC Module from the Internet.\n"
+            . "  Delete a loaded uninstalled module.\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Usage:')
-            . "  download <archiveName> []\n"
+            . "  delete <archiveName> <version>\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Arguments:')
             . TextRenderer::renderHelpArgument('archiveName', 'The archiveName of the module to be loaded.')
+            . TextRenderer::renderHelpArgument('version', 'The version of the module to be loaded.')
             . "\n"
 
             . TextRenderer::renderHelpHeading('Options:')

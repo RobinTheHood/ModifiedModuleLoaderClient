@@ -18,6 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManager;
 use RuntimeException;
 
 class CommandUninstall implements CommandInterface
@@ -52,36 +53,30 @@ class CommandUninstall implements CommandInterface
             return;
         }
 
-        $coloredName =
-            TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
+        $moduleText =
+            "module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
             . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
 
         if ($module->isChanged() && $force === false) {
             $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED)
-                . " Can not uninstall module $coloredName. The modul has changes.\n"
+                "Can an not uninstall $moduleText, because the modul has changes.\n"
                 . "Use -f option to force uninstall. This will discard all changes"
             );
             return;
         }
 
-        $cli->writeLine(
-            "Uninstall module $coloredName ..."
-        );
+        $cli->writeLine("Uninstall $moduleText ...");
 
         try {
-            $moduleInstaller = ModuleInstaller::createFromConfig();
-            $moduleInstaller->uninstall($module, $force);
-        } catch (DependencyException $e) {
-            $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED) . " " . $e->getMessage()
-            );
-            return;
+            $moduleManager = ModuleManager::createFromConfig();
+            $moduleManager->uninstall($module);
         } catch (RuntimeException $e) {
             $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED) . " " . $e->getMessage()
+                TextRenderer::color('Error:', TextRenderer::COLOR_RED)
+                . " can not uninstall $moduleText."
+                . " Message: " . $e->getMessage()
             );
-            return;
+            die();
         }
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
