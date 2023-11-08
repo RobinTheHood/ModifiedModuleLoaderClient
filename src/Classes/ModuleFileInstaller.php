@@ -22,7 +22,7 @@ class ModuleFileInstaller
     /**
      * (Re-) Installiert / überschreibt ein Modul (archiveName, Version) ohne dabei auf Abhänigkeiten und den
      * Modulstatus zu achten. Es wird nur auf Dateiebene kontrolliert, ob alle Dateien geschrieben werden konnten.
-     * Die Autoload Datei wird NICHT erzeugt / erneuert.
+     * Erzeuchht die modulehash.json. Die Autoload Datei wird NICHT erzeugt / erneuert.
      */
     public function install(Module $module): void
     {

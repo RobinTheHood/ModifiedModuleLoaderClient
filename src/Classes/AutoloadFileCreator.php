@@ -17,6 +17,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 
 class AutoloadFileCreator
 {
+    // TODO: In createAutoloadFile() Exceptions werfen im Fehlerfall
     public function createAutoloadFile(): void
     {
         $installedLocalModules = $this->getInstalledModules();

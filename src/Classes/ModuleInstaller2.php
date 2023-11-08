@@ -82,22 +82,25 @@ class ModuleInstaller2
      * - [ ] Keine Schreibrechte für Modules - NoWritePermissionForModulesException extends PullException
      * - [x] Das Modul ist bereits geladen - ModuleAlreadyLoadedException extends PullException
      */
-    public function pull(Module $module)
+    public function pull(Module $module): Module
     {
+        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+
         if ($module->isLoaded()) {
-            throw new Exception("Can not pull module {$module->getArchiveName()}. Modul is already loaded.");
+            throw new Exception("Can not pull $moduleText. Modul is already loaded.");
         }
 
+        return $this->internalPull($module);
+    }
+
+    // Interne Methoden überprüfen nicht, ob ein Befehl ausgeführt werden kann, sie tuen bzw. versuchen es einfachen.
+    private function internalPull(Module $module): Module
+    {
         $archiveUrl = $this->getArchiveUrl($module);
-
-        try {
-            $archive = $this->archivePuller->pull($module->getArchiveName(), $module->getVersion(), $archiveUrl);
-            $this->archiveHandler->extract($archive);
-            return true;
-        } catch (RuntimeException $e) {
-            //Can not pull Archive
-            return false;
-        }
+        $archive = $this->archivePuller->pull($module->getArchiveName(), $module->getVersion(), $archiveUrl);
+        $this->archiveHandler->extract($archive);
+        $pulledModule = $this->reload($module);
+        return $pulledModule;
     }
 
     /**
@@ -114,20 +117,25 @@ class ModuleInstaller2
      */
     public function delete(Module $module): void
     {
+        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+
         if (!$module->isLoaded()) {
-            throw new Exception("Can not delete module {$module->getArchiveName()}. Module is not loaded.");
+            throw new Exception("Can not delete $moduleText. Module is not loaded.");
         }
 
         if ($module->isInstalled()) {
-            throw new Exception("Can not delete module {$module->getArchiveName()}. Module is installed.");
+            throw new Exception("Can not delete $moduleText. Module is installed.");
         }
 
+        $this->internalDelete($module);
+    }
+
+    private function internalDelete(Module $module): void
+    {
         $this->deleteModuleFiles($module);
     }
 
     /**
-     * //TODO: Umbenennen in install()
-     *
      * Installiert ein Modul (archiveName, Version) in das Shop System UND lädt und installiert alle Abhängigkeiten /
      * abhängige Module nach.
      *
@@ -138,35 +146,38 @@ class ModuleInstaller2
      * - Autoload kann nicht aktuallisiert werden
      * - Das Modull ist bereits installiert
      */
-    public function installWithtDependencies(Module $module): void
+    public function install(Module $module): void
     {
+        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+
         if ($module->isInstalled()) {
-            throw new Exception(
-                "Can not install module {$module->getArchiveName()} {$module->getVersion()}. "
-                . "Module is already installed."
-            );
+            throw new Exception("Can not install $moduleText. Module is already installed.");
         }
+
+        $this->internalInstall($module);
+
+        $autoloadFileCreator = new AutoloadFileCreator();
+        $autoloadFileCreator->createAutoloadFile();
+    }
+
+    private function internalInstall(Module $module): void
+    {
+        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
 
         $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module, ['']);
 
         if (!$combinationSatisfyerResult->foundCombination) {
             $message =
-                "Can not install module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
-                . "No possible combination of versions found";
+                "Can not install $moduleText with dependencies. No possible combination of versions found";
             StaticLogger::log(LogLevel::WARNING, $message);
             // NOTE: Vielleicht neue class ModuleInstallerException hinzufügen
             throw new RuntimeException($message);
         }
 
-        $this->uninstall($module);
-
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->install($module);
-
+        // Modul installieren
+        $this->internalInstallWithoutDependencies($module);
+        // Modul Abhängigkeiten installieren
         $this->internalInstallDependencies($module, $combinationSatisfyerResult->foundCombination);
-
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
     }
 
     /**
@@ -176,7 +187,7 @@ class ModuleInstaller2
      * abhängige Module nach. Sind nicht alle Abhängigkeiten erfüllt, wird nicht installiert und eine Exception
      * geworfen.
      *
-     * @param bool $force skip dependency check.
+     * @param bool $skipDependencyCheck skip dependency check.
      *
      * Mögliche Fehler und Exceptions
      * - [ ] alle Fehler aus internalInstall()
@@ -186,24 +197,28 @@ class ModuleInstaller2
      * - [ ] Autoload kann nicht aktuallisiert werden
      * - [x] Das Modull ist bereits installiert
      */
-    public function install(Module $module, bool $force = false): void
+    public function installWithoutDependencies(Module $module, bool $skipDependencyCheck = false): void
     {
         if ($module->isInstalled()) {
             throw new Exception("Can not install module {$module->getArchiveName()}. Module is already installed.");
         }
 
-        if (!$force) {
+        if (!$skipDependencyCheck) {
             // Wirft eine DependencyException, wenn dass Modul nicht installiert werden kann.
             $this->dependencyManager->canBeInstalled($module);
         }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        // Wirft eine Exception, wenn es nicht installiert werden konnte.
-        $moduleFileInstaller->install($module);
+        $this->internalInstallWithoutDependencies($module);
 
         $autoloadFileCreator = new AutoloadFileCreator();
-        // TODO: In createAutoloadFile() Exceptions werfen im Fehlerfall
         $autoloadFileCreator->createAutoloadFile();
+    }
+
+    private function internalInstallWithoutDependencies(Module $module): void
+    {
+        $moduleFileInstaller = new ModuleFileInstaller();
+        $moduleFileInstaller->install($module);
+        $this->reload($module);
     }
 
     /**
@@ -345,56 +360,83 @@ class ModuleInstaller2
 
 
 
-
+    /**
+     * Retrieves the archive URL for a given module.
+     *
+     * This method is responsible for obtaining the archive URL for a specific module by making an API request. It
+     * constructs the URL to download the module's archive, handles potential errors in the API response, and returns
+     * the archive URL.
+     *
+     * @param Module $module The Module for which the archive URL should be retrieved.
+     *
+     * @return string The URL to download the module's archive.
+     *
+     * @throws Exception
+     *      If the API response is empty or lacks the necessary information to construct the archive URL, an Exception
+     *      is thrown with a detailed error message.
+     */
     private function getArchiveUrl(Module $module): string
     {
+        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+
         $apiRequest = new ApiRequest();
         $result = $apiRequest->getArchive($module->getArchiveName(), $module->getVersion());
 
         $content = $result['content'] ?? [];
         if (!$content) {
-            throw new Exception("Can not pull module {$module->getArchiveName()}. archiveUrl is empty");
+            throw new Exception("Can not pull $moduleText. ApiRespond is empty.");
         }
 
         $archiveUrl = $content['archiveUrl'] ?? '';
         if (!$archiveUrl) {
-            throw new Exception("Can not pull module {$module->getArchiveName()}. archiveUrl is empty");
+            throw new Exception("Can not pull $moduleText. archiveUrl is empty.");
         }
 
         return $archiveUrl;
     }
 
     /**
-     * Lädt und installiert
+     * Loads and installs a module.
+     *
+     * This method is responsible for loading and installing a module specified by the provided Module object. It checks
+     * whether the module is already installed, and if not, it attempts to load and install it. The method also handles
+     * potential errors during the loading and installation process.
+     *
+     * @param Module $module The Module to be loaded and installed.
+     *
+     * @throws RuntimeException
+     *      If the module cannot be loaded or installed successfully, a RuntimeException is thrown with a detailed
+     *      error message.
      */
     private function internalPullAndInstall(Module $module): void
     {
-        if (!$module->isLoaded()) {
-            $this->pull($module);
-        }
-
-        // TODO: Rename to reloadModule
-        $reloaded = $this->reload($module);
-
-        if (!$reloaded->isLoaded()) {
-            $message =
-                "Can not pull and install module {$module->getArchiveName()} {$module->getVersion()}. "
-                . "Module is not loaded.";
-            StaticLogger::log(LogLevel::WARNING, $message);
-            // NOTE: Vielleicht neue class ModuleOperationException hinzufügen
-            throw new RuntimeException($message);
-        }
-
-        if ($reloaded->isInstalled()) {
+        if ($module->isInstalled()) {
             return;
         }
 
-        $this->uninstall($module);
+        if ($module->isLoaded()) {
+            $pulledModule = $module;
+        } else {
+            $pulledModule = $this->internalPull($module);
+        }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->install($module);
+        $this->internalInstallWithoutDependencies($pulledModule);
     }
 
+    /**
+     * Installs the dependencies specified in the given Combination for a parent Module.
+     *
+     * This method is used internally to install the dependencies specified in a provided Combination for a parent
+     * Module. It retrieves the required modules from the Combination and iterates through them, checking for
+     * compatibility and installing each one. The parent Module is excluded from the installation process.
+     *
+     * @param Module $parentModule The parent Module for which dependencies need to be installed.
+     * @param Combination $combination The Combination specifying the dependencies to be installed.
+     *
+     * @throws DependencyException
+     *      If any of the dependencies cannot be installed due to conflicting versions or other issues,
+     *      a DependencyException may be thrown with details.
+     */
     private function internalInstallDependencies(Module $parentModule, Combination $combination): void
     {
         $modules = $this->dependencyManager->getAllModulesFromCombination($combination);
@@ -439,6 +481,8 @@ class ModuleInstaller2
 
     private function reload(Module $module): Module
     {
+        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+
         $this->localModuleLoader->resetCache();
         $reloadedModule = $this->localModuleLoader->loadByArchiveNameAndVersion(
             $module->getArchiveName(),
@@ -446,7 +490,7 @@ class ModuleInstaller2
         );
 
         if (!$reloadedModule) {
-            $message = "Can not reload module {$module->getArchiveName()} {$module->getVersion()}";
+            $message = "Can not reload $moduleText.";
             StaticLogger::log(LogLevel::WARNING, $message);
             // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
