@@ -42,7 +42,7 @@ class CommandInstall implements CommandInterface
             $versionConstraint = $parts[1] ?? '';
         } elseif (count($parts) === 1) {
             $archiveName = $parts[0] ?? '';
-            $versionConstraint = '';
+            $versionConstraint = '>0.0.0';
         } else {
             $archiveName = '';
             $versionConstraint = '';
@@ -53,9 +53,15 @@ class CommandInstall implements CommandInterface
             return;
         }
 
+        $moduleManager = ModuleManager::createFromConfig();
+        $moduleManager->install($archiveName, $versionConstraint);
+        die();
+
+
         $moduleLoader = ModuleLoader::createFromConfig();
 
         if ($archiveName && $versionConstraint) {
+            // TODO: Zusammen mit dem dependency manager ein mögliches Modul finden
             $module = $moduleLoader->loadLatestByArchiveNameAndConstraint($archiveName, $versionConstraint);
         } else {
             $module = $moduleLoader->loadLatestVersionByArchiveName($archiveName);
