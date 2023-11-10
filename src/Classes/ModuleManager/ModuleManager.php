@@ -124,8 +124,21 @@ class ModuleManager
         $module = $this->localModuleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
-            throw new RuntimeException("Can not delete module $archiveName version $version");
+            $this->log->error("Can not delete %s, because module not found.", $archiveName, $version);
+            throw new RuntimeException(
+                "Can not delete module $archiveName version $version, because module not found."
+            );
         }
+
+        if ($module->isInstalled()) {
+            $this->log->error("Can not delete %s, because it is installed.", $module);
+            throw new RuntimeException(
+                "Can not delete module {$module->getArchiveName()} version {$module->getVersion()},"
+                . " because it is installed"
+            );
+        }
+
+        $this->log->write("Deleting %s ...", $module);
 
         $this->moduleInstaller->delete($module, false);
     }
