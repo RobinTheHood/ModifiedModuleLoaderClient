@@ -38,6 +38,9 @@ class ModuleManager
     /** @var SystemSetFactory */
     private $systemSetFactory;
 
+    /** @var ModuleManagerLog */
+    private $log;
+
     public static function create(int $mode): ModuleManager
     {
         $moduleInstaller = ModuleInstaller::create($mode);
@@ -74,6 +77,11 @@ class ModuleManager
         $this->localModuleLoader = $localModuleLoader;
         $this->dependencyBuilder = $dependencyBuilder;
         $this->systemSetFactory = $systemSetFactory;
+    }
+
+    public function setLog(ModuleManagerLog $log)
+    {
+        $this->log = $log;
     }
 
     /**
