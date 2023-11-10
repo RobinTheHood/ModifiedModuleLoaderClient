@@ -15,10 +15,9 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManager;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManagerLog;
 use RuntimeException;
 
 class CommandDiscard implements CommandInterface
@@ -41,36 +40,11 @@ class CommandDiscard implements CommandInterface
             return;
         }
 
-        $moduleLoader = LocalModuleLoader::createFromConfig();
-        $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
-
-        if (!$module) {
-            $cli->writeLine(
-                "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN) . " is not installed."
-            );
-            return;
-        }
-
-        $moduleText =
-            "module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
-            . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
-
-        if (!$module->isChanged()) {
-            $cli->writeLine("Can an not discard $moduleText, because the modul has no changes.\n");
-            return;
-        }
-
-        $cli->writeLine("Discarding $moduleText ...");
-
         try {
-            $moduleManager = ModuleManager::createFromConfig();
-            $moduleManager->discard($module);
+            $moduleManager = $this->createModuleManager($cli);
+            $moduleManager->discard($archiveName);
         } catch (RuntimeException $e) {
-            $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED)
-                . " can not discard $moduleText."
-                . " Message: " . $e->getMessage()
-            );
+            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
             die();
         }
 
@@ -95,5 +69,48 @@ class CommandDiscard implements CommandInterface
             . "\n"
 
             . "Read more at https://module-loader.de/documentation.php";
+    }
+
+    private function createModuleManager(MmlcCli $cli)
+    {
+        $moduleManagerLog = new ModuleManagerLog();
+        $moduleManagerLog->setWriteFunction(
+            function (string $message, mixed $data1, mixed $data2) use ($cli) {
+                $cli->writeLine($this->formatMessage($message, $data1, $data2));
+            }
+        );
+
+        $moduleManagerLog->setErrorFunction(
+            function (string $message, mixed $data1, mixed $data2) use ($cli) {
+                $cli->writeLine(
+                    TextRenderer::color('Error: ', TextRenderer::COLOR_RED)
+                    . $this->formatMessage($message, $data1, $data2)
+                );
+            }
+        );
+
+        $moduleManager = ModuleManager::createFromConfig();
+        $moduleManager->setLog($moduleManagerLog);
+        return $moduleManager;
+    }
+
+    private function formatMessage(string $message, mixed $data1, mixed $data2): string
+    {
+        $value = '';
+        if (is_string($data1) && is_string($data2)) {
+            $value =
+                "module " . TextRenderer::color($data1, TextRenderer::COLOR_GREEN)
+                . " version " . TextRenderer::color($data2, TextRenderer::COLOR_YELLOW);
+        } elseif (is_string($data1)) {
+            $value = TextRenderer::color($data1, TextRenderer::COLOR_GREEN);
+        } elseif ($data1 instanceof Module) {
+            /** @var Module */
+            $module = $data1;
+            $value =
+                "module " . TextRenderer::color($module->getArchiveName(), TextRenderer::COLOR_GREEN)
+                . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
+        }
+        $formatedMessage = sprintf($message, $value);
+        return $formatedMessage;
     }
 }
