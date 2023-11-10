@@ -24,6 +24,27 @@ use RuntimeException;
 
 class ModuleManager
 {
+    private const ERROR_PULL_MODULE_NOT_FOUND = 101;
+    private const ERROR_PULL_MODULE_ALLREADY_LOADED = 102;
+
+    private const ERROR_DELETE_MODULE_NOT_FOUND = 201;
+    private const ERROR_DELETE_MODULE_IS_INSTALED = 202;
+
+    private const ERROR_INSTALL_MODULE_NOT_FOUND = 301;
+    private const ERROR_INSTALL_MODULE_MISSING_REQUIREMENTS = 302;
+    private const ERROR_INSTALL_MODULE_ALLREADY_INSTALED = 303;
+
+    private const ERROR_UPDATE_MODULE_NOT_FOUND = 401;
+    private const ERROR_UPDATE_MODULE_NOT_INSTALLED = 402;
+    private const ERROR_UPDATE_MODULE_IS_CHANGED = 403;
+
+    private const ERROR_DISCARD_MODULE_NOT_FOUND = 501;
+    private const ERROR_DISCARD_MODULE_NOT_CHANGED = 502;
+
+    private const ERROR_UNINSTALL_MODULE_NOT_FOUND = 601;
+    private const ERROR_UNINSTALL_MODULE_NOT_INSTALLED = 602;
+    private const ERROR_UNINSTALL_MODULE_IS_CHANGED = 603;
+
     /** @var ModuleInstaller */
     private $moduleInstaller;
 
@@ -97,14 +118,23 @@ class ModuleManager
         }
 
         if (!$module) {
-            $this->log->error("Can not pull %s, because module not found.", $archiveName, $versionConstraint);
+            $this->log->error(
+                self::ERROR_PULL_MODULE_NOT_FOUND,
+                "Can not pull %s, because module not found.",
+                $archiveName,
+                $versionConstraint
+            );
             throw new RuntimeException(
                 "Can not pull module $archiveName version $versionConstraint, because module not found."
             );
         }
 
         if ($module->isLoaded()) {
-            $this->log->error("Can not pull %s, because it is already downloaded.", $module);
+            $this->log->error(
+                self::ERROR_PULL_MODULE_ALLREADY_LOADED,
+                "Can not pull %s, because it is already downloaded.",
+                $module
+            );
             throw new RuntimeException(
                 "Can not pull module {$module->getArchiveName()} version {$module->getVersion()},"
                 . " because it is already downloaded."
@@ -124,14 +154,23 @@ class ModuleManager
         $module = $this->localModuleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
-            $this->log->error("Can not delete %s, because module not found.", $archiveName, $version);
+            $this->log->error(
+                self::ERROR_DELETE_MODULE_NOT_FOUND,
+                "Can not delete %s, because module not found.",
+                $archiveName,
+                $version
+            );
             throw new RuntimeException(
                 "Can not delete module $archiveName version $version, because module not found."
             );
         }
 
         if ($module->isInstalled()) {
-            $this->log->error("Can not delete %s, because it is installed.", $module);
+            $this->log->error(
+                self::ERROR_DELETE_MODULE_IS_INSTALED,
+                "Can not delete %s, because it is installed.",
+                $module
+            );
             throw new RuntimeException(
                 "Can not delete module {$module->getArchiveName()} version {$module->getVersion()},"
                 . " because it is installed"
@@ -154,13 +193,15 @@ class ModuleManager
         $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
         if ($combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND) {
             $this->log->error(
-                "Can not install %s, because not all requirements are met. TODO: Show requirements",
+                self::ERROR_INSTALL_MODULE_MISSING_REQUIREMENTS,
+                "Can not install %s, because not all requirements are met. "
+                . print_r($combinationSatisfyerResult->testCombination),
                 $archiveName,
                 $versionConstraint
             );
             throw new RuntimeException(
                 "Can not install module $archiveName version $versionConstraint, because not all requirements are met."
-                . " TODO: Show requirements"
+                . print_r($combinationSatisfyerResult->testCombination)
             );
         }
 
@@ -169,14 +210,23 @@ class ModuleManager
         $module = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
-            $this->log->error("Can not install %s, because module not found.", $archiveName, $version);
+            $this->log->error(
+                self::ERROR_INSTALL_MODULE_NOT_FOUND,
+                "Can not install %s, because module not found.",
+                $archiveName,
+                $version
+            );
             throw new RuntimeException(
                 "Can not delete install $archiveName version $version, because module not found."
             );
         }
 
         if ($module->isInstalled()) {
-            $this->log->error("Can not install %s, because it is already installed.", $module);
+            $this->log->error(
+                self::ERROR_INSTALL_MODULE_ALLREADY_INSTALED,
+                "Can not install %s, because it is already installed.",
+                $module
+            );
             throw new RuntimeException(
                 "Can not install module {$module->getArchiveName()} version {$module->getVersion()},"
                 . " because it is already installed."
@@ -191,7 +241,7 @@ class ModuleManager
         $this->log->write("Installing %s ...", $module);
         $this->moduleInstaller->install($module);
 
-        $this->log->write("Updading autotoload file");
+        $this->log->write("Updating autotoload file");
         $autoloadFileCreator = new AutoloadFileCreator();
         $autoloadFileCreator->createAutoloadFile();
     }
@@ -202,16 +252,16 @@ class ModuleManager
      *
      * @param bool $skipDependencyCheck skip dependency check.
      */
-    public function installWithoutDependencies(
-        string $archiveName,
-        string $versionConstraint,
-        bool $skipDependencyCheck = false
-    ): void {
-        $this->moduleInstaller->installWithoutDependencies($module, $skipDependencyCheck, false);
+    // public function installWithoutDependencies(
+    //     string $archiveName,
+    //     string $versionConstraint,
+    //     bool $skipDependencyCheck = false
+    // ): void {
+    //     $this->moduleInstaller->installWithoutDependencies($module, $skipDependencyCheck, false);
 
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
-    }
+    //     $autoloadFileCreator = new AutoloadFileCreator();
+    //     $autoloadFileCreator->createAutoloadFile();
+    // }
 
     /**
      * Aktuallisiert das Modul auf die neuste Version. Dabei werden keine Abhänggigkeiten
@@ -220,8 +270,51 @@ class ModuleManager
      */
     public function update(string $archiveName): Module
     {
+        $moduleLoader = LocalModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
+
+        if (!$module) {
+            $this->log->error(
+                self::ERROR_UNINSTALL_MODULE_NOT_FOUND,
+                "Can not update %s, because module not found.",
+                $archiveName
+            );
+            throw new RuntimeException(
+                "Can not update update $archiveName, because module not found."
+            );
+        }
+
+        $moduleText = "module $archiveName version {$module->getVersion()}";
+
+        if (!$module->isInstalled()) {
+            $this->log->error(
+                self::ERROR_UNINSTALL_MODULE_NOT_INSTALLED,
+                "Can not update %s, because module is not installed.",
+                $module
+            );
+            throw new RuntimeException(
+                "Can not update $moduleText, because module is not installed."
+            );
+        }
+
+        if ($module->isChanged()) {
+            $this->log->error(
+                self::ERROR_UPDATE_MODULE_IS_CHANGED,
+                "Can not update %s, because module has changes.",
+                $module
+            );
+            throw new RuntimeException(
+                "Can not update $moduleText, because module has changes."
+            );
+        }
+
+        $this->log->write("Updating %s ...", $module);
+
         $newModule = $this->moduleInstaller->update($module, false);
 
+        $this->log->write("Updated to %s ...", $newModule);
+
+        $this->log->write("Updating autotoload file");
         $autoloadFileCreator = new AutoloadFileCreator();
         $autoloadFileCreator->createAutoloadFile();
 
@@ -233,19 +326,19 @@ class ModuleManager
      * installiert. Es werden keine Abhänggigkeiten aktualisiert. Können nicht alle Abhängigkeiten erfüllt werten,
      * wird nicht aktualisiert und eine Exception geworfen.
      */
-    public function updateWithoutMissingDependencies(string $archvieName, bool $skipDependencyCheck = false): Module
-    {
-        $loadedNewModul = $this->moduleInstaller->updateWithoutMissingDependencies(
-            $module,
-            $skipDependencyCheck,
-            false
-        );
+    // public function updateWithoutMissingDependencies(string $archvieName, bool $skipDependencyCheck = false): Module
+    // {
+    //     $loadedNewModul = $this->moduleInstaller->updateWithoutMissingDependencies(
+    //         $module,
+    //         $skipDependencyCheck,
+    //         false
+    //     );
 
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+    //     $autoloadFileCreator = new AutoloadFileCreator();
+    //     $autoloadFileCreator->createAutoloadFile();
 
-        return $loadedNewModul;
-    }
+    //     return $loadedNewModul;
+    // }
 
     /**
      * Entfernt alle Änderungen die an den Modul-Dateien im Shop gemacht wurden. Änderungen an Template Dateien werden
@@ -253,23 +346,30 @@ class ModuleManager
      */
     public function discard(string $archiveName, bool $withTemplate = false): void
     {
-        $this->log->write("Discarding %s ...", $archiveName);
-
         $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
 
         if (!$module) {
-            $this->log->error("Module %s is not installed.", $archiveName);
-            throw new RuntimeException("Module $archiveName is not installed.");
+            $this->log->error(
+                self::ERROR_DISCARD_MODULE_NOT_FOUND,
+                "Can not discard %s, because module not found.",
+                $archiveName
+            );
+            throw new RuntimeException("Can not discard $archiveName, because module not found.");
         }
 
         $moduleText = "module $archiveName version {$module->getVersion()}";
 
         if (!$module->isChanged()) {
-            $this->log->error("Can not discard %s, because the modul has no changes.", $module);
+            $this->log->error(
+                self::ERROR_DISCARD_MODULE_NOT_CHANGED,
+                "Can not discard %s, because the modul has no changes.",
+                $module
+            );
             throw new RuntimeException("Can an not discard $moduleText, because the modul has no changes.\n");
         }
 
+        $this->log->write("Discarding %s ...", $module);
         $this->moduleInstaller->discard($module, $withTemplate, false);
     }
 
@@ -282,8 +382,48 @@ class ModuleManager
      */
     public function uninstall(string $archiveName, bool $force = false): bool
     {
+        $moduleLoader = LocalModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
+
+        if (!$module) {
+            $this->log->error(
+                self::ERROR_UNINSTALL_MODULE_NOT_FOUND,
+                "Can not uninstall %s, because module not found.",
+                $archiveName
+            );
+            throw new RuntimeException(
+                "Can not uninstall install $archiveName, because module not found."
+            );
+        }
+
+        if (!$module->isInstalled()) {
+            $this->log->error(
+                self::ERROR_UNINSTALL_MODULE_NOT_INSTALLED,
+                "Can not uninstall %s, because module is not installed.",
+                $module
+            );
+            throw new RuntimeException(
+                "Can not uninstall module {$module->getArchiveName()} version {$module->getVersion()},"
+                . " because module is not installed."
+            );
+        }
+
+        if ($module->isChanged() && $force === false) {
+            $this->log->error(
+                self::ERROR_UNINSTALL_MODULE_IS_CHANGED,
+                "Can not uninstall %s, because module has changes.",
+                $module
+            );
+            throw new RuntimeException(
+                "Can not uninstall module {$module->getArchiveName()} version {$module->getVersion()},"
+                . " because module has changes."
+            );
+        }
+
+        $this->log->write("Uninstalling %s ...", $module);
         $this->moduleInstaller->uninstall($module, $force);
 
+        $this->log->write("Updating autotoload file");
         $autoloadFileCreator = new AutoloadFileCreator();
         $autoloadFileCreator->createAutoloadFile();
 

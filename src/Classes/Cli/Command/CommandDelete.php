@@ -91,9 +91,9 @@ class CommandDelete implements CommandInterface
         );
 
         $moduleManagerLog->setErrorFunction(
-            function (string $message, mixed $data1, mixed $data2) use ($cli) {
+            function (int $errorNo, string $message, mixed $data1, mixed $data2) use ($cli) {
                 $cli->writeLine(
-                    TextRenderer::color('Error: ', TextRenderer::COLOR_RED)
+                    TextRenderer::color("Error $errorNo: ", TextRenderer::COLOR_RED)
                     . $this->formatMessage($message, $data1, $data2)
                 );
             }

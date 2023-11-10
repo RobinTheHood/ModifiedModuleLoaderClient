@@ -39,9 +39,9 @@ class ModuleManagerLog
         $function($message, $data1, $data2);
     }
 
-    public function error(string $message, string|Module $data1 = null, string|Module $data2 = null): void
+    public function error(int $errorNo, string $message, string|Module $data1 = null, string|Module $data2 = null): void
     {
         $function = $this->errorFunction;
-        $function($message, $data1, $data2);
+        $function($errorNo, $message, $data1, $data2);
     }
 }
