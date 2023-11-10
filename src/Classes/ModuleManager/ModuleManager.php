@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleManager;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSetFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
@@ -136,27 +137,48 @@ class ModuleManager
     public function install(string $archiveName, $versionConstraint): void
     {
         $systemSet = $this->systemSetFactory->getSystemSet();
-        var_dump($systemSet);
 
         $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
-        var_dump($combinationSatisfyerResult);
-        die();
-
-
-
-
-        if ($versionConstraint) {
-            $module = $this->moduleLoader->loadLatestByArchiveNameAndConstraint($archiveName, $versionConstraint);
-        } else {
-            $module = $this->moduleLoader->loadLatestVersionByArchiveName($archiveName);
+        if ($combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND) {
+            $this->log->error(
+                "Can not install %s, because not all requirements are met. TODO: Show requirements",
+                $archiveName,
+                $versionConstraint
+            );
+            throw new RuntimeException(
+                "Can not install module $archiveName version $versionConstraint, because not all requirements are met."
+                . " TODO: Show requirements"
+            );
         }
+
+        $version = $combinationSatisfyerResult->foundCombination->getVersion($archiveName);
+
+        $module = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
-            throw new RuntimeException("Can not pull module $archiveName version $versionConstraint");
+            $this->log->error("Can not install %s, because module not found.", $archiveName, $version);
+            throw new RuntimeException(
+                "Can not delete install $archiveName version $version, because module not found."
+            );
         }
 
-        $this->moduleInstaller->install($module, false);
+        if ($module->isInstalled()) {
+            $this->log->error("Can not install %s, because it is already installed.", $module);
+            throw new RuntimeException(
+                "Can not install module {$module->getArchiveName()} version {$module->getVersion()},"
+                . " because it is already installed."
+            );
+        }
 
+        if (!$module->isLoaded()) {
+            $this->log->write("Downloding %s ...", $module);
+            $module = $this->moduleInstaller->pull($module);
+        }
+
+        $this->log->write("Installing %s ...", $module);
+        $this->moduleInstaller->install($module);
+
+        $this->log->write("Updading autotoload file");
         $autoloadFileCreator = new AutoloadFileCreator();
         $autoloadFileCreator->createAutoloadFile();
     }
