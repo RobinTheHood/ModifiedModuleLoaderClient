@@ -16,9 +16,9 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 use Exception;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManager;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManagerLog;
 use RuntimeException;
 
 class CommandInstall implements CommandInterface
@@ -53,79 +53,16 @@ class CommandInstall implements CommandInterface
             return;
         }
 
-        $moduleManager = ModuleManager::createFromConfig();
-        $moduleManager->install($archiveName, $versionConstraint);
-        die();
-
-
-        $moduleLoader = ModuleLoader::createFromConfig();
-
-        if ($archiveName && $versionConstraint) {
-            // TODO: Zusammen mit dem dependency manager ein mögliches Modul finden
-            $module = $moduleLoader->loadLatestByArchiveNameAndConstraint($archiveName, $versionConstraint);
-        } else {
-            $module = $moduleLoader->loadLatestVersionByArchiveName($archiveName);
+        try {
+            $moduleManager = $this->createModuleManager($cli);
+            $moduleManager->install($archiveName, $versionConstraint);
+        } catch (RuntimeException $e) {
+            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
+            die();
         }
-
-        if (!$module) {
-            $cli->writeLine(
-                "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN) . " not found."
-            );
-            return;
-        }
-
-        if ($module->isLoaded()) {
-            $loadedModule = $module;
-        } else {
-            $loadedModule = $this->download($cli, $module);
-        }
-
-        $this->install($cli, $loadedModule);
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
         return;
-    }
-
-    private function download(MmlcCli $cli, Module $module): Module
-    {
-        $moduleText =
-            "module " . TextRenderer::color($module->getArchiveName(), TextRenderer::COLOR_GREEN)
-            . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
-
-        $cli->writeLine("Download $moduleText ...");
-
-        try {
-            $moduleManager = ModuleManager::createFromConfig();
-            return $moduleManager->pull($module);
-        } catch (RuntimeException $e) {
-            $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED)
-                . " can not download $moduleText."
-                . " Message: " . $e->getMessage()
-            );
-            die();
-        }
-    }
-
-    private function install(MmlcCli $cli, Module $module): void
-    {
-        $moduleText =
-            "module " . TextRenderer::color($module->getArchiveName(), TextRenderer::COLOR_GREEN)
-            . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
-
-        $cli->writeLine("Installing $moduleText ...");
-
-        try {
-            $moduleManager = ModuleManager::createFromConfig();
-            $moduleManager->install($module);
-        } catch (Exception $e) {
-            $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED)
-                . " can not install $moduleText."
-                . "\nMessage: " . $e->getMessage()
-            );
-            die();
-        }
     }
 
     public function getHelp(MmlcCli $cli): string
@@ -148,5 +85,48 @@ class CommandInstall implements CommandInterface
             . "\n"
 
             . "Read more at https://module-loader.de/documentation.php";
+    }
+
+    private function createModuleManager(MmlcCli $cli)
+    {
+        $moduleManagerLog = new ModuleManagerLog();
+        $moduleManagerLog->setWriteFunction(
+            function (string $message, mixed $data1, mixed $data2) use ($cli) {
+                $cli->writeLine($this->formatMessage($message, $data1, $data2));
+            }
+        );
+
+        $moduleManagerLog->setErrorFunction(
+            function (string $message, mixed $data1, mixed $data2) use ($cli) {
+                $cli->writeLine(
+                    TextRenderer::color('Error: ', TextRenderer::COLOR_RED)
+                    . $this->formatMessage($message, $data1, $data2)
+                );
+            }
+        );
+
+        $moduleManager = ModuleManager::createFromConfig();
+        $moduleManager->setLog($moduleManagerLog);
+        return $moduleManager;
+    }
+
+    private function formatMessage(string $message, mixed $data1, mixed $data2): string
+    {
+        $value = '';
+        if (is_string($data1) && is_string($data2)) {
+            $value =
+                "module " . TextRenderer::color($data1, TextRenderer::COLOR_GREEN)
+                . " version " . TextRenderer::color($data2, TextRenderer::COLOR_YELLOW);
+        } elseif (is_string($data1)) {
+            $value = TextRenderer::color($data1, TextRenderer::COLOR_GREEN);
+        } elseif ($data1 instanceof Module) {
+            /** @var Module */
+            $module = $data1;
+            $value =
+                "module " . TextRenderer::color($module->getArchiveName(), TextRenderer::COLOR_GREEN)
+                . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
+        }
+        $formatedMessage = sprintf($message, $value);
+        return $formatedMessage;
     }
 }
