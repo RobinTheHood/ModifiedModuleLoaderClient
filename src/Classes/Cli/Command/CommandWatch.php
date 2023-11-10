@@ -22,7 +22,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class CommandWatch implements CommandInterface
 {
@@ -55,11 +54,17 @@ class CommandWatch implements CommandInterface
                 $relativeFilePath = FileHelper::stripBasePath($basePath, $filePath);
 
                 if ($status === DirectoryWatcher::STATUS_NEW) {
-                    $cli->writeLine(TextRenderer::color('File added:', TextRenderer::COLOR_GREEN) . " $relativeFilePath");
+                    $cli->writeLine(
+                        TextRenderer::color('File added:', TextRenderer::COLOR_GREEN) . " $relativeFilePath"
+                    );
                 } elseif ($status === DirectoryWatcher::STATUS_CHANGED) {
-                    $cli->writeLine(TextRenderer::color('File modified:', TextRenderer::COLOR_YELLOW) . " $relativeFilePath");
+                    $cli->writeLine(
+                        TextRenderer::color('File modified:', TextRenderer::COLOR_YELLOW) . " $relativeFilePath"
+                    );
                 } elseif ($status === DirectoryWatcher::STATUS_DELETED) {
-                    $cli->writeLine(TextRenderer::color('File deleted:', TextRenderer::COLOR_RED) . " $relativeFilePath");
+                    $cli->writeLine(
+                        TextRenderer::color('File deleted:', TextRenderer::COLOR_RED) . " $relativeFilePath"
+                    );
                 }
 
                 if (basename($filePath) === 'modulehash.json') {
