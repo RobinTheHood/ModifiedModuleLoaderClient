@@ -87,7 +87,7 @@ class ModuleManager
     /**
      * Lädt ein Modul vom Server herunter.
      */
-    public function pull(string $archiveName, string $versionConstraint, string $version): Module
+    public function pull(string $archiveName, string $versionConstraint): Module
     {
         if ($versionConstraint) {
             $module = $this->moduleLoader->loadLatestByArchiveNameAndConstraint($archiveName, $versionConstraint);
@@ -96,8 +96,21 @@ class ModuleManager
         }
 
         if (!$module) {
-            throw new RuntimeException("Can not pull module $archiveName version $versionConstraint");
+            $this->log->error("Can not pull %s, because module not found.", $archiveName, $versionConstraint);
+            throw new RuntimeException(
+                "Can not pull module $archiveName version $versionConstraint, because module not found."
+            );
         }
+
+        if ($module->isLoaded()) {
+            $this->log->error("Can not pull %s, because it is already downloaded.", $module);
+            throw new RuntimeException(
+                "Can not pull module {$module->getArchiveName()} version {$module->getVersion()},"
+                . " because it is already downloaded."
+            );
+        }
+
+        $this->log->write("Downloading %s ...", $module);
 
         return $this->moduleInstaller->pull($module);
     }
