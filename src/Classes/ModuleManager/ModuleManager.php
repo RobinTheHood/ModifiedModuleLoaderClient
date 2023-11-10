@@ -218,6 +218,23 @@ class ModuleManager
      */
     public function discard(string $archiveName, bool $withTemplate = false): void
     {
+        $this->log->write("Discarding %s ...", $archiveName);
+
+        $moduleLoader = LocalModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
+
+        if (!$module) {
+            $this->log->error("Module %s is not installed.", $archiveName);
+            throw new RuntimeException("Module $archiveName is not installed.");
+        }
+
+        $moduleText = "module $archiveName version {$module->getVersion()}";
+
+        if (!$module->isChanged()) {
+            $this->log->error("Can not discard %s, because the modul has no changes.", $module);
+            throw new RuntimeException("Can an not discard $moduleText, because the modul has no changes.\n");
+        }
+
         $this->moduleInstaller->discard($module, $withTemplate, false);
     }
 
