@@ -162,7 +162,7 @@ class ModuleFileInstaller
 
     private function removeIfFileExists(string $path): void
     {
-        if (file_exists($path)) {
+        if ($this->fileOrLinkExists($path)) {
             $this->removeFile($path);
         }
     }
