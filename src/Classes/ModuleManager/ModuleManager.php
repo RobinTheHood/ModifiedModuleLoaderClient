@@ -420,6 +420,23 @@ class ModuleManager
             );
         }
 
+        if ($module->getUsedBy() && $force === false) {
+            $subModulesArchiveNames = [];
+            foreach ($module->getUsedBy() as $subModule) {
+                $subModulesArchiveNames[] .= $subModule->getArchiveName();
+            }
+            $usedBy = implode("\n", $subModulesArchiveNames);
+            $this->log->error(
+                self::ERROR_UNINSTALL_MODULE_IS_CHANGED,
+                "Can not uninstall %s, because module is used by other modules.\n$usedBy",
+                $module
+            );
+            throw new RuntimeException(
+                "Can not uninstall module {$module->getArchiveName()} version {$module->getVersion()},"
+                . " because module has changes."
+            );
+        }
+
         $this->log->write("Uninstalling %s ...", $module);
         $this->moduleInstaller->uninstall($module, $force);
 
