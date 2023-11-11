@@ -159,7 +159,7 @@ class ModuleInstaller
         $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
 
         $installedModule = $module->getInstalledVersion();
-        if (!$force && $module->getInstalledVersion()) {
+        if (!$force && $installedModule) {
             $installedModuleText = "module {$installedModule->getArchiveName()} {$installedModule->getVersion()}";
             $this->error("Can not install $moduleText, because $installedModuleText is already installed.");
         }
@@ -259,8 +259,9 @@ class ModuleInstaller
         }
 
         $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($newModule);
+        $foundCombination = $combinationSatisfyerResult->foundCombination;
 
-        if (!$combinationSatisfyerResult->foundCombination) {
+        if (!$foundCombination) {
             $this->error(
                 "Can not update $moduleText to $newModuleText."
                 . " No possible combination of versions found"
@@ -277,7 +278,7 @@ class ModuleInstaller
         // Modul installieren
         $this->installWithoutDependencies($loadedNewModule);
         // Modul Abhängigkeiten installieren
-        $this->installDependencies($loadedNewModule, $combinationSatisfyerResult->foundCombination);
+        $this->installDependencies($loadedNewModule, $foundCombination);
 
         return $loadedNewModule;
     }
@@ -368,7 +369,7 @@ class ModuleInstaller
      * @param Module $parentModule The parent Module for which dependencies need to be installed.
      * @param Combination $combination The Combination specifying the dependencies to be installed.
      *
-     * @throws DependencyException
+     * @throws \RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException
      *      If any of the dependencies cannot be installed due to conflicting versions or other issues,
      *      a DependencyException may be thrown with details.
      */
@@ -423,7 +424,7 @@ class ModuleInstaller
      *
      * @return string The URL to download the module's archive.
      *
-     * @throws Exception
+     * @throws \Exception
      *      If the API response is empty or lacks the necessary information to construct the archive URL, an Exception
      *      is thrown with a detailed error message.
      */
@@ -496,6 +497,7 @@ class ModuleInstaller
 
     /**
      * // NOTE: Vielleicht neue class ModuleInstallerException hinzufügen
+     * @return never
      */
     private function error(string $message): void
     {

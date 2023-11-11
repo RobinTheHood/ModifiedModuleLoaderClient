@@ -191,7 +191,10 @@ class ModuleManager
         $systemSet = $this->systemSetFactory->getSystemSet();
 
         $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
-        if ($combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND) {
+        if (
+            $combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND
+            || !$combinationSatisfyerResult->foundCombination
+        ) {
             $this->log->error(
                 self::ERROR_INSTALL_MODULE_MISSING_REQUIREMENTS,
                 "Can not install %s, because not all requirements are met. "
