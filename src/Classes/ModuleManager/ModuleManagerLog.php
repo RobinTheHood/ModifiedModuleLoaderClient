@@ -33,13 +33,13 @@ class ModuleManagerLog
         $this->errorFunction = $errorFunction;
     }
 
-    public function write(string $message, string|Module $data1 = null, string|Module $data2 = null): void
+    public function write(string $message, $data1 = null, $data2 = null): void
     {
         $function = $this->writeFunction;
         $function($message, $data1, $data2);
     }
 
-    public function error(int $errorNo, string $message, string|Module $data1 = null, string|Module $data2 = null): void
+    public function error(int $errorNo, string $message, $data1 = null, $data2 = null): void
     {
         $function = $this->errorFunction;
         $function($errorNo, $message, $data1, $data2);

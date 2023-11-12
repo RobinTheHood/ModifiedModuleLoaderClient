@@ -80,13 +80,13 @@ class CommandUninstall implements CommandInterface
     {
         $moduleManagerLog = new ModuleManagerLog();
         $moduleManagerLog->setWriteFunction(
-            function (string $message, mixed $data1, mixed $data2) use ($cli) {
+            function (string $message, $data1, $data2) use ($cli) {
                 $cli->writeLine($this->formatMessage($message, $data1, $data2));
             }
         );
 
         $moduleManagerLog->setErrorFunction(
-            function (int $errorNo, string $message, mixed $data1, mixed $data2) use ($cli) {
+            function (int $errorNo, string $message, $data1, $data2) use ($cli) {
                 $cli->writeLine(
                     TextRenderer::color("Error $errorNo: ", TextRenderer::COLOR_RED)
                     . $this->formatMessage($message, $data1, $data2)
@@ -99,7 +99,7 @@ class CommandUninstall implements CommandInterface
         return $moduleManager;
     }
 
-    private function formatMessage(string $message, mixed $data1, mixed $data2): string
+    private function formatMessage(string $message, $data1, $data2): string
     {
         $value = '';
         if (is_string($data1) && is_string($data2)) {
