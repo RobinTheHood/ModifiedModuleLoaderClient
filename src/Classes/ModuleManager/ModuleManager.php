@@ -197,14 +197,15 @@ class ModuleManager
         ) {
             $this->log->error(
                 self::ERROR_INSTALL_MODULE_MISSING_REQUIREMENTS,
-                "Can not install %s, because not all requirements are met. "
-                . print_r($combinationSatisfyerResult->testCombination),
+                "Can not install %s, because not all requirements are met. \n"
+                . $combinationSatisfyerResult->failLog,
                 $archiveName,
                 $versionConstraint
             );
             throw new RuntimeException(
-                "Can not install module $archiveName version $versionConstraint, because not all requirements are met."
-                . print_r($combinationSatisfyerResult->testCombination)
+                "Can not install module $archiveName version $versionConstraint,"
+                . " because not all requirements are met. \n"
+                . $combinationSatisfyerResult->failLog
             );
         }
 
