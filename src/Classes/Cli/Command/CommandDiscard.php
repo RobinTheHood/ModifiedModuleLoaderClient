@@ -56,15 +56,15 @@ class CommandDiscard implements CommandInterface
     {
         return
             TextRenderer::renderHelpHeading('Description:')
-            . "  Uninstall a module from your shop.\n"
+            . "  Discarding a changed installed module.\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Usage:')
-            . "  uninstall <archiveName>\n"
+            . "  discard <archiveName>\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Options:')
-            . TextRenderer::renderHelpOption('f', 'force', 'Uninstall even if the module has changes.')
+            // . TextRenderer::renderHelpOption('f', 'force', 'Uninstall even if the module has changes.')
             . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
             . "\n"
 
