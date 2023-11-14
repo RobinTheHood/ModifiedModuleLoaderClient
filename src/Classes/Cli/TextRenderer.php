@@ -40,4 +40,72 @@ class TextRenderer
 
         return $maxLength;
     }
+
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $heading
+     *
+     * @return string
+     */
+    public static function renderHelpHeading(string $heading): string
+    {
+        return self::color($heading, self::COLOR_YELLOW) . "\n";
+    }
+
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $name
+     * @param string $description
+     * @param int $pad
+     *
+     * @return string
+     */
+    public static function renderHelpCommand(string $name, string $description, int $pad = 20): string
+    {
+        $name = self::rightPad($name, $pad);
+        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+    }
+
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $name
+     * @param string $description
+     * @param int $pad
+     *
+     * @return string
+     */
+    public static function renderHelpArgument(string $name, string $description, int $pad = 20): string
+    {
+        $name = self::rightPad($name, $pad);
+        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+    }
+
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $shortName
+     * @param string $longName
+     * @param string $description
+     * @param int $pad
+     *
+     * @return string
+     */
+    public static function renderHelpOption(string $shortName, string $longName, string $description, int $pad = 20): string
+    {
+        $name = '';
+
+        if ($shortName && $longName) {
+            $name = "-$shortName, --$longName";
+        } elseif ($shortName) {
+            $name = "-$shortName";
+        } elseif ($longName) {
+            $name = "    --$longName";
+        }
+
+        $name = self::rightPad($name, $pad);
+        return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
+    }
 }
