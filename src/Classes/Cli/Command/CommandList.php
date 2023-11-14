@@ -393,8 +393,8 @@ class CommandList implements CommandInterface
     {
         return
             TextRenderer::renderHelpHeading('Description:')
-            . "  List all available modules that can be used with MMLC.\n"
-            . "\n"
+            . "  List all available modules that can be used with MMLC."
+            . "\n\n"
 
             . TextRenderer::renderHelpHeading('Usage:')
             . "  list [searchword]"
@@ -402,7 +402,7 @@ class CommandList implements CommandInterface
 
             . TextRenderer::renderHelpHeading('Arguments:')
             . TextRenderer::renderHelpArgument('searchword', 'Filters the output by a search term.')
-            . "\n\n"
+            . "\n"
 
             . TextRenderer::renderHelpHeading('Options:')
             . TextRenderer::renderHelpOption('a', 'all', 'Show all remote modules.')
