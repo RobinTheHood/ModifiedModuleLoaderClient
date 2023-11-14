@@ -36,39 +36,13 @@ class HelpRenderer
 
     public function addOption(string $short, string $long, string $description): void
     {
-        $options = [$short, $long];
+        $option = $short . $long;
 
-        /** Discard empty options */
-        $options = \array_filter(
-            $options,
-            function ($option) {
-                return !empty($option);
-            }
-        );
-
-        /** Add dash (`-`) to remaining options */
-        $options = \array_map(
-            function ($value) {
-                switch (\mb_strlen($value)) {
-                    case 1:
-                        return '-' . $value;
-                        break;
-
-                    default:
-                        return '--' . $value;
-                        break;
-                }
-            },
-            $options
-        );
-
-        $combined = \implode(', ', $options);
-
-        if (empty($short)) {
-            $combined = '    ' . $combined;
-        }
-
-        $this->arguments['options'][$combined] = $description;
+        $this->arguments['options'][$option] = [
+            'short' => $short,
+            'long' => $long,
+            'description' => $description,
+        ];
     }
 
     public function render(): string
@@ -142,19 +116,96 @@ class HelpRenderer
             return '';
         }
 
-        $items = \array_keys($this->arguments['options']);
-        $maxLength = TextRenderer::getMaxLength($items) + 1;
-
         $arguments = \PHP_EOL;
         $arguments .= TextRenderer::color('Options:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
-        foreach ($this->arguments['options'] as $argument => $description) {
-            $name = self::INDENT . TextRenderer::rightPad($argument, $maxLength);
-            $text = TextRenderer::color($name, TextRenderer::COLOR_GREEN) . $description . \PHP_EOL;
+        $padLeftLength = self::getMaxLengthOptionsLeft($this->arguments['options']) + 1;
+        $padRightLength = self::getMaxLengthOptionsRight($this->arguments['options']) + 1;
+
+        foreach ($this->arguments['options'] as $option) {
+            $name = TextRenderer::leftPad('', $padLeftLength);
+
+            if ($option['short'] && $option['long']) {
+                $short = '-' . $option['short'];
+                $long = '--' . $option['long'];
+
+                $name = TextRenderer::leftPad($short . ', ' . $long, 2);
+            } elseif ($option['short']) {
+                $short = TextRenderer::rightPad('-' . $option['short'], 3);
+
+                $name = $short;
+            } elseif ($option['long']) {
+                $long = TextRenderer::rightPad('--' . $option['long'], 3);
+                $name = TextRenderer::leftPad($long, $padLeftLength);
+            }
+
+            $name = TextRenderer::rightPad($name, $padRightLength);
+            $text = self::INDENT . TextRenderer::color($name, TextRenderer::COLOR_GREEN) . $option['description'] . \PHP_EOL;
 
             $arguments .= $text;
         }
 
         return $arguments;
+    }
+
+    private static function optionExists(array $options, string $shortOrLong): bool {
+        foreach ($options as $option) {
+            if ($option[$shortOrLong]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function getMaxLengthOptionsLeft(array $options): int
+    {
+        $maxLength = 0;
+
+        $shortOptionExists = self::optionExists($options, 'short');
+        $longOptionExists = self::optionExists($options, 'long');
+
+        foreach ($options as $option) {
+            $shortLength = \mb_strlen($option['short']);
+            $longLength = \mb_strlen($option['long']);
+            $currentLength = max($shortLength, $longLength);
+
+            $maxLength = \max($maxLength, $currentLength);
+        }
+
+        if ($shortOptionExists && $longOptionExists) {
+            $maxLength += 5;
+        } elseif ($shortOptionExists) {
+            $maxLength += 1;
+        } elseif ($longOptionExists) {
+            return 0;
+        }
+
+        return $maxLength;
+    }
+
+    private static function getMaxLengthOptionsRight(array $options): int
+    {
+        $maxLength = 0;
+
+        $shortOptionExists = self::optionExists($options, 'short');
+        $longOptionExists = self::optionExists($options, 'long');
+
+        foreach ($options as $option) {
+            $shortLength = \mb_strlen($option['short']);
+            $longLength = \mb_strlen($option['long']);
+            $currentLength = max($shortLength, $longLength);
+
+            $maxLength = \max($maxLength, $currentLength);
+        }
+
+        if ($shortOptionExists && $longOptionExists) {
+            $maxLength += 6;
+        } elseif ($shortOptionExists) {
+        } elseif ($longOptionExists) {
+            $maxLength += 3;
+        }
+
+        return $maxLength;
     }
 }
