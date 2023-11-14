@@ -81,11 +81,11 @@ class CommandCreate implements CommandInterface
     {
         $renderer = new HelpRenderer();
         $renderer->setDescription('Creates a new module. Can be done interactively. Read more at https://module-loader.de/documentation.php.');
-        $renderer->addArgument('description', 'Usage:', 'create [options] <archiveName>');
-        $renderer->addArgument('arguments', 'archiveName:', 'The name of the archive (vendorName/moduleName).');
-        $renderer->addArgument('options', '--prefix=VENDOR_PREFIX:', 'Usually an abbreviated vendorName. Can also be vendorName.');
-        $renderer->addArgument('options', '-i, --interactive', 'Whether to create the module interactively (by answering questions).');
+        $renderer->setUsage('create', '[options] <archiveName>');
+        $renderer->addArgument('archiveName', 'The name of the archive (vendorName/moduleName).');
+        $renderer->addOption('', 'prefix=VENDOR_PREFIX', 'Usually an abbreviated vendorName. Can also be vendorName.');
+        $renderer->addOption('i', 'interactive', 'Whether to create the module interactively (by answering questions).');
 
-        return $renderer->getRender();
+        return $renderer->render();
     }
 }

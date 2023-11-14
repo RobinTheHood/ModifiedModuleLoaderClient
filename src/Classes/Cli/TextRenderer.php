@@ -46,17 +46,15 @@ class TextRenderer
         // cretated with: https://patorjk.com/software/taag/#p=display&h=1&f=Slant&t=MMLC%20CLI
     }
 
-    public static function getPadding(array $items): int
+    public static function getMaxLength(array $items): int
     {
-        $padding = 0;
+        $maxLength = 0;
 
         foreach ($items as $item) {
-            $itemLength = \mb_strlen($item);
-            $padding = \max($padding, $itemLength);
+            $currentLength = \mb_strlen($item);
+            $maxLength = \max($maxLength, $currentLength);
         }
 
-        $padding += 1;
-
-        return $padding;
+        return $maxLength;
     }
 }
