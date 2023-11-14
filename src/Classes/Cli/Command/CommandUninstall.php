@@ -14,10 +14,8 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\ModuleManagerFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
 use RuntimeException;
 
 class CommandUninstall implements CommandInterface
@@ -42,46 +40,12 @@ class CommandUninstall implements CommandInterface
             return;
         }
 
-        $moduleLoader = LocalModuleLoader::createFromConfig();
-        $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
-
-        if (!$module) {
-            $cli->writeLine(
-                "Module " . TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN) . " is not installed."
-            );
-            return;
-        }
-
-        $coloredName =
-            TextRenderer::color($archiveName, TextRenderer::COLOR_GREEN)
-            . " version " . TextRenderer::color($module->getVersion(), TextRenderer::COLOR_YELLOW);
-
-        if ($module->isChanged() && $force === false) {
-            $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED)
-                . " Can not uninstall module $coloredName. The modul has changes.\n"
-                . "Use -f option to force uninstall. This will discard all changes"
-            );
-            return;
-        }
-
-        $cli->writeLine(
-            "Uninstall module $coloredName ..."
-        );
-
         try {
-            $moduleInstaller = ModuleInstaller::createFromConfig();
-            $moduleInstaller->uninstall($module, $force);
-        } catch (DependencyException $e) {
-            $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED) . " " . $e->getMessage()
-            );
-            return;
+            $moduleManager = ModuleManagerFactory::create($cli);
+            $moduleManager->uninstall($archiveName, $force);
         } catch (RuntimeException $e) {
-            $cli->writeLine(
-                TextRenderer::color('Error:', TextRenderer::COLOR_RED) . " " . $e->getMessage()
-            );
-            return;
+            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
+            die();
         }
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));

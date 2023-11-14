@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
+use Exception;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\ModuleManagerFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RuntimeException;
 
-class CommandDownload implements CommandInterface
+class CommandInstall implements CommandInterface
 {
     public function __construct()
     {
@@ -26,7 +27,7 @@ class CommandDownload implements CommandInterface
 
     public function getName(): string
     {
-        return 'download';
+        return 'install';
     }
 
     public function run(MmlcCli $cli): void
@@ -39,7 +40,7 @@ class CommandDownload implements CommandInterface
             $versionConstraint = $parts[1] ?? '';
         } elseif (count($parts) === 1) {
             $archiveName = $parts[0] ?? '';
-            $versionConstraint = '';
+            $versionConstraint = '>0.0.0';
         } else {
             $archiveName = '';
             $versionConstraint = '';
@@ -52,7 +53,7 @@ class CommandDownload implements CommandInterface
 
         try {
             $moduleManager = ModuleManagerFactory::create($cli);
-            $moduleManager->pull($archiveName, $versionConstraint);
+            $moduleManager->install($archiveName, $versionConstraint);
         } catch (RuntimeException $e) {
             $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
             die();
@@ -66,11 +67,11 @@ class CommandDownload implements CommandInterface
     {
         return
             TextRenderer::renderHelpHeading('Description:')
-            . "  Downloads a available MMLC Module from the Internet.\n"
+            . "  Download and install a module in your shop.\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Usage:')
-            . "  download <archiveName>\n"
+            . "  install <archiveName>\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Arguments:')

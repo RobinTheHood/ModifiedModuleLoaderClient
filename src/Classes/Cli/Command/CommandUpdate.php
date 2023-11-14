@@ -16,9 +16,10 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\ModuleManagerFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
+use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
 use RuntimeException;
 
-class CommandDownload implements CommandInterface
+class CommandUpdate implements CommandInterface
 {
     public function __construct()
     {
@@ -26,24 +27,12 @@ class CommandDownload implements CommandInterface
 
     public function getName(): string
     {
-        return 'download';
+        return 'update';
     }
 
     public function run(MmlcCli $cli): void
     {
         $archiveName = $cli->getFilteredArgument(0);
-
-        $parts = explode(':', $archiveName);
-        if (count($parts) === 2) {
-            $archiveName = $parts[0] ?? '';
-            $versionConstraint = $parts[1] ?? '';
-        } elseif (count($parts) === 1) {
-            $archiveName = $parts[0] ?? '';
-            $versionConstraint = '';
-        } else {
-            $archiveName = '';
-            $versionConstraint = '';
-        }
 
         if (!$archiveName) {
             $cli->writeLine($this->getHelp($cli));
@@ -52,8 +41,11 @@ class CommandDownload implements CommandInterface
 
         try {
             $moduleManager = ModuleManagerFactory::create($cli);
-            $moduleManager->pull($archiveName, $versionConstraint);
+            $newModule = $moduleManager->update($archiveName);
         } catch (RuntimeException $e) {
+            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
+            die();
+        } catch (DependencyException $e) {
             $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
             die();
         }
@@ -66,15 +58,15 @@ class CommandDownload implements CommandInterface
     {
         return
             TextRenderer::renderHelpHeading('Description:')
-            . "  Downloads a available MMLC Module from the Internet.\n"
+            . "  Updates a isntalled module.\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Usage:')
-            . "  download <archiveName>\n"
+            . "  update <archiveName>\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Arguments:')
-            . TextRenderer::renderHelpArgument('archiveName', 'The archiveName of the module to be loaded.')
+            . TextRenderer::renderHelpArgument('archiveName', 'The archiveName of the module to be updated.')
             . "\n"
 
             . TextRenderer::renderHelpHeading('Options:')

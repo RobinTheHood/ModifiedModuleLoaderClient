@@ -15,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
+use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 
 class CommandList implements CommandInterface
@@ -30,6 +31,36 @@ class CommandList implements CommandInterface
 
     public function run(MmlcCli $cli): void
     {
+        if ($cli->hasOption('--installed') || $cli->hasOption('-i')) {
+            $this->listInstalledVersions($cli);
+        } else {
+            $this->listRemoteModules($cli);
+        }
+
+        return;
+    }
+
+    private function listInstalledVersions(MmlcCli $cli): void
+    {
+        $localModuleLoader = LocalModuleLoader::createFromConfig();
+        $modules = $localModuleLoader->loadAllInstalledVersions();
+
+        foreach ($modules as $module) {
+            $cli->writeLine(
+                TextRenderer::rightPad($module->getArchiveName(), 40) . " "
+                . TextRenderer::rightPad($module->getVersion(), 10) . " "
+                . ($module->isChanged() ? 'changed' : '')
+            );
+        }
+    }
+
+    private function listRemoteModules(MmlcCli $cli): void
+    {
+        // $moduleLoader = ModuleLoader::createFromConfig();
+        // $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
+        // $moduleFilter = ModuleFilter::createFromConfig();
+        // $modules = $moduleFilter->filterNewestOrInstalledVersion($modules);
+
         $remoteModuleLoader = RemoteModuleLoader::create();
         $modules = $remoteModuleLoader->loadAllLatestVersions();
 
@@ -44,9 +75,8 @@ class CommandList implements CommandInterface
                 $cli->writeLine($module->getArchiveName());
             }
         }
-
-        return;
     }
+
 
     public function getHelp(MmlcCli $cli): string
     {
@@ -60,6 +90,7 @@ class CommandList implements CommandInterface
             . "\n"
 
             . TextRenderer::renderHelpHeading('Options:')
+            . TextRenderer::renderHelpOption('i', 'installed', 'Only show modules that are installed.')
             . TextRenderer::renderHelpOption('d', 'downloadable', 'Only show modules that are downloadable.')
             . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
             . "\n"

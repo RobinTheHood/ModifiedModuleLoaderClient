@@ -18,7 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Cli\ModuleManagerFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RuntimeException;
 
-class CommandDownload implements CommandInterface
+class CommandDelete implements CommandInterface
 {
     public function __construct()
     {
@@ -26,33 +26,27 @@ class CommandDownload implements CommandInterface
 
     public function getName(): string
     {
-        return 'download';
+        return 'delete';
     }
 
     public function run(MmlcCli $cli): void
     {
         $archiveName = $cli->getFilteredArgument(0);
-
-        $parts = explode(':', $archiveName);
-        if (count($parts) === 2) {
-            $archiveName = $parts[0] ?? '';
-            $versionConstraint = $parts[1] ?? '';
-        } elseif (count($parts) === 1) {
-            $archiveName = $parts[0] ?? '';
-            $versionConstraint = '';
-        } else {
-            $archiveName = '';
-            $versionConstraint = '';
-        }
+        $version = $cli->getFilteredArgument(1);
 
         if (!$archiveName) {
             $cli->writeLine($this->getHelp($cli));
             return;
         }
 
+        if (!$version) {
+            $cli->writeLine($this->getHelp($cli));
+            return;
+        }
+
         try {
             $moduleManager = ModuleManagerFactory::create($cli);
-            $moduleManager->pull($archiveName, $versionConstraint);
+            $moduleManager->delete($archiveName, $version);
         } catch (RuntimeException $e) {
             $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
             die();
@@ -66,15 +60,16 @@ class CommandDownload implements CommandInterface
     {
         return
             TextRenderer::renderHelpHeading('Description:')
-            . "  Downloads a available MMLC Module from the Internet.\n"
+            . "  Delete a loaded uninstalled module.\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Usage:')
-            . "  download <archiveName>\n"
+            . "  delete <archiveName> <version>\n"
             . "\n"
 
             . TextRenderer::renderHelpHeading('Arguments:')
             . TextRenderer::renderHelpArgument('archiveName', 'The archiveName of the module to be loaded.')
+            . TextRenderer::renderHelpArgument('version', 'The version of the module to be loaded.')
             . "\n"
 
             . TextRenderer::renderHelpHeading('Options:')
