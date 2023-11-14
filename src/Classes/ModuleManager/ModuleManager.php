@@ -411,7 +411,7 @@ class ModuleManager
                 $archiveName
             );
             throw new RuntimeException(
-                "Can not uninstall install $archiveName, because module not found."
+                "Can not uninstall $archiveName, because module not found."
             );
         }
 
