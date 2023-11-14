@@ -22,10 +22,19 @@ use RobinTheHood\ModifiedModuleLoaderClient\Module;
 
 class CommandList implements CommandInterface
 {
+    /** @var int */
     private const FILTER_NO = 0;
+
+    /** @var int */
     private const FILTER_ALL = 1;
+
+    /** @var int */
     private const FILTER_ARCHIVENAME = 2;
+
+    /** @var int */
     private const FILTER_NAME = 3;
+
+    /** @var int */
     private const FILTER_SHORT_DESCRIPTION = 4;
 
     /** @var int */
