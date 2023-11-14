@@ -508,7 +508,7 @@ class CommandList implements CommandInterface
             . TextRenderer::renderHelpOption('p', 'pulled', 'Only show modules that are downloaded.')
             . TextRenderer::renderHelpOption('P', 'pulledall', 'Show all downloaded versions.')
             . TextRenderer::renderHelpOption('c', 'changed', 'Show all changed installed modules.')
-            . TextRenderer::renderHelpOption('f', 'format=FORMAT', 'Format of the output. [text, json].')
+            . TextRenderer::renderHelpOption('', 'format=FORMAT', 'Format of the output. [text, json].')
             . TextRenderer::renderHelpOption('', 'in=VALUE', 'If a search term is provided, search only in the specified fields. [name, archivename, sortdesc, all].')
 
             . TextRenderer::renderHelpOption('h', 'help', 'Display help for the given command.')
