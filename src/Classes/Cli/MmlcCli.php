@@ -38,7 +38,6 @@ class MmlcCli extends Cli
         $this->addCommand(new CommandDelete());
         $this->addCommand(new CommandList());
         $this->addCommand(new CommandInfo());
-        $this->addCommand(new CommandList());
         $this->addCommand(new CommandWatch());
     }
 
