@@ -89,8 +89,7 @@ class CommandList implements CommandInterface
         $remoteModuleLoader = RemoteModuleLoader::create();
         $modules = $remoteModuleLoader->loadAllLatestVersions();
 
-        $filterMethod = $this->getFilterMethod($cli);
-        $filterMethod = $filterMethod === self::FILTER_NO ? self::FILTER_ALL : $filterMethod;
+        $filterMethod = $this->getFilterMethod($cli, self::FILTER_ALL);
         $searchWord = $cli->getFilteredArgument(0);
 
         if ($filterMethod !== self::FILTER_NO && $searchWord) {
@@ -118,8 +117,7 @@ class CommandList implements CommandInterface
         $remoteModuleLoader = RemoteModuleLoader::create();
         $modules = $remoteModuleLoader->loadAllLatestVersions();
 
-        $filterMethod = $this->getFilterMethod($cli);
-        $filterMethod = $filterMethod === self::FILTER_NO ? self::FILTER_ALL : $filterMethod;
+        $filterMethod = $this->getFilterMethod($cli, self::FILTER_ALL);
         $searchWord = $cli->getFilteredArgument(0);
 
         if ($filterMethod !== self::FILTER_NO && $searchWord) {
@@ -150,8 +148,7 @@ class CommandList implements CommandInterface
         $localModuleLoader = LocalModuleLoader::createFromConfig();
         $modules = $localModuleLoader->loadAllInstalledVersions();
 
-        $filterMethod = $this->getFilterMethod($cli);
-        $filterMethod = $filterMethod === self::FILTER_NO ? self::FILTER_ALL : $filterMethod;
+        $filterMethod = $this->getFilterMethod($cli, self::FILTER_ALL);
         $searchWord = $cli->getFilteredArgument(0);
 
         if ($filterMethod !== self::FILTER_NO && $searchWord) {
