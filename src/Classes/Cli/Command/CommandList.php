@@ -96,11 +96,20 @@ class CommandList implements CommandInterface
             $modules = $this->filterModules($modules, $searchWord, $filterMethod);
         }
 
-        foreach ($modules as $module) {
-            $cli->writeLine(
-                TextRenderer::rightPad($module->getArchiveName(), 30)
-                . $module->getName()
-            );
+        $formatMethod = $this->getFormatMethod($cli, self::FORMAT_TEXT);
+        if (self::FORMAT_JSON === $formatMethod) {
+            $jsonArray = [];
+            foreach ($modules as $module) {
+                $jsonArray[] = $module->getArchiveName();
+            }
+            $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        } else {
+            foreach ($modules as $module) {
+                $cli->writeLine(
+                    TextRenderer::rightPad($module->getArchiveName(), 30)
+                    . $module->getName()
+                );
+            }
         }
     }
 
@@ -124,15 +133,31 @@ class CommandList implements CommandInterface
             $modules = $this->filterModules($modules, $searchWord, $filterMethod);
         }
 
-        foreach ($modules as $module) {
-            if (!$module->isLoadable()) {
-                continue;
-            }
+        $formatMethod = $this->getFormatMethod($cli, self::FORMAT_TEXT);
+        if (self::FORMAT_JSON === $formatMethod) {
+            $jsonArray = [];
+            foreach ($modules as $module) {
+                if (!$module->isLoadable()) {
+                    continue;
+                }
 
-            $cli->writeLine(
-                TextRenderer::rightPad($module->getArchiveName(), 30)
-                . $module->getName()
-            );
+                $jsonArray[] = [
+                    'archiveName' => $module->getArchiveName(),
+                    'name' => $module->getName()
+                ];
+            }
+            $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        } else {
+            foreach ($modules as $module) {
+                if (!$module->isLoadable()) {
+                    continue;
+                }
+
+                $cli->writeLine(
+                    TextRenderer::rightPad($module->getArchiveName(), 30)
+                    . $module->getName()
+                );
+            }
         }
     }
 
@@ -155,12 +180,25 @@ class CommandList implements CommandInterface
             $modules = $this->filterModules($modules, $searchWord, $filterMethod);
         }
 
-        foreach ($modules as $module) {
-            $cli->writeLine(
-                TextRenderer::rightPad($module->getArchiveName(), 40) . " "
-                . TextRenderer::rightPad($module->getVersion(), 10) . " "
-                . $module->getShortDescription()
-            );
+        $formatMethod = $this->getFormatMethod($cli, self::FORMAT_TEXT);
+        if (self::FORMAT_JSON === $formatMethod) {
+            $jsonArray = [];
+            foreach ($modules as $module) {
+                $jsonArray[] = [
+                    'archiveName' => $module->getArchiveName(),
+                    'version' => $module->getVersion(),
+                    'shortDescription' => $module->getShortDescription()
+                ];
+            }
+            $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        } else {
+            foreach ($modules as $module) {
+                $cli->writeLine(
+                    TextRenderer::rightPad($module->getArchiveName(), 40) . " "
+                    . TextRenderer::rightPad($module->getVersion(), 10) . " "
+                    . $module->getShortDescription()
+                );
+            }
         }
     }
 
@@ -179,11 +217,30 @@ class CommandList implements CommandInterface
         $moduleFilter = ModuleFilter::createFromConfig();
         $modules = $moduleFilter->filterNewestVersion($modules);
 
-        foreach ($modules as $module) {
-            $cli->writeLine(
-                TextRenderer::rightPad($module->getArchiveName(), 40) . " "
-                . $module->getShortDescription()
-            );
+        $filterMethod = $this->getFilterMethod($cli, self::FILTER_ALL);
+        $searchWord = $cli->getFilteredArgument(0);
+
+        if ($filterMethod !== self::FILTER_NO && $searchWord) {
+            $modules = $this->filterModules($modules, $searchWord, $filterMethod);
+        }
+
+        $formatMethod = $this->getFormatMethod($cli, self::FORMAT_TEXT);
+        if (self::FORMAT_JSON === $formatMethod) {
+            $jsonArray = [];
+            foreach ($modules as $module) {
+                $jsonArray[] = [
+                    'archiveName' => $module->getArchiveName(),
+                    'shortDescription' => $module->getShortDescription()
+                ];
+            }
+            $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        } else {
+            foreach ($modules as $module) {
+                $cli->writeLine(
+                    TextRenderer::rightPad($module->getArchiveName(), 40) . " "
+                    . $module->getShortDescription()
+                );
+            }
         }
     }
 
@@ -202,11 +259,30 @@ class CommandList implements CommandInterface
         $localModuleLoader = LocalModuleLoader::createFromConfig();
         $modules = $localModuleLoader->loadAllVersions();
 
-        foreach ($modules as $module) {
-            $cli->writeLine(
-                TextRenderer::rightPad($module->getArchiveName(), 40) . " "
-                . $module->getVersion()
-            );
+        $filterMethod = $this->getFilterMethod($cli, self::FILTER_ALL);
+        $searchWord = $cli->getFilteredArgument(0);
+
+        if ($filterMethod !== self::FILTER_NO && $searchWord) {
+            $modules = $this->filterModules($modules, $searchWord, $filterMethod);
+        }
+
+        $formatMethod = $this->getFormatMethod($cli, self::FORMAT_TEXT);
+        if (self::FORMAT_JSON === $formatMethod) {
+            $jsonArray = [];
+            foreach ($modules as $module) {
+                $jsonArray[] = [
+                    'archiveName' => $module->getArchiveName(),
+                    'version' => $module->getVersion()
+                ];
+            }
+            $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        } else {
+            foreach ($modules as $module) {
+                $cli->writeLine(
+                    TextRenderer::rightPad($module->getArchiveName(), 40) . " "
+                    . $module->getVersion()
+                );
+            }
         }
     }
 
@@ -221,16 +297,40 @@ class CommandList implements CommandInterface
         $localModuleLoader = LocalModuleLoader::createFromConfig();
         $modules = $localModuleLoader->loadAllInstalledVersions();
 
-        foreach ($modules as $module) {
-            if (!$module->isChanged()) {
-                continue;
-            }
+        $filterMethod = $this->getFilterMethod($cli, self::FILTER_ALL);
+        $searchWord = $cli->getFilteredArgument(0);
 
-            $cli->writeLine(
-                TextRenderer::rightPad($module->getArchiveName(), 40) . " "
-                . TextRenderer::rightPad($module->getVersion(), 10) . " "
-                . $module->getShortDescription()
-            );
+        if ($filterMethod !== self::FILTER_NO && $searchWord) {
+            $modules = $this->filterModules($modules, $searchWord, $filterMethod);
+        }
+
+        $formatMethod = $this->getFormatMethod($cli, self::FORMAT_TEXT);
+        if (self::FORMAT_JSON === $formatMethod) {
+            $jsonArray = [];
+            foreach ($modules as $module) {
+                if (!$module->isChanged()) {
+                    continue;
+                }
+
+                $jsonArray[] = [
+                    'archiveName' => $module->getArchiveName(),
+                    'version' => $module->getVersion(),
+                    'shortDescription' => $module->getShortDescription()
+                ];
+            }
+            $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        } else {
+            foreach ($modules as $module) {
+                if (!$module->isChanged()) {
+                    continue;
+                }
+
+                $cli->writeLine(
+                    TextRenderer::rightPad($module->getArchiveName(), 40) . " "
+                    . TextRenderer::rightPad($module->getVersion(), 10) . " "
+                    . $module->getShortDescription()
+                );
+            }
         }
     }
 
