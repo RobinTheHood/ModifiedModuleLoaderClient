@@ -17,7 +17,7 @@ class HelpRenderer
 {
     private const INDENT = '  ';
     private string $description = '';
-    private array $arguments = [];
+    private array $sections = [];
 
     public function setDescription(string $description): void
     {
@@ -26,19 +26,19 @@ class HelpRenderer
 
     public function setUsage(string $command, string $description): void
     {
-        $this->arguments['usage'][$command] = $description;
+        $this->sections['usage'][$command] = $description;
     }
 
     public function addArgument(string $argument, string $description): void
     {
-        $this->arguments['arguments'][$argument] = $description;
+        $this->sections['arguments'][$argument] = $description;
     }
 
     public function addOption(string $short, string $long, string $description): void
     {
         $option = $short . $long;
 
-        $this->arguments['options'][$option] = [
+        $this->sections['options'][$option] = [
             'short' => $short,
             'long' => $long,
             'description' => $description,
@@ -68,17 +68,17 @@ class HelpRenderer
 
     private function renderUsage(): string
     {
-        if (empty($this->arguments['usage'])) {
+        if (empty($this->sections['usage'])) {
             return '';
         }
 
-        $items = \array_keys($this->arguments['usage']);
+        $items = \array_keys($this->sections['usage']);
         $maxLength = TextRenderer::getMaxLength($items) + 1;
 
         $usage = \PHP_EOL;
         $usage .= TextRenderer::color('Usage:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
-        foreach ($this->arguments['usage'] as $argument => $argumentDescription) {
+        foreach ($this->sections['usage'] as $argument => $argumentDescription) {
             $name = self::INDENT . TextRenderer::rightPad($argument, $maxLength);
             $text = TextRenderer::color($name, TextRenderer::COLOR_GREEN) . $argumentDescription . \PHP_EOL;
 
@@ -90,17 +90,17 @@ class HelpRenderer
 
     private function renderArguments(): string
     {
-        if (empty($this->arguments['arguments'])) {
+        if (empty($this->sections['arguments'])) {
             return '';
         }
 
-        $items = \array_keys($this->arguments['arguments']);
+        $items = \array_keys($this->sections['arguments']);
         $maxLength = TextRenderer::getMaxLength($items) + 1;
 
         $arguments = \PHP_EOL;
         $arguments .= TextRenderer::color('Arguments:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
-        foreach ($this->arguments['arguments'] as $argumentName => $argumentDescription) {
+        foreach ($this->sections['arguments'] as $argumentName => $argumentDescription) {
             $name = self::INDENT . TextRenderer::rightPad($argumentName, $maxLength);
             $text = TextRenderer::color($name, TextRenderer::COLOR_GREEN) . $argumentDescription . \PHP_EOL;
 
@@ -112,17 +112,17 @@ class HelpRenderer
 
     private function renderOptions(): string
     {
-        if (empty($this->arguments['options'])) {
+        if (empty($this->sections['options'])) {
             return '';
         }
 
         $arguments = \PHP_EOL;
         $arguments .= TextRenderer::color('Options:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
-        $padLeftLength = self::getMaxLengthOptionsLeft($this->arguments['options']) + 1;
-        $padRightLength = self::getMaxLengthOptionsRight($this->arguments['options']) + 1;
+        $padLeftLength = self::getMaxLengthOptionsLeft($this->sections['options']) + 1;
+        $padRightLength = self::getMaxLengthOptionsRight($this->sections['options']) + 1;
 
-        foreach ($this->arguments['options'] as $option) {
+        foreach ($this->sections['options'] as $option) {
             $name = TextRenderer::leftPad('', $padLeftLength);
 
             if ($option['short'] && $option['long']) {
