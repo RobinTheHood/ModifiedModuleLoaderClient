@@ -220,7 +220,7 @@ class CommandList implements CommandInterface
     }
 
 
-    private function getFilterMethod(MmlcCli $cli): int
+    private function getFilterMethod(MmlcCli $cli, int $default): int
     {
         if ($cli->hasOption('--in=archivename')) {
             return self::FILTER_ARCHIVENAME;
@@ -236,6 +236,10 @@ class CommandList implements CommandInterface
 
         if ($cli->hasOption('--in=all')) {
             return self::FILTER_ALL;
+        }
+
+        if ($default) {
+            return $default;
         }
 
         return self::FILTER_NO;
