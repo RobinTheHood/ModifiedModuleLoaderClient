@@ -188,6 +188,21 @@ class ModuleManager
      */
     public function install(string $archiveName, $versionConstraint): void
     {
+        $moduleLoader = ModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadLatestByArchiveNameAndConstraint($archiveName, $versionConstraint);
+
+        if (!$module) {
+            $this->log->error(
+                self::ERROR_INSTALL_MODULE_NOT_FOUND,
+                "Can not install %s, because module not found.",
+                $archiveName,
+                $versionConstraint
+            );
+            throw new RuntimeException(
+                "Can not install module $archiveName version $versionConstraint, because module not found."
+            );
+        }
+
         $systemSet = $this->systemSetFactory->getSystemSet();
 
         $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
