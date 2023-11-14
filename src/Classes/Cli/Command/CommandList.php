@@ -105,8 +105,9 @@ class CommandList implements CommandInterface
             $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         } else {
             foreach ($modules as $module) {
+                $link = TextRenderer::moduleLink($module->getArchiveName(), $module->getArchiveName());
                 $cli->writeLine(
-                    TextRenderer::rightPad($module->getArchiveName(), 30)
+                    TextRenderer::rightPad($link, 30)
                     . $module->getName()
                 );
             }
@@ -153,8 +154,9 @@ class CommandList implements CommandInterface
                     continue;
                 }
 
+                $link = TextRenderer::moduleLink($module->getArchiveName(), $module->getArchiveName());
                 $cli->writeLine(
-                    TextRenderer::rightPad($module->getArchiveName(), 30)
+                    TextRenderer::rightPad($link, 30)
                     . $module->getName()
                 );
             }
