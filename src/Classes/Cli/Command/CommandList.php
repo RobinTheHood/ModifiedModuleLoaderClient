@@ -28,6 +28,15 @@ class CommandList implements CommandInterface
     private const FILTER_NAME = 3;
     private const FILTER_SHORT_DESCRIPTION = 4;
 
+    /** @var int */
+    private const FORMAT_NO = 0;
+
+    /** @var int */
+    private const FORMAT_TEXT = 1;
+
+    /** @var int */
+    private const FORMAT_JSON = 2;
+
     public function __construct()
     {
     }
@@ -243,6 +252,23 @@ class CommandList implements CommandInterface
         }
 
         return self::FILTER_NO;
+    }
+
+    private function getFormatMethod(MmlcCli $cli, int $default): int
+    {
+        if ($cli->hasOption('--format=json')) {
+            return self::FORMAT_JSON;
+        }
+
+        if ($cli->hasOption('--format=text')) {
+            return self::FORMAT_TEXT;
+        }
+
+        if ($default) {
+            return $default;
+        }
+
+        return self::FORMAT_NO;
     }
 
     /**
