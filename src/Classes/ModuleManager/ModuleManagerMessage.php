@@ -141,6 +141,16 @@ class ModuleManagerMessage
         return "module $name";
     }
 
+    private function getUsedBy(): string
+    {
+        $subModulesArchiveNames = [];
+        foreach ($this->module->getUsedBy() as $subModule) {
+            $subModulesArchiveNames[] .= $subModule->getArchiveName();
+        }
+        $usedBy = implode("\n", $subModulesArchiveNames);
+        return $usedBy;
+    }
+
     public function __toString()
     {
         if ($this->code === self::PULL_INFO_START) {
@@ -167,12 +177,46 @@ class ModuleManagerMessage
             return sprintf(
                 "Can not install %s, because not all requirements are met.\n%s",
                 $this->getModulName(),
-                $this->combinationSatisfyerResult->failLog
+                '' . $this->combinationSatisfyerResult->failLog
             );
         } elseif ($this->code === self::INSTALL_ERROR_MODULE_ALLREADY_INSTALED) {
             return sprintf("Can not install %s, because it is already installed.", $this->getModulName());
+        } elseif ($this->code === self::UPDATE_INFO_START) {
+            return sprintf("Updating %s ...", $this->getModulName());
+        } elseif ($this->code === self::UPDATE_INFO_TO) {
+            return sprintf("Updated to %s.", $this->getModulName());
+        } elseif ($this->code === self::UPDATE_INFO_UPDATE_AUTOLOAD_START) {
+            return sprintf("Updating autotoload file ...", $this->getModulName());
+        } elseif ($this->code === self::UPDATE_ERROR_MODULE_NOT_FOUND) {
+            return sprintf("Can not update %s, because module not found.", $this->getModulName());
+        } elseif ($this->code === self::UPDATE_ERROR_MODULE_NOT_INSTALLED) {
+            return sprintf("Can not update %s, because module is not installed.", $this->getModulName());
+        } elseif ($this->code === self::UPDATE_ERROR_MODULE_IS_CHANGED) {
+            return sprintf("Can not update %s, because module has changes.", $this->getModulName());
+        } elseif ($this->code === self::DISCARD_INFO_START) {
+            return sprintf("Discarding %s ...", $this->getModulName());
+        } elseif ($this->code === self::DISCARD_ERROR_MODULE_NOT_FOUND) {
+            return sprintf("Can not discard %s, because module not found.", $this->getModulName());
+        } elseif ($this->code === self::DISCARD_ERROR_MODULE_NOT_CHANGED) {
+            return sprintf("Can not discard %s, because module has no changes.", $this->getModulName());
+        } elseif ($this->code === self::UNINSTALL_INFO_START) {
+            return sprintf("Uninstalling %s ...", $this->getModulName());
+        } elseif ($this->code === self::UNINSTALL_INFO_UPDATE_AUTOLOAD_START) {
+            return sprintf("Updating autotoload file ...", $this->getModulName());
+        } elseif ($this->code === self::UNINSTALL_ERROR_MODULE_NOT_FOUND) {
+            return sprintf("Can not uninstall %s, because module not found.", $this->getModulName());
+        } elseif ($this->code === self::UNINSTALL_ERROR_MODULE_NOT_INSTALLED) {
+            return sprintf("Can not uninstall %s, because module is not installed.", $this->getModulName());
+        } elseif ($this->code === self::UNINSTALL_ERROR_MODULE_IS_CHANGED) {
+            return sprintf("Can not uninstall %s, because module has changes.", $this->getModulName());
+        } elseif ($this->code === self::UNINSTALL_ERROR_MODULE_IS_USED_BY) {
+            return sprintf(
+                "Can not uninstall %s, because module is used by other modules.\n%s",
+                $this->getModulName(),
+                $this->getUsedBy()
+            );
         }
 
-        return "TODO: Message";
+        return "Unknown message";
     }
 }

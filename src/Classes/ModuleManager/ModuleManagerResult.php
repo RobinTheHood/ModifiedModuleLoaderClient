@@ -24,7 +24,7 @@ class ModuleManagerResult
     private $type;
 
     /** @var ModuleManagerMessage */
-    private $message = null;
+    private $message;
 
     /** @var Module */
     private $module;
@@ -47,13 +47,15 @@ class ModuleManagerResult
         return $moduleManagerResult;
     }
 
-    public function setModule(Module $module): void
+    public function setModule(Module $module): ModuleManagerResult
     {
         $this->module = $module;
+        return $this;
     }
 
-    public function setMessage(ModuleManagerMessage $message): void
+    public function setMessage(ModuleManagerMessage $message): ModuleManagerResult
     {
         $this->message = $message;
+        return $this;
     }
 }
