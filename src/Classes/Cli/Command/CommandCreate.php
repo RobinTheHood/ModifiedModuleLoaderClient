@@ -85,7 +85,6 @@ class CommandCreate implements CommandInterface
         $renderer->addArgument('archiveName', 'The name of the archive (vendorName/moduleName).');
         $renderer->addOption('', 'prefix=VENDOR_PREFIX', 'Usually an abbreviated vendorName. Can also be vendorName.');
         $renderer->addOption('i', 'interactive', 'Whether to create the module interactively (by answering questions).');
-        $renderer->addOption('', '', 'Test with no option.');
 
         return $renderer->render();
     }
