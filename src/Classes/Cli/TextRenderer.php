@@ -29,11 +29,6 @@ class TextRenderer
         return \str_pad($text, $length, ' ', \STR_PAD_RIGHT);
     }
 
-    public static function leftPad(string $text, int $length): string
-    {
-        return \str_pad($text, $length, ' ', \STR_PAD_LEFT);
-    }
-
     public static function getMaxLength(array $items): int
     {
         $maxLength = 0;
