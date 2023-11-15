@@ -151,7 +151,8 @@ class HelpRenderer
         return $options;
     }
 
-    private static function getTableColumn(array $table, string $column): array {
+    private static function getTableColumn(array $table, string $column): array
+    {
         $tableColumn = \array_map(
             function ($row) use ($column) {
                 return $row[$column];
