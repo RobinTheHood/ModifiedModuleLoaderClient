@@ -58,37 +58,75 @@ class TextRenderer
         return $textLength;
     }
 
-    public static function rightPad(string $text, int $totalLength): string
+    public static function rightPad(string $text, int $length): string
     {
-        $textLength = self::getTextLength($text);
-
-        if ($textLength >= $totalLength) {
-            return $text;
-        }
-
-        $paddingLength = $totalLength - $textLength;
-        $padding = str_repeat(' ', $paddingLength);
-
-        return $text . $padding;
+        return \str_pad($text, $length, ' ', \STR_PAD_RIGHT);
     }
 
+    public static function getMaxLength(array $items): int
+    {
+        $maxLength = 0;
+
+        foreach ($items as $item) {
+            $currentLength = \mb_strlen($item);
+            $maxLength = \max($maxLength, $currentLength);
+        }
+
+        return $maxLength;
+    }
+
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $heading
+     *
+     * @return string
+     */
     public static function renderHelpHeading(string $heading): string
     {
         return self::color($heading, self::COLOR_YELLOW) . "\n";
     }
 
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $name
+     * @param string $description
+     * @param int $pad
+     *
+     * @return string
+     */
     public static function renderHelpCommand(string $name, string $description, int $pad = 20): string
     {
         $name = self::rightPad($name, $pad);
         return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $name
+     * @param string $description
+     * @param int $pad
+     *
+     * @return string
+     */
     public static function renderHelpArgument(string $name, string $description, int $pad = 20): string
     {
         $name = self::rightPad($name, $pad);
         return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
 
+    /**
+     * @deprecated 1.21.0 Use a `HelpRenderer` instead.
+     *
+     * @param string $shortName
+     * @param string $longName
+     * @param string $description
+     * @param int $pad
+     *
+     * @return string
+     */
     public static function renderHelpOption(string $shortName, string $longName, string $description, int $pad = 20): string
     {
         $name = '';
