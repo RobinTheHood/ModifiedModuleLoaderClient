@@ -34,11 +34,6 @@ class TextRenderer
         return "\e[" . $color . "m" . $text . "\e[0m";
     }
 
-    public static function rightPad(string $text, int $length): string
-    {
-        return \str_pad($text, $length, ' ', \STR_PAD_RIGHT);
-    }
-
     public static function stripEscapeSequencesColor(string $text): string
     {
         // Muster für Escape-Sequenzen finden und ersetzen
@@ -74,6 +69,11 @@ class TextRenderer
         $strippedText = self::stripEscapeSequences($text);
         $textLength = strlen($strippedText);
         return $textLength;
+    }
+
+    public static function rightPad(string $text, int $length): string
+    {
+        return \str_pad($text, $length, ' ', \STR_PAD_RIGHT);
     }
 
     public static function getMaxLength(array $items): int
