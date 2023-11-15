@@ -48,21 +48,25 @@ class HelpRenderer
 
     public function render(): string
     {
-        $render = '';
+        $render = \array_filter(
+            [
+                $this->renderDescription(),
+                $this->renderUsage(),
+                $this->renderArguments(),
+                $this->renderOptions(),
+            ],
+            function (string $renderedText) {
+                return !empty($renderedText);
+            }
+        );
 
-        $render .= $this->renderDescription();
-        $render .= $this->renderUsage();
-        $render .= $this->renderArguments();
-        $render .= $this->renderOptions();
-
-        return $render;
+        return \PHP_EOL . \implode(\PHP_EOL, $render);
     }
 
     private function renderDescription(): string
     {
-        $description = \PHP_EOL;
-        $description .= TextRenderer::color('Description:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
-        $description .= self::INDENT . $this->description . \PHP_EOL;
+        $description = TextRenderer::color('Description:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
+        $description .= self::INDENT . $this->description;
 
         return $description;
     }
@@ -76,8 +80,7 @@ class HelpRenderer
         $items = \array_keys($this->sections['usage']);
         $maxLength = TextRenderer::getMaxLength($items) + 1;
 
-        $usage = \PHP_EOL;
-        $usage .= TextRenderer::color('Usage:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
+        $usage = TextRenderer::color('Usage:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
         foreach ($this->sections['usage'] as $argument => $argumentDescription) {
             $name = self::INDENT . TextRenderer::rightPad($argument, $maxLength);
@@ -98,8 +101,7 @@ class HelpRenderer
         $items = \array_keys($this->sections['arguments']);
         $maxLength = TextRenderer::getMaxLength($items) + 1;
 
-        $arguments = \PHP_EOL;
-        $arguments .= TextRenderer::color('Arguments:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
+        $arguments = TextRenderer::color('Arguments:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
         foreach ($this->sections['arguments'] as $argumentName => $argumentDescription) {
             $name = self::INDENT . TextRenderer::rightPad($argumentName, $maxLength);
@@ -117,8 +119,7 @@ class HelpRenderer
             return '';
         }
 
-        $options = \PHP_EOL;
-        $options .= TextRenderer::color('Options:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
+        $options = TextRenderer::color('Options:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
         $optionsShort = self::getTableColumn($this->sections['options'], 'short');
         $optionsShortLength = TextRenderer::getMaxLength($optionsShort);
