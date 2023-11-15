@@ -42,6 +42,7 @@ class CommandWatch implements CommandInterface
         $cli->writeLine("Watching the directory " . TextRenderer::color('Modules', TextRenderer::COLOR_GREEN) . " ...");
 
         $dircectoryWatcher = new DirectoryWatcher();
+        $dircectoryWatcher->addExcludeDir('.git');
         $dircectoryWatcher->init($directory);
         $dircectoryWatcher->watch(function ($directoryWatcher) use ($cli, $basePath) {
             $changes = $directoryWatcher->getChanges();

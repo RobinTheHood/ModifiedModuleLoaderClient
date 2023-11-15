@@ -16,7 +16,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\ModuleManagerFactory;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
-use RuntimeException;
 
 class CommandUninstall implements CommandInterface
 {
@@ -40,13 +39,16 @@ class CommandUninstall implements CommandInterface
             return;
         }
 
-        try {
-            $moduleManager = ModuleManagerFactory::create($cli);
-            $moduleManager->uninstall($archiveName, $force);
-        } catch (RuntimeException $e) {
-            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
-            die();
-        }
+        $moduleManager = ModuleManagerFactory::create($cli);
+        $result = $moduleManager->uninstall($archiveName, $force);
+
+        // try {
+        //     $moduleManager = ModuleManagerFactory::create($cli);
+        //     $moduleManager->uninstall($archiveName, $force);
+        // } catch (RuntimeException $e) {
+        //     $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
+        //     die();
+        // }
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
         return;

@@ -33,6 +33,9 @@ class DirectoryWatcher
     /** @var array */
     private $changes = [];
 
+    /** @var string[] */
+    private $excludeDirs = [];
+
     public function init(string $directoryPath): void
     {
         $this->directoryPath = $directoryPath;
@@ -43,6 +46,11 @@ class DirectoryWatcher
     public function reset()
     {
         $this->scann();
+    }
+
+    public function addExcludeDir(string $dir)
+    {
+        $this->excludeDirs[] = $dir;
     }
 
     public function watch(callable $callback, int $intervalInSeconds = 5): void
@@ -97,6 +105,16 @@ class DirectoryWatcher
         return $changes;
     }
 
+    private function isExcludeDir(string $dir): bool
+    {
+        foreach ($this->excludeDirs as $excludeDir) {
+            if ($excludeDir === $dir) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function getFilesRecursively(string $directory): array
     {
         $fileList = [];
@@ -104,13 +122,20 @@ class DirectoryWatcher
         $files = scandir($directory);
 
         foreach ($files as $file) {
-            if ($file != "." && $file != "..") {
-                $filePath = $directory . DIRECTORY_SEPARATOR . $file;
-                if (is_dir($filePath)) {
-                    $fileList = array_merge($fileList, $this->getFilesRecursively($filePath));
-                } else {
-                    $fileList[] = $filePath;
-                }
+            if ($file == "." || $file == "..") {
+                continue;
+            }
+
+            if ($this->isExcludeDir($file)) {
+                continue;
+            }
+
+
+            $filePath = $directory . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($filePath)) {
+                $fileList = array_merge($fileList, $this->getFilesRecursively($filePath));
+            } else {
+                $fileList[] = $filePath;
             }
         }
 
