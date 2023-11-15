@@ -39,6 +39,18 @@ class TextRenderer
         return \str_pad($text, $length, ' ', \STR_PAD_RIGHT);
     }
 
+    public static function stripEscapeSequencesColor(string $text): string
+    {
+        // Muster für Escape-Sequenzen finden und ersetzen
+        $pattern = '/\\e\[\d+m(.*?)\\e\[0m/';
+        $replacement = '$1';
+
+        // Escape-Sequenzen filtern
+        $filteredString = preg_replace($pattern, $replacement, $text);
+
+        return $filteredString;
+    }
+
     public static function stripEscapeSequenceLink(string $text): string
     {
         // Muster für Escape-Sequenzen finden und ersetzen
@@ -53,13 +65,14 @@ class TextRenderer
 
     public static function stripEscapeSequences(string $text): string
     {
-        return self::stripEscapeSequenceLink($text);
+        $strippedText = self::stripEscapeSequencesColor($text);
+        return self::stripEscapeSequenceLink($strippedText);
     }
 
     public static function getTextLength(string $text): int
     {
-        $testStriped = self::stripEscapeSequences($text);
-        $textLength = strlen($testStriped);
+        $strippedText = self::stripEscapeSequences($text);
+        $textLength = strlen($strippedText);
         return $textLength;
     }
 
@@ -73,10 +86,6 @@ class TextRenderer
         }
 
         return $maxLength;
-    }
-
-    public static function readline(string $question): string {
-
     }
 
     /**
