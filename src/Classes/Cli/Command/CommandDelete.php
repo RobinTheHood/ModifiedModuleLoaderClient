@@ -44,13 +44,16 @@ class CommandDelete implements CommandInterface
             return;
         }
 
-        try {
-            $moduleManager = ModuleManagerFactory::create($cli);
-            $moduleManager->delete($archiveName, $version);
-        } catch (RuntimeException $e) {
-            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
-            die();
-        }
+        $moduleManager = ModuleManagerFactory::create($cli);
+        $result = $moduleManager->delete($archiveName, $version);
+
+        // try {
+        //     $moduleManager = ModuleManagerFactory::create($cli);
+        //     $moduleManager->delete($archiveName, $version);
+        // } catch (RuntimeException $e) {
+        //     $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
+        //     die();
+        // }
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
         return;

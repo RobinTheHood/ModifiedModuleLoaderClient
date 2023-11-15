@@ -50,13 +50,16 @@ class CommandDownload implements CommandInterface
             return;
         }
 
-        try {
-            $moduleManager = ModuleManagerFactory::create($cli);
-            $moduleManager->pull($archiveName, $versionConstraint);
-        } catch (RuntimeException $e) {
-            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
-            die();
-        }
+        $moduleManager = ModuleManagerFactory::create($cli);
+        $result = $moduleManager->pull($archiveName, $versionConstraint);
+
+        // try {
+        //     $moduleManager = ModuleManagerFactory::create($cli);
+        //     $moduleManager->pull($archiveName, $versionConstraint);
+        // } catch (RuntimeException $e) {
+        //     $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
+        //     die();
+        // }
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
         return;

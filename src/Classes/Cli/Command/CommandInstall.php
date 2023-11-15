@@ -51,13 +51,16 @@ class CommandInstall implements CommandInterface
             return;
         }
 
-        try {
-            $moduleManager = ModuleManagerFactory::create($cli);
-            $moduleManager->install($archiveName, $versionConstraint);
-        } catch (RuntimeException $e) {
-            $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
-            die();
-        }
+        $moduleManager = ModuleManagerFactory::create($cli);
+        $result = $moduleManager->install($archiveName, $versionConstraint);
+
+        // try {
+        //     $moduleManager = ModuleManagerFactory::create($cli);
+        //     $moduleManager->install($archiveName, $versionConstraint);
+        // } catch (RuntimeException $e) {
+        //     $cli->writeLine(TextRenderer::color('Exception:', TextRenderer::COLOR_RED) . ' ' . $e->getMessage());
+        //     die();
+        // }
 
         $cli->writeLine(TextRenderer::color('ready', TextRenderer::COLOR_GREEN));
         return;
