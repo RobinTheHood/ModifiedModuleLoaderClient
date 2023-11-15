@@ -36,23 +36,14 @@ class HelpRenderer
 
     public function addOption(string $short, string $long, string $description): void
     {
-        $option = $short . $long;
-        $formatted = '';
-
-        if ($short && $long) {
-            $formatted = "-$short, --$long";
-        } elseif ($short) {
-            $formatted = "-$short";
-        } elseif ($long) {
-            $formatted = "    --$long";
-        }
-
-        $this->sections['options'][$option] = [
-            'short' => $short,
-            'long' => $long,
-            'formatted' => $formatted,
+        $option = [
+            'short' => TextRenderer::color($short ? '-' . $short : '', TextRenderer::COLOR_GREEN),
+            'separator' => TextRenderer::color($short && $long ? ', ' : '', TextRenderer::COLOR_GREEN),
+            'long' => TextRenderer::color($long ? '--' . $long : '', TextRenderer::COLOR_GREEN),
             'description' => $description,
         ];
+
+        $this->sections['options'][] = $option;
     }
 
     public function render(): string
@@ -126,24 +117,47 @@ class HelpRenderer
             return '';
         }
 
-        $arguments = \PHP_EOL;
-        $arguments .= TextRenderer::color('Options:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
+        $options = \PHP_EOL;
+        $options .= TextRenderer::color('Options:', TextRenderer::COLOR_YELLOW) . \PHP_EOL;
 
-        $optionsFormatted = \array_map(
-            function ($option) {
-                return $option['formatted'];
-            },
-            $this->sections['options']
-        );
-        $optionsPadding = TextRenderer::getMaxLength($optionsFormatted) + 1;
+        $optionsShort = self::getTableColumn($this->sections['options'], 'short');
+        $optionsShortLength = TextRenderer::getMaxLength($optionsShort);
+
+        $optionsSeparator = self::getTableColumn($this->sections['options'], 'separator');
+        $optionsSeparatorLength = TextRenderer::getMaxLength($optionsSeparator);
+
+        $optionsLong = self::getTableColumn($this->sections['options'], 'long');
+        $optionsLongLength = TextRenderer::getMaxLength($optionsLong);
+
+        $optionsDescription = self::getTableColumn($this->sections['options'], 'description');
+        $optionsDescriptionLength = TextRenderer::getMaxLength($optionsDescription);
 
         foreach ($this->sections['options'] as $option) {
-            $name = TextRenderer::rightPad($option['formatted'], $optionsPadding);
-            $text = self::INDENT . TextRenderer::color($name, TextRenderer::COLOR_GREEN) . $option['description'] . \PHP_EOL;
+            $short = $option['short'];
+            $separator = $option['separator'];
+            $long = $option['long'];
+            $description = $option['description'];
 
-            $arguments .= $text;
+            $options .= self::INDENT;
+            $options .= TextRenderer::rightPad($short, $optionsShortLength);
+            $options .= TextRenderer::rightPad($separator, $optionsSeparatorLength);
+            $options .= TextRenderer::rightPad($long, $optionsLongLength);
+            $options .= ' ';
+            $options .= TextRenderer::rightPad($description, $optionsDescriptionLength);
+            $options .= \PHP_EOL;
         }
 
-        return $arguments;
+        return $options;
+    }
+
+    private static function getTableColumn(array $table, string $column): array {
+        $tableColumn = \array_map(
+            function ($row) use ($column) {
+                return $row[$column];
+            },
+            $table
+        );
+
+        return $tableColumn;
     }
 }
