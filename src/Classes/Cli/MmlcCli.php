@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
-use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandCreate;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandDelete;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandDiscard;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\Command\CommandDownload;
@@ -29,7 +28,6 @@ class MmlcCli extends Cli
 {
     public function __construct()
     {
-        $this->addCommand(new CommandCreate());
         $this->addCommand(new CommandDownload());
         $this->addCommand(new CommandInstall());
         $this->addCommand(new CommandUpdate());
