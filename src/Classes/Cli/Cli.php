@@ -87,4 +87,21 @@ class Cli
 
         return false;
     }
+
+    public function getOption($option)
+    {
+        global $argv;
+
+        foreach ($argv as $index => $value) {
+            $optionParts = explode('=', $value);
+            $optionName = $optionParts[0] ?? $value;
+            $optionValue = $optionParts[1] ?? '';
+
+            if ($option === $optionName) {
+                return $optionValue;
+            }
+        }
+
+        return false;
+    }
 }
