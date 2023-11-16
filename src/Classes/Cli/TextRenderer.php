@@ -60,8 +60,10 @@ class TextRenderer
 
     public static function stripEscapeSequences(string $text): string
     {
+        $strippedText = $text;
         $strippedText = self::stripEscapeSequencesColor($text);
-        return self::stripEscapeSequenceLink($strippedText);
+        $strippedText = self::stripEscapeSequenceLink($strippedText);
+        return $strippedText;
     }
 
     public static function getTextLength(string $text): int
@@ -81,8 +83,8 @@ class TextRenderer
         $maxLength = 0;
 
         foreach ($items as $item) {
-            $currentLength = \mb_strlen($item);
-            $maxLength = \max($maxLength, $currentLength);
+            $currentLength = self::getTextLength($item);
+            $maxLength = max($maxLength, $currentLength);
         }
 
         return $maxLength;
