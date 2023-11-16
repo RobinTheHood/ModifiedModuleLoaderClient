@@ -75,10 +75,9 @@ class Cli
     {
         global $argv;
 
-        foreach ($argv as $index => $value) {
+        foreach ($argv as $value) {
             $optionParts = explode('=', $value);
             $optionName = $optionParts[0] ?? $value;
-            $optionValue = $optionParts[1] ?? '';
 
             if ($option === $optionName) {
                 return true;
