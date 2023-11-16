@@ -178,4 +178,35 @@ class TextRenderer
         $name = self::rightPad($name, $pad);
         return "  " . self::color($name, self::COLOR_GREEN) . " $description\n";
     }
+
+    public static function renderTable(array $content, array $settings): string
+    {
+        $columns = [];
+        foreach ($content as $row) {
+            foreach ($row as $columnIndex => $value) {
+                $columns[$columnIndex][] = $value;
+            }
+        }
+
+        $maxLengthPerColumn = [];
+        foreach ($columns as $columnIndex => $column) {
+            $maxLengthPerColumn[$columnIndex] = self::getMaxLength($column);
+        }
+
+        $resultRows = [];
+        foreach ($content as $row) {
+            $resultRow = '';
+            foreach ($row as $columnIndex => $value) {
+                if ($settings[$columnIndex] === 'left') {
+                    $paddedValue = self::rightPad($value, $maxLengthPerColumn[$columnIndex]);
+                } elseif ($settings[$columnIndex] === 'right') {
+                    $paddedValue = self::leftPad($value, $maxLengthPerColumn[$columnIndex]);
+                }
+                $resultRow .= $paddedValue;
+            }
+            $resultRows[] = $resultRow;
+        }
+
+        return implode("\n", $resultRows);
+    }
 }
