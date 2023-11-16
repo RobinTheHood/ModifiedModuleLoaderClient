@@ -197,6 +197,7 @@ class TextRenderer
         foreach ($content as $row) {
             $resultRow = '';
             foreach ($row as $columnIndex => $value) {
+                $paddedValue = '';
                 if ($settings[$columnIndex] === 'left') {
                     $paddedValue = self::rightPad($value, $maxLengthPerColumn[$columnIndex]);
                 } elseif ($settings[$columnIndex] === 'right') {
