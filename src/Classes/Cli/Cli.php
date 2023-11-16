@@ -88,6 +88,15 @@ class Cli
         return false;
     }
 
+    /**
+     * Returns an option from the command line.
+     *
+     * @param string $option
+     *
+     * @return mixed        (PHP 7.4)
+     * @return string|bool  (PHP 8.0)
+     * @return string|false (PHP 8.1)
+     */
     public function getOption(string $option): mixed
     {
         global $argv;
