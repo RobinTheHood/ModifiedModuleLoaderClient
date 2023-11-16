@@ -73,9 +73,30 @@ class TextRenderer
         return $textLength;
     }
 
-    public static function rightPad(string $text, int $length): string
+    public static function rightPad(string $text, int $totalLength): string
     {
-        return \str_pad($text, $length, ' ', \STR_PAD_RIGHT);
+        $paddingLength = self::getPadLength($text, $totalLength);
+        $padding = str_repeat(' ', $paddingLength);
+        return $text . $padding;
+    }
+
+    public static function leftPad(string $text, int $totalLength): string
+    {
+        $paddingLength = self::getPadLength($text, $totalLength);
+        $padding = str_repeat(' ', $paddingLength);
+        return $padding . $text;
+    }
+
+    private static function getPadLength(string $text, int $totalLength): int
+    {
+        $textLength = self::getTextLength($text);
+
+        if ($textLength >= $totalLength) {
+            return 0;
+        }
+
+        $paddingLength = $totalLength - $textLength;
+        return $paddingLength;
     }
 
     public static function getMaxLength(array $items): int
