@@ -71,7 +71,7 @@ class Cli
         return $filteredArguments[$argumentIndex] ?? '';
     }
 
-    public function hasOption($option)
+    public function hasOption(string $option): bool
     {
         global $argv;
 
@@ -88,7 +88,7 @@ class Cli
         return false;
     }
 
-    public function getOption($option)
+    public function getOption(string $option): mixed
     {
         global $argv;
 
