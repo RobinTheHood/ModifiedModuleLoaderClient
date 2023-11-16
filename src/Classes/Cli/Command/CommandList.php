@@ -104,13 +104,19 @@ class CommandList implements CommandInterface
             }
             $cli->writeLine(json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         } else {
+            $table = [];
             foreach ($modules as $module) {
                 $link = TextRenderer::moduleLink($module->getArchiveName(), $module->getArchiveName());
-                $cli->writeLine(
-                    TextRenderer::rightPad($link, 30)
-                    . $module->getName()
-                );
+                $table[] = [
+                    $link . '  ',
+                    $module->getName()
+                ];
+                // $cli->writeLine(
+                //     TextRenderer::rightPad($link, 30)
+                //     . $module->getName()
+                // );
             }
+            $cli->writeLine(TextRenderer::renderTable($table, ['left', 'left']));
         }
     }
 
