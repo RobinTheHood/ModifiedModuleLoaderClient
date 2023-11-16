@@ -71,9 +71,47 @@ class Cli
         return $filteredArguments[$argumentIndex] ?? '';
     }
 
-    public function hasOption($option)
+    public function hasOption(string $option): bool
     {
         global $argv;
-        return in_array($option, $argv);
+
+        if (in_array($option, $argv)) {
+            return true;
+        };
+
+        foreach ($argv as $value) {
+            $optionParts = explode('=', $value);
+            $optionName = $optionParts[0] ?? $value;
+
+            if ($option === $optionName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns an option from the command line.
+     *
+     * @param string $option
+     *
+     * @return string
+     */
+    public function getOption(string $option): string
+    {
+        global $argv;
+
+        foreach ($argv as $index => $value) {
+            $optionParts = explode('=', $value);
+            $optionName = $optionParts[0] ?? $value;
+            $optionValue = $optionParts[1] ?? '';
+
+            if ($option === $optionName) {
+                return $optionValue;
+            }
+        }
+
+        return '';
     }
 }
