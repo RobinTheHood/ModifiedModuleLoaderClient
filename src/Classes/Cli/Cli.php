@@ -96,11 +96,9 @@ class Cli
      *
      * @param string $option
      *
-     * @return mixed        (PHP 7.4)
-     * @return string|bool  (PHP 8.0)
-     * @return string|false (PHP 8.1)
+     * @return string
      */
-    public function getOption(string $option): mixed
+    public function getOption(string $option): string
     {
         global $argv;
 
@@ -114,6 +112,6 @@ class Cli
             }
         }
 
-        return false;
+        return '';
     }
 }
