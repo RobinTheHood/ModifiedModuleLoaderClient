@@ -30,6 +30,23 @@ class ModuleLoader
     }
 
     /**
+     * Resets / deletes allready loaded modules data. For examplae because
+     * during the script runtime the amount of modules or data of modules
+     * changed and the ModuleLoader does not give the latest module
+     * informations.
+     */
+    public function resetCache()
+    {
+        $this->cachedModules = [];
+
+        $remoteModuleLoader = RemoteModuleLoader::getModuleLoader();
+        $remoteModuleLoader->resetCache();
+
+        $localModules = LocalModuleLoader::getModuleLoader();
+        $localModules->resetCache();
+    }
+
+    /**
      * Loads all local module version plus all latest remote module version.
      *
      * @return Module[] Returns a array of module versions.

@@ -38,6 +38,9 @@ class DependencyManager
      */
     public function getAllModules($module): array
     {
+        $moduleLoader = ModuleLoader::getModuleLoader();
+        $moduleLoader->resetCache();
+
         $requireModulesTree = $this->buildTreeByModule($module);
 
         $requireModules = [];

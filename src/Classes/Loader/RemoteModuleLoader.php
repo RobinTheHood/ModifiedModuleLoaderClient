@@ -34,6 +34,17 @@ class RemoteModuleLoader
         $this->moduleConverter = $moduleConverter;
     }
 
+    /**
+     * Resets / deletes allready loaded modules data. For examplae because
+     * during the script runtime the amount of modules or data of modules
+     * changed and the RemoteModuleLoader does not give the latest module
+     * informations.
+     */
+    public function resetCache()
+    {
+        $this->cachedModules = [];
+    }
+
     public static function getModuleLoader(): RemoteModuleLoader
     {
         if (!self::$moduleLoader) {
