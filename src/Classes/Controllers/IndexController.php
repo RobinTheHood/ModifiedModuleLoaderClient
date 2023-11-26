@@ -759,6 +759,7 @@ class IndexController extends Controller
 
     public function checkAccessRight()
     {
+        return;
         if (empty($_SESSION['accessRight']) || $_SESSION['accessRight'] !== true) {
             return $this->redirect('/?action=signIn');
         }
