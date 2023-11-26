@@ -15,7 +15,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 
-define('VERSION', '0.6.2');
+define('VERSION', '0.7.0');
 
 class Installer
 {
