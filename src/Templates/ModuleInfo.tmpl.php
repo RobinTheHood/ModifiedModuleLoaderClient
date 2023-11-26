@@ -41,6 +41,7 @@ $notificationView = new NotificationViewModel();
 
         <div class="block">
             <div class="content">
+                <?php /*
                 <?= $notificationView->renderFlashMessages() ?>
 
                 <?php if ($moduleView->isRepairable()) { ?>
@@ -65,6 +66,7 @@ $notificationView = new NotificationViewModel();
                 <?php if (!$moduleView->isCompatible()) { ?>
                     <?= $notificationView->renderMultibleFlashMessages($moduleView->getCompatibleStrings()) ?>
                 <?php } ?>
+                */ ?>
 
                 <div class="row">
                     <div class="col">
@@ -87,10 +89,16 @@ $notificationView = new NotificationViewModel();
                         <?php } ?>
                     </div>
                 </div>
+
+                <div class="alert alert-primary" role="alert">
+                    <i class="fas fa-info-circle fa-fw"></i>
+                    <a href="https://module-loader.de/documentation.php#system-requirements">Installiere dir den MMLC</a>. Dananch kannst du das modified Modul <strong><?= $moduleView->getName() ?></strong> mit dem MMLC in deinen Shop installieren. 
+                </div>
             </div>
         </div>
 
         <div class="content">
+            <?php /*
             <div class="moduleinfo-buttons">
                 <?php if ($moduleView->isUpdatable() && !$moduleView->isRepairable()) { ?>
                     <a class="button button-success" href="<?= $moduleView->getUpdateUrl('moduleInfo') ?>">Update installieren</a>
@@ -137,7 +145,8 @@ $notificationView = new NotificationViewModel();
                     <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?= $moduleView->getUnloadModuleUrl('moduleInfo') ?>">Modul löschen</a>
                 <?php } ?>
             </div>
-
+            */?>
+            
             <div class="row">
                 <div class="col-3">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
