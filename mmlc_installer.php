@@ -170,6 +170,34 @@ class Installer
     {
         @unlink('ModifiedModuleLoaderClient.tar');
     }
+
+    private function getModifiedVersion(): string
+    {
+        $path = __DIR__ . '/admin/includes/version.php';
+
+        if (!file_exists($path)) {
+            return 'unknown';
+        }
+
+        $fileStr = file_get_contents($path);
+
+        // Try DB_VERSION
+        $pattern = "/MOD_(\d+\.\d+\.\d+(\.\d+)?)\'\);/";
+        if (preg_match($pattern, $fileStr, $matches)) {
+            return $matches[1];
+        }
+
+        // Try MAJOR_VERSION ans MINOR_VERSION
+        preg_match('/MAJOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMajor);
+        preg_match('/MINOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMinor);
+        $versionMajor[1] = $versionMajor[1] ?? '';
+        $versionMinor[1] = $versionMinor[1] ?? '';
+        if ($versionMajor[1] && $versionMinor[1]) {
+            return $versionMajor[1] . '.' . $versionMinor[1];
+        }
+
+        return 'unknown';
+    }
 }
 
 class Template
