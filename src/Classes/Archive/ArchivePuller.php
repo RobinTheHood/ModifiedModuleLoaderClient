@@ -15,9 +15,14 @@ use RuntimeException;
  */
 class ArchivePuller
 {
-    private HttpRequest $httpRequest;
-    private Parser $parser;
-    private string $archivesRootPath;
+    /** @var HttpRequest */
+    private $httpRequest;
+
+    /** @var Parser */
+    private $parser;
+
+    /** @var string */
+    private $archivesRootPath;
 
     public static function create(): ArchivePuller
     {

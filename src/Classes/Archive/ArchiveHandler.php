@@ -14,10 +14,11 @@ use RobinTheHood\ModifiedModuleLoaderClient\Module;
  */
 class ArchiveHandler
 {
-    private LocalModuleLoader $localModuleLoader;
+    /** @var LocalModuleLoader */
+    private $localModuleLoader;
 
     /** @var string /.../ModifiedModuleLoaderClient/Modules */
-    private string $modulesRootPath;
+    private $modulesRootPath;
 
     public static function create(int $mode): ArchiveHandler
     {
