@@ -22,6 +22,17 @@ class Installer
     private const REMOTE_ADDRESS = 'https://app.module-loader.de';
     private const INSTALL_FILE = '/Downloads/ModifiedModuleLoaderClient.tar';
     private const REQUIRED_PHP_VERSION = '7.4.0';
+    private const REQUIRED_MODIFIED_VERSIONS = [
+        "2.0.3.0",
+        "2.0.4.1",
+        "2.0.4.2",
+        "2.0.5.0",
+        "2.0.5.1",
+        "2.0.6.0",
+        "2.0.7.0",
+        "2.0.7.1",
+        "2.0.7.2"
+    ];
 
     public function invoke()
     {
@@ -56,11 +67,16 @@ class Installer
         }
 
         if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
-            $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
+            $errors[] = 'Your current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
         }
 
         if (!file_exists(__DIR__ . '/includes/classes/modified_api.php')) {
             $errors[] = '<code style="display: inline; padding: 2px 4px;">' . __DIR__ . '</code> is the wrong installation directory. Please use the shop root.';
+        }
+
+        $currentModifiedVersion = $this->getModifiedVersion();
+        if (!in_array($currentModifiedVersion, self::REQUIRED_MODIFIED_VERSIONS)) {
+            $errors[] = 'Your current modified version is ' . $currentModifiedVersion . '. The MMLC supports modified versions <strong>' . implode(', ', self::REQUIRED_MODIFIED_VERSIONS) . '</strong>.';
         }
 
         return $errors;
