@@ -13,9 +13,14 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Version;
  */
 class Archive
 {
-    private ArchiveName $archiveName;
-    private Version $version;
-    private string $archivesRootPath;
+    /** @var ArchiveName */
+    private $archiveName;
+
+    /** @var Version */
+    private $version;
+
+    /** @var string */
+    private $archivesRootPath;
 
     public static function create(string $archiveName, string $version, string $archivesRootPath): Archive
     {

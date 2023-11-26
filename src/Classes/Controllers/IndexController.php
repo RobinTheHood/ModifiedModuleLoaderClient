@@ -213,7 +213,7 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
-        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = ModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
         $modules = $this->moduleFilter->filterNewestOrInstalledVersion($modules);
 
@@ -260,10 +260,10 @@ class IndexController extends Controller
         $version = $queryParams['version'] ?? '';
 
         if ($version) {
-            $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+            $moduleLoader = ModuleLoader::createFromConfig();
             $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
         } else {
-            $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+            $moduleLoader = ModuleLoader::createFromConfig();
             $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($archiveName);
             $module = $this->moduleFilter->getLatestVersion($modules);
         }
@@ -316,7 +316,7 @@ class IndexController extends Controller
         $version = $queryParams['version'] ?? '';
         $data = $queryParams['data'] ?? '';
 
-        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = ModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -384,7 +384,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -419,7 +419,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -454,7 +454,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -489,7 +489,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -576,7 +576,7 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -611,7 +611,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -731,7 +731,7 @@ class IndexController extends Controller
 
     public function calcModuleUpdateCount()
     {
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersions();
         $modules = $this->moduleFilter->filterInstalled($modules);
         return count($this->moduleFilter->filterUpdatable($modules));
@@ -739,7 +739,7 @@ class IndexController extends Controller
 
     public function calcModuleChangeCount()
     {
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersions();
         return count($this->moduleFilter->filterRepairable($modules));
     }
