@@ -18,6 +18,7 @@ $dataTags = $module->getName() . ' ' . $module->getArchiveName() . ' ' . str_rep
 
 $modulePrice = $module->isInstalled() ? 'installiert' : $moduleView->getPriceFormated();
 $moduleLink = '?action=moduleInfo&archiveName=' . $module->getArchiveName() . '&version=' . $module->getVersion();
+$moduleLink = $moduleView->getModuleInfoUrl();
 $moduleDeveloper = $module->getDeveloper();
 $moduleDeveloperWebsite = $module->getDeveloperWebsite();
 ?>

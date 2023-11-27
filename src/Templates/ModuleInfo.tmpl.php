@@ -341,7 +341,10 @@ $notificationView = new NotificationViewModel();
                                             <td>Alle Versionen</td>
                                             <td>
                                                 <?php foreach ($module->getVersions() as $moduleVersion) {?>
-                                                    <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>"><?= $moduleVersion->getVersion(); ?></a>
+                                                    <?php $moduleVersionView = new ModuleViewModel($moduleVersion); ?>
+                                                    <a href="<?= $moduleVersionView->getModuleInfoUrl() ?>"><?= $moduleVersion->getVersion(); ?></a>
+                                                    <br>
+                                                    <?php continue ?>
                                                     <?php if ($moduleVersion->isInstalled()) { ?>
                                                         <span>installiert</span>
                                                     <?php } elseif ($moduleVersion->isLoaded()) { ?>
