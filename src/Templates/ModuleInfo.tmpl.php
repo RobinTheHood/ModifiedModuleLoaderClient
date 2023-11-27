@@ -92,7 +92,7 @@ $notificationView = new NotificationViewModel();
 
                 <div class="alert alert-primary" role="alert">
                     <i class="fas fa-info-circle fa-fw"></i>
-                    <a href="https://module-loader.de/documentation.php#system-requirements">Installiere dir den MMLC</a>. Dananch kannst du das modified Modul <strong><?= $moduleView->getName() ?></strong> mit dem MMLC in deinen Shop installieren. 
+                    <a href="https://module-loader.de/documentation.php#system-requirements">Installiere dir den MMLC</a>. Danach kannst du das modified Modul <strong><?= $moduleView->getName() ?></strong> mit dem MMLC in deinen Shop installieren. 
                 </div>
             </div>
         </div>
