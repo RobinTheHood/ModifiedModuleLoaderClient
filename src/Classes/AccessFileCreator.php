@@ -17,6 +17,7 @@ class AccessFileCreator
 {
     public function renewAccessFiles(): void
     {
+        return;
         $this->checkAndCreateAccess(App::getConfigRoot(), []);
         $this->checkAndCreateAccess(App::getArchivesRoot(), []);
         $this->checkAndCreateAccess(App::getSrcRoot() . '/Classes', []);
