@@ -195,11 +195,18 @@ class ModuleViewModel
             $module = $this->module;
         }
 
+        return $this->getUrlPretty($module);
+
         return
             '?action=' . $action .
             '&archiveName=' . $module->getArchiveName() .
             '&version=' . $module->getVersion() .
             '&ref=' . $ref;
+    }
+
+    private function getUrlPretty(Module $module): string
+    {
+        return $module->getArchiveName() . '/' . $module->getVersion();
     }
 
     /**
