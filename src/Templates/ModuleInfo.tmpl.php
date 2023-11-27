@@ -23,10 +23,10 @@ $notificationView = new NotificationViewModel();
 <html lang="de">
     <head>
         <?php include 'Head.tmpl.php' ?>
-        <link rel="stylesheet" href="src/Templates/Styles/highlight-github.css">
-        <link rel="stylesheet" href="src/Templates/Styles/github-markdown-css.css">
-        <script src="src/Templates/Scripts/highlight.min.js"></script>
-        <script src="src/Templates/Scripts/language-smarty.js"></script>
+        <link rel="stylesheet" href="<?= MMLC_ROOT ?>src/Templates/Styles/highlight-github.css">
+        <link rel="stylesheet" href="<?= MMLC_ROOT ?>src/Templates/Styles/github-markdown-css.css">
+        <script src="<?= MMLC_ROOT ?>src/Templates/Scripts/highlight.min.js"></script>
+        <script src="<?= MMLC_ROOT ?>src/Templates/Scripts/language-smarty.js"></script>
         <script>
             hljs.configure({
                 languages: ['smarty', 'php', 'js'],
@@ -362,7 +362,7 @@ $notificationView = new NotificationViewModel();
                                             <td>
                                                 <?php if ($module->getRequire()) { ?>
                                                     <?php foreach ($module->getRequire() as $archiveName => $version) { ?>
-                                                        <a href="<?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br>
+                                                        <a href="<?= MMLC_ROOT?><?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br>
 
                                                         <!-- <a href="?action=moduleInfo&archiveName=<?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br> -->
                                                     <?php } ?>

@@ -6,8 +6,8 @@ use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
 
 ?>
 
-<script src="src/Templates/Scripts/bootstrap.bundle.min.js"></script>
-<script src="src/Templates/Scripts/lightbox.js"></script>
+<script src="<?= MMLC_ROOT ?>src/Templates/Scripts/bootstrap.bundle.min.js"></script>
+<script src="<?= MMLC_ROOT ?>src/Templates/Scripts/lightbox.js"></script>
 
 <script>
     function filterModule(searchString)

@@ -28,7 +28,7 @@
     <body id="signIn">
         <div class="content">
             <div class="test">
-                <img src="src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo" class="logo">
+                <img src="<?= MMLC_ROOT ?>src/Templates/Images/mmlc-logo-transparent.png" alt="MMLC Logo" class="logo">
 
                 <div class="signin-frame">
                     <form action="?action=signIn" method="post">
@@ -37,9 +37,9 @@
                         <div>
                             <label for="username">
                                 <picture>
-                                    <source src="src/Templates/Images/user.png">
+                                    <source src="<?= MMLC_ROOT ?>src/Templates/Images/user.png">
 
-                                    <img src="src/Templates/Images/user.png">
+                                    <img src="<?= MMLC_ROOT ?>src/Templates/Images/user.png">
                                 </picture>
                             </label>
                             <input id="username" type="text" name="username" value="<?php echo empty($_POST['username']) ? '' :  $_POST['username'] ?>" placeholder="Benutzername">
@@ -48,9 +48,9 @@
                         <div>
                             <label for="password">
                                 <picture>
-                                    <source src="src/Templates/Images/password.png">
+                                    <source src="<?= MMLC_ROOT ?>src/Templates/Images/password.png">
 
-                                    <img src="src/Templates/Images/password.png">
+                                    <img src="<?= MMLC_ROOT ?>src/Templates/Images/password.png">
                                 </picture>
                             </label>
 

@@ -206,7 +206,7 @@ class ModuleViewModel
 
     private function getUrlPretty(Module $module): string
     {
-        return $module->getArchiveName() . '/' . $module->getVersion();
+        return MMLC_ROOT . $module->getArchiveName() . '/' . $module->getVersion();
     }
 
     /**
