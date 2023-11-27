@@ -82,4 +82,31 @@ class ModuleSorter
         });
         return $modules;
     }
+
+    /**
+     * @param Module[] $modules
+     * @return Module[] Return a array of modules sorted by version.
+     */
+    public static function sortByDate(array $modules): array
+    {
+        usort($modules, function (Module $moduleA, Module $moduleB): int {
+            $dateA = $moduleA->getDate();
+            if ($dateA === 'unknown') {
+                $dateA = '0000-00-00 00:00:00';
+            }
+
+            $dateB = $moduleB->getDate();
+            if ($dateB === 'unknown') {
+                $dateB = '0000-00-00 00:00:00';
+            }
+
+            if ($dateA < $dateB) {
+                return 1;
+            } elseif ($dateA > $dateB) {
+                return -1;
+            }
+            return 0;
+        });
+        return $modules;
+    }
 }

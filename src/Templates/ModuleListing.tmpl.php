@@ -3,6 +3,7 @@ defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;
 
@@ -35,6 +36,7 @@ $notificationView = new NotificationViewModel();
                         <h2><?= Category::getCategoryName($category); ?></h2>
                         <div class="category">
                             <?php
+                            $modules = ModuleSorter::sortByDate($modules);
                             foreach ($modules as $module) {
                                 if ($module->getVisibility() == 'hidden') {
                                     continue;
