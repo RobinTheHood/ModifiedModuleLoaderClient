@@ -292,7 +292,7 @@ $notificationView = new NotificationViewModel();
                                         <tr>
                                             <td>Kompatibel mit MMLC</td>
                                             <td>
-                                                <?php if (true || $module->getMmlc()) { ?>
+                                                <?php if ($module->getMmlc()) { ?>
                                                     <?php foreach (explode('||', $module->getMmlc()['version'] ?? '') as $version) { ?>
                                                         <span class="badge badge-secondary"><?= trim($version); ?></span>
                                                     <?php } ?>
@@ -372,6 +372,7 @@ $notificationView = new NotificationViewModel();
                                             </td>
                                         </tr>
 
+                                        <?php /*
                                         <tr>
                                             <td>Benutzt von</td>
                                             <td>
@@ -384,6 +385,7 @@ $notificationView = new NotificationViewModel();
                                                 <?php } ?>
                                             </td>
                                         </tr>
+                                        */ ?>
                                     </tbody>
                                 </table>
 
