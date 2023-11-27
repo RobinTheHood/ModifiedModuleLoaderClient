@@ -18,6 +18,10 @@ use RobinTheHood\ModifiedModuleLoaderClient\Archive;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\FileInfo;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V1\ApiRequest;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\Archive as ArchiveArchive;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchiveHandler;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchiveName;
+use RobinTheHood\ModifiedModuleLoaderClient\Archive\ArchivePuller;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\Combination;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
@@ -38,12 +42,29 @@ class ModuleInstaller
     /** @var LocalModuleLoader */
     private $localModuleLoader;
 
+    /** @var ArchivePuller */
+    private $archivePuller;
+
+    /** @var ArchiveHandler */
+    private $archiveHandler;
+
+
+
+    // new ArchiveHandler($this->localModuleLoader, App::getModulesRoot());
     public static function create(int $mode): ModuleInstaller
     {
         $dependencyManager = DependencyManager::create($mode);
         $moduleFilter = ModuleFilter::create($mode);
         $localModuleLoader = LocalModuleLoader::create($mode);
-        $moduleInstaller = new ModuleInstaller($dependencyManager, $moduleFilter, $localModuleLoader);
+        $archivePuller = ArchivePuller::create();
+        $archiveHandler = ArchiveHandler::create($mode);
+        $moduleInstaller = new ModuleInstaller(
+            $dependencyManager,
+            $moduleFilter,
+            $localModuleLoader,
+            $archivePuller,
+            $archiveHandler
+        );
         return $moduleInstaller;
     }
 
@@ -55,11 +76,15 @@ class ModuleInstaller
     public function __construct(
         DependencyManager $dependencyManager,
         ModuleFilter $moduleFilter,
-        LocalModuleLoader $localModuleLoader
+        LocalModuleLoader $localModuleLoader,
+        ArchivePuller $archivePuller,
+        ArchiveHandler $archiveHandler
     ) {
         $this->dependencyManager = $dependencyManager;
         $this->moduleFilter = $moduleFilter;
         $this->localModuleLoader = $localModuleLoader;
+        $this->archivePuller = $archivePuller;
+        $this->archiveHandler = $archiveHandler;
     }
 
     public function pull(Module $module): bool
@@ -83,6 +108,12 @@ class ModuleInstaller
         }
 
         try {
+            // New
+            $archive = $this->archivePuller->pull($module->getArchiveName(), $module->getVersion(), $archiveUrl);
+            $this->archiveHandler->extract($archive);
+            return true;
+
+            // Old
             $archive = Archive::pullArchive($archiveUrl, $module->getArchiveName(), $module->getVersion());
             $archive->untarArchive();
             return true;
@@ -137,6 +168,7 @@ class ModuleInstaller
                 "Can not install module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
                 . "No possible combination of versions found";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -195,6 +227,7 @@ class ModuleInstaller
                 "Can not pull and install module {$module->getArchiveName()} {$module->getVersion()}. "
                 . "Module is not loaded.";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleOperationException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -230,6 +263,7 @@ class ModuleInstaller
                 "Can not update module {$module->getArchiveName()} {$module->getVersion()}. "
                 . "No possible combination of versions found";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -258,6 +292,7 @@ class ModuleInstaller
                 "Can not update module {$module->getArchiveName()} {$module->getVersion()} with dependencies. "
                 . "No possible combination of versions found";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -286,6 +321,7 @@ class ModuleInstaller
         if (!$reloadedModule) {
             $message = "Can not reload module {$module->getArchiveName()} {$module->getVersion()}";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -298,6 +334,7 @@ class ModuleInstaller
             $message =
                 "Can not revert changes because {$module->getArchiveName()} {$module->getVersion()} is not installed.";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 
@@ -358,6 +395,7 @@ class ModuleInstaller
                 "Can not uninstall module {$installedModule->getArchiveName()} {$installedModule->getVersion()} "
                 . "because the module has changes.";
             StaticLogger::log(LogLevel::WARNING, $message);
+            // NOTE: Vielleicht neue class ModuleException hinzufügen
             throw new RuntimeException($message);
         }
 

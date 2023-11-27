@@ -89,8 +89,7 @@ class Module extends ModuleInfo
     private $isLoadable;
 
     /**
-     * Liefert den absoluten Pfad zum MMLC
-     * MMLC-Root Verzeichnis.
+     * Liefert den absoluten Pfad zum MMLC-Root Verzeichnis.
      *
      * Beispiel:
      * /root/dir1/dir2/.../ModifiedModuleLoaderClient
@@ -416,6 +415,19 @@ class Module extends ModuleInfo
     }
 
     /**
+     * Liefert die description.md als HTML.
+     */
+    public function getDescriptionMd(): string
+    {
+        $docFilePath = $this->getDocFilePath('description.md');
+        if (!$docFilePath) {
+            return '';
+        }
+        $path = $this->getUrlOrLocalRootPath() . $docFilePath;
+        return FileHelper::readMarkdown($path);
+    }
+
+    /**
      * Liefert den absoluten Pfad zur modulehash.json
      *
      * Beispiel:
@@ -456,7 +468,7 @@ class Module extends ModuleInfo
             return true;
         }
 
-        $localModuleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $localModuleLoader = LocalModuleLoader::createFromConfig();
         $localModule = $localModuleLoader->loadByArchiveNameAndVersion(
             $this->getArchiveName(),
             $this->getVersion()
@@ -569,7 +581,7 @@ class Module extends ModuleInfo
      */
     public function getNewestVersion(): Module
     {
-        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = ModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($this->getArchiveName());
         $moduleFilter = ModuleFilter::createFromConfig();
         if ($module = $moduleFilter->getLatestVersion($modules)) {
@@ -585,7 +597,7 @@ class Module extends ModuleInfo
      */
     public function getVersions(): array
     {
-        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = ModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersionsByArchiveName($this->getArchiveName());
         $modules = ModuleSorter::sortByVersion($modules);
         return $modules;
@@ -598,7 +610,7 @@ class Module extends ModuleInfo
      */
     public function getLocalVersions(): array
     {
-        $localModuleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $localModuleLoader = LocalModuleLoader::createFromConfig();
         $modules = $localModuleLoader->loadAllVersionsByArchiveName($this->getArchiveName());
         $modules = ModuleSorter::sortByVersion($modules);
         return $modules;
@@ -611,11 +623,11 @@ class Module extends ModuleInfo
      */
     public function getUsedBy(): array
     {
-        $localModuleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $localModuleLoader = LocalModuleLoader::createFromConfig();
         $installedModules = $localModuleLoader->loadAllInstalledVersions();
 
         // TODO: DI besser machen
-        $dependencyManager = DependencyManager::create(Config::getDependenyMode());
+        $dependencyManager = DependencyManager::createFromConfig();
         $usedByEntrys = $dependencyManager->getUsedByEntrys($this, $installedModules);
 
         $usedByModules = [];

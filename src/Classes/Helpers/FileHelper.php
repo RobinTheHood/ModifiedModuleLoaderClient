@@ -19,6 +19,7 @@ class FileHelper
     public const FILES_ONLY = 1;
     public const DIRS_ONLY = 2;
 
+    /** @var String[] */
     protected static $ignoreList = [
         '.DS_Store', '.git'
     ];

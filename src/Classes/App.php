@@ -16,6 +16,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient;
 use Psr\Http\Message\ServerRequestInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7Server\ServerRequestCreator;
+use RobinTheHood\ModifiedModuleLoaderClient\Controllers\IndexController;
 
 class App
 {
@@ -63,11 +64,17 @@ class App
         return self::getRoot() . '/' . self::$configDir;
     }
 
+    /**
+     * <MMLC-ROOT>/Archives/
+     */
     public static function getArchivesRoot(): string
     {
         return self::getRoot() . '/' . self::$archivesDir;
     }
 
+    /**
+     * <MMLC-ROOT>/Modules/
+     */
     public static function getModulesRoot(): string
     {
         return self::getRoot() . '/' . self::getModulesDirName();

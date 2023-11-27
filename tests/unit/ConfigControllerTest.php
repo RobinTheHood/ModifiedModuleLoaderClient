@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use RobinTheHood\ModifiedModuleLoaderClient\IndexController;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use RobinTheHood\ModifiedModuleLoaderClient\Controllers\IndexController;
 
 class ConfigControllerTest extends TestCase
 {

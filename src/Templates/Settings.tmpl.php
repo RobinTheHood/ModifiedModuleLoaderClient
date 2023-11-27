@@ -156,7 +156,7 @@ function viewIsSelected(bool $value): string
                                 <div class="form-group">
                                     <label for="inputExceptionMonitorDomain">ExceptionMonitor Domain</label>
                                     <input type="text" name="exceptionMonitorDomain" class="form-control" id="inputExceptionMonitorDomain" value="<?= Config::getExceptionMonitorDomain(); ?>">
-                                    <p>Wenn der MMLC programmierfehler im Browser anzeigen soll, kannst hier die Domain eintragen werden, für die dieses gilt. Der ExceptionMonitor wird bei Fehlern aktiv, sobald die Domain hinterlegte Domain die gleiche ist, von der der MMLC aufgerufen wird. Beispiel <code>www.example.org</code></p>
+                                    <p>Wenn der MMLC programmierfehler im Browser anzeigen soll, kannst hier die Domain eintragen werden, für der ExcpetionMontir fehler anzeigen soll. Der ExceptionMonitor wird bei Fehlern aktiv, sobald die hinterlegte Domain die Gleiche ist, von der der MMLC aufgerufen wird. Beispiel <code>www.example.org</code></p>
                                 </div>
 
                                 <div class="form-group">

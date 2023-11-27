@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.22.0@fc2c6ab4d5fa5d644d8617089f012f3bb84b8703">
+<files psalm-version="4.23.0@f1fe6ff483bf325c803df9f510d09a03fd796f88">
   <file src="src/Classes/Config.php">
     <UndefinedVariable occurrences="1">
       <code>$configuration</code>
     </UndefinedVariable>
   </file>
-  <file src="src/Classes/DependencyBuilder.php">
-    <FalsableReturnStatement occurrences="1">
-      <code>false</code>
-    </FalsableReturnStatement>
-    <PossiblyNullArgument occurrences="1">
-      <code>$module</code>
-    </PossiblyNullArgument>
-  </file>
-  <file src="src/Classes/IndexController.php">
-    <PossiblyNullReference occurrences="4">
-      <code>getChangeLogMd</code>
-      <code>getInstallationMd</code>
-      <code>getReadmeMd</code>
-      <code>getUsageMd</code>
-    </PossiblyNullReference>
+  <file src="src/Classes/Controllers/IndexController.php">
+    <ForbiddenCode occurrences="1">
+      <code>shell_exec($command)</code>
+    </ForbiddenCode>
   </file>
 </files>

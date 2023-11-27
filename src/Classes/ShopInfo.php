@@ -47,25 +47,23 @@ class ShopInfo
         }
 
         $fileStr = file_get_contents($path);
-        $pos = strpos($fileStr, 'MOD_');
 
-        if ($pos) {
-            /**
-             * DB_VERSION exists in file
-             */
-            $version = substr($fileStr, (int) $pos + 4, 7);
-        } else {
-            /**
-             * DB_VERSION does not exists in file
-             * use PROJECT_MAJOR_VERSION and PROJECT_MINOR_VERSION instead
-             */
-            preg_match('/MAJOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMajor);
-            preg_match('/MINOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMinor);
-
-            $version = $versionMajor[1] . '.' . $versionMinor[1];
+        // Try DB_VERSION
+        $pattern = "/MOD_(\d+\.\d+\.\d+(\.\d+)?)\'\);/";
+        if (preg_match($pattern, $fileStr, $matches)) {
+            return $matches[1];
         }
 
-        return $version;
+        // Try MAJOR_VERSION ans MINOR_VERSION
+        preg_match('/MAJOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMajor);
+        preg_match('/MINOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMinor);
+        $versionMajor[1] = $versionMajor[1] ?? '';
+        $versionMinor[1] = $versionMinor[1] ?? '';
+        if ($versionMajor[1] && $versionMinor[1]) {
+            return $versionMajor[1] . '.' . $versionMinor[1];
+        }
+
+        return 'unknown';
     }
 
     /**
@@ -104,10 +102,18 @@ class ShopInfo
         $adminDirPaths = $adminDirScanner->getAll(App::getShopRoot());
 
         if (count($adminDirPaths) <= 0) {
-            throw new Exception("No valid admin directory found in " . App::getShopRoot());
+            // NOTE: Vielleicht neue class InvalidAdminDirectoryException hinzufügen
+            throw new Exception(
+                "No valid admin directory found in " . App::getShopRoot()
+                . ". A valid admin directory must be named 'admin' or start with 'admin_'."
+                . " It should also contain a valid 'check_update.php' file."
+                . " If you have a different named admin directory, please refer to"
+                . " 'https://module-loader.de/docs/config_config.php#adminDir' for more information."
+            );
         }
 
         if (count($adminDirPaths) >= 2) {
+            // NOTE: Vielleicht neue class InvalidAdminDirectoryException hinzufügen
             throw new Exception("More than one valid admin directory found in " . App::getShopRoot());
         }
 

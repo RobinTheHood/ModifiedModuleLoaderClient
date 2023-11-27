@@ -15,13 +15,24 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 
-define('VERSION', '0.6.2');
+define('VERSION', '0.7.0');
 
 class Installer
 {
     private const REMOTE_ADDRESS = 'https://app.module-loader.de';
     private const INSTALL_FILE = '/Downloads/ModifiedModuleLoaderClient.tar';
     private const REQUIRED_PHP_VERSION = '7.4.0';
+    private const REQUIRED_MODIFIED_VERSIONS = [
+        "2.0.3.0",
+        "2.0.4.1",
+        "2.0.4.2",
+        "2.0.5.0",
+        "2.0.5.1",
+        "2.0.6.0",
+        "2.0.7.0",
+        "2.0.7.1",
+        "2.0.7.2"
+    ];
 
     public function invoke()
     {
@@ -56,11 +67,16 @@ class Installer
         }
 
         if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
-            $errors[] = 'Current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
+            $errors[] = 'Your current PHP version is ' . PHP_VERSION . '. The MMLC needs version <strong>' . self::REQUIRED_PHP_VERSION . '</strong> or higher.';
         }
 
         if (!file_exists(__DIR__ . '/includes/classes/modified_api.php')) {
             $errors[] = '<code style="display: inline; padding: 2px 4px;">' . __DIR__ . '</code> is the wrong installation directory. Please use the shop root.';
+        }
+
+        $currentModifiedVersion = $this->getModifiedVersion();
+        if (!in_array($currentModifiedVersion, self::REQUIRED_MODIFIED_VERSIONS)) {
+            $errors[] = 'Your current modified version is ' . $currentModifiedVersion . '. The MMLC supports modified versions <strong>' . implode(', ', self::REQUIRED_MODIFIED_VERSIONS) . '</strong>.';
         }
 
         return $errors;
@@ -169,6 +185,34 @@ class Installer
     public function cleanUp()
     {
         @unlink('ModifiedModuleLoaderClient.tar');
+    }
+
+    private function getModifiedVersion(): string
+    {
+        $path = __DIR__ . '/admin/includes/version.php';
+
+        if (!file_exists($path)) {
+            return 'unknown';
+        }
+
+        $fileStr = file_get_contents($path);
+
+        // Try DB_VERSION
+        $pattern = "/MOD_(\d+\.\d+\.\d+(\.\d+)?)\'\);/";
+        if (preg_match($pattern, $fileStr, $matches)) {
+            return $matches[1];
+        }
+
+        // Try MAJOR_VERSION ans MINOR_VERSION
+        preg_match('/MAJOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMajor);
+        preg_match('/MINOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMinor);
+        $versionMajor[1] = $versionMajor[1] ?? '';
+        $versionMinor[1] = $versionMinor[1] ?? '';
+        if ($versionMajor[1] && $versionMinor[1]) {
+            return $versionMajor[1] . '.' . $versionMinor[1];
+        }
+
+        return 'unknown';
     }
 }
 

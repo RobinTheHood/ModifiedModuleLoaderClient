@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ */
+
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
 use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
@@ -209,14 +213,10 @@ $notificationView = new NotificationViewModel();
                             </div>
 
                             <h2>Beschreibung</h2>
-                            <div class="markdown-body">
-                                <p>
-                                    <?php if ($module->getDescription()) { ?>
-                                        <?= $module->getDescription() ?>
-                                    <?php } else { ?>
-                                        Keine Beschreibung vorhanden.
-                                    <?php } ?>
-                                </p>
+                            <div id="description">
+                                <div class="markdown-body" style="padding-bottom: 30px">
+                                        Beschreibung wird geladen. Bitte warten...
+                                </div>
                             </div>
                         </div>
 
@@ -386,7 +386,7 @@ $notificationView = new NotificationViewModel();
                                     <div class="markdown-body">
                                         README.md Wird geladen. Bitte warten...
                                     </div>
-                                 </div>
+                                </div>
                             </div>
                         </div>
 
@@ -410,6 +410,7 @@ $notificationView = new NotificationViewModel();
             </div>
         </div>
 
+        <?= LazyLoader::loadModuleDescription($module, '#description .markdown-body', 'Es ist keine Beschreibung vorhanden.'); ?>
         <?= LazyLoader::loadModuleReadme($module, '#readme .markdown-body', 'Es ist keine README.md vorhanden.'); ?>
         <?= LazyLoader::loadModuleInstallation($module, '#v-pills-install .markdown-body', 'Es ist keine manuelle Installationanleitung vorhanden.'); ?>
         <?= LazyLoader::loadModuleUsage($module, '#v-pills-usage .markdown-body', 'Es ist keine Bedienungsanleitung vorhanden.'); ?>

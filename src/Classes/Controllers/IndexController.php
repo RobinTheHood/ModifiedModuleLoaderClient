@@ -11,9 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace RobinTheHood\ModifiedModuleLoaderClient;
+namespace RobinTheHood\ModifiedModuleLoaderClient\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
+use RobinTheHood\ModifiedModuleLoaderClient\AccessFileCreator;
+use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
@@ -24,6 +26,11 @@ use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
+use RobinTheHood\ModifiedModuleLoaderClient\MmlcVersionInfoLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
+use RobinTheHood\ModifiedModuleLoaderClient\Notification;
+use RobinTheHood\ModifiedModuleLoaderClient\SelfUpdater;
 use RuntimeException;
 
 class IndexController extends Controller
@@ -97,14 +104,18 @@ class IndexController extends Controller
 
         if (!ini_get('allow_url_fopen')) {
             Notification::pushFlashMessage([
-                'text' => 'Warnung: Keine Verbindung zum Server. <strong>allow_url_fopen</strong> ist in der php.ini deaktiviert.',
+                'text' =>
+                    'Warnung: Keine Verbindung zum Server.
+                    <strong>allow_url_fopen</strong> ist in der php.ini deaktiviert.',
                 'type' => 'warning'
             ]);
         }
 
         if (version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '<')) {
             Notification::pushFlashMessage([
-                'text' => 'Warnung: Die PHP Version ' . PHP_VERSION . ' wird nicht unterstützt. Der MMLC benötigt ' . self::REQUIRED_PHP_VERSION . ' oder höher.',
+                'text' =>
+                    'Warnung: Die PHP Version ' . PHP_VERSION . ' wird nicht unterstützt. Der MMLC benötigt '
+                    . self::REQUIRED_PHP_VERSION . ' oder höher.',
                 'type' => 'warning'
             ]);
         }
@@ -153,6 +164,19 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
+        $gitBranch = $this->getCurrentGitBranch(App::getRoot() . '/.git');
+
+        if ($gitBranch) {
+            Notification::pushFlashMessage([
+                'text' =>
+                    'Der MMLC wurde über Git installiert.<br>
+                    🔀 Branch: <strong>' . $gitBranch . '</strong><br>
+                    Bitte führe die Aktualisierung des MMLC über Git durch. Beachte, dass ein Update über den MMLC
+                    möglicherweise zu Fehlern führen kann.',
+                'type' => 'warning'
+            ]);
+        }
+
         // Nächste mögliche MMLC Version ermittlen
         $latest = Config::getSelfUpdate() == 'latest';
         $installedMmlcVersionString = App::getMmlcVersion();
@@ -189,7 +213,7 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
-        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = ModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersionsWithLatestRemote();
         $modules = $this->moduleFilter->filterNewestOrInstalledVersion($modules);
 
@@ -236,10 +260,10 @@ class IndexController extends Controller
         $version = $queryParams['version'] ?? '';
 
         if ($version) {
-            $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+            $moduleLoader = ModuleLoader::createFromConfig();
             $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
         } else {
-            $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+            $moduleLoader = ModuleLoader::createFromConfig();
             $modules = $moduleLoader->loadAllVersionsByArchiveNameWithLatestRemote($archiveName);
             $module = $this->moduleFilter->getLatestVersion($modules);
         }
@@ -269,8 +293,8 @@ class IndexController extends Controller
                 Notification::pushFlashMessage([
                     'type' => 'warning',
                     'text' =>
-                        'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern bei der
-                        Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten:<br>'
+                        'Einige Abhängigkeiten sind nicht installiert. Das Fehlen von Abhängigkeiten kann zu Fehlern
+                        bei der Ausführung des Moduls führen. Installiere die folgenden fehlenden Abhänigkeiten:<br>'
                         . nl2br($string)
                 ]);
             }
@@ -292,8 +316,14 @@ class IndexController extends Controller
         $version = $queryParams['version'] ?? '';
         $data = $queryParams['data'] ?? '';
 
-        $moduleLoader = ModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = ModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+
+        if (!$module) {
+            return ['content' => ''];
+        }
+
+        $description = $module->getDescriptionMd() !== '' ? $module->getDescriptionMd() : $module->getDescription();
 
         if ($data == 'installationMd') {
             return ['content' => $module->getInstallationMd()];
@@ -303,6 +333,8 @@ class IndexController extends Controller
             return ['content' => $module->getChangeLogMd()];
         } elseif ($data == 'readmeMd') {
             return ['content' => $module->getReadmeMd()];
+        } elseif ($data == 'descriptionMd') {
+            return ['content' => $description];
         }
     }
 
@@ -352,7 +384,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -387,7 +419,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -422,7 +454,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -457,7 +489,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -544,7 +576,7 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -579,7 +611,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
@@ -699,7 +731,7 @@ class IndexController extends Controller
 
     public function calcModuleUpdateCount()
     {
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersions();
         $modules = $this->moduleFilter->filterInstalled($modules);
         return count($this->moduleFilter->filterUpdatable($modules));
@@ -707,7 +739,7 @@ class IndexController extends Controller
 
     public function calcModuleChangeCount()
     {
-        $moduleLoader = LocalModuleLoader::create(Config::getDependenyMode());
+        $moduleLoader = LocalModuleLoader::createFromConfig();
         $modules = $moduleLoader->loadAllVersions();
         return count($this->moduleFilter->filterRepairable($modules));
     }
@@ -763,5 +795,35 @@ class IndexController extends Controller
             'text' => "Fehler: Das Module <strong>$archiveName - $version</strong> wurde nicht gefunden.",
             'type' => 'error'
         ]);
+    }
+
+    private function getCurrentGitBranch(string $gitPath): ?string
+    {
+        if (!is_dir($gitPath)) {
+            return null;
+        }
+
+        $os = strtoupper(substr(PHP_OS, 0, 3));
+        $command = '';
+
+        switch ($os) {
+            case 'WIN':
+                $command = 'cd /d "' . $gitPath . '" & git symbolic-ref --short HEAD 2>NUL';
+                break;
+            case 'LIN':
+            case 'DAR':
+                $command = 'cd "' . $gitPath . '" && git symbolic-ref --short HEAD 2>/dev/null';
+                break;
+            default:
+                return 'unkown branch';
+        }
+
+        $output = trim('' . shell_exec($command));
+
+        if (empty($output)) {
+            return null;
+        }
+
+        return $output;
     }
 }
