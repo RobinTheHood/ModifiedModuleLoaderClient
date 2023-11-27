@@ -362,7 +362,9 @@ $notificationView = new NotificationViewModel();
                                             <td>
                                                 <?php if ($module->getRequire()) { ?>
                                                     <?php foreach ($module->getRequire() as $archiveName => $version) { ?>
-                                                        <a href="?action=moduleInfo&archiveName=<?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br>
+                                                        <a href="<?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br>
+
+                                                        <!-- <a href="?action=moduleInfo&archiveName=<?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br> -->
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     keine Abhängigkeit vorhanden
