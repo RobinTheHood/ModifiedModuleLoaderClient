@@ -41,6 +41,19 @@ $notificationView = new NotificationViewModel();
                                 if ($module->getVisibility() == 'hidden') {
                                     continue;
                                 }
+                                if (!$module->isCompatible()) {
+                                    continue;
+                                }
+                                include 'ModuleListingModule.tmpl.php';
+                            }
+
+                            foreach ($modules as $module) {
+                                if ($module->getVisibility() == 'hidden') {
+                                    continue;
+                                }
+                                if ($module->isCompatible()) {
+                                    continue;
+                                }
                                 include 'ModuleListingModule.tmpl.php';
                             }
                             ?>
