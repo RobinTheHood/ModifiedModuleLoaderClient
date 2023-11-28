@@ -30,7 +30,7 @@ class DependencyBuilderTest extends TestCase
         $systemSet->set([
             "modified" => '2.0.4.2',
             "php" => '7.4.0',
-            "mmlc" => '1.20.0-beta.1',
+            "mmlc" => '1.21.0',
             "composer/autoload" => '1.3.0',
             "robinthehood/modified-std-module" => '0.9.0',
             "robinthehood/modified-orm" => '1.8.1',
@@ -44,7 +44,7 @@ class DependencyBuilderTest extends TestCase
             [
                 "modified" => '2.0.4.2',
                 "php" => '7.4.0',
-                "mmlc" => '1.20.0-beta.1',
+                "mmlc" => '1.21.0',
                 "composer/autoload" => '1.3.0',
                 "robinthehood/modified-std-module" => '0.9.0',
                 "robinthehood/modified-orm" => '1.8.1',
@@ -80,7 +80,7 @@ class DependencyBuilderTest extends TestCase
         $systemSet->set([
             "modified" => '2.0.4.2',
             "php" => '7.4.0',
-            "mmlc" => '1.20.0-beta.1',
+            "mmlc" => '1.21.0',
             "composer/autoload" => '1.3.0',
             "robinthehood/modified-std-module" => '0.9.0',
             "robinthehood/modified-orm" => '1.8.1',
@@ -94,7 +94,7 @@ class DependencyBuilderTest extends TestCase
             [
                 "modified" => '2.0.4.2',
                 "php" => '7.4.0',
-                "mmlc" => '1.20.0-beta.1',
+                "mmlc" => '1.21.0',
                 "composer/autoload" => '1.3.0',
                 "robinthehood/modified-std-module" => '0.9.0',
                 "robinthehood/modified-orm" => '1.8.1',
