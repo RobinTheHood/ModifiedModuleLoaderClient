@@ -264,6 +264,11 @@ $notificationView = new NotificationViewModel();
                                         </tr>
 
                                         <tr>
+                                            <td>Datum</td>
+                                            <td><?= $moduleView->getDate(); ?></td>
+                                        </tr>
+
+                                        <tr>
                                             <td>Kompatibel mit Modified</td>
                                             <td>
                                                 <?php if ($module->getModifiedCompatibility()) { ?>

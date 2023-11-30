@@ -79,6 +79,7 @@ class ModuleFactory
         $module->setSourceDir($array['sourceDir'] ?? self::DIR_MODULE_SRC);
         $module->setSourceMmlcDir($array['sourceMmlcDir'] ?? self::DIR_MODULE_SRC_MMLC);
         $module->setVersion($array['version'] ?? 'auto');
+        $module->setDate($array['date'] ?? 'unknown');
         $module->setShortDescription($array['shortDescription'] ?? '');
         $module->setDescription($array['description'] ?? '');
         $module->setDeveloper($array['developer'] ?? '');

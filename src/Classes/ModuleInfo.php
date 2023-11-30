@@ -67,6 +67,13 @@ class ModuleInfo
     protected $version;
 
     /**
+     * Beispiel: 2023-06-20 19:42:32
+     *
+     * @var string
+     */
+    protected $date;
+
+    /**
      * Eine Kurzbeschreibung des Moduls in menschen lesbarer Form.
      *
      * @var string
@@ -245,6 +252,16 @@ class ModuleInfo
     public function setVersion(string $value): void
     {
         $this->version = $value;
+    }
+
+    public function getDate(): string
+    {
+        return $this->date;
+    }
+
+    public function setDate(string $value): void
+    {
+        $this->date = $value;
     }
 
     public function getShortDescription(): string

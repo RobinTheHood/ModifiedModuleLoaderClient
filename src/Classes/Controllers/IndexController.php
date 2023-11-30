@@ -392,11 +392,28 @@ class IndexController extends Controller
             return $this->redirect('/');
         }
 
+        $force = $queryParams['force'] ?? '';
+        $force = $force === 'true' ? true : false;
+
+
         try {
-            $this->moduleInstaller->installWithDependencies($module);
+            if ($force) {
+                $this->moduleInstaller->install($module, true);
+            } else {
+                $this->moduleInstaller->installWithDependencies($module);
+            }
         } catch (DependencyException $e) {
+            $foreInstallUrl = "?action=install"
+                . "&archiveName={$module->getArchiveName()}"
+                . "&version={$module->getVersion()}"
+                . "&ref=moduleInfo"
+                . "&force=true";
+
             Notification::pushFlashMessage([
-                'text' => $e->getMessage(),
+                'text' => $e->getMessage()
+                    . '<br><br>Click here to <a href="' . $foreInstallUrl . '">'
+                    . 'force install ' . $module->getArchiveName() . ':' . $module->getVersion()
+                    . ' without dependencies.</a>',
                 'type' => 'error'
             ]);
         } catch (RuntimeException $e) {

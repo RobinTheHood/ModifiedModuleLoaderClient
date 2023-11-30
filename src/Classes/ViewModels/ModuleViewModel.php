@@ -169,6 +169,11 @@ class ModuleViewModel
         return $this->module->getVersion();
     }
 
+    public function getDate(): string
+    {
+        return $this->module->getDate();
+    }
+
     public function isRemote(): bool
     {
         return $this->module->isRemote();

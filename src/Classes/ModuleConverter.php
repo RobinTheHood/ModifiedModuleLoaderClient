@@ -25,6 +25,7 @@ class ModuleConverter
             'sourceDir' => $module->getSourceDir(),
             'sourceMmlcDir' => $module->getSourceMmlcDir(),
             'version' => $module->getVersion(),
+            'date' => $module->getDate(),
             'shortDescription' => $module->getShortDescription(),
             'description' => $module->getDescription(),
             'developer' => $module->getDeveloper(),
