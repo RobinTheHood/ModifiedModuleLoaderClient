@@ -154,6 +154,7 @@ class SelfUpdater
         }
 
         $exclude = [
+            '/ModifiedModuleLoaderClient',
             '/Archives',
             '/Modules',
             '/backup',
@@ -211,6 +212,11 @@ class SelfUpdater
     {
         $srcPath = $this->appRoot . '/ModifiedModuleLoaderClient';
         $destPath = $this->appRoot;
+
+        if (!is_dir($srcPath)) {
+            $this->showError("Can not install update because, can not find: <br>\n $srcPath");
+            return;
+        }
 
         $files = FileHelper::scanDir($srcPath, FileHelper::FILES_AND_DIRS, true);
         FileHelper::moveFilesTo($files, $srcPath, $destPath);
