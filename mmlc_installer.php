@@ -15,7 +15,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 
-define('VERSION', '0.7.0');
+define('VERSION', '0.8.1');
 
 class Installer
 {
@@ -31,7 +31,8 @@ class Installer
         "2.0.6.0",
         "2.0.7.0",
         "2.0.7.1",
-        "2.0.7.2"
+        "2.0.7.2",
+        "3.0.0"
     ];
 
     public function invoke()
@@ -72,6 +73,15 @@ class Installer
 
         if (!file_exists(__DIR__ . '/includes/classes/modified_api.php')) {
             $errors[] = '<code style="display: inline; padding: 2px 4px;">' . __DIR__ . '</code> is the wrong installation directory. Please use the shop root.';
+        }
+
+        $adminDirs = $this->getAdminDirs();
+        if (count($adminDirs) < 1) {
+            $errors[] = 'Can not find a admin dir.';
+        }
+
+        if (count($adminDirs) > 1) {
+            $errors[] = 'Several admin directories found.';
         }
 
         $currentModifiedVersion = $this->getModifiedVersion();
@@ -189,7 +199,10 @@ class Installer
 
     private function getModifiedVersion(): string
     {
-        $path = __DIR__ . '/admin/includes/version.php';
+        $adminDirs = $this->getAdminDirs();
+        $adminDir = $adminDirs[0] ?? 'admin';
+
+        $path = __DIR__ . '/' . $adminDir . '/includes/version.php';
 
         if (!file_exists($path)) {
             return 'unknown';
@@ -213,6 +226,29 @@ class Installer
         }
 
         return 'unknown';
+    }
+
+    private function getAdminDirs()
+    {
+        $adminDirs = [];
+
+        $filePaths = scandir(__DIR__);
+        foreach ($filePaths as $filePath) {
+            $fileName = basename($filePath);
+            $fileNameLower = strtolower($fileName);
+
+            if (strpos($fileNameLower, 'admin') !== 0) {
+                continue;
+            }
+
+            if (!file_exists($filePath . '/check_update.php')) {
+                continue;
+            }
+
+            $adminDirs[] = $fileName;
+        }
+
+        return $adminDirs;
     }
 }
 
