@@ -220,9 +220,9 @@ class ModuleInstaller
             $this->pull($module);
         }
 
-        $reloaded = $this->reload($module);
+        $reloadedModule = $this->reload($module);
 
-        if (!$reloaded->isLoaded()) {
+        if (!$reloadedModule || !$reloadedModule->isLoaded()) {
             $message =
                 "Can not pull and install module {$module->getArchiveName()} {$module->getVersion()}. "
                 . "Module is not loaded.";
@@ -231,12 +231,12 @@ class ModuleInstaller
             throw new RuntimeException($message);
         }
 
-        if ($reloaded->isInstalled()) {
+        if ($reloadedModule->isInstalled()) {
             return;
         }
 
-        $this->uninstall($module);
-        $this->internalInstall($module);
+        $this->uninstall($reloadedModule);
+        $this->internalInstall($reloadedModule);
     }
 
     private function internalInstallDependencies(Module $parentModule, Combination $combination): void

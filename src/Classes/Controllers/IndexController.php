@@ -594,6 +594,7 @@ class IndexController extends Controller
         }
 
         $moduleLoader = LocalModuleLoader::createFromConfig();
+        $moduleLoader->resetCache();
         $module = $moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
         if (!$module) {
