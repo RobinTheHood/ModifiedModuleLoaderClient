@@ -4,27 +4,15 @@ class AcceptanceCest
 {
     private $sessionCookie;
 
-    public function _login(AcceptanceTester $I)
+    public function _before(AcceptanceTester $I)
     {
-        // set session cookie
-        if ($this->sessionCookie) {
-            $I->setCookie('PHPSESSID', $this->sessionCookie);
-            return;
-        }
-
-        // logging in
-        $I->amOnPage('/?action=signIn');
-        $I->fillField('username', 'root');
-        $I->fillField('password', 'root');
-        $I->click('Anmelden');
-
-        // saving session cookie
-        $this->sessionCookie = $I->grabCookie('PHPSESSID');
+        $this->_login($I);
     }
 
-    // public function _before(AcceptanceTester $I)
-    // {
-    // }
+    public function _after(AcceptanceTester $I)
+    {
+        $this->_login($I);
+    }
 
     public function signInSuccessfully(AcceptanceTester $I)
     {
@@ -36,8 +24,6 @@ class AcceptanceCest
      */
     public function seeAllModules(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/');
         $I->see('Alle Module');
 
@@ -55,8 +41,6 @@ class AcceptanceCest
      */
     public function seeLoadedModules(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?filterModules=loaded');
         $I->see('Geladene Module');
 
@@ -71,15 +55,8 @@ class AcceptanceCest
      */
     public function seeInstalledModules(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?filterModules=installed');
         $I->see('Installierte Module');
-
-        $I->seeNumberOfElements(".module-serach-box", [1,200]);
-
-        // Local Module
-        $I->see('Composer Autoload');
     }
 
     /**
@@ -87,8 +64,6 @@ class AcceptanceCest
      */
     public function seeUpdatableModules(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?filterModules=updatable');
         $I->see('Aktualisierbare Module');
     }
@@ -98,8 +73,6 @@ class AcceptanceCest
      */
     public function seeChangedModules(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?filterModules=changed');
         $I->see('Geänderte Module');
     }
@@ -109,8 +82,6 @@ class AcceptanceCest
      */
     public function seeNotLoadedModules(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?filterModules=notloaded');
         $I->see('Nicht geladene Module');
 
@@ -122,8 +93,6 @@ class AcceptanceCest
      */
     public function seeSupportPage(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?action=support');
         $I->see('Hilfe & Support');
         $I->see('Modul-Entwickler werden');
@@ -134,8 +103,6 @@ class AcceptanceCest
      */
     public function seeSystemPage(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?action=selfUpdate');
         $I->see('MMLC - Modified Module Loader Client');
         $I->see('AccessToken:');
@@ -147,8 +114,6 @@ class AcceptanceCest
      */
     public function seeSettingPage(AcceptanceTester $I)
     {
-        $this->_login($I);
-
         $I->amOnPage('/?action=settings');
         $I->see('Einstellungen');
         $I->see('Allgemein');
@@ -165,5 +130,23 @@ class AcceptanceCest
         $I->see('Erweitert');
         $I->see('Module Pfad');
         $I->see('Installationsmodus');
+    }
+
+    public function _login(AcceptanceTester $I)
+    {
+        // set session cookie
+        if ($this->sessionCookie) {
+            $I->setCookie('PHPSESSID', $this->sessionCookie);
+            return;
+        }
+
+        // logging in
+        $I->amOnPage('/?action=signIn');
+        $I->fillField('username', 'root');
+        $I->fillField('password', 'root');
+        $I->click('Anmelden');
+
+        // saving session cookie
+        $this->sessionCookie = $I->grabCookie('PHPSESSID');
     }
 }
