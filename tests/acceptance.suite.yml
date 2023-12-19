@@ -10,4 +10,5 @@ modules:
         - PhpBrowser:
             url: http://web/ModifiedModuleLoaderClient/
         - \Helper\Acceptance
-step_decorators: ~        
+step_decorators:
+    - \Codeception\Step\TryTo
