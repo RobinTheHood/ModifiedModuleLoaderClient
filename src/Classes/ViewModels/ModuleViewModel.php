@@ -39,9 +39,19 @@ class ModuleViewModel
         return $this->getUrl('install', $ref);
     }
 
+    public function getForceInstallUrl(string $ref = ''): string
+    {
+        return $this->getUrl('install', $ref, null, ['force' => 'true']);
+    }
+
     public function getRevertChangesUrl(string $ref = ''): string
     {
         return $this->getUrl('revertChanges', $ref);
+    }
+
+    public function getRevertChangesWithTemplateUrl(string $ref = ''): string
+    {
+        return $this->getUrl('revertChanges', $ref, null, ['withTemplate' => 'true']);
     }
 
     public function getLoadAndInstallUrl(string $ref = ''): string
@@ -194,17 +204,31 @@ class ModuleViewModel
         return $this->module->isChanged();
     }
 
-    private function getUrl(string $action, string $ref, ?Module $module = null): string
+    /**
+     * @param string $action
+     * @param string $ref
+     * @param ?Module $module
+     * @param string[] $queryParams
+     *
+     * @return string
+     */
+    private function getUrl(string $action, string $ref, ?Module $module = null, array $queryParams = []): string
     {
         if (!$module) {
             $module = $this->module;
+        }
+
+        $queryString = http_build_query($queryParams);
+        if ($queryString) {
+            $queryString = '&' . $queryString;
         }
 
         return
             '?action=' . $action .
             '&archiveName=' . $module->getArchiveName() .
             '&version=' . $module->getVersion() .
-            '&ref=' . $ref;
+            '&ref=' . $ref
+            . $queryString;
     }
 
     /**
