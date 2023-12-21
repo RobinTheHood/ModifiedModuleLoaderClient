@@ -16,7 +16,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\ViewModels;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
-use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
 

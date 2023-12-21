@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\SystemSet;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 
 class DependencyBuilderTest extends TestCase
@@ -121,12 +120,5 @@ class DependencyBuilderTest extends TestCase
             CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND,
             $combinationSatisfyerResult->result
         );
-    }
-
-    public function atestInvokeDependency()
-    {
-        $dpb = DependencyBuilder::create(Comparator::CARET_MODE_STRICT);
-        $dpb->test();
-        die('TEST DONE');
     }
 }

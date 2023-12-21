@@ -18,13 +18,11 @@ use RobinTheHood\ModifiedModuleLoaderClient\AccessFileCreator;
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\ModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\Loader\RemoteModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleSorter;
 use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
-use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyException;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\MmlcVersionInfoLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
@@ -33,7 +31,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManagerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 use RobinTheHood\ModifiedModuleLoaderClient\SelfUpdater;
-use RuntimeException;
 
 class IndexController extends Controller
 {
