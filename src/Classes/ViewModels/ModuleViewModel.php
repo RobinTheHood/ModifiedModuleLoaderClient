@@ -240,7 +240,8 @@ class ModuleViewModel
         if (!$this->module->isCompatibleWithModified()) {
             $version = ShopInfo::getModifiedVersion();
             $array[] = [
-                'text' => "Dieses Modul wurde nicht mit deiner Version von modified getestet. Du hast modifed Version <strong>$version</strong> installiert.",
+                'text' => "Dieses Modul wurde nicht mit deiner Version von modified getestet. Du hast modifed Version
+                    <strong>$version</strong> installiert.",
                 'type' => 'warning'
             ];
         }
@@ -249,7 +250,8 @@ class ModuleViewModel
             if (!$this->module->isCompatibleWithPhp()) {
                 $version = phpversion();
                 $array[] = [
-                    'text' => "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du verwendest die PHP Version <strong>$version</strong>.",
+                    'text' => "Dieses Modul wurde noch nicht mit deiner PHP Version getestet. Du verwendest die PHP
+                        Version <strong>$version</strong>.",
                     'type' => 'warning'
                 ];
             }
@@ -264,7 +266,8 @@ class ModuleViewModel
             if (!$this->module->isCompatibleWithMmlc()) {
                 $version = App::getMmlcVersion();
                 $array[] = [
-                    'text' => "Dieses Modul wurde noch nicht mit deiner MMLC Version getestet. Du verwendest die MMLC Version <strong>$version</strong>.",
+                    'text' => "Dieses Modul wurde noch nicht mit deiner MMLC Version getestet. Du verwendest die MMLC
+                        Version <strong>$version</strong>.",
                     'type' => 'warning'
                 ];
             }

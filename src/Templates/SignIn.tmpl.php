@@ -1,4 +1,11 @@
-<?php defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.'); ?>
+<?php
+
+/**
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ */
+
+defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
+?>
 
 <!DOCTYPE html>
 <html lang="de">
