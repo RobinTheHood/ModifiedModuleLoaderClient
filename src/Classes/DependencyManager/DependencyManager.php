@@ -110,6 +110,9 @@ class DependencyManager
     }
 
     /**
+     * Kontrolliert, ob ein Modul installiert werden kann. Es wird getestet, ob genau die Version installiert werden
+     * kann.
+     *
      * @param Module $module
      * @param string[] $doNotCheck
      *
@@ -137,35 +140,45 @@ class DependencyManager
             . " The following combination is required: {$combinationSatisfyerResult->failLog}";
 
             StaticLogger::log(LogLevel::WARNING, $message);
-            throw new DependencyException($message);
         }
-
-        // $modules = $this->getAllModulesFromCombination($combinationSatisfyerResult->foundCombination);
-        // $this->canBeInstalledTestChanged($module, $modules);
 
         return $combinationSatisfyerResult;
     }
 
     /**
-     * Testet, ob das Modul in $module installiert werden kann, ob das Modul $module
-     * selbst oder eine Abhängigkeit in $modules im Status 'changed' ist.
+     * Kontrolliert, ob ein Modul aktuallisert werden kann, Es wird getestet, ob es eine neuerer Version gibt, die alle
+     * Bedingungen erfüllt. Wenn ja, steckt eine passende Kombination in CombinationSatisfyerResult::foundCombination.
      *
-     * @param Module[] $modules
+     * @param Module $module
+     * @param string[] $doNotCheck
+     *
+     * @return CombinationSatisfyerResult
      */
-    private function canBeInstalledTestChanged(Module $module, array $modules): void
+    public function canBeUpdated(Module $module, array $doNotCheck = []): CombinationSatisfyerResult
     {
-        $module = $module->getInstalledVersion();
-        if ($module && $module->isInstalled() && $module->isChanged()) {
-            $a = $module->getArchiveName();
-            throw new DependencyException("Module $a can not be installed because the Module has changes");
+        $systemSet = $this->systemSetFactory->getSystemSet();
+
+        foreach ($doNotCheck as $name) {
+            $systemSet->remove($name);
         }
 
-        foreach ($modules as $module) {
-            if ($module && $module->isInstalled() && $module->isChanged()) {
-                $a = $module->getArchiveName();
-                throw new DependencyException("Required Module $a can not be installed because the Module has changes");
-            }
+        $combinationSatisfyerResult = $this->dependencyBuilder->satisfies(
+            $module->getArchiveName(),
+            '>' . $module->getVersion(),
+            $systemSet
+        );
+
+        if ($combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND) {
+            $message = "Can not update module {$module->getArchiveName()} in version {$module->getVersion()} "
+            . "because there are conflicting version contraints. "
+            . "Perhaps you have installed a module that requires a different version, "
+            . "or there is no compatible combination of dependencies. "
+            . " The following combination is required: {$combinationSatisfyerResult->failLog}";
+
+            StaticLogger::log(LogLevel::WARNING, $message);
         }
+
+        return $combinationSatisfyerResult;
     }
 
     /**
@@ -201,5 +214,27 @@ class DependencyManager
         }
 
         return $missing;
+    }
+
+    /**
+     * Testet, ob das Modul in $module installiert werden kann, ob das Modul $module
+     * selbst oder eine Abhängigkeit in $modules im Status 'changed' ist.
+     *
+     * @param Module[] $modules
+     */
+    private function canBeInstalledTestChanged(Module $module, array $modules): void
+    {
+        $module = $module->getInstalledVersion();
+        if ($module && $module->isInstalled() && $module->isChanged()) {
+            $a = $module->getArchiveName();
+            throw new DependencyException("Module $a can not be installed because the Module has changes");
+        }
+
+        foreach ($modules as $module) {
+            if ($module && $module->isInstalled() && $module->isChanged()) {
+                $a = $module->getArchiveName();
+                throw new DependencyException("Required Module $a can not be installed because the Module has changes");
+            }
+        }
     }
 }
