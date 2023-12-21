@@ -370,6 +370,14 @@ class ModuleManager
         $version = $combinationSatisfyerResult->foundCombination->getVersion($archiveName);
         $newModule = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
 
+        if (!$newModule) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_NOT_FOUND)
+                ->setArchiveName($archiveName)
+                ->setVersion($version)
+            );
+        }
+
         if (!$newModule->isLoaded()) {
             $this->info(
                 ModuleManagerMessage::create(ModuleManagerMessage::UDPATE_INFO_PULL_MODULE_START)
