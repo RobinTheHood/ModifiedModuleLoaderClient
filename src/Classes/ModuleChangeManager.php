@@ -30,10 +30,6 @@ class ModuleChangeManager
      */
     public static function getChangedFiles(Module $module): ChangedEntryCollection
     {
-        if ($module->getArchiveName() === 'robinthehood/modified-std-module') {
-            $a = 1;
-        }
-
         $hashFileLoader = new HashFileLoader();
         $hashFileLoader->setDefaultScope(ModuleHasher::SCOPE_SHOP_ROOT);
         $hashFile = $hashFileLoader->load($module->getHashPath());
@@ -50,12 +46,6 @@ class ModuleChangeManager
             $srcMmlcChangedEntiresCollection
         ]);
 
-        // if ($module->getArchiveName() === 'robinthehood/modified-std-module') {
-        //     echo '<pre>';
-        //     print_r($hashFile);
-        //     print_r($changedEntiresCollection);
-        //     die();
-        // }
         return $changedEntiresCollection;
     }
 
