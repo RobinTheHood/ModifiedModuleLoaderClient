@@ -25,7 +25,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
 use RobinTheHood\ModifiedModuleLoaderClient\MmlcVersionInfoLoader;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManager;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManagerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
@@ -36,8 +35,8 @@ class IndexController extends Controller
 {
     private const REQUIRED_PHP_VERSION = '7.4.0';
 
-    /** @var ModuleInstaller */
-    private $moduleInstaller;
+    /** @var ModuleManager */
+    private $moduleManager;
 
     /** @var ModuleFilter */
     private $moduleFilter;
@@ -46,7 +45,7 @@ class IndexController extends Controller
     {
         parent::__construct($serverRequest, $session);
 
-        $this->moduleInstaller = ModuleInstaller::createFromConfig();
+        $this->moduleManager = ModuleManager::createFromConfig();
         $this->moduleFilter = ModuleFilter::createFromConfig();
     }
 
@@ -383,8 +382,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleManager = ModuleManager::createFromConfig();
-        $moduleManagerResult = $moduleManager->pull($archiveName, $version);
+        $moduleManagerResult = $this->moduleManager->pull($archiveName, $version);
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
             Notification::pushFlashMessage([
@@ -418,11 +416,10 @@ class IndexController extends Controller
         $force = $queryParams['force'] ?? '';
         $force = $force === 'true' ? true : false;
 
-        $moduleManager = ModuleManager::createFromConfig();
         if ($force === false) {
-            $moduleManagerResult = $moduleManager->install($archiveName, $version);
+            $moduleManagerResult = $this->moduleManager->install($archiveName, $version);
         } else {
-            $moduleManagerResult = $moduleManager->installWithoutDependencies($archiveName, $version, true);
+            $moduleManagerResult = $this->moduleManager->installWithoutDependencies($archiveName, $version, true);
         }
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
@@ -455,8 +452,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleManager = ModuleManager::createFromConfig();
-        $moduleManagerResult = $moduleManager->update($archiveName);
+        $moduleManagerResult = $this->moduleManager->update($archiveName);
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
             Notification::pushFlashMessage([
@@ -490,8 +486,7 @@ class IndexController extends Controller
         $withTemplate = $queryParams['withTemplate'] ?? '';
         $withTemplate = $withTemplate === 'true' ? true : false;
 
-        $moduleManager = ModuleManager::createFromConfig();
-        $moduleManagerResult = $moduleManager->discard($archiveName, $withTemplate);
+        $moduleManagerResult = $this->moduleManager->discard($archiveName, $withTemplate);
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
             Notification::pushFlashMessage([
@@ -523,8 +518,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleManager = ModuleManager::createFromConfig();
-        $moduleManagerResult = $moduleManager->uninstall($archiveName);
+        $moduleManagerResult = $this->moduleManager->uninstall($archiveName);
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
             Notification::pushFlashMessage([
@@ -556,8 +550,7 @@ class IndexController extends Controller
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
 
-        $moduleManager = ModuleManager::createFromConfig();
-        $moduleManagerResult = $moduleManager->delete($archiveName, $version);
+        $moduleManagerResult = $this->moduleManager->delete($archiveName, $version);
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
             Notification::pushFlashMessage([
