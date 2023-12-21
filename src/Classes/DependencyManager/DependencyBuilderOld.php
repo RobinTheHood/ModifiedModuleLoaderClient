@@ -18,7 +18,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Constraint;
 
-class DependencyBuilder
+class DependencyBuilderOld
 {
     /** @var ModuleTreeBuilder*/
     private $moduleTreeBuilder;
