@@ -241,7 +241,7 @@ class ModuleViewModel
         if (!$this->module->isCompatibleWithModified()) {
             $version = ShopInfo::getModifiedVersion();
             $array[] = [
-                'text' => "Dieses Modul wurde noch nicht mit deiner Version von modified getestet. Du hast modifed Version <strong>$version</strong> installiert.",
+                'text' => "Dieses Modul wurde nicht mit deiner Version von modified getestet. Du hast modifed Version <strong>$version</strong> installiert.",
                 'type' => 'warning'
             ];
         }

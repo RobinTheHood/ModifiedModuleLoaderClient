@@ -13,7 +13,7 @@ if ($module->isCompatible()) {
     $tooltip = 'Dieses Modul wurde getestet und funktioniert mit deiner Version von modified.';
 } else {
     $compatibility = 'inkompatibel';
-    $tooltip = 'Dieses Modul wurde noch nicht mit deiner Version von modified getestet.';
+    $tooltip = 'Dieses Modul wurde nicht mit deiner Version von modified getestet.';
 }
 
 $modulePrice = $module->isInstalled() ? 'installiert' : $moduleView->getPriceFormated();
