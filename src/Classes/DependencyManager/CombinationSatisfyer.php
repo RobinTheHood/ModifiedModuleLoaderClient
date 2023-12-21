@@ -42,7 +42,7 @@ class CombinationSatisfyer
 
         foreach ($combinations as $testCombination) {
             $foundCombination = new Combination();
-            $result = $this->satisfiesCominationFromModuleTrees(
+            $result = $this->satisfiesCombinationFromModuleTrees(
                 $moduleTrees,
                 $testCombination,
                 $foundCombination,
@@ -85,7 +85,7 @@ class CombinationSatisfyer
         $failLog = new FailLog();
 
         foreach ($combinations as $testCombination) {
-            $result = $this->satisfiesCominationFromModuleTree(
+            $result = $this->satisfiesCombinationFromModuleTree(
                 $moduleTree,
                 $testCombination,
                 $foundCombination,
@@ -113,7 +113,7 @@ class CombinationSatisfyer
         return $combinationSatisfyerResult;
     }
 
-    public function satisfiesCominationsFromModuleWithIterator(
+    public function satisfiesCombinationsFromModuleWithIterator(
         ModuleTree $moduleTree,
         CombinationIterator $combinationIterator
     ): CombinationSatisfyerResult {
@@ -121,7 +121,7 @@ class CombinationSatisfyer
             $foundCombination = new Combination();
             $failLog = new FailLog();
             $testCombination = $combinationIterator->current();
-            $result = $this->satisfiesCominationFromModuleTree(
+            $result = $this->satisfiesCombinationFromModuleTree(
                 $moduleTree,
                 $testCombination,
                 $foundCombination,
@@ -160,7 +160,7 @@ class CombinationSatisfyer
      *
      * @return bool
      */
-    public function satisfiesCominationFromModuleTree(
+    public function satisfiesCombinationFromModuleTree(
         ModuleTree $moduleTree,
         Combination $combination,
         Combination &$foundCombination,
@@ -198,7 +198,7 @@ class CombinationSatisfyer
                     $moduleTree->versionConstraint
                 );
 
-                return $this->satisfiesCominationFromModuleTrees(
+                return $this->satisfiesCombinationFromModuleTrees(
                     $moduleVersion->require,
                     $combination,
                     $foundCombination,
@@ -222,7 +222,7 @@ class CombinationSatisfyer
      *
      * @return bool
      */
-    public function satisfiesCominationFromModuleTrees(
+    public function satisfiesCombinationFromModuleTrees(
         array $moduleTrees,
         Combination $combination,
         Combination &$foundCombination,
@@ -232,7 +232,7 @@ class CombinationSatisfyer
         // Context: Expanded
         $moduleResult = true;
         foreach ($moduleTrees as $moduleTree) {
-            $result = $this->satisfiesCominationFromModuleTree(
+            $result = $this->satisfiesCombinationFromModuleTree(
                 $moduleTree,
                 $combination,
                 $foundCombination,
