@@ -222,7 +222,7 @@ class ModuleInstaller
 
         $reloadedModule = $this->reload($module);
 
-        if (!$reloadedModule || !$reloadedModule->isLoaded()) {
+        if (!$reloadedModule->isLoaded()) {
             $message =
                 "Can not pull and install module {$module->getArchiveName()} {$module->getVersion()}. "
                 . "Module is not loaded.";
