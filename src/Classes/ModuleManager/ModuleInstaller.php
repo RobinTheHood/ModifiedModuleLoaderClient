@@ -38,17 +38,22 @@ class ModuleInstaller
     /** @var ArchiveHandler */
     private $archiveHandler;
 
+    /** @var ModuleFileInstaller */
+    private $moduleFileInstaller;
+
     public static function create(int $mode): ModuleInstaller
     {
         $dependencyManager = DependencyManager::create($mode);
         $localModuleLoader = LocalModuleLoader::create($mode);
         $archivePuller = ArchivePuller::create();
         $archiveHandler = ArchiveHandler::create($mode);
+        $moduleFileInstaller = ModuleFileInstaller::create();
         $moduleInstaller = new ModuleInstaller(
             $dependencyManager,
             $localModuleLoader,
             $archivePuller,
-            $archiveHandler
+            $archiveHandler,
+            $moduleFileInstaller
         );
         return $moduleInstaller;
     }
@@ -62,12 +67,14 @@ class ModuleInstaller
         DependencyManager $dependencyManager,
         LocalModuleLoader $localModuleLoader,
         ArchivePuller $archivePuller,
-        ArchiveHandler $archiveHandler
+        ArchiveHandler $archiveHandler,
+        ModuleFileInstaller $moduleFileInstaller
     ) {
         $this->dependencyManager = $dependencyManager;
         $this->localModuleLoader = $localModuleLoader;
         $this->archivePuller = $archivePuller;
         $this->archiveHandler = $archiveHandler;
+        $this->moduleFileInstaller = $moduleFileInstaller;
     }
 
     /**
@@ -213,8 +220,7 @@ class ModuleInstaller
             }
         }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->install($module);
+        $this->moduleFileInstaller->install($module);
         $this->reload($module);
     }
 
@@ -322,8 +328,7 @@ class ModuleInstaller
             $this->error("Can not revert changes because $moduleText is not installed.");
         }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->install($module, $withTemplate);
+        $this->moduleFileInstaller->install($module, $withTemplate);
     }
 
     public function uninstall(Module $module, bool $force = false): void
@@ -341,8 +346,7 @@ class ModuleInstaller
             $this->error("Can not uninstall $moduleText because the module has changes.");
         }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->uninstall($module);
+        $this->moduleFileInstaller->uninstall($module);
 
         $this->reload($module);
     }

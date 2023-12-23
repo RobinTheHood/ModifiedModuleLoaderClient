@@ -24,6 +24,22 @@ use RuntimeException;
 
 class ModuleFileInstaller
 {
+    /** @var ModuleHashFileCreator */
+    private $moduleHashFileCreator;
+
+    public static function create(): ModuleFileInstaller
+    {
+        $moduleHashFileCreator = ModuleHashFileCreator::create();
+        return new ModuleFileInstaller(
+            $moduleHashFileCreator
+        );
+    }
+
+    public function __construct(ModuleHashFileCreator $moduleHashFileCreator)
+    {
+        $this->moduleHashFileCreator = $moduleHashFileCreator;
+    }
+
     /**
      * (Re-) Installiert / überschreibt ein Modul (archiveName, Version) ohne dabei auf Abhängigkeiten und den
      * Modulstatus zu achten. Es wird nur auf Dateiebene kontrolliert, ob alle Dateien geschrieben werden konnten.
@@ -134,8 +150,7 @@ class ModuleFileInstaller
      */
     private function createHashFile(Module $module): void
     {
-        $moduleHashFileCreator = new ModuleHashFileCreator();
-        $moduleHashFile = $moduleHashFileCreator->createHashFile($module);
+        $moduleHashFile = $this->moduleHashFileCreator->createHashFile($module);
         $moduleHashFile->writeTo($module->getHashPath());
     }
 
