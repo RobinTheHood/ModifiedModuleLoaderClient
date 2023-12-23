@@ -1,6 +1,13 @@
-<?php defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.'); ?>
+<?php
 
-<?php use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo; ?>
+/**
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ */
+
+defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
+
+use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
+?>
 
 <div class="navi">
     <div class="wrapper">

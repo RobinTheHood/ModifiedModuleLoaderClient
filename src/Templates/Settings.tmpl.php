@@ -138,7 +138,7 @@ function viewIsSelected(bool $value): string
                                         <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_LAX) ?> value="lax">lax</option>
                                     </select>
 
-                                    <p>Du kannst zwischen <code>strict</code> und <code>lax</code> wählen. Mit <code>strict</code> werden die Abhänigkeiten von Modulen mit einer Version kleiner als 1.0.0 genauer kontrolliert. Wenn sich einige Module nicht installieren lassen, kannst du es mit <code>lax</code> versuchen. Beachte, dass im Lex-Modus die Wahrscheinlichkeit größer ist, dass verschiedene Module nicht miteinander harmonieren.</p>
+                                    <p>Du kannst zwischen <code>strict</code> und <code>lax</code> wählen. Mit <code>strict</code> werden die Abhängigkeiten von Modulen mit einer Version kleiner als 1.0.0 genauer kontrolliert. Wenn sich einige Module nicht installieren lassen, kannst du es mit <code>lax</code> versuchen. Beachte, dass im Lex-Modus die Wahrscheinlichkeit größer ist, dass verschiedene Module nicht miteinander harmonieren.</p>
                                 </div>
 
                                 <!-- installMode -->

@@ -75,7 +75,8 @@ class ModuleHasher
     public function createShopVendorMmlcHashes(Module $module): HashEntryCollection
     {
         $files = $module->getSrcMmlcFilePaths();
-        $root = App::getShopRoot() . '/' . ModulePathMapper::moduleSrcMmlcToShopVendorMmlc('/', $module->getArchiveName());
+        $root =
+            App::getShopRoot() . '/' . ModulePathMapper::moduleSrcMmlcToShopVendorMmlc('/', $module->getArchiveName());
         return $this->fileHasher->createHashes($files, $root, self::SCOPE_SHOP_VENDOR_MMLC);
     }
 }

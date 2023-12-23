@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ */
+
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\NotificationViewModel;

@@ -97,8 +97,7 @@ $notificationView = new NotificationViewModel();
                 <?php } ?>
 
                 <?php if ($moduleView->isRepairable()) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="
-                    <?= $moduleView->getRevertChangesUrl('moduleInfo') ?> ">
+                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="<?= $moduleView->getRevertChangesUrl('moduleInfo') ?> ">
                         <?php if (Config::getInstallMode() != 'link') {?>
                             <i class="fas fa-tools fa-fw"></i>
                             Änderungen verwerfen
@@ -110,6 +109,16 @@ $notificationView = new NotificationViewModel();
                                     $('#v-pills-files-tab').tab('show');
                                 });
                             </script>
+                        <?php } ?>
+                    </a>
+
+                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="<?= $moduleView->getRevertChangesWithTemplateUrl('moduleInfo') ?> ">
+                        <?php if (Config::getInstallMode() != 'link') {?>
+                            <i class="fas fa-tools fa-fw"></i>
+                            Änderungen verwerfen inkl. Templates
+                        <?php } else { ?>
+                            <i class="fas fa-check fa-fw"></i>
+                            Änderungen übernehmen inkl. Templates (Link-Mode)
                         <?php } ?>
                     </a>
                 <?php } ?>
@@ -127,7 +136,7 @@ $notificationView = new NotificationViewModel();
                     <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren</a>
 
                 <?php } elseif ($moduleView->isIncompatibleInstallable()) { ?>
-                    <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
+                    <a class="button button-success" href="<?= $moduleView->getForceInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
 
                 <?php } elseif ($moduleView->hasInstalledVersion()) { ?>
                     <a class="button button-default" href="<?= $moduleView->getInstalledUrl('moduleInfo') ?>">Zur installierten Version</a>
