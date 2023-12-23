@@ -27,8 +27,8 @@ class SendMail
         if ($fromEmail == '' || $from == '' || $message == '') {
             Notification::pushFlashMessage(
                 [
-                  'text' => 'Warnung: Felder können nicht leer gelassen werden.',
-                  'type' => 'error'
+                    'text' => 'Warnung: Felder können nicht leer gelassen werden.',
+                    'type' => 'error'
                 ]
             );
             return;
@@ -56,8 +56,9 @@ class SendMail
         if (mail($to, $subject, $message, implode("\r\n", $headers))) {
             Notification::pushFlashMessage(
                 [
-                  'text' => 'Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie möglich antworten.',
-                  'type' => 'info'
+                    'text' => 'Erfolg: Die Nachricht wurde erfolgreich gesendet, wir werden so schnell wie möglich
+                        antworten.',
+                    'type' => 'info'
                 ]
             );
         }

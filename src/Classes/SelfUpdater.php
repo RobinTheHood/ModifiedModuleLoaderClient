@@ -238,7 +238,10 @@ class SelfUpdater
     {
         $versionFilePath = $this->appRoot . '/config/version.json';
         if (!file_exists($versionFilePath)) {
-            file_put_contents($this->appRoot . '/config/version.json', '{"version": "' . $mmlcVersionInfo->version . '"}');
+            file_put_contents(
+                $this->appRoot . '/config/version.json',
+                '{"version": "' . $mmlcVersionInfo->version . '"}'
+            );
         }
     }
 
@@ -446,7 +449,8 @@ class SelfUpdater
             . "<ul>\n"
             . "<li>Variant A - Try the following restore link, it will open in a new window. "
             . "<a href=\"restore.php\" target=\"?action=_blank\">To the MMLC restore script in a new window</a></li>\n"
-            . "<li>Variant B - Try to restore you MMLC by moving all files/directories from $backupPath to $rootPath<br>\n"
+            . "<li>Variant B - Try to restore you MMLC by moving all files/directories from "
+            . "$backupPath to $rootPath<br>\n"
             . "and delete directory $rootPath/ModifiedModuleLoaderClient if exists</li>\n"
             . "<li>Variant C - Go to module-loader.de and load the installer to reinstall the MMLC. "
             . "The installer will try to keep your settings and module data.</li>\n"

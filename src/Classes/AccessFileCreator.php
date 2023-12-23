@@ -21,8 +21,16 @@ class AccessFileCreator
         $this->checkAndCreateAccess(App::getArchivesRoot(), []);
         $this->checkAndCreateAccess(App::getSrcRoot() . '/Classes', []);
         $this->checkAndCreateAccess(App::getModulesRoot(), ['png', 'jpg', 'gif']);
-        $this->checkAndCreateAccess(App::getShopRoot() . '/vendor', ['png', 'jpg', 'gif', 'css', 'js', 'svg']);
-        $this->checkAndCreateAccess(App::getShopRoot() . '/vendor-no-composer', ['png', 'jpg', 'gif', 'css', 'js', 'svg']);
+
+        $this->checkAndCreateAccess(
+            App::getShopRoot() . '/vendor',
+            ['png', 'jpg', 'gif', 'css', 'js', 'svg']
+        );
+
+        $this->checkAndCreateAccess(
+            App::getShopRoot() . '/vendor-no-composer',
+            ['png', 'jpg', 'gif', 'css', 'js', 'svg']
+        );
     }
 
     /**

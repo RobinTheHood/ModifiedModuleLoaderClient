@@ -29,8 +29,12 @@ class FileHelper
         return self::scanDirRecursive($rootPath, $mode, $includeInvisibles, 1);
     }
 
-    public static function scanDirRecursive($rootPath, $mode = self::FILES_AND_DIRS, $includeInvisibles = false, $depth = -1)
-    {
+    public static function scanDirRecursive(
+        $rootPath,
+        $mode = self::FILES_AND_DIRS,
+        $includeInvisibles = false,
+        $depth = -1
+    ) {
         $paths = [];
 
         if ($depth == 0) {

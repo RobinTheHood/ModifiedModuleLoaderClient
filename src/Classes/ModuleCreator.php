@@ -57,7 +57,10 @@ class ModuleCreator
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/extra');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules/system');
-        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules/system/' . $fileName, '');
+        file_put_contents(
+            App::getModulesRoot() . '/' . $archiveName . '/src/admin/includes/modules/system/' . $fileName,
+            ''
+        );
 
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/includes');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/includes/extra');
@@ -66,12 +69,18 @@ class ModuleCreator
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules/system');
-        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules/system/' . $fileName, '');
+        file_put_contents(
+            App::getModulesRoot() . '/' . $archiveName . '/src/lang/german/modules/system/' . $fileName,
+            ''
+        );
 
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules/system');
-        file_put_contents(App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules/system/' . $fileName, '');
+        file_put_contents(
+            App::getModulesRoot() . '/' . $archiveName . '/src/lang/english/modules/system/' . $fileName,
+            ''
+        );
 
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src-mmlc/vendor-no-composer');
         @mkdir(App::getModulesRoot() . '/' . $archiveName . '/src-mmlc/Classes');

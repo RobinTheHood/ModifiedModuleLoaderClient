@@ -74,7 +74,8 @@ class ExceptionMonitorFactory
                     . "</ul>\n"
                     . "<h3>📖 Documentation</h3>\n"
                     . "Follow the link to view the documentation for the config.php file in a new window: "
-                    . "<a target=\"_blank\" href=\"https://module-loader.de/docs/config_config.php\">module-loader.de/docs</a>";
+                    . "<a target=\"_blank\" "
+                    . "href=\"https://module-loader.de/docs/config_config.php\">module-loader.de/docs</a>";
 
         $css = "
             <style>
