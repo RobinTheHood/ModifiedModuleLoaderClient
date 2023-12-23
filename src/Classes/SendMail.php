@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient;
 
 use RobinTheHood\ModifiedModuleLoaderClient\ShopInfo;
-use RobinTheHood\ModifiedModuleLoaderClient\SelfUpdater;
 use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 
 class SendMail

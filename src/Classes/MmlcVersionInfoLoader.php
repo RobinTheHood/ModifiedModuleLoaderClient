@@ -18,7 +18,6 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\Comparator;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Filter;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\Parser;
-use RobinTheHood\ModifiedModuleLoaderClient\Semver\Sorter;
 
 class MmlcVersionInfoLoader
 {
