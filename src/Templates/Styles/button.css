@@ -2,6 +2,10 @@
     padding: 10px;
 }
 
+.moduleinfo-buttons > .btn, .moduleinfo-buttons > .btn-group {
+    margin-right: 10px;
+}
+
 .button {
     display: inline-block;
     margin: 0px 0px 0px 10px;
