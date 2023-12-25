@@ -455,7 +455,7 @@ class IndexController extends Controller
         $force = $force === 'true' ? true : false;
 
         if ($force === false) {
-            $moduleManagerResult = $this->moduleManager->update($archiveName, $version);
+            $moduleManagerResult = $this->moduleManager->update($archiveName);
         } else {
             $moduleManagerResult = $this->moduleManager->updateWithoutDependencies($archiveName, true);
         }

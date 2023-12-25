@@ -128,11 +128,11 @@ class ModuleStatus
         $installedVersion = $module->getInstalledVersion();
         $newestVersion = $module->getNewestVersion();
 
-        if ($installedVersion->getVersion() === 'auto') {
+        if (!$installedVersion) {
             return false;
         }
 
-        if (!$installedVersion) {
+        if ($installedVersion->getVersion() === 'auto') {
             return false;
         }
 

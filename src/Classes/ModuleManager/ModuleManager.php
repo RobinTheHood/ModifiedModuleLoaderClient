@@ -460,6 +460,7 @@ class ModuleManager
             $newModule = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
         } else {
             $newModule = $this->moduleLoader->loadLatestVersionByArchiveName($archiveName);
+            $version = '';
         }
 
         if (!$newModule) {

@@ -125,15 +125,18 @@ class ButtonViewModel
         return $classMapping[$class] ?? 'btn-outline-default';
     }
 
-    private function renderActions(): string
+    /**
+     * @param array<int, array{title: string, url: string, message?: string}> $actions
+     */
+    private function renderActions(array $actions): string
     {
         $html = '';
-        foreach ($this->actions as $action) {
-            if ($action['message']) {
+        foreach ($actions as $action) {
+            if ($action['message'] ?? '') {
                 $html .= $this->renderAConfirmTag(
-                    $action['title'],
-                    $action['url'],
-                    $action['message'],
+                    $action['title'] ?? '',
+                    $action['url'] ?? '',
+                    $action['message'] ?? '',
                     'dropdown-item'
                 );
             } else {
