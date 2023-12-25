@@ -81,7 +81,7 @@ class ButtonViewModel
                 '<div class="btn-group">
                     <a class="btn %s" href="%s" %s role="button" aria-expanded="false">%s</a>
                     <button type="button" class="btn %s dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-                        aria-expanded="false">
+                        aria-expanded="false" data-reference="parent">
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu">%s</div>
