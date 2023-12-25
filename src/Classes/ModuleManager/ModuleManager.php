@@ -322,7 +322,7 @@ class ModuleManager
     }
 
     /**
-     * Aktuallisiert das Modul auf die neuste Version. Dabei werden keine Abhänggigkeiten
+     * Aktuallisiert das Modul auf die neuste mögliche Version. Dabei werden keine Abhänggigkeiten
      * aktualisiert. Kommen durch das Update jedoch neue Abhängigkeiten hinzu, werden diese installt. Können nicht alle
      * Abhängigkeiten erfüllt werten, wird nicht aktualisiert und eine Exception geworfen.
      */

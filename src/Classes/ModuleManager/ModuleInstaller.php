@@ -195,11 +195,6 @@ class ModuleInstaller
      *      Set to true to skip the dependency check (default is false).
      * @param bool $force
      *      Set to true to force the installation even if the module is already installed (default is false).
-     *
-     * @throws RuntimeException
-     *      If the module is already installed (and 'force' is false) or if no valid combination of versions for the
-     *      module's dependencies can be found (and 'skipDependencyCheck' is false), a RuntimeException is thrown with
-     *      detailed error messages. Any other errors during the installation process are also reported via exceptions.
      */
     public function installWithoutDependencies(
         Module $module,
@@ -235,11 +230,6 @@ class ModuleInstaller
      *
      * @param Module $module The module to be updated.
      * @param bool $force Set to true to force the update even if the module is not installed (default is false).
-     *
-     * @throws RuntimeException
-     *      If the module is not installed (and 'force' is false) or if no valid combination of versions for the
-     *      module's dependencies can be found, a RuntimeException is thrown with detailed error messages. Any other
-     *      errors during the update process are also reported via exceptions.
      */
     public function update(Module $installedModule, Module $newModule, bool $force = false): void
     {
