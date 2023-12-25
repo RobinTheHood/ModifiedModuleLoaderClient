@@ -132,7 +132,11 @@ class ModuleStatus
             return false;
         }
 
-        if (!$newestVersion->isLoadable()) {
+        if ($installedVersion->getVersion() === 'auto') {
+            return false;
+        }
+
+        if (!$newestVersion->isLoadable() && !$newestVersion->isLoaded()) {
             return false;
         }
 

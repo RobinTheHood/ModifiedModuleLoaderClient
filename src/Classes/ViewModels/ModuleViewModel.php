@@ -33,6 +33,11 @@ class ModuleViewModel
         return $this->getUrl('update', $ref);
     }
 
+    public function getForceUpdateUrl(string $ref = ''): string
+    {
+        return $this->getUrl('update', $ref, null, ['force' => 'true']);
+    }
+
     public function getInstallUrl(string $ref = ''): string
     {
         return $this->getUrl('install', $ref);
@@ -61,6 +66,11 @@ class ModuleViewModel
     public function getUninstallUrl(string $ref = ''): string
     {
         return $this->getUrl('uninstall', $ref);
+    }
+
+    public function getForceUninstallUrl(string $ref = ''): string
+    {
+        return $this->getUrl('uninstall', $ref, null, ['force' => 'true']);
     }
 
     public function getModuleInfoUrl(string $ref = ''): string

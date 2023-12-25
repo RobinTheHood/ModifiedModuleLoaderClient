@@ -451,8 +451,14 @@ class IndexController extends Controller
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
+        $force = $queryParams['force'] ?? '';
+        $force = $force === 'true' ? true : false;
 
-        $moduleManagerResult = $this->moduleManager->update($archiveName);
+        if ($force === false) {
+            $moduleManagerResult = $this->moduleManager->update($archiveName);
+        } else {
+            $moduleManagerResult = $this->moduleManager->updateWithoutDependencies($archiveName, true);
+        }
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
             Notification::pushFlashMessage([
@@ -517,8 +523,10 @@ class IndexController extends Controller
         $queryParams = $this->serverRequest->getQueryParams();
         $archiveName = $queryParams['archiveName'] ?? '';
         $version = $queryParams['version'] ?? '';
+        $force = $queryParams['force'] ?? '';
+        $force = $force === 'true' ? true : false;
 
-        $moduleManagerResult = $this->moduleManager->uninstall($archiveName);
+        $moduleManagerResult = $this->moduleManager->uninstall($archiveName, $force);
 
         if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
             Notification::pushFlashMessage([
