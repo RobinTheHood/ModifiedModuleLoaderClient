@@ -270,9 +270,9 @@ class ModuleInstaller
     }
 
     /**
-     * //TODO: Nicht zur Neusten sondern zu höchst möglichsten Version aktualisieren.
+     *
      */
-    public function updateWithoutMissingDependencies(
+    public function updateWithoutDependencies(
         Module $instaledModule,
         Module $newModule,
         bool $skipDependencyCheck = false,
