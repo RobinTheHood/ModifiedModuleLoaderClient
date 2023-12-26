@@ -138,7 +138,7 @@ function viewIsSelected(bool $value): string
                                         <option <?= viewIsSelected(Config::getDependenyMode() === Comparator::CARET_MODE_LAX) ?> value="lax">lax</option>
                                     </select>
 
-                                    <p>Du kannst zwischen <code>strict</code> und <code>lax</code> wählen. Mit <code>strict</code> werden die Abhänigkeiten von Modulen mit einer Version kleiner als 1.0.0 genauer kontrolliert. Wenn sich einige Module nicht installieren lassen, kannst du es mit <code>lax</code> versuchen. Beachte, dass im Lex-Modus die Wahrscheinlichkeit größer ist, dass verschiedene Module nicht miteinander harmonieren.</p>
+                                    <p>Du kannst zwischen <code>strict</code> und <code>lax</code> wählen. Mit <code>strict</code> werden die Abhängigkeiten von Modulen mit einer Version kleiner als 1.0.0 genauer kontrolliert. Wenn sich einige Module nicht installieren lassen, kannst du es mit <code>lax</code> versuchen. Beachte, dass im Lex-Modus die Wahrscheinlichkeit größer ist, dass verschiedene Module nicht miteinander harmonieren.</p>
                                 </div>
 
                                 <!-- installMode -->
@@ -156,7 +156,7 @@ function viewIsSelected(bool $value): string
                                 <div class="form-group">
                                     <label for="inputExceptionMonitorDomain">ExceptionMonitor Domain</label>
                                     <input type="text" name="exceptionMonitorDomain" class="form-control" id="inputExceptionMonitorDomain" value="<?= Config::getExceptionMonitorDomain(); ?>">
-                                    <p>Wenn der MMLC programmierfehler im Browser anzeigen soll, kannst hier die Domain eintragen werden, für die dieses gilt. Der ExceptionMonitor wird bei Fehlern aktiv, sobald die Domain hinterlegte Domain die gleiche ist, von der der MMLC aufgerufen wird. Beispiel <code>www.example.org</code></p>
+                                    <p>Wenn der MMLC programmierfehler im Browser anzeigen soll, kannst hier die Domain eintragen werden, für der ExcpetionMontir fehler anzeigen soll. Der ExceptionMonitor wird bei Fehlern aktiv, sobald die hinterlegte Domain die Gleiche ist, von der der MMLC aufgerufen wird. Beispiel <code>www.example.org</code></p>
                                 </div>
 
                                 <div class="form-group">

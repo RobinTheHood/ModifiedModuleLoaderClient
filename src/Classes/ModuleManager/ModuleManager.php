@@ -241,24 +241,89 @@ class ModuleManager
 
     /**
      * Installiert ein Modul in das Shop System ABER lädt und installiert KEINE Abhängigkeiten / abhängige Module nach.
-     * Sind nicht alle Abhängigkeiten erfüllt, wird nicht installiert und eine Exception geworfen.
      *
      * @param bool $skipDependencyCheck skip dependency check.
      */
-    // public function installWithoutDependencies(
-    //     string $archiveName,
-    //     string $versionConstraint,
-    //     bool $skipDependencyCheck = false
-    // ): void {
-    //     $this->moduleInstaller->installWithoutDependencies($module, $skipDependencyCheck, false);
+    public function installWithoutDependencies(
+        string $archiveName,
+        string $versionConstraint,
+        bool $skipDependencyCheck = false
+    ): ModuleManagerResult {
+        $moduleLoader = ModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadLatestByArchiveNameAndConstraint($archiveName, $versionConstraint);
 
-    //     $autoloadFileCreator = new AutoloadFileCreator();
-    //     $autoloadFileCreator->createAutoloadFile();
-    // }
+        if (!$module) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_ERROR_MODULE_NOT_FOUND)
+                ->setArchiveName($archiveName)
+                ->setVersionConstraint($versionConstraint)
+            );
+        }
+
+        if ($skipDependencyCheck === false) {
+            $systemSet = $this->systemSetFactory->getSystemSet();
+
+            $combinationSatisfyerResult
+                = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
+            if (
+                $combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND
+                || !$combinationSatisfyerResult->foundCombination
+            ) {
+                return $this->error(
+                    ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_ERROR_MODULE_MISSING_REQUIREMENTS)
+                    ->setArchiveName($archiveName)
+                    ->setVersionConstraint($versionConstraint)
+                    ->setCombinationSatisfyerResult($combinationSatisfyerResult)
+                );
+            }
+
+            $version = $combinationSatisfyerResult->foundCombination->getVersion($archiveName);
+
+            $module = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+
+            if (!$module) {
+                return $this->error(
+                    ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_ERROR_MODULE_NOT_FOUND)
+                    ->setArchiveName($archiveName)
+                    ->setVersionConstraint($versionConstraint)
+                );
+            }
+        }
+
+        if ($module->isInstalled()) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_ERROR_MODULE_ALLREADY_INSTALED)
+                ->setModule($module)
+            );
+        }
+
+        if (!$module->isLoaded()) {
+            $this->info(
+                ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_INFO_PULL_MODULE_START)
+                ->setModule($module)
+            );
+            $module = $this->moduleInstaller->pull($module);
+        }
+
+        $this->info(
+            ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_INFO_START)
+            ->setModule($module)
+        );
+        $this->moduleInstaller->installWithoutDependencies($module, true, true);
+
+        $this->info(
+            ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_INFO_UPDATE_AUTOLOAD_START)
+        );
+        $autoloadFileCreator = new AutoloadFileCreator();
+        $autoloadFileCreator->createAutoloadFile();
+
+        return ModuleManagerResult::success()
+            ->setModule($module);
+    }
 
     /**
-     * Aktuallisiert das Modul auf die neuste Version. Dabei werden keine Abhänggigkeiten
-     * aktualisiert. Kommen durch das Update jedoch neue Abhänigkeiten hinzu, werden diese installt. Können nicht alle
+     * Aktuallisiert das Modul auf die neuste mögliche Version. Dabei werden keine Abhänggigkeiten
+     * aktualisiert. Kommen durch das Update jedoch neue Abhängigkeiten hinzu, werden diese installt. Können nicht alle
      * Abhängigkeiten erfüllt werten, wird nicht aktualisiert und eine Exception geworfen.
      */
     public function update(string $archiveName): ModuleManagerResult
@@ -287,11 +352,45 @@ class ModuleManager
             );
         }
 
+        $systemSet = $this->systemSetFactory->getSystemSet();
+        $versionConstraint = '>' . $module->getVersion();
+        $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
+        if (
+            $combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND
+            || !$combinationSatisfyerResult->foundCombination
+        ) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_MISSING_REQUIREMENTS)
+                ->setArchiveName($archiveName)
+                ->setVersionConstraint($versionConstraint)
+                ->setCombinationSatisfyerResult($combinationSatisfyerResult)
+            );
+        }
+
+        $version = $combinationSatisfyerResult->foundCombination->getVersion($archiveName);
+        $newModule = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+
+        if (!$newModule) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_NOT_FOUND)
+                ->setArchiveName($archiveName)
+                ->setVersion($version)
+            );
+        }
+
+        if (!$newModule->isLoaded()) {
+            $this->info(
+                ModuleManagerMessage::create(ModuleManagerMessage::UDPATE_INFO_PULL_MODULE_START)
+                ->setModule($newModule)
+            );
+            $newModule = $this->moduleInstaller->pull($newModule);
+        }
+
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_START)
             ->setModule($module)
         );
-        $newModule = $this->moduleInstaller->update($module, false);
+        $this->moduleInstaller->update($module, $newModule, false);
 
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_TO)
@@ -310,23 +409,97 @@ class ModuleManager
     }
 
     /**
-     * Aktualiseirt NUR das Modul auf die neuste Version. Es werden keine fehlenden Abhänggigkeiten
+     * Aktualiseirt NUR das Modul auf die neuste möglche Version. Es werden keine fehlenden Abhänggigkeiten
      * installiert. Es werden keine Abhänggigkeiten aktualisiert. Können nicht alle Abhängigkeiten erfüllt werten,
-     * wird nicht aktualisiert und eine Exception geworfen.
+     * wird nicht aktualisiert, es sei denn, der Abhängigkeits-Check wird mit $skipDependencyCheck deaktiviert.
      */
-    // public function updateWithoutMissingDependencies(string $archvieName, bool $skipDependencyCheck = false): Module
-    // {
-    //     $loadedNewModul = $this->moduleInstaller->updateWithoutMissingDependencies(
-    //         $module,
-    //         $skipDependencyCheck,
-    //         false
-    //     );
+    public function updateWithoutDependencies(
+        string $archiveName,
+        bool $skipDependencyCheck = false
+    ): ModuleManagerResult {
+        $moduleLoader = LocalModuleLoader::createFromConfig();
+        $module = $moduleLoader->loadInstalledVersionByArchiveName($archiveName);
 
-    //     $autoloadFileCreator = new AutoloadFileCreator();
-    //     $autoloadFileCreator->createAutoloadFile();
+        if (!$module) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_NOT_FOUND)
+                ->setArchiveName($archiveName)
+            );
+        }
 
-    //     return $loadedNewModul;
-    // }
+        if (!$module->isInstalled()) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_NOT_INSTALLED)
+                ->setModule($module)
+            );
+        }
+
+        if ($module->isChanged()) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_IS_CHANGED)
+                ->setModule($module)
+            );
+        }
+
+        if ($skipDependencyCheck === false) {
+            $systemSet = $this->systemSetFactory->getSystemSet();
+            $versionConstraint = '>' . $module->getVersion();
+            $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
+            if (
+                $combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND
+                || !$combinationSatisfyerResult->foundCombination
+            ) {
+                return $this->error(
+                    ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_MISSING_REQUIREMENTS)
+                    ->setArchiveName($archiveName)
+                    ->setVersionConstraint($versionConstraint)
+                    ->setCombinationSatisfyerResult($combinationSatisfyerResult)
+                );
+            }
+            $version = $combinationSatisfyerResult->foundCombination->getVersion($archiveName);
+            $newModule = $this->moduleLoader->loadByArchiveNameAndVersion($archiveName, $version);
+        } else {
+            $newModule = $this->moduleLoader->loadLatestVersionByArchiveName($archiveName);
+            $version = '';
+        }
+
+        if (!$newModule) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_ERROR_MODULE_NOT_FOUND)
+                ->setArchiveName($archiveName)
+                ->setVersion($version)
+            );
+        }
+
+        if (!$newModule->isLoaded()) {
+            $this->info(
+                ModuleManagerMessage::create(ModuleManagerMessage::UDPATE_INFO_PULL_MODULE_START)
+                ->setModule($newModule)
+            );
+            $newModule = $this->moduleInstaller->pull($newModule);
+        }
+
+        $this->info(
+            ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_START)
+            ->setModule($module)
+        );
+        $this->moduleInstaller->updateWithoutDependencies($module, $newModule, true, true);
+
+        $this->info(
+            ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_TO)
+            ->setModule($newModule)
+        );
+
+        $this->info(
+            ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_UPDATE_AUTOLOAD_START)
+        );
+
+        $autoloadFileCreator = new AutoloadFileCreator();
+        $autoloadFileCreator->createAutoloadFile();
+
+        return ModuleManagerResult::success()
+            ->setModule($newModule);
+    }
 
     /**
      * Entfernt alle Änderungen die an den Modul-Dateien im Shop gemacht wurden. Änderungen an Template Dateien werden
@@ -357,7 +530,8 @@ class ModuleManager
         );
 
         $this->moduleInstaller->discard($module, $withTemplate, false);
-        return ModuleManagerResult::success();
+        return ModuleManagerResult::success()
+            ->setModule($module);
     }
 
     /**
@@ -413,6 +587,7 @@ class ModuleManager
         $autoloadFileCreator = new AutoloadFileCreator();
         $autoloadFileCreator->createAutoloadFile();
 
-        return ModuleManagerResult::success();
+        return ModuleManagerResult::success()
+            ->setModule($module);
     }
 }

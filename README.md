@@ -58,7 +58,8 @@ ddev exec --dir=/var/www/html/ModifiedModuleLoaderClient ./mmlc watch
 ```
 
 ## Requirements
-PHP 7.4 or above
+- PHP 7.4 or above
+- modified 2.0.6.0 to 3.0.0
 
 ## Authors
 - Robin Wieschendorf | <mail@robinwieschendorf.de> | [robinwieschendorf.de](https://robinwieschendorf.de)

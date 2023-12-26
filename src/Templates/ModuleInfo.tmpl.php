@@ -91,52 +91,7 @@ $notificationView = new NotificationViewModel();
         </div>
 
         <div class="content">
-            <div class="moduleinfo-buttons">
-                <?php if ($moduleView->isUpdatable() && !$moduleView->isRepairable()) { ?>
-                    <a class="button button-success" href="<?= $moduleView->getUpdateUrl('moduleInfo') ?>">Update installieren</a>
-                <?php } ?>
-
-                <?php if ($moduleView->isRepairable()) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du deine Änderungen wirklich rückgängig machen?');" href="
-                    <?= $moduleView->getRevertChangesUrl('moduleInfo') ?> ">
-                        <?php if (Config::getInstallMode() != 'link') {?>
-                            <i class="fas fa-tools fa-fw"></i>
-                            Änderungen verwerfen
-                        <?php } else { ?>
-                            <i class="fas fa-check fa-fw"></i>
-                            Änderungen übernehmen (Link-Mode)
-                            <script>
-                                $(document).ready(function() {
-                                    $('#v-pills-files-tab').tab('show');
-                                });
-                            </script>
-                        <?php } ?>
-                    </a>
-                <?php } ?>
-
-                <?php if ($moduleView->isCompatibleLoadableAndInstallable()) { ?>
-                    <a class="button button-default" href="<?= $moduleView->getLoadAndInstallUrl('moduleInfo') ?>">Download & Install</a>
-
-                <?php } elseif ($moduleView->isIncompatibleLoadebale()) { ?>
-                    <a class="button button-default" href="<?= $moduleView->getLoadModuleUrl('moduleInfo') ?>">Download (inkompatible Version)</a>
-
-                <?php } elseif ($moduleView->isUninstallable() && !$moduleView->isRepairable()) { ?>
-                    <a class="button button-danger" href="<?= $moduleView->getUninstallUrl('moduleInfo') ?>">Deinstallieren</a>
-
-                <?php } elseif ($moduleView->isCompatibleInstallable()) { ?>
-                    <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren</a>
-
-                <?php } elseif ($moduleView->isIncompatibleInstallable()) { ?>
-                    <a class="button button-success" href="<?= $moduleView->getInstallUrl('moduleInfo') ?>">Installieren (inkompatible Version)</a>
-
-                <?php } elseif ($moduleView->hasInstalledVersion()) { ?>
-                    <a class="button button-default" href="<?= $moduleView->getInstalledUrl('moduleInfo') ?>">Zur installierten Version</a>
-                <?php } ?>
-
-                <?php if (!$moduleView->isRemote() && $moduleView->isLoaded() && !$moduleView->isInstalled()) { ?>
-                    <a class="button button-danger" onclick="return confirm('Möchtest du das Modul wirklich entfernen?');" href="<?= $moduleView->getUnloadModuleUrl('moduleInfo') ?>">Modul löschen</a>
-                <?php } ?>
-            </div>
+            <?php include 'ModuleInfoButtons.tmpl.php'; ?>
 
             <div class="row">
                 <div class="col-3">
@@ -255,6 +210,11 @@ $notificationView = new NotificationViewModel();
                                         </tr>
 
                                         <tr>
+                                            <td>Datum</td>
+                                            <td><?= $moduleView->getDate(); ?></td>
+                                        </tr>
+
+                                        <tr>
                                             <td>Kompatibel mit Modified</td>
                                             <td>
                                                 <?php if ($module->getModifiedCompatibility()) { ?>
@@ -332,7 +292,9 @@ $notificationView = new NotificationViewModel();
                                             <td>Alle Versionen</td>
                                             <td>
                                                 <?php foreach ($module->getVersions() as $moduleVersion) {?>
-                                                    <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>"><?= $moduleVersion->getVersion(); ?></a>
+                                                    <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>">
+                                                        <?= $moduleVersion->getVersion(); ?>
+                                                    </a>
                                                     <?php if ($moduleVersion->isInstalled()) { ?>
                                                         <span>installiert</span>
                                                     <?php } elseif ($moduleVersion->isLoaded()) { ?>

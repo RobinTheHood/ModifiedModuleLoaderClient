@@ -58,4 +58,19 @@ class ModuleManagerResult
         $this->message = $message;
         return $this;
     }
+
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    public function getModule(): ?Module
+    {
+        return $this->module;
+    }
+
+    public function getMessage(): ?ModuleManagerMessage
+    {
+        return $this->message;
+    }
 }

@@ -21,7 +21,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\FileHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleFilter;
-use RobinTheHood\ModifiedModuleLoaderClient\ModuleInstaller;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManager;
 
 class CommandWatch implements CommandInterface
 {
@@ -86,8 +86,8 @@ class CommandWatch implements CommandInterface
 
                 // Apply changes
                 $cli->writeLine('Apply changes to ' . $module->getArchiveName());
-                $moduleInstaller = ModuleInstaller::createFromConfig();
-                $moduleInstaller->revertChanges($module);
+                $moduleManager = ModuleManager::createFromConfig();
+                $result = $moduleManager->discard($module->getArchiveName());
                 $directoryWatcher->reset();
             }
         });

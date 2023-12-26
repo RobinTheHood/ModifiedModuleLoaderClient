@@ -35,7 +35,9 @@ class ExceptionMonitorFactory
         });
 
         $publicMessageHandler = new CallbackHandler(function (Throwable $exception) {
-            ob_end_clean();
+            if (ob_get_length() > 0 || ob_get_level() > 0) {
+                ob_end_clean();
+            }
             header("HTTP/1.0 500 Internal Server Error");
             echo self::createMessage();
             die();
@@ -72,7 +74,8 @@ class ExceptionMonitorFactory
                     . "</ul>\n"
                     . "<h3>📖 Documentation</h3>\n"
                     . "Follow the link to view the documentation for the config.php file in a new window: "
-                    . "<a target=\"_blank\" href=\"https://module-loader.de/docs/config_config.php\">module-loader.de/docs</a>";
+                    . "<a target=\"_blank\" "
+                    . "href=\"https://module-loader.de/docs/config_config.php\">module-loader.de/docs</a>";
 
         $css = "
             <style>

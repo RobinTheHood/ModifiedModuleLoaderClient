@@ -19,6 +19,7 @@ class FileHelper
     public const FILES_ONLY = 1;
     public const DIRS_ONLY = 2;
 
+    /** @var String[] */
     protected static $ignoreList = [
         '.DS_Store', '.git'
     ];
@@ -28,8 +29,12 @@ class FileHelper
         return self::scanDirRecursive($rootPath, $mode, $includeInvisibles, 1);
     }
 
-    public static function scanDirRecursive($rootPath, $mode = self::FILES_AND_DIRS, $includeInvisibles = false, $depth = -1)
-    {
+    public static function scanDirRecursive(
+        $rootPath,
+        $mode = self::FILES_AND_DIRS,
+        $includeInvisibles = false,
+        $depth = -1
+    ) {
         $paths = [];
 
         if ($depth == 0) {

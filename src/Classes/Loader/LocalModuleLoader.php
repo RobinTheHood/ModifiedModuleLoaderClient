@@ -31,16 +31,16 @@ class LocalModuleLoader
     /** @var string */
     private $modulesRootPath;
 
-    public static function createFromConfig(): LocalModuleLoader
-    {
-        return self::create(Config::getDependenyMode());
-    }
-
     public static function create(int $mode): LocalModuleLoader
     {
         $moduleFilter = ModuleFilter::create($mode);
         $localModuleLoader = new LocalModuleLoader($moduleFilter);
         return $localModuleLoader;
+    }
+
+    public static function createFromConfig(): LocalModuleLoader
+    {
+        return self::create(Config::getDependenyMode());
     }
 
     public function __construct(ModuleFilter $moduleFilter)

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ */
+
 defined('LOADED_FROM_INDEX') && LOADED_FROM_INDEX ?? die('Access denied.');
 
 use RobinTheHood\ModifiedModuleLoaderClient\ViewModels\ModuleViewModel;
@@ -13,7 +17,7 @@ if ($module->isCompatible()) {
     $tooltip = 'Dieses Modul wurde getestet und funktioniert mit deiner Version von modified.';
 } else {
     $compatibility = 'inkompatibel';
-    $tooltip = 'Dieses Modul wurde noch nicht mit deiner Version von modified getestet.';
+    $tooltip = 'Dieses Modul wurde nicht mit deiner Version von modified getestet.';
 }
 
 $modulePrice = $module->isInstalled() ? 'installiert' : $moduleView->getPriceFormated();

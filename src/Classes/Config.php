@@ -39,7 +39,9 @@ class Config
     protected static function readConfiguration(bool $cache = true): array
     {
         if (!file_exists(self::path())) {
-            throw new \RuntimeException('Configuration not found. The file "' . self::path() . '" does not seem to exist.');
+            throw new \RuntimeException(
+                'Configuration not found. The file "' . self::path() . '" does not seem to exist.'
+            );
         }
 
         /**

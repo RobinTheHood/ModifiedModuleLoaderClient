@@ -24,14 +24,30 @@ use RuntimeException;
 
 class ModuleFileInstaller
 {
-    /**
-     * (Re-) Installiert / überschreibt ein Modul (archiveName, Version) ohne dabei auf Abhänigkeiten und den
-     * Modulstatus zu achten. Es wird nur auf Dateiebene kontrolliert, ob alle Dateien geschrieben werden konnten.
-     * Erzeuchht die modulehash.json. Die Autoload Datei wird NICHT erzeugt / erneuert.
-     */
-    public function install(Module $module): void
+    /** @var ModuleHashFileCreator */
+    private $moduleHashFileCreator;
+
+    public static function create(): ModuleFileInstaller
     {
-        $this->installFiles($module);
+        $moduleHashFileCreator = ModuleHashFileCreator::create();
+        return new ModuleFileInstaller(
+            $moduleHashFileCreator
+        );
+    }
+
+    public function __construct(ModuleHashFileCreator $moduleHashFileCreator)
+    {
+        $this->moduleHashFileCreator = $moduleHashFileCreator;
+    }
+
+    /**
+     * (Re-) Installiert / überschreibt ein Modul (archiveName, Version) ohne dabei auf Abhängigkeiten und den
+     * Modulstatus zu achten. Es wird nur auf Dateiebene kontrolliert, ob alle Dateien geschrieben werden konnten.
+     * Erzeugt die modulehash.json. Die Autoload Datei wird NICHT erzeugt / erneuert.
+     */
+    public function install(Module $module, bool $overwriteTemplateFiles = false): void
+    {
+        $this->installFiles($module, $overwriteTemplateFiles);
         $this->createHashFile($module);
     }
 
@@ -51,7 +67,7 @@ class ModuleFileInstaller
      * kontrolliert, ob alle Dateien geschrieben werden konnten. Die `modulehash.json` Datei wird NICHT erzeugt /
      * erneuert.
      */
-    private function installFiles(Module $module): void
+    private function installFiles(Module $module, bool $overwriteTemplateFiles): void
     {
         // Install Source Files to Shop Root
         $files = $module->getSrcFilePaths();
@@ -59,17 +75,21 @@ class ModuleFileInstaller
         foreach ($files as $file) {
             $src = $module->getLocalRootPath() . $module->getSrcRootPath() . '/' . $file;
 
-            // TODO: Kontrollieren, könnte es Probleme machen, dass $files hier noch einmal zugewiesen / gesetzt wird?
-            $files = $module->getTemplateFiles($file);
-            foreach ($files as $file) {
+            $expandedFiles = $module->getTemplateFiles($file);
+            foreach ($expandedFiles as $expandedFile) {
                 $overwrite = false;
-                if (!FileInfo::isTemplateFile($file)) {
+
+                if ($overwriteTemplateFiles === true) {
                     $overwrite = true;
                 }
 
-                $file = ModulePathMapper::moduleSrcToShopRoot($file);
+                if (!FileInfo::isTemplateFile($expandedFile)) {
+                    $overwrite = true;
+                }
 
-                $dest = App::getShopRoot() . $file;
+                $expandedFile = ModulePathMapper::moduleSrcToShopRoot($expandedFile);
+
+                $dest = App::getShopRoot() . $expandedFile;
                 $this->installFile($src, $dest, $overwrite);
             }
         }
@@ -130,8 +150,7 @@ class ModuleFileInstaller
      */
     private function createHashFile(Module $module): void
     {
-        $moduleHashFileCreator = new ModuleHashFileCreator();
-        $moduleHashFile = $moduleHashFileCreator->createHashFile($module);
+        $moduleHashFile = $this->moduleHashFileCreator->createHashFile($module);
         $moduleHashFile->writeTo($module->getHashPath());
     }
 

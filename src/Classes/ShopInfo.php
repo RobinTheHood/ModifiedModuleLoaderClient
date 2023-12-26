@@ -47,25 +47,23 @@ class ShopInfo
         }
 
         $fileStr = file_get_contents($path);
-        $pos = strpos($fileStr, 'MOD_');
 
-        if ($pos) {
-            /**
-             * DB_VERSION exists in file
-             */
-            $version = substr($fileStr, (int) $pos + 4, 7);
-        } else {
-            /**
-             * DB_VERSION does not exists in file
-             * use PROJECT_MAJOR_VERSION and PROJECT_MINOR_VERSION instead
-             */
-            preg_match('/MAJOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMajor);
-            preg_match('/MINOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMinor);
-
-            $version = $versionMajor[1] . '.' . $versionMinor[1];
+        // Try DB_VERSION
+        $pattern = "/MOD_(\d+\.\d+\.\d+(\.\d+)?)\'\);/";
+        if (preg_match($pattern, $fileStr, $matches)) {
+            return $matches[1];
         }
 
-        return $version;
+        // Try MAJOR_VERSION ans MINOR_VERSION
+        preg_match('/MAJOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMajor);
+        preg_match('/MINOR_VERSION.+?\'([\d\.]+)\'/', $fileStr, $versionMinor);
+        $versionMajor[1] = $versionMajor[1] ?? '';
+        $versionMinor[1] = $versionMinor[1] ?? '';
+        if ($versionMajor[1] && $versionMinor[1]) {
+            return $versionMajor[1] . '.' . $versionMinor[1];
+        }
+
+        return 'unknown';
     }
 
     /**

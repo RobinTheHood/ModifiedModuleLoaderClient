@@ -22,6 +22,11 @@ class ModuleHashFileCreator
     /** @var ModuleHasher */
     private $moduleHasher;
 
+    public static function create(): ModuleHashFileCreator
+    {
+        return new ModuleHashFileCreator();
+    }
+
     public function __construct()
     {
         $this->moduleHasher = new ModuleHasher(new FileHasher());

@@ -22,11 +22,14 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Archive;
  */
 class ArchiveName
 {
-    private string $value;
+    /** @var string */
+    private $value;
 
-    private string $vendorName;
+    /** @var string */
+    private $vendorName;
 
-    private string $moduleName;
+    /** @var string */
+    private $moduleName;
 
     public function __construct(string $value)
     {

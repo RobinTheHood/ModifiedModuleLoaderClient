@@ -34,11 +34,13 @@ class ModuleManagerMessage
     public const INSTALL_ERROR_MODULE_ALLREADY_INSTALED = 353;
 
     public const UPDATE_INFO_START = 400;
-    public const UPDATE_INFO_TO = 401;
+    public const UDPATE_INFO_PULL_MODULE_START = 401;
     public const UPDATE_INFO_UPDATE_AUTOLOAD_START = 402;
+    public const UPDATE_INFO_TO = 403;
     public const UPDATE_ERROR_MODULE_NOT_FOUND = 451;
     public const UPDATE_ERROR_MODULE_NOT_INSTALLED = 452;
-    public const UPDATE_ERROR_MODULE_IS_CHANGED = 453;
+    public const UPDATE_ERROR_MODULE_MISSING_REQUIREMENTS = 453;
+    public const UPDATE_ERROR_MODULE_IS_CHANGED = 454;
 
     public const DISCARD_INFO_START = 500;
     public const DISCARD_ERROR_MODULE_NOT_FOUND = 551;
@@ -183,6 +185,8 @@ class ModuleManagerMessage
             return sprintf("Can not install %s, because it is already installed.", $this->getModulName());
         } elseif ($this->code === self::UPDATE_INFO_START) {
             return sprintf("Updating %s ...", $this->getModulName());
+        } elseif ($this->code === self::UDPATE_INFO_PULL_MODULE_START) {
+            return sprintf("Pulling %s ...", $this->getModulName());
         } elseif ($this->code === self::UPDATE_INFO_TO) {
             return sprintf("Updated to %s.", $this->getModulName());
         } elseif ($this->code === self::UPDATE_INFO_UPDATE_AUTOLOAD_START) {
@@ -191,6 +195,12 @@ class ModuleManagerMessage
             return sprintf("Can not update %s, because module not found.", $this->getModulName());
         } elseif ($this->code === self::UPDATE_ERROR_MODULE_NOT_INSTALLED) {
             return sprintf("Can not update %s, because module is not installed.", $this->getModulName());
+        } elseif ($this->code === self::UPDATE_ERROR_MODULE_MISSING_REQUIREMENTS) {
+            return sprintf(
+                "Can not update %s, because not all requirements are met.\n%s",
+                $this->getModulName(),
+                '' . $this->combinationSatisfyerResult->failLog
+            );
         } elseif ($this->code === self::UPDATE_ERROR_MODULE_IS_CHANGED) {
             return sprintf("Can not update %s, because module has changes.", $this->getModulName());
         } elseif ($this->code === self::DISCARD_INFO_START) {

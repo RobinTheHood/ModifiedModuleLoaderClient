@@ -16,7 +16,6 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\Api\V2\Endpoints;
 use Buzz\Browser;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\ApiException;
 use RobinTheHood\ModifiedModuleLoaderClient\Api\V2\ApiToken;
-use RobinTheHood\ModifiedModuleLoaderClient\Notification;
 
 class AuthenticationEndpoint extends AbstractEndpoint
 {

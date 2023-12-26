@@ -38,17 +38,22 @@ class ModuleInstaller
     /** @var ArchiveHandler */
     private $archiveHandler;
 
+    /** @var ModuleFileInstaller */
+    private $moduleFileInstaller;
+
     public static function create(int $mode): ModuleInstaller
     {
         $dependencyManager = DependencyManager::create($mode);
         $localModuleLoader = LocalModuleLoader::create($mode);
         $archivePuller = ArchivePuller::create();
         $archiveHandler = ArchiveHandler::create($mode);
+        $moduleFileInstaller = ModuleFileInstaller::create();
         $moduleInstaller = new ModuleInstaller(
             $dependencyManager,
             $localModuleLoader,
             $archivePuller,
-            $archiveHandler
+            $archiveHandler,
+            $moduleFileInstaller
         );
         return $moduleInstaller;
     }
@@ -62,12 +67,14 @@ class ModuleInstaller
         DependencyManager $dependencyManager,
         LocalModuleLoader $localModuleLoader,
         ArchivePuller $archivePuller,
-        ArchiveHandler $archiveHandler
+        ArchiveHandler $archiveHandler,
+        ModuleFileInstaller $moduleFileInstaller
     ) {
         $this->dependencyManager = $dependencyManager;
         $this->localModuleLoader = $localModuleLoader;
         $this->archivePuller = $archivePuller;
         $this->archiveHandler = $archiveHandler;
+        $this->moduleFileInstaller = $moduleFileInstaller;
     }
 
     /**
@@ -164,11 +171,7 @@ class ModuleInstaller
             $this->error("Can not install $moduleText, because $installedModuleText is already installed.");
         }
 
-        // if (!$force && $module->isInstalled()) {
-        //     $this->error("Can not install $moduleText. Module is already installed.");
-        // }
-
-        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module, ['']);
+        $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
 
         if (!$combinationSatisfyerResult->foundCombination) {
             $this->error("Can not install $moduleText with dependencies. No possible combination of versions found");
@@ -192,11 +195,6 @@ class ModuleInstaller
      *      Set to true to skip the dependency check (default is false).
      * @param bool $force
      *      Set to true to force the installation even if the module is already installed (default is false).
-     *
-     * @throws RuntimeException
-     *      If the module is already installed (and 'force' is false) or if no valid combination of versions for the
-     *      module's dependencies can be found (and 'skipDependencyCheck' is false), a RuntimeException is thrown with
-     *      detailed error messages. Any other errors during the installation process are also reported via exceptions.
      */
     public function installWithoutDependencies(
         Module $module,
@@ -210,7 +208,6 @@ class ModuleInstaller
         }
 
         if (!$skipDependencyCheck) {
-            // Wirft eine Exception, wenn keine passenen Kombination gefunden wurde.
             $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($module);
 
             if (!$combinationSatisfyerResult->foundCombination) {
@@ -218,8 +215,7 @@ class ModuleInstaller
             }
         }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->install($module);
+        $this->moduleFileInstaller->install($module);
         $this->reload($module);
     }
 
@@ -229,32 +225,24 @@ class ModuleInstaller
      * This method is responsible for updating a module to its newest version. It verifies whether the module is
      * installed (unless 'force' is set to true) and ensures that a valid combination of versions for the module's
      * dependencies can be found. The newest version is pulled and installed, and its dependencies are also installed as
-     * necessary. Any errors during the update process are reported via exceptions, and the loaded new module is returned.
+     * necessary. Any errors during the update process are reported via exceptions, and the loaded new module is
+     * returned.
      *
      * @param Module $module The module to be updated.
      * @param bool $force Set to true to force the update even if the module is not installed (default is false).
-     *
-     * @return Module The loaded new module instance after the update.
-     *
-     * @throws RuntimeException
-     *      If the module is not installed (and 'force' is false) or if no valid combination of versions for the
-     *      module's dependencies can be found, a RuntimeException is thrown with detailed error messages. Any other
-     *      errors during the update process are also reported via exceptions.
      */
-    public function update(Module $module, bool $force = false): Module
+    public function update(Module $installedModule, Module $newModule, bool $force = false): void
     {
-        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+        $moduleText = "module {$installedModule->getArchiveName()} {$installedModule->getVersion()}";
 
-        if (!$force && !$module->isInstalled()) {
+        if (!$force && !$installedModule->isInstalled()) {
             $this->error("Can not update $moduleText. Module is not installed.");
         }
 
-        $newModule = $module->getNewestVersion();
-
-        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+        $moduleText = "module {$installedModule->getArchiveName()} {$installedModule->getVersion()}";
         $newModuleText = "module {$newModule->getArchiveName()} {$newModule->getVersion()}";
 
-        if ($module->getVersion() === $newModule->getVersion()) {
+        if ($installedModule->getVersion() === $newModule->getVersion()) {
             $this->error("Can not update $moduleText to $newModuleText.");
         }
 
@@ -274,36 +262,32 @@ class ModuleInstaller
             $loadedNewModule = $this->pull($newModule);
         }
 
-        $this->uninstall($module);
+        $this->uninstall($installedModule);
         // Modul installieren
         $this->installWithoutDependencies($loadedNewModule);
         // Modul Abhängigkeiten installieren
         $this->installDependencies($loadedNewModule, $foundCombination);
-
-        return $loadedNewModule;
     }
 
     /**
-     * //TODO: Nicht zur Neusten sondern zu höchst möglichsten Version aktualisieren.
+     *
      */
-    public function updateWithoutMissingDependencies(
-        Module $module,
+    public function updateWithoutDependencies(
+        Module $instaledModule,
+        Module $newModule,
         bool $skipDependencyCheck = false,
         bool $force = false
     ): Module {
-        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+        $moduleText = "module {$instaledModule->getArchiveName()} {$instaledModule->getVersion()}";
 
-        if (!$force && !$module->isInstalled()) {
+        if (!$force && !$instaledModule->isInstalled()) {
             $this->error("Can not update $moduleText. Module is not installed.");
         }
 
-        $newModule = $module->getNewestVersion();
-
-        $moduleText = "module {$module->getArchiveName()} {$module->getVersion()}";
+        $moduleText = "module {$instaledModule->getArchiveName()} {$instaledModule->getVersion()}";
         $newModuleText = "module {$newModule->getArchiveName()} {$newModule->getVersion()}";
 
         if (!$skipDependencyCheck) {
-            // Wirft eine Exception, wenn keine passenen Kombination gefunden wurde.
             $combinationSatisfyerResult = $this->dependencyManager->canBeInstalled($newModule);
 
             if (!$combinationSatisfyerResult->foundCombination) {
@@ -320,7 +304,7 @@ class ModuleInstaller
             $loadedNewModule = $this->pull($newModule);
         }
 
-        $this->uninstall($module);
+        $this->uninstall($instaledModule);
         $this->installWithoutDependencies($loadedNewModule);
 
         return $loadedNewModule;
@@ -334,8 +318,7 @@ class ModuleInstaller
             $this->error("Can not revert changes because $moduleText is not installed.");
         }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->install($module);
+        $this->moduleFileInstaller->install($module, $withTemplate);
     }
 
     public function uninstall(Module $module, bool $force = false): void
@@ -353,8 +336,7 @@ class ModuleInstaller
             $this->error("Can not uninstall $moduleText because the module has changes.");
         }
 
-        $moduleFileInstaller = new ModuleFileInstaller();
-        $moduleFileInstaller->uninstall($module);
+        $this->moduleFileInstaller->uninstall($module);
 
         $this->reload($module);
     }
