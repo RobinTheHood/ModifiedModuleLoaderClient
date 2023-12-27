@@ -30,6 +30,17 @@ $notificationView = new NotificationViewModel();
                 <h1><?= $heading ?></h1>
 
                 <div class="modules">
+                    <h2>Neuste und aktualisierte Module</h2>
+                    <div class="category">
+                        <?php
+                        $modules = ModuleSorter::sortByDate($modules);
+                        for ($index = 0; $index < min(count($modules), 6); $index++) {
+                            $module = $modules[$index];
+                            include 'ModuleListingModule.tmpl.php';
+                        }
+                        ?>
+                    </div>
+
                     <?php foreach ($groupedModules as $category => $modules) { ?>
                         <h2><?= Category::getCategoryName($category); ?></h2>
                         <div class="category">
