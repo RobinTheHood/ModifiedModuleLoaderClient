@@ -69,7 +69,7 @@ $jsGoToFilesTab = "
 ";
 ?>
 
-<div class="moduleinfo-buttons">
+<div class="moduleinfo-buttons module-action-button">
     <?php
     if ($moduleView->isUpdatable() && !$moduleView->isRepairable()) {
         echo $buttonUpdate;
