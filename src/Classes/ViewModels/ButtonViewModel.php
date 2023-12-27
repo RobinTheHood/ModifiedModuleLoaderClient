@@ -79,7 +79,9 @@ class ButtonViewModel
 
             $html = sprintf(
                 '<div class="btn-group">
-                    <a class="btn %s" href="%s" %s role="button" aria-expanded="false">%s</a>
+                    <a class="btn %s" href="%s" %s role="button" aria-expanded="false">
+                        %s
+                    </a>
                     <button type="button" class="btn %s dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
                         aria-expanded="false" data-reference="parent">
                         <span class="sr-only">Toggle Dropdown</span>
@@ -95,7 +97,9 @@ class ButtonViewModel
             );
         } else {
             $html = sprintf(
-                '<a class="btn %s" href="%s" %s role="button">%s</a>',
+                '<div class="btn-group">
+                    <a class="btn %s" href="%s" %s role="button">%s</a>
+                </div>',
                 htmlspecialchars($class),
                 htmlspecialchars($url),
                 $js,

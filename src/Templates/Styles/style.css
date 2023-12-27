@@ -210,7 +210,7 @@ section {
     --padding: 40px;
 
     display: block;
-    width: auto;
+    width: 64px;
     height: 64px;
 
     margin: auto;
