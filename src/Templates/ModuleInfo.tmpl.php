@@ -115,7 +115,7 @@ $notificationView = new NotificationViewModel();
                                     <tbody>
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $moduleView->getVersion(); ?></td>
+                                            <td><?= $moduleView->getVersionAndGitBranch(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -292,8 +292,9 @@ $notificationView = new NotificationViewModel();
                                             <td>Alle Versionen</td>
                                             <td>
                                                 <?php foreach ($module->getVersions() as $moduleVersion) {?>
+                                                    <?php $moduleVersionView = new ModuleViewModel($moduleVersion) ?>
                                                     <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>">
-                                                        <?= $moduleVersion->getVersion(); ?>
+                                                        <?= $moduleVersionView->getVersionAndGitBranch(); ?>
                                                     </a>
                                                     <?php if ($moduleVersion->isInstalled()) { ?>
                                                         <span>installiert</span>
