@@ -24,6 +24,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Category;
 use RobinTheHood\ModifiedModuleLoaderClient\SendMail;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyManager;
+use RobinTheHood\ModifiedModuleLoaderClient\Helpers\GitHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\MmlcVersionInfoLoader;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManager;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleManager\ModuleManagerResult;
@@ -162,7 +163,8 @@ class IndexController extends Controller
             return $accessRedirect;
         }
 
-        $gitBranch = $this->getCurrentGitBranch(App::getRoot() . '/.git');
+        $gitHelper = new GitHelper();
+        $gitBranch = $gitHelper->getCurrentGitBranch(App::getRoot() . '/.git');
 
         if ($gitBranch) {
             Notification::pushFlashMessage([
@@ -739,35 +741,5 @@ class IndexController extends Controller
             'text' => "Fehler: Das Module <strong>$archiveName - $version</strong> wurde nicht gefunden.",
             'type' => 'error'
         ]);
-    }
-
-    private function getCurrentGitBranch(string $gitPath): ?string
-    {
-        if (!is_dir($gitPath)) {
-            return null;
-        }
-
-        $os = strtoupper(substr(PHP_OS, 0, 3));
-        $command = '';
-
-        switch ($os) {
-            case 'WIN':
-                $command = 'cd /d "' . $gitPath . '" & git symbolic-ref --short HEAD 2>NUL';
-                break;
-            case 'LIN':
-            case 'DAR':
-                $command = 'cd "' . $gitPath . '" && git symbolic-ref --short HEAD 2>/dev/null';
-                break;
-            default:
-                return 'unkown branch';
-        }
-
-        $output = trim('' . shell_exec($command));
-
-        if (empty($output)) {
-            return null;
-        }
-
-        return $output;
     }
 }
