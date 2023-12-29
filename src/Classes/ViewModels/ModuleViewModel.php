@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace RobinTheHood\ModifiedModuleLoaderClient\ViewModels;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
+use RobinTheHood\ModifiedModuleLoaderClient\Helpers\GitHelper;
 use RobinTheHood\ModifiedModuleLoaderClient\Module;
 use RobinTheHood\ModifiedModuleLoaderClient\ModuleStatus;
 use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
@@ -186,6 +187,27 @@ class ModuleViewModel
     public function getVersion(): string
     {
         return $this->module->getVersion();
+    }
+
+    public function getVersionAndGitBranch(): string
+    {
+        $version = $this->getVersion();
+
+        if ($this->module->isRemote()) {
+            return $version;
+        }
+
+        $gitHelper = new GitHelper();
+        $gitBranch = $gitHelper->getCurrentGitBranch(
+            $this->module->getLocalRootPath() . $this->module->getModulePath() . '/.git'
+        );
+
+        if ($gitBranch) {
+            //return $version . ' 🔀 ' . $gitBranch;
+            return $version . ' git:(' . $gitBranch . ')';
+        } else {
+            return $version;
+        }
     }
 
     public function getDate(): string
