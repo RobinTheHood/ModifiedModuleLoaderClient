@@ -195,7 +195,7 @@ class AutoloadEntryCollection implements IteratorAggregate
 
         throw new Exception(
             "Can not add $archiveName because"
-            . " Path {$autoloadEntry->realPath} with namespace {$autoloadEntry->namespace} already exists with"
+            . " path {$autoloadEntry->realPath} with namespace {$autoloadEntry->namespace} already exists with"
             . " different namespace {$foundAutoloadEntry->namespace}"
         );
     }
