@@ -453,7 +453,8 @@ class ModuleManager
         if ($skipDependencyCheck === false) {
             $systemSet = $this->systemSetFactory->getSystemSet();
             $versionConstraint = '>' . $module->getVersion();
-            $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
+            $combinationSatisfyerResult =
+                $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
             if (
                 $combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND
                 || !$combinationSatisfyerResult->foundCombination
