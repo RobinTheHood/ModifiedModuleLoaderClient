@@ -15,6 +15,7 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleManager;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 
 class AutoloadFileCreator
 {
@@ -26,7 +27,10 @@ class AutoloadFileCreator
         $this->writeAutoloadFile($autoloadFileContent);
     }
 
-    private function getInstalledModules()
+    /**
+     * @return Module[]
+     */
+    private function getInstalledModules(): array
     {
         $localModuleLoader = LocalModuleLoader::createFromConfig();
         $localModuleLoader->resetCache();
