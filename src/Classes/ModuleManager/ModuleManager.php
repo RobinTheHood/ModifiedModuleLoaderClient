@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleManager;
 
+use Exception;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
@@ -232,8 +233,11 @@ class ModuleManager
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_INFO_UPDATE_AUTOLOAD_START)
         );
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($module);
@@ -314,8 +318,11 @@ class ModuleManager
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_INFO_UPDATE_AUTOLOAD_START)
         );
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($module);
@@ -401,8 +408,10 @@ class ModuleManager
             ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_UPDATE_AUTOLOAD_START)
         );
 
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($newModule);
@@ -444,7 +453,8 @@ class ModuleManager
         if ($skipDependencyCheck === false) {
             $systemSet = $this->systemSetFactory->getSystemSet();
             $versionConstraint = '>' . $module->getVersion();
-            $combinationSatisfyerResult = $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
+            $combinationSatisfyerResult =
+                $this->dependencyBuilder->satisfies($archiveName, $versionConstraint, $systemSet);
             if (
                 $combinationSatisfyerResult->result === CombinationSatisfyerResult::RESULT_COMBINATION_NOT_FOUND
                 || !$combinationSatisfyerResult->foundCombination
@@ -494,8 +504,10 @@ class ModuleManager
             ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_UPDATE_AUTOLOAD_START)
         );
 
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() == ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($newModule);
@@ -584,10 +596,28 @@ class ModuleManager
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::UNINSTALL_INFO_UPDATE_AUTOLOAD_START)
         );
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($module);
+    }
+
+    public function createAutoloadFile(): ModuleManagerResult
+    {
+        try {
+            $autoloadFileCreator = new AutoloadFileCreator();
+            $autoloadFileCreator->createAutoloadFile();
+        } catch (Exception $e) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::AUTOLOAD_ERROR_CAN_NOT_CREATE_AUTOLOAD_FILE)
+                ->setMessage($e->getMessage())
+            );
+        }
+
+        return ModuleManagerResult::success();
     }
 }
