@@ -30,16 +30,23 @@ $notificationView = new NotificationViewModel();
                 <h1><?= $heading ?></h1>
 
                 <div class="modules">
-                    <h2>Neuste und aktualisierte Module</h2>
-                    <div class="category">
-                        <?php
-                        $modules = ModuleSorter::sortByDate($modules);
-                        for ($index = 0; $index < min(count($modules), 6); $index++) {
-                            $module = $modules[$index];
-                            include 'ModuleListingModule.tmpl.php';
-                        }
-                        ?>
-                    </div>
+                    <?php if ($filterModulesBy === 'all') { ?>
+                        <h2>Neuste und aktualisierte Module</h2>
+                        <div class="category">
+                            <?php
+                            $modules = ModuleSorter::sortByDate($modules);
+                            $modules = array_filter($modules, function ($module) {
+                                return $module->getCategory() !== 'library';
+                            });
+                            $modules = array_values($modules);
+
+                            for ($index = 0; $index < min(count($modules), 6); $index++) {
+                                $module = $modules[$index];
+                                include 'ModuleListingModule.tmpl.php';
+                            }
+                            ?>
+                        </div>
+                    <?php } ?>
 
                     <?php foreach ($groupedModules as $category => $modules) { ?>
                         <h2><?= Category::getCategoryName($category); ?></h2>

@@ -220,7 +220,7 @@ class IndexController extends Controller
         $heading = 'Alle Module';
 
         $queryParams = $this->serverRequest->getQueryParams();
-        $filterModules = $queryParams['filterModules'] ?? '';
+        $filterModules = $queryParams['filterModules'] ?? 'all';
 
         if ($filterModules == 'loaded') {
             $modules = $this->moduleFilter->filterLoaded($modules);
@@ -245,7 +245,8 @@ class IndexController extends Controller
         return $this->render('ModuleListing', [
             'heading' => $heading,
             'modules' => $modules,
-            'groupedModules' => $groupedModules
+            'groupedModules' => $groupedModules,
+            'filterModulesBy' => $filterModules
         ]);
     }
 
