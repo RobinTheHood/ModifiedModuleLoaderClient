@@ -206,7 +206,7 @@ $notificationView = new NotificationViewModel();
 
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $moduleView->getVersion(); ?></td>
+                                            <td><?= $moduleView->getVersionAndGitBranch(); ?></td>
                                         </tr>
 
                                         <tr>
