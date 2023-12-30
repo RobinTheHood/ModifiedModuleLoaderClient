@@ -233,8 +233,11 @@ class ModuleManager
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_INFO_UPDATE_AUTOLOAD_START)
         );
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($module);
@@ -315,8 +318,11 @@ class ModuleManager
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::INSTALL_INFO_UPDATE_AUTOLOAD_START)
         );
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($module);
@@ -402,8 +408,10 @@ class ModuleManager
             ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_UPDATE_AUTOLOAD_START)
         );
 
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($newModule);
@@ -495,8 +503,10 @@ class ModuleManager
             ModuleManagerMessage::create(ModuleManagerMessage::UPDATE_INFO_UPDATE_AUTOLOAD_START)
         );
 
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() == ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($newModule);
@@ -585,8 +595,11 @@ class ModuleManager
         $this->info(
             ModuleManagerMessage::create(ModuleManagerMessage::UNINSTALL_INFO_UPDATE_AUTOLOAD_START)
         );
-        $autoloadFileCreator = new AutoloadFileCreator();
-        $autoloadFileCreator->createAutoloadFile();
+
+        $moduleManagerResult = $this->createAutoloadFile();
+        if ($moduleManagerResult->getType() === ModuleManagerResult::TYPE_ERROR) {
+            return $moduleManagerResult;
+        }
 
         return ModuleManagerResult::success()
             ->setModule($module);
