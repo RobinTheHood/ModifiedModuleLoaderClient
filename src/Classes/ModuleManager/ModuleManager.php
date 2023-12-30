@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleManager;
 
+use Exception;
 use RobinTheHood\ModifiedModuleLoaderClient\Config;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\CombinationSatisfyerResult;
 use RobinTheHood\ModifiedModuleLoaderClient\DependencyManager\DependencyBuilder;
@@ -589,5 +590,20 @@ class ModuleManager
 
         return ModuleManagerResult::success()
             ->setModule($module);
+    }
+
+    public function createAutoloadFile(): ModuleManagerResult
+    {
+        try {
+            $autoloadFileCreator = new AutoloadFileCreator();
+            $autoloadFileCreator->createAutoloadFile();
+        } catch (Exception $e) {
+            return $this->error(
+                ModuleManagerMessage::create(ModuleManagerMessage::AUTOLOAD_ERROR_CAN_NOT_CREATE_AUTOLOAD_FILE)
+                ->setMessage($e->getMessage())
+            );
+        }
+
+        return ModuleManagerResult::success();
     }
 }
