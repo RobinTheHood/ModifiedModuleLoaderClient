@@ -18,6 +18,15 @@ use RobinTheHood\ModifiedModuleLoaderClient\Semver\ParseErrorException;
 
 class ModuleStatus
 {
+    /**
+     * Überprüft die Gültigkeit eines Moduls.
+     *
+     * Wenn ein Remote-Modul auch lokal vorhanden ist, wird davon ausgegangen, dass nur mit dem lokalen Modul gearbeitet
+     * werden soll. In diesem Fall liefert `isValid` false, da das lokale Modul bevorzugt wird.
+     *
+     * @param Module $module Das zu überprüfende Modul.
+     * @return bool Gibt true zurück, wenn das Modul als gültig betrachtet wird, andernfalls false.
+     */
     public static function isValid(Module $module): bool
     {
         return !($module->isRemote() && $module->isLoaded());
