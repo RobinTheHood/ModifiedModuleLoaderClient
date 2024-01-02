@@ -18,4 +18,4 @@ echo TemplateHelper::loadStyleSheet('src/Templates/Styles/lightbox.css');
 echo TemplateHelper::loadStyleSheet('src/Templates/Styles/style.css');
 ?>
 
-<script src="src/Templates/Scripts/jquery-3.3.1.min.js"></script>
+<script src="<?= MMLC_ROOT ?>src/Templates/Scripts/jquery-3.3.1.min.js"></script>

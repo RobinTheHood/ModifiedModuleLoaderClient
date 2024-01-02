@@ -23,10 +23,10 @@ $notificationView = new NotificationViewModel();
 <html lang="de">
     <head>
         <?php include 'Head.tmpl.php' ?>
-        <link rel="stylesheet" href="src/Templates/Styles/highlight-github.css">
-        <link rel="stylesheet" href="src/Templates/Styles/github-markdown-css.css">
-        <script src="src/Templates/Scripts/highlight.min.js"></script>
-        <script src="src/Templates/Scripts/language-smarty.js"></script>
+        <link rel="stylesheet" href="<?= MMLC_ROOT ?>src/Templates/Styles/highlight-github.css">
+        <link rel="stylesheet" href="<?= MMLC_ROOT ?>src/Templates/Styles/github-markdown-css.css">
+        <script src="<?= MMLC_ROOT ?>src/Templates/Scripts/highlight.min.js"></script>
+        <script src="<?= MMLC_ROOT ?>src/Templates/Scripts/language-smarty.js"></script>
         <script>
             hljs.configure({
                 languages: ['smarty', 'php', 'js'],
@@ -41,6 +41,7 @@ $notificationView = new NotificationViewModel();
 
         <div class="block">
             <div class="content">
+                <?php /*
                 <?= $notificationView->renderFlashMessages() ?>
 
                 <?php if ($moduleView->isRepairable()) { ?>
@@ -65,6 +66,7 @@ $notificationView = new NotificationViewModel();
                 <?php if (!$moduleView->isCompatible()) { ?>
                     <?= $notificationView->renderMultibleFlashMessages($moduleView->getCompatibleStrings()) ?>
                 <?php } ?>
+                */ ?>
 
                 <div class="row">
                     <div class="col">
@@ -87,11 +89,16 @@ $notificationView = new NotificationViewModel();
                         <?php } ?>
                     </div>
                 </div>
+
+                <div class="alert alert-primary" role="alert">
+                    <i class="fas fa-info-circle fa-fw"></i>
+                    <a href="https://module-loader.de/documentation.php#system-requirements">Installiere dir den MMLC</a>. Danach kannst du das modified Modul <strong><?= $moduleView->getName() ?></strong> mit dem MMLC in deinen Shop installieren. 
+                </div>
             </div>
         </div>
 
         <div class="content">
-            <?php include 'ModuleInfoButtons.tmpl.php'; ?>
+            <?php //include 'ModuleInfoButtons.tmpl.php'; ?>
 
             <div class="row">
                 <div class="col-3">
@@ -294,8 +301,7 @@ $notificationView = new NotificationViewModel();
                                                 <div class="expandable">
                                                     <?php foreach ($module->getVersions() as $moduleVersion) {?>
                                                         <?php $moduleVersionView = new ModuleViewModel($moduleVersion) ?>
-                                                        <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>">
-                                                            <?= $moduleVersionView->getVersionAndGitBranch(); ?>
+                                                        <a href="<?= $moduleVersionView->getModuleInfoUrl() ?>"><?= $moduleVersionView->getVersionAndGitBranch(); ?>
                                                         </a>
                                                         <?php if ($moduleVersion->isInstalled()) { ?>
                                                             <span>installiert</span>
@@ -315,7 +321,8 @@ $notificationView = new NotificationViewModel();
                                             <td>
                                                 <?php if ($module->getRequire()) { ?>
                                                     <?php foreach ($module->getRequire() as $archiveName => $version) { ?>
-                                                        <a href="?action=moduleInfo&archiveName=<?= $archiveName?>"><?= $archiveName?></a><span>: <?= $version ?></span><br>
+                                                        <?php $moduleVersionView = new ModuleViewModel($moduleVersion) ?>
+                                                        <a href="<?= $moduleVersionView->getModuleInfoUrl() ?>"><?= $archiveName?></a><span>: <?= $version ?></span><br>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     keine Abhängigkeit vorhanden
@@ -323,6 +330,7 @@ $notificationView = new NotificationViewModel();
                                             </td>
                                         </tr>
 
+                                        <?php /*
                                         <tr>
                                             <td>Benutzt von</td>
                                             <td>
@@ -335,6 +343,7 @@ $notificationView = new NotificationViewModel();
                                                 <?php } ?>
                                             </td>
                                         </tr>
+                                        */ ?>
                                     </tbody>
                                 </table>
 

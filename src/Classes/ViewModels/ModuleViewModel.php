@@ -249,17 +249,18 @@ class ModuleViewModel
             $module = $this->module;
         }
 
-        $queryString = http_build_query($queryParams);
-        if ($queryString) {
-            $queryString = '&' . $queryString;
-        }
+        return $this->getUrlPretty($module);
 
         return
             '?action=' . $action .
             '&archiveName=' . $module->getArchiveName() .
             '&version=' . $module->getVersion() .
-            '&ref=' . $ref
-            . $queryString;
+            '&ref=' . $ref;
+    }
+
+    private function getUrlPretty(Module $module): string
+    {
+        return MMLC_ROOT . $module->getArchiveName() . '/' . $module->getVersion();
     }
 
     /**

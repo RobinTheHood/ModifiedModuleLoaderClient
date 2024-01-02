@@ -65,32 +65,32 @@ class IndexController extends Controller
                 return $this->invokeLazyModuleChangeCount();
             case 'lazySystemUpdateCount':
                 return $this->invokeLazySystemUpdateCount();
-            case 'loadRemoteModule':
-                return $this->invokePull();
-            case 'install':
-                return $this->invokeInstall();
-            case 'loadAndInstall':
-                return $this->invokeInstall();
-            case 'update':
-                return $this->invokeUpdate();
-            case 'revertChanges':
-                return $this->invokeDiscard();
-            case 'uninstall':
-                return $this->invokeUninstall();
-            case 'unloadLocalModule':
-                return $this->invokeDelete();
-            case 'signIn':
-                return $this->invokeSignIn();
-            case 'signOut':
-                return $this->invokeSignOut();
-            case 'selfUpdate':
-                return $this->invokeSelfUpdate();
-            case 'reportIssue':
-                return $this->invokeReportIssue();
-            case 'support':
-                return $this->invokeSupport();
-            case 'settings':
-                return $this->invokeSettings();
+            // case 'install':
+            //     return $this->invokeInstall();
+            // case 'update':
+            //     return $this->invokeUpdate();
+            // case 'uninstall':
+            //     return $this->invokeUninstall();
+            // case 'loadRemoteModule':
+            //     return $this->invokeLoadRemoteModule();
+            // case 'loadAndInstall':
+            //     return $this->invokeLoadAndInstall();
+            // case 'unloadLocalModule':
+            //     return $this->invokeUnloadLocalModule();
+            // case 'revertChanges':
+            //     return $this->invokeRevertChanges();
+            // case 'signIn':
+            //     return $this->invokeSignIn();
+            // case 'signOut':
+            //     return $this->invokeSignOut();
+            // case 'selfUpdate':
+            //     return $this->invokeSelfUpdate();
+            // case 'reportIssue':
+            //     return $this->invokeReportIssue();
+            // case 'support':
+            //     return $this->invokeSupport();
+            // case 'settings':
+            //     return $this->invokeSettings();
             default:
                 return $this->invokeIndex();
         }
@@ -706,6 +706,7 @@ class IndexController extends Controller
 
     public function checkAccessRight()
     {
+        return;
         if (empty($_SESSION['accessRight']) || $_SESSION['accessRight'] !== true) {
             return $this->redirect('/?action=signIn');
         }

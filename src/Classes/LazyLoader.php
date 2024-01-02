@@ -17,11 +17,7 @@ class LazyLoader
 {
     public static function createUrl($module, $dataField)
     {
-        $url = '?action=lazyModuleInfo&archiveName='
-            . $module->getArchiveName()
-            . '&version='
-            . $module->getVersion()
-            . '&data=' . $dataField;
+        $url = MMLC_ROOT . '?action=lazyModuleInfo&archiveName=' . $module->getArchiveName() . '&version=' . $module->getVersion() . '&data=' . $dataField;
         return $url;
     }
 
@@ -76,19 +72,19 @@ class LazyLoader
 
     public static function loadModuleUpdateCount($target)
     {
-        $url = '?action=lazyModuleUpdateCount';
+        $url = MMLC_ROOT . '?action=lazyModuleUpdateCount';
         return self::createScript($target, $url, '0');
     }
 
     public static function loadModuleChangeCount($target)
     {
-        $url = '?action=lazyModuleChangeCount';
+        $url = MMLC_ROOT . '?action=lazyModuleChangeCount';
         return self::createScript($target, $url, '0');
     }
 
     public static function loadSystemUpdateCount($target)
     {
-        $url = '?action=lazySystemUpdateCount';
+        $url = MMLC_ROOT . '?action=lazySystemUpdateCount';
         return self::createScript($target, $url, '0');
     }
 }

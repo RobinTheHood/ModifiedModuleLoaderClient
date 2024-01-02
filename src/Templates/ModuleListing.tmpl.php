@@ -20,7 +20,7 @@ $notificationView = new NotificationViewModel();
         <div class="content module-listing">
 
             <div>
-                <?= $notificationView->renderFlashMessages() ?>
+                <?php //$notificationView->renderFlashMessages() ?>
 
                 <div class="search">
                     <input type="text" value="" placeholder="Suche Modul- oder Archivname"

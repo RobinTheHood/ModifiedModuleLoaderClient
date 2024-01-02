@@ -88,6 +88,7 @@ class ShopInfo
 
     public static function getAdminDir(): string
     {
+        return '';
         return Config::getAdminDir() ?? self::scanForAdminDir();
     }
 
