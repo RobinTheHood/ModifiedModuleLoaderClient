@@ -22,8 +22,8 @@ class ModuleInstallerCest
     {
         $I->amOnPage('/?action=moduleInfo&archiveName=robinthehood/stripe');
         $I->see('Stripe');
-        $I->see('Download & Install');
-        $I->click('Download & Install');
+        $I->see('Download & Installieren');
+        $I->click('Download & Installieren');
         $I->see('Deinstallieren');
         $I->see('installiert');
 
@@ -59,15 +59,15 @@ class ModuleInstallerCest
         // canDeleteModules
         $I->amOnPage('/?action=moduleInfo&archiveName=robinthehood/stripe');
         $I->see('Stripe');
-        $I->tryToClick('Modul löschen');
+        $I->tryToClick('Löschen');
 
         $I->amOnPage('/?action=moduleInfo&archiveName=robinthehood/modified-std-module');
         $I->see('Standard Modul für Modified');
-        $I->tryToClick('Modul löschen');
+        $I->tryToClick('Löschen');
 
         $I->amOnPage('/?action=moduleInfo&archiveName=composer/autoload');
         $I->see('Composer Autoload');
-        $I->tryToClick('Modul löschen');
+        $I->tryToClick('Löschen');
     }
 
     public function _login(AcceptanceTester $I)
@@ -107,16 +107,16 @@ class ModuleInstallerCest
         $I->amOnPage('/?action=moduleInfo&archiveName=robinthehood/stripe');
         $I->see('Stripe');
         $I->tryToClick('Deinstallieren');
-        $I->tryToClick('Modul löschen');
+        $I->tryToClick('Löschen');
 
         $I->amOnPage('/?action=moduleInfo&archiveName=robinthehood/modified-std-module');
         $I->see('Standard Modul für Modified');
         $I->tryToClick('Deinstallieren');
-        $I->tryToClick('Modul löschen');
+        $I->tryToClick('Löschen');
 
         $I->amOnPage('/?action=moduleInfo&archiveName=composer/autoload');
         $I->see('Composer Autoload');
         $I->tryToClick('Deinstallieren');
-        $I->tryToClick('Modul löschen');
+        $I->tryToClick('Löschen');
     }
 }
