@@ -74,6 +74,34 @@ class Cli
     public function hasOption($option)
     {
         global $argv;
-        return in_array($option, $argv);
+
+        foreach ($argv as $index => $value) {
+            $optionParts = explode('=', $value);
+            $optionName = $optionParts[0] ?? $value;
+            $optionValue = $optionParts[1] ?? '';
+
+            if ($option === $optionName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getOption($option)
+    {
+        global $argv;
+
+        foreach ($argv as $index => $value) {
+            $optionParts = explode('=', $value);
+            $optionName = $optionParts[0] ?? $value;
+            $optionValue = $optionParts[1] ?? '';
+
+            if ($option === $optionName) {
+                return $optionValue;
+            }
+        }
+
+        return false;
     }
 }

@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace RobinTheHood\ModifiedModuleLoaderClient\Cli\Command;
 
-use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
-use RobinTheHood\ModifiedModuleLoaderClient\Cli\TextRenderer;
 use RobinTheHood\ModifiedModuleLoaderClient\Cli\HelpRenderer;
+use RobinTheHood\ModifiedModuleLoaderClient\Cli\MmlcCli;
+use RobinTheHood\ModifiedModuleLoaderClient\ModuleCreator;
 
 class CommandCreate implements CommandInterface
 {
     private const ARGUMENT_ARCHIVE_NAME = 0;
+    private const ARGUMENT_VENDOR_PREFIX = 1;
 
     public function __construct()
     {
@@ -41,7 +42,18 @@ class CommandCreate implements CommandInterface
 
     private function create(MmlcCli $cli): void
     {
-        echo "🏗️ \n";
+        $archiveName = $cli->getFilteredArgument(self::ARGUMENT_ARCHIVE_NAME);
+        $archiveParts = explode('/', $archiveName);
+        $vendorName = $archiveParts[0] ?? 'MyCompany';
+        $moduleName = $archiveParts[1] ?? 'My First Module';
+
+        if ($cli->hasOption('--prefix')) {
+            echo $cli->getOption('--prefix');
+        }
+        $vendorPrefix = $cli->getFilteredArgument(self::ARGUMENT_VENDOR_PREFIX);
+
+        $moduleCreator = new ModuleCreator();
+        $moduleCreator->createModule($vendorPrefix, $vendorName, $moduleName);
     }
 
     private function createInteractive(MmlcCli $cli): void
@@ -72,6 +84,8 @@ class CommandCreate implements CommandInterface
             }
 
             $archiveName = $vendorName . '/' . $moduleName;
+
+            $arguments['archiveName'] = $archiveName;
         }
 
         $this->create($cli);
