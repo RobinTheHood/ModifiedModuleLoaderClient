@@ -79,7 +79,7 @@ class ModuleLoaderTest extends TestCase
 
         // tests for version >=1.0.0
         $modules = $this->loader->loadAllByArchiveNameAndConstraint('composer/autoload', '^1.2.0');
-        $this->assertEquals(5, count($modules));
+        $this->assertEquals(6, count($modules));
         $this->assertEquals('1.2.0', $modules[0]->getVersion());
         $this->assertEquals('1.2.1', $modules[1]->getVersion());
         $this->assertEquals('1.2.2', $modules[2]->getVersion());
