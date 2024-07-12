@@ -7,8 +7,16 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\TemplateHelper;
 ?>
 
 <meta charset="utf-8">
-<title>MMLC - Modified Module Loader Client</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<?php if (!isset($moduleView) || !isset($module)) {?>
+    <title>MMLC - Modified Module Loader Client</title>
+    <meta name="description" content="Sie sind auf der Suche nach neuen Laufschuhen? » Wir haben die aktuellsten Modelle für Sie getestet!"/>
+    <link rel="canonical" href="https://www.module-loader.de/module" />
+<?php } else { ?>
+    <title><?= $moduleView->getName() ?> - 📦 Modul fürs modified Shop System</title>
+    <meta name="description" content="<?= $module->getShortDescription() ?>"/>
+<?php } ?>
 
 <?php
 echo TemplateHelper::loadStyleSheet('src/Templates/Styles/bootstrap.min.css');
