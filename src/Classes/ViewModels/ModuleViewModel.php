@@ -235,6 +235,12 @@ class ModuleViewModel
         return $this->module->isChanged();
     }
 
+    public function getCanonicalUrl(): string
+    {
+        return MMLC_ROOT . $this->module->getArchiveName();
+    }
+
+
     /**
      * @param string $action
      * @param string $ref

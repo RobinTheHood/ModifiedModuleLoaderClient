@@ -16,6 +16,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\Helpers\TemplateHelper;
 <?php } else { ?>
     <title><?= $moduleView->getName() ?> - 📦 Modul fürs modified Shop System</title>
     <meta name="description" content="<?= $module->getShortDescription() ?>"/>
+    <link rel="canonical" href="<?= $moduleView->getCanonicalUrl() ?>" />
 <?php } ?>
 
 <?php
