@@ -1,9 +1,42 @@
 <?php
 
-if (strpos(__DIR__, 'vendor-no-composer') !== false) {
-    /** E_USER_DEPRECATED does not work */
-    trigger_error('Using file vendor-no-composer/autoload.php is deprecated. Use vendor-mmlc/autoload.php instead.', E_USER_NOTICE);
+// Triggers an error only every $frequency seconds.
+if (!function_exists('rth_trigger_error_once')) {
+    function rth_trigger_error_once($message, $type, $frequency)
+    {
+        $cache = [];
+        $cacheFilePath = DIR_FS_DOCUMENT_ROOT . '/log/mmlc_log_cache.json';
+
+        // Load cache
+        if (file_exists($cacheFilePath)) {
+            $cacheData = file_get_contents($cacheFilePath);
+            $cache = json_decode($cacheData, true);
+        }
+
+        // Check time;
+        $messageId = md5($message);
+        $currentTime = time();
+
+        if (isset($cache[$messageId]) && ($currentTime - $cache[$messageId]) < $frequency) {
+            return false;
+        }
+
+        trigger_error($message, $type);
+
+        // Update cache
+        $cache[$messageId] = $currentTime;
+        file_put_contents($cacheFilePath, json_encode($cache));
+    }
 }
+
+//if (strpos(__DIR__, 'vendor-no-composer') !== false) {
+    /** E_USER_DEPRECATED does not work */
+    rth_trigger_error_once(
+        'The file vendor-no-composer/autoload.php is deprecated. Please use vendor-mmlc/autoload.php instead. This warning appears because some module developers still include the outdated file vendor-no-composer/autoload.php. While this is not yet an issue, it may cause problems in future versions of MMLC, when vendor-no-composer/autoload.php will be removed. Note: This message is logged only once every 3600 seconds.',
+        E_USER_NOTICE,
+        3600
+    );
+//}
 
 $rth_class = '\Composer\Autoload\ClassLoader';
 
