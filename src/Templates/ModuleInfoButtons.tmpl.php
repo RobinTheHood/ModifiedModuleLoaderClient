@@ -80,8 +80,10 @@ $jsGoToFilesTab = "
     if ($moduleView->isRepairable()) {
         if (Config::getInstallMode() != 'link') {
             echo $buttonDiscard;
+            echo $buttonUninstall;
         } else {
             echo $buttonDiscardLink;
+            echo $buttonUninstall;
             echo $jsGoToFilesTab;
         }
     }

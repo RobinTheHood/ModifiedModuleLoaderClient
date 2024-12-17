@@ -256,7 +256,7 @@ class ModuleFilter
         return $selectedModule;
     }
 
-        /**
+    /**
      * @param Module[] $modules
      * @return Module|null
      */

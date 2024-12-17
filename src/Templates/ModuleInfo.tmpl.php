@@ -115,7 +115,7 @@ $notificationView = new NotificationViewModel();
                                     <tbody>
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $moduleView->getVersion(); ?></td>
+                                            <td><?= $moduleView->getVersionAndGitBranch(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -206,7 +206,7 @@ $notificationView = new NotificationViewModel();
 
                                         <tr>
                                             <td>Version</td>
-                                            <td><?= $moduleView->getVersion(); ?></td>
+                                            <td><?= $moduleView->getVersionAndGitBranch(); ?></td>
                                         </tr>
 
                                         <tr>
@@ -291,19 +291,22 @@ $notificationView = new NotificationViewModel();
                                         <tr>
                                             <td>Alle Versionen</td>
                                             <td>
-                                                <?php foreach ($module->getVersions() as $moduleVersion) {?>
-                                                    <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>">
-                                                        <?= $moduleVersion->getVersion(); ?>
-                                                    </a>
-                                                    <?php if ($moduleVersion->isInstalled()) { ?>
-                                                        <span>installiert</span>
-                                                    <?php } elseif ($moduleVersion->isLoaded()) { ?>
-                                                        <span>geladen</span>
-                                                    <?php } else { ?>
-                                                        <span>nicht geladen</span>
+                                                <div class="expandable">
+                                                    <?php foreach ($module->getVersions() as $moduleVersion) {?>
+                                                        <?php $moduleVersionView = new ModuleViewModel($moduleVersion) ?>
+                                                        <a href="?action=moduleInfo&archiveName=<?= $moduleVersion->getArchiveName() ?>&version=<?= $moduleVersion->getVersion()?>">
+                                                            <?= $moduleVersionView->getVersionAndGitBranch(); ?>
+                                                        </a>
+                                                        <?php if ($moduleVersion->isInstalled()) { ?>
+                                                            <span>installiert</span>
+                                                        <?php } elseif ($moduleVersion->isLoaded()) { ?>
+                                                            <span>geladen</span>
+                                                        <?php } else { ?>
+                                                            <span>nicht geladen</span>
+                                                        <?php } ?>
+                                                        <br>
                                                     <?php } ?>
-                                                    <br>
-                                                <?php } ?>
+                                                </div>
                                             </td>
                                         </tr>
 

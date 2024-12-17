@@ -15,10 +15,10 @@ namespace RobinTheHood\ModifiedModuleLoaderClient\ModuleManager;
 
 use RobinTheHood\ModifiedModuleLoaderClient\App;
 use RobinTheHood\ModifiedModuleLoaderClient\Loader\LocalModuleLoader;
+use RobinTheHood\ModifiedModuleLoaderClient\Module;
 
 class AutoloadFileCreator
 {
-    // TODO: In createAutoloadFile() Exceptions werfen im Fehlerfall
     public function createAutoloadFile(): void
     {
         $installedLocalModules = $this->getInstalledModules();
@@ -26,7 +26,10 @@ class AutoloadFileCreator
         $this->writeAutoloadFile($autoloadFileContent);
     }
 
-    private function getInstalledModules()
+    /**
+     * @return Module[]
+     */
+    private function getInstalledModules(): array
     {
         $localModuleLoader = LocalModuleLoader::createFromConfig();
         $localModuleLoader->resetCache();
@@ -34,37 +37,30 @@ class AutoloadFileCreator
         return $installedModules;
     }
 
+    private function convertAutoloadEntryToPsr4AutoloadPhp(AutoloadEntry $autoloadEntry): string
+    {
+        $namespace = $autoloadEntry->namespace;
+        $realPath = $autoloadEntry->realPath;
+        $php = '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $realPath . '\');';
+        return $php;
+    }
+
+    /**
+     * @param Module[] $installedModules
+     */
     private function buildAutoloadFile(array $installedModules): string
     {
-        $namespaceEntrys = [];
-        foreach ($installedModules as $installedModule) {
-            $autoload = $installedModule->getAutoload();
+        $autoloadEntryCollection = AutoloadEntryCollection::createFromModules($installedModules);
+        $autoloadEntryCollection = $autoloadEntryCollection->unique();
 
-            if (!$autoload) {
-                continue;
-            }
-
-            if (!$autoload['psr-4']) {
-                continue;
-            }
-
-            foreach ($autoload['psr-4'] as $namespace => $path) {
-                $path = str_replace(
-                    $installedModule->getSourceMmlcDir(),
-                    'vendor-mmlc/' . $installedModule->getArchiveName(),
-                    $path
-                );
-
-                $namespaceEntrys[] =
-                    '$loader->setPsr4(\'' . $namespace . '\\\', DIR_FS_DOCUMENT_ROOT . \'' . $path . '\');';
-            }
+        $phpEntries = [];
+        foreach ($autoloadEntryCollection as $autoloadEntry) {
+            $phpEntries[] = $this->convertAutoloadEntryToPsr4AutoloadPhp($autoloadEntry);
         }
-
-        $namespaceEntrys = array_unique($namespaceEntrys);
-        $namespaceMapping = implode("\n", $namespaceEntrys);
+        $phpCodeNamespaceMappings = implode("\n", $phpEntries);
 
         $template = file_get_contents(App::getTemplatesRoot() . '/autoload.php.tmpl');
-        $autoloadFileContent = str_replace('{VENDOR_PSR4_NAMESPACE_MAPPINGS}', $namespaceMapping, $template);
+        $autoloadFileContent = str_replace('{VENDOR_PSR4_NAMESPACE_MAPPINGS}', $phpCodeNamespaceMappings, $template);
 
         return $autoloadFileContent;
     }

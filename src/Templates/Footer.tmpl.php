@@ -9,6 +9,7 @@ use RobinTheHood\ModifiedModuleLoaderClient\LazyLoader;
 <script src="src/Templates/Scripts/bootstrap.bundle.min.js"></script>
 <script src="src/Templates/Scripts/lightbox.js"></script>
 <script src="src/Templates/Scripts/ModuleActionButtons.js"></script>
+<script src="src/Templates/Scripts/Expandable.js"></script>
 
 <script>
     function filterModule(searchString)

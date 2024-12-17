@@ -53,6 +53,8 @@ class ModuleManagerMessage
     public const UNINSTALL_ERROR_MODULE_IS_CHANGED = 653;
     public const UNINSTALL_ERROR_MODULE_IS_USED_BY = 654;
 
+    public const AUTOLOAD_ERROR_CAN_NOT_CREATE_AUTOLOAD_FILE = 701;
+
     /** @var int */
     private $code = 0;
 
@@ -124,6 +126,11 @@ class ModuleManagerMessage
     public function getCode(): int
     {
         return $this->code;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
     }
 
     private function getModulName(): string
@@ -224,6 +231,12 @@ class ModuleManagerMessage
                 "Can not uninstall %s, because module is used by other modules.\n%s",
                 $this->getModulName(),
                 $this->getUsedBy()
+            );
+        } elseif ($this->code === self::AUTOLOAD_ERROR_CAN_NOT_CREATE_AUTOLOAD_FILE) {
+            return sprintf(
+                "Can not create autoload file. %s."
+                . "You can create the autoload file by installing or uninstalling any module.",
+                $this->getMessage()
             );
         }
 

@@ -15,7 +15,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 
-define('VERSION', '0.8.1');
+define('VERSION', '0.11.0');
 
 class Installer
 {
@@ -32,7 +32,12 @@ class Installer
         "2.0.7.0",
         "2.0.7.1",
         "2.0.7.2",
-        "3.0.0"
+        "3.0.0",
+        "3.0.1",
+        "3.0.2",
+        "3.1.0",
+        "3.1.1",
+        "3.1.2"
     ];
 
     public function invoke()
