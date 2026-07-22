@@ -242,15 +242,13 @@ class Installer
             $fileName = basename($filePath);
             $fileNameLower = strtolower($fileName);
 
-            if (strpos($fileNameLower, 'admin') !== 0) {
-                continue;
+            if (strpos($fileNameLower, 'admin') !== false && is_dir($fileName)) {
+                $adminDirs[] = $fileName;
             }
 
-            if (!file_exists($filePath . '/check_update.php')) {
-                continue;
+            if (file_exists($filePath . '/check_update.php')) {
+                $adminDirs[] = $fileName;
             }
-
-            $adminDirs[] = $fileName;
         }
 
         return $adminDirs;
